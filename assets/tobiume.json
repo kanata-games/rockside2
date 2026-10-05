@@ -1,0 +1,52 @@
+{
+  "image": "tobiume.png",
+  "frameWidth": 32,
+  "frameHeight": 32,
+  "facing": "right",
+  "anchor": "bottom edge of each frame",
+  "note": "Normal (pre-corruption) Tobiume. Dark boss version is tobiume_dark.png (48x48).",
+  "animations": {
+    "idle": {
+      "frames": [
+        0,
+        1
+      ]
+    },
+    "fly": {
+      "frames": [
+        2,
+        3
+      ]
+    },
+    "attack": {
+      "frames": [
+        4,
+        5
+      ],
+      "note": "frame 5 = firing moment (magic burst at hand, no projectile)"
+    },
+    "hurt": {
+      "frames": [
+        6
+      ]
+    },
+    "kick": {
+      "frames": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "note": "通常攻撃のキック: 7 構え / 8 飛び上がり / 9 前蹴り（足に光の軌跡）/ 10 ヒットの閃光"
+    },
+    "special_dive_kick": {
+      "frames": [
+        11,
+        12,
+        13,
+        14
+      ],
+      "note": "必殺技 スーパーウルトラ飛梅ちゃんキック（斜め上から右下へ一直線に急降下）: 11 空中でため / 12-13 急降下キック（ループ用、光がゆらめく）/ 14 着地の衝撃波"
+    }
+  }
+}

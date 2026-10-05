@@ -1,0 +1,14 @@
+{
+  "image": "tobiume_dark.png",
+  "frameWidth": 48,
+  "frameHeight": 48,
+  "facing": "right",
+  "anchor": "bottom edge of each frame",
+  "animations": {
+    "idle":   {"frames": [0, 1]},
+    "fly":    {"frames": [2, 3]},
+    "attack": {"frames": [4, 5], "note": "frame 5 = firing moment"},
+    "hurt":   {"frames": [6]},
+    "defeat": {"frames": [7]}
+  }
+}

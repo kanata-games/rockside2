@@ -1,0 +1,51 @@
+{
+  "image": "star.png",
+  "frameWidth": 32,
+  "frameHeight": 32,
+  "facing": "right",
+  "anchor": "bottom edge of each frame",
+  "cx": 16,
+  "character": "スター（魔王ディザスターの本来の姿）。中性的な見た目だが少年（男の子）。代名詞は he / 彼",
+  "alignment": "全7フレームで体（ベルトのバックル）が x=16、足元が下端（y=31）に揃う。joy だけはジャンプ中なので足が約3px浮く。共通スケール 0.106（頭頂〜足 約29px）",
+  "animations": {
+    "idle": {
+      "frames": [
+        0,
+        1
+      ],
+      "fps": 3,
+      "loop": true,
+      "note": "剣なしで立つ"
+    },
+    "joy": {
+      "frames": [
+        2
+      ],
+      "note": "ジャンプして拳を突き上げる（足は下端から約3px上）"
+    },
+    "happy": {
+      "frames": [
+        3
+      ],
+      "note": "胸に手を当てて笑う＋黄色いきらめき"
+    },
+    "thanks": {
+      "frames": [
+        4
+      ],
+      "note": "おじぎ（剣を下に持つ）"
+    },
+    "wave": {
+      "frames": [
+        5
+      ],
+      "note": "手を振る"
+    },
+    "sword": {
+      "frames": [
+        6
+      ],
+      "note": "シアンの剣を掲げる。剣先は上端付近（剣の上部は約0.75に圧縮）"
+    }
+  }
+}

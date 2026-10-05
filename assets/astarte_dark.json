@@ -1,0 +1,41 @@
+{
+  "image": "astarte_dark.png",
+  "frameWidth": 48,
+  "frameHeight": 48,
+  "facing": "right",
+  "anchor": "bottom edge of each frame",
+  "cx": 22,
+  "alignment": "2026-10-03 再構築: 全8フレームで体（頭・胴の中心）が x=22、足元が下端に揃う。鎌と斬撃はフレーム内で左右にはみ出さない範囲で横方向に圧縮。フレームごとの cxF は不要（cx=22 を全フレームに使う）",
+  "animations": {
+    "idle": {
+      "frames": [
+        0,
+        1
+      ]
+    },
+    "glide": {
+      "frames": [
+        2,
+        3
+      ],
+      "note": "浮遊して滑るように移動"
+    },
+    "attack": {
+      "frames": [
+        4,
+        5
+      ],
+      "note": "4 鎌を振りかぶる / 5 斬撃の瞬間（赤い三日月状の軌跡つき。軌跡は x≈28-46）"
+    },
+    "hurt": {
+      "frames": [
+        6
+      ]
+    },
+    "defeat": {
+      "frames": [
+        7
+      ]
+    }
+  }
+}

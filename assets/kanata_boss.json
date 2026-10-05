@@ -1,0 +1,204 @@
+{
+  "image": "kanata_boss.png",
+  "frameWidth": 64,
+  "frameHeight": 64,
+  "facing": "right",
+  "anchor": "bottom edge of each frame（足元は下端 y=63）",
+  "cx": 32,
+  "character": "清掃員カナタ（最終ボス）。半分幽霊のポルターガイスト・メイド。黒白ツートンの髪・眠そうなジト目（青紫）・ダウナー・黒白のゴシックメイド服。背中の青いガラスタンク（中に幽霊）・白い蛇腹ホース・牙のある黒い吸い込み口までが1体のミミック。周りを青い幽霊が飛ぶ。闇落ち版なし",
+  "alignment": "全9フレームで体（胴の中心線＝足元の中心）が x=32、足元が y=63。共通スケール 0.163（ヘッドドレス〜足 約60px、kanata_sheet_ref.png 基準）。広がる髪・吸い込みの風・ホースの先は膝より外側だけ横に圧縮（move 左0.52 / suction 右0.45 / spit 右0.40 / hurt 左0.61 / float 左0.56）。spit は掃除機の頭を体の近くへ移動してから縮小（頭そのものは潰していない）",
+  "source": "0-2, 4-8 は refs/kanata_sheet_ref.png（アルファ≥128 を不透明に）、3 は work/kanata_extra_raw.jpg（手を上げるポーズがシートに無いため。スケール 1.246 倍で身長を合わせた）",
+  "animations": {
+    "idle": {
+      "frames": [
+        0,
+        1
+      ],
+      "fps": 2,
+      "loop": true,
+      "note": "0 ジト目 / 1 目を閉じる（まばたき・居眠り）。掃除機の頭は右下の床（x≈48-62, y≈54-63）、青い幽霊が右上に浮く"
+    },
+    "move": {
+      "frames": [
+        2
+      ],
+      "loop": true,
+      "note": "髪がなびく移動。1フレームなので上下1px揺らすと自然。浮遊移動には 8 float も使える"
+    },
+    "levitate": {
+      "frames": [
+        3
+      ],
+      "loop": false,
+      "note": "片手を上げて物を浮かせる（ポルターガイスト）。浮かぶ物（椅子・バケツ・板）は枠に収まらないので描いていない。ゲーム側で spawn.levitate を中心に kanata_bullets の debris を描く。このフレームだけ別素材（extra_raw）なので頭が小さめ・掃除機の頭が床の左側にある"
+    },
+    "suction": {
+      "frames": [
+        4
+      ],
+      "loop": true,
+      "note": "掃除機の口から青い吸い込みの風（スプライトに含む・圧縮済み）。より長い風は kanata_bullets_wind.png を spawn.mouth_suction の右に重ねる"
+    },
+    "spit": {
+      "frames": [
+        5
+      ],
+      "loop": false,
+      "note": "ホースを持ち上げて幽霊を吐き出す。牙の口は右上（x≈44-58, y≈22-36）"
+    },
+    "hurt": {
+      "frames": [
+        6
+      ],
+      "loop": false,
+      "note": "ひざをついて目を閉じる。周りに幽霊3つ"
+    },
+    "down": {
+      "frames": [
+        7
+      ],
+      "loop": false,
+      "note": "倒れて横たわる（頭は右、タンクは左）。幽霊が2つ立ち上る"
+    },
+    "float": {
+      "frames": [
+        8
+      ],
+      "loop": true,
+      "note": "（おまけ）シートの4番目のポーズ。浮いて移動（髪が後ろに流れる）。不要なら使わなくてよい"
+    }
+  },
+  "spawn": {
+    "mouth_suction": {
+      "frame": 4,
+      "x": 52,
+      "y": 41,
+      "note": "掃除機の口（吸い込み中心）。風・吸い込み判定はここから右へ"
+    },
+    "mouth_spit": {
+      "frame": 5,
+      "x": 56,
+      "y": 30,
+      "note": "持ち上げた掃除機の口。幽霊弾（ghost_a/b, ghost_fire）とがれき（debris）はここから"
+    },
+    "levitate": {
+      "frame": 3,
+      "x": 54,
+      "y": 6,
+      "note": "浮かせる物の中心（原画の椅子・バケツ・板の中心）。枠の上にはみ出してよい"
+    },
+    "levitateHand": {
+      "frame": 3,
+      "x": 50,
+      "y": 24,
+      "note": "上げた手のひら"
+    },
+    "mouth_idle": {
+      "frame": 0,
+      "x": 59,
+      "y": 58,
+      "note": "床に置いた掃除機の頭（牙の口の前端、プレビューで確認済み）。frame 1 も同じ位置"
+    },
+    "coordNote": "右向きフレーム内の座標。左向きでは x → 63-x"
+  },
+  "eyes": {
+    "idle0": {
+      "eyeL": [
+        34,
+        29
+      ],
+      "eyeR": [
+        42,
+        27
+      ],
+      "eyesState": "open"
+    },
+    "idle1": {
+      "eyeL": [
+        34,
+        29
+      ],
+      "eyeR": [
+        42,
+        27
+      ],
+      "eyesState": "closed"
+    },
+    "move": {
+      "eyeL": [
+        32,
+        29
+      ],
+      "eyeR": [
+        40,
+        29
+      ],
+      "eyesState": "open"
+    },
+    "levitate": {
+      "eyeL": [
+        32,
+        20
+      ],
+      "eyeR": [
+        37,
+        19
+      ],
+      "eyesState": "open"
+    },
+    "suction": {
+      "eyeL": [
+        35,
+        32
+      ],
+      "eyeR": [
+        43,
+        32
+      ],
+      "eyesState": "open"
+    },
+    "spit": {
+      "eyeL": [
+        33,
+        29
+      ],
+      "eyeR": [
+        40,
+        30
+      ],
+      "eyesState": "closed"
+    },
+    "hurt": {
+      "eyeL": [
+        31,
+        42
+      ],
+      "eyeR": [
+        39,
+        44
+      ],
+      "eyesState": "closed"
+    },
+    "down": {
+      "eyeL": [
+        38,
+        58
+      ],
+      "eyeR": null,
+      "eyesState": "closed"
+    },
+    "float": {
+      "eyeL": [
+        33,
+        31
+      ],
+      "eyeR": [
+        42,
+        30
+      ],
+      "eyesState": "open"
+    }
+  },
+  "eyesNote": "顔は小さい（約8x5px）ので、目は手で打ち直した：近い方の目 = 上まぶたの黒3〜4px＋虹彩2px（青紫・濃淡）、遠い方の目 = まぶた2px＋虹彩1px＝眠そうなジト目。closed は横線1本。eyeL/eyeR は虹彩の左のピクセル",
+  "outline": "シルエットの外側に1pxの濃紺アウトライン（24,18,36）を追加（明るい背景でも読めるように）"
+}

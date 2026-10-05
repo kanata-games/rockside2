@@ -1,0 +1,173 @@
+{
+ "image": "shiranui_bullets.png",
+ "frameWidth": 24,
+ "frameHeight": 24,
+ "facing": "right",
+ "colors": 24,
+ "description": "闇落ちシラヌイの弾。すべて右向き。左へ飛ぶときは左右反転して描く。描画はセル中央 (12,12) を弾の位置に合わせる。当たり判定の中心は弾ごとに centeredOn を参照（炎の玉は右寄りの頭の部分）",
+ "order": [
+  "foxfire_a",
+  "foxfire_b",
+  "wisp",
+  "crescent",
+  "fan"
+ ],
+ "frames": {
+  "foxfire_a": {
+   "frame": 0,
+   "rect": [
+    4,
+    6,
+    17,
+    12
+   ],
+   "bboxInCell": [
+    4,
+    6,
+    20,
+    17
+   ],
+   "size": [
+    17,
+    12
+   ],
+   "description": "狐火の玉（赤〜オレンジ、白い芯。尾は左へ流れる）アニメ1枚目",
+   "hitboxSuggestion": {
+    "w": 8,
+    "h": 8,
+    "centeredOn": "(16,12)：玉の頭（白い芯 ≈(18,12)）"
+   },
+   "note": "foxfire_b と交互に 8〜10fps でループ"
+  },
+  "foxfire_b": {
+   "frame": 1,
+   "rect": [
+    28,
+    6,
+    16,
+    12
+   ],
+   "bboxInCell": [
+    4,
+    6,
+    19,
+    17
+   ],
+   "size": [
+    16,
+    12
+   ],
+   "description": "狐火の玉 アニメ2枚目（炎の揺らぎ違い）",
+   "hitboxSuggestion": {
+    "w": 8,
+    "h": 8,
+    "centeredOn": "(16,12)"
+   }
+  },
+  "wisp": {
+   "frame": 2,
+   "rect": [
+    53,
+    6,
+    15,
+    12
+   ],
+   "bboxInCell": [
+    5,
+    6,
+    19,
+    17
+   ],
+   "size": [
+    15,
+    12
+   ],
+   "description": "紫の鬼火（右向きの火の玉）",
+   "hitboxSuggestion": {
+    "w": 8,
+    "h": 8,
+    "centeredOn": "(15,12)"
+   },
+   "note": "ゆっくり追尾する弾向き"
+  },
+  "crescent": {
+   "frame": 3,
+   "rect": [
+    75,
+    3,
+    19,
+    18
+   ],
+   "bboxInCell": [
+    3,
+    3,
+    21,
+    20
+   ],
+   "size": [
+    19,
+    18
+   ],
+   "description": "三日月形の炎の斬撃波（右に膨らむ弧）",
+   "hitboxSuggestion": {
+    "w": 8,
+    "h": 16,
+    "centeredOn": "(15,12)"
+   },
+   "note": "攻撃5の振り抜きの炎の弾版"
+  },
+  "fan": {
+   "frame": 4,
+   "rect": [
+    99,
+    3,
+    18,
+    18
+   ],
+   "bboxInCell": [
+    3,
+    3,
+    20,
+    20
+   ],
+   "size": [
+    18,
+    18
+   ],
+   "description": "回転する黒い扇子（ブーメラン）。房が左下に垂れる",
+   "hitboxSuggestion": {
+    "w": 14,
+    "h": 14,
+    "centeredOn": "セル中央 (12,12)"
+   },
+   "note": "回転はゲーム側で（セル中央を軸に90°ずつ回すとドットが崩れない）"
+  }
+ },
+ "pillarSheet": {
+  "image": "shiranui_bullets_pillar.png",
+  "frameWidth": 24,
+  "frameHeight": 48,
+  "frames": [
+   "fire_pillar",
+   "fire_pillar_flicker"
+  ],
+  "fps": 10,
+  "loop": true,
+  "colors": 16,
+  "bboxInCell": [
+   1,
+   3,
+   22,
+   45
+  ],
+  "floorY": 45,
+  "description": "床から噴き上がる火柱（24×48、2フレーム：1 は 0 の左右反転＝揺らぎ用）。下端の黒い岩片の底 y=45 を床に合わせる（セル下端より2px上）",
+  "hitboxSuggestion": {
+   "w": 12,
+   "h": 38,
+   "centeredOn": "(12,26)（y≈7〜45）"
+  },
+  "note": "24×24 のセルに収まらないため別シートにした。予告として下の 1/3 だけ描く等の演出はゲーム側で"
+ },
+ "hitboxNote": "hitboxSuggestion は絵に合わせた目安（ピクセル、右向きセル内）"
+}

@@ -1,0 +1,181 @@
+{
+ "image": "disaster_bullets.png",
+ "frameWidth": 24,
+ "frameHeight": 24,
+ "facing": "right",
+ "colors": 16,
+ "description": "魔王ディザスター（少年）の弾。すべて右向き。左へ飛ぶときは左右反転して描く。各弾はセル中央 (12,12) が弾の中心（ground_burst は下端 y=16 を床に合わせる）",
+ "order": [
+  "sword_wave",
+  "spear_bolt",
+  "ground_burst",
+  "arrow",
+  "scythe_wave",
+  "orb"
+ ],
+ "frames": {
+  "sword_wave": {
+   "frame": 0,
+   "rect": [
+    8,
+    2,
+    8,
+    19
+   ],
+   "bboxInCell": [
+    8,
+    2,
+    15,
+    20
+   ],
+   "size": [
+    8,
+    19
+   ],
+   "description": "剣の斬撃波（右に膨らんだ三日月）",
+   "currentKind": "9 [12x20]",
+   "hitboxSuggestion": {
+    "w": 6,
+    "h": 18,
+    "centeredOn": "セル中央 (12,12)"
+   },
+   "note": "今の kind 9 [12x20] のままでも可（見た目より少し大きめ）"
+  },
+  "spear_bolt": {
+   "frame": 1,
+   "rect": [
+    31,
+    9,
+    13,
+    6
+   ],
+   "bboxInCell": [
+    7,
+    9,
+    19,
+    14
+   ],
+   "size": [
+    13,
+    6
+   ],
+   "description": "槍の光弾（右向きの矢じり形）",
+   "currentKind": "16 [26x9]",
+   "hitboxSuggestion": {
+    "w": 12,
+    "h": 4,
+    "centeredOn": "セル中央 (12,12)"
+   },
+   "note": "kind 16 [26x9] は絵（約13x6）の倍近い。2倍で描くか、新しい kind（約12x4）を作る"
+  },
+  "ground_burst": {
+   "frame": 2,
+   "rect": [
+    53,
+    7,
+    14,
+    10
+   ],
+   "bboxInCell": [
+    5,
+    7,
+    18,
+    16
+   ],
+   "size": [
+    14,
+    10
+   ],
+   "description": "地面から噴き出す紫の爆発と岩（下端が地面）",
+   "currentKind": "—（斧の衝撃波は今 kind 9）",
+   "hitboxSuggestion": {
+    "w": 14,
+    "h": 8,
+    "centeredOn": "セル中央 (12,12)"
+   },
+   "note": "下端を床に合わせて描く。現状の kind 9 [12x20] より横長・低い"
+  },
+  "arrow": {
+   "frame": 3,
+   "rect": [
+    80,
+    10,
+    10,
+    4
+   ],
+   "bboxInCell": [
+    8,
+    10,
+    17,
+    13
+   ],
+   "size": [
+    10,
+    4
+   ],
+   "description": "紫の矢（右向き）",
+   "currentKind": "6 [5x5]",
+   "hitboxSuggestion": {
+    "w": 8,
+    "h": 3,
+    "centeredOn": "セル中央 (12,12)"
+   },
+   "note": "kind 6 [5x5] でも先端の判定としては可"
+  },
+  "scythe_wave": {
+   "frame": 4,
+   "rect": [
+    101,
+    4,
+    14,
+    16
+   ],
+   "bboxInCell": [
+    5,
+    4,
+    18,
+    19
+   ],
+   "size": [
+    14,
+    16
+   ],
+   "description": "大鎌の斬撃波（三日月）。原画は左向きに開いていたので左右反転し、右に膨らむ形にした",
+   "currentKind": "9 [12x20]",
+   "hitboxSuggestion": {
+    "w": 10,
+    "h": 14,
+    "centeredOn": "セル中央 (12,12)"
+   },
+   "note": "kind 9 [12x20] で近い"
+  },
+  "orb": {
+   "frame": 5,
+   "rect": [
+    127,
+    8,
+    10,
+    8
+   ],
+   "bboxInCell": [
+    7,
+    8,
+    16,
+    15
+   ],
+   "size": [
+    10,
+    8
+   ],
+   "description": "紫の魔力弾（球）",
+   "currentKind": "6 [5x5] / 10 [8x8]",
+   "hitboxSuggestion": {
+    "w": 7,
+    "h": 7,
+    "centeredOn": "セル中央 (12,12)"
+   },
+   "note": "kind 10 [8x8] が近い。kind 6 [5x5] なら少し小さめの判定"
+  }
+ },
+ "hitboxNote": "BULLET_SIZE は disaster-test.html の値（kind: [w,h]）。hitboxSuggestion は絵に合わせた目安"
+}

@@ -1,0 +1,16 @@
+{
+  "image": "kanon.png",
+  "frameWidth": 32,
+  "frameHeight": 32,
+  "facing": "right",
+  "anchor": "feet at bottom edge of each frame",
+  "animations": {
+    "idle":      {"frames": [0, 1]},
+    "run":       {"frames": [2, 3, 4, 5]},
+    "jump":      {"frames": [6]},
+    "fall":      {"frames": [7]},
+    "shoot":     {"frames": [8]},
+    "run_shoot": {"frames": [9, 10, 11, 12]},
+    "hurt":      {"frames": [13]}
+  }
+}

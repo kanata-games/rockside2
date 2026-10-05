@@ -1,0 +1,65 @@
+{
+  "image": "kanata.png",
+  "frameWidth": 32,
+  "frameHeight": 32,
+  "facing": "right",
+  "anchor": "bottom edge of each frame（足元は下端 y=31）",
+  "cx": 16,
+  "character": "清掃員カナタ（通常の姿・掃除機なし）。白黒ツートンの長髪（体の左＝後ろ側が黒、前と右が白）・ジト目の青紫の目・白黒のゴシックメイド服。ダウナー",
+  "alignment": "全5フレームで頭〜足の中心が x=16、足元が下端 y=31（happy 3 はジャンプ中で足が約2px浮いている）。共通スケール 0.104（ヘッドドレス〜靴 約28px）",
+  "animations": {
+    "idle": {
+      "frames": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "fps": 3,
+      "loop": true,
+      "note": "0 ジト目で立つ / 1 まばたき（目を閉じた線だけ差し替え、位置は同じ）"
+    },
+    "wave": {
+      "frames": [
+        2
+      ],
+      "note": "だるそうに片手を振る。手 x≈24-26, y≈12-14"
+    },
+    "happy": {
+      "frames": [
+        3
+      ],
+      "note": "両手を上げてジャンプ（^^ 目・開いた口）"
+    },
+    "sing": {
+      "frames": [
+        4
+      ],
+      "note": "目を閉じてマイクで歌う。マイク x≈21-24, y≈16-18"
+    }
+  },
+  "eyes": {
+    "0": [
+      [
+        14,
+        11
+      ],
+      [
+        18,
+        11
+      ]
+    ],
+    "2": [
+      [
+        14,
+        11
+      ],
+      [
+        18,
+        11
+      ]
+    ],
+    "note": "手置きのジト目：上の行（y=11）が黒いまぶた（遠い目2px／近い目3px）、下の行（y=12）が青紫の瞳（近い目2px・遠い目1px）。1=閉じ目（y=12の線）、3=^^、4=閉じ目"
+  },
+  "source": "work/kanata_small_raw.jpg 下段（kanata_small_spec.json → body_sheet.py → kanata_small_post.py normal）"
+}

@@ -1,0 +1,490 @@
+{
+ "image": "diceroll_bullets.png",
+ "frameWidth": 24,
+ "frameHeight": 24,
+ "facing": "right",
+ "colors": 11,
+ "description": "ダイスロール（ボス）の弾。すべてコードでピクセル単位に描画（目がつぶれない）。すべて右向き。左へ飛ぶときは左右反転。各弾はセル中央 (12,12) が弾の中心（roulette_ball は玉の中心 (15,12)、fiery_die は (13,12)）",
+ "order": [
+  "die_1",
+  "die_2",
+  "die_3",
+  "die_4",
+  "die_5",
+  "die_6",
+  "roll_a",
+  "roll_b",
+  "roll_c",
+  "roll_d",
+  "card_back",
+  "card_edge",
+  "card_front",
+  "chip_red",
+  "chip_black",
+  "roulette_ball",
+  "fiery_die"
+ ],
+ "frames": {
+  "die_1": {
+   "frame": 0,
+   "rect": [
+    5,
+    5,
+    14,
+    14
+   ],
+   "bboxInCell": [
+    5,
+    5,
+    18,
+    18
+   ],
+   "size": [
+    14,
+    14
+   ],
+   "description": "サイコロ 1の目（正面）",
+   "hitboxSuggestion": {
+    "w": 12,
+    "h": 12,
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "die_2": {
+   "frame": 1,
+   "rect": [
+    29,
+    5,
+    14,
+    14
+   ],
+   "bboxInCell": [
+    5,
+    5,
+    18,
+    18
+   ],
+   "size": [
+    14,
+    14
+   ],
+   "description": "サイコロ 2の目",
+   "hitboxSuggestion": {
+    "w": 12,
+    "h": 12,
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "die_3": {
+   "frame": 2,
+   "rect": [
+    53,
+    5,
+    14,
+    14
+   ],
+   "bboxInCell": [
+    5,
+    5,
+    18,
+    18
+   ],
+   "size": [
+    14,
+    14
+   ],
+   "description": "サイコロ 3の目",
+   "hitboxSuggestion": {
+    "w": 12,
+    "h": 12,
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "die_4": {
+   "frame": 3,
+   "rect": [
+    77,
+    5,
+    14,
+    14
+   ],
+   "bboxInCell": [
+    5,
+    5,
+    18,
+    18
+   ],
+   "size": [
+    14,
+    14
+   ],
+   "description": "サイコロ 4の目",
+   "hitboxSuggestion": {
+    "w": 12,
+    "h": 12,
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "die_5": {
+   "frame": 4,
+   "rect": [
+    101,
+    5,
+    14,
+    14
+   ],
+   "bboxInCell": [
+    5,
+    5,
+    18,
+    18
+   ],
+   "size": [
+    14,
+    14
+   ],
+   "description": "サイコロ 5の目",
+   "hitboxSuggestion": {
+    "w": 12,
+    "h": 12,
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "die_6": {
+   "frame": 5,
+   "rect": [
+    125,
+    5,
+    14,
+    14
+   ],
+   "bboxInCell": [
+    5,
+    5,
+    18,
+    18
+   ],
+   "size": [
+    14,
+    14
+   ],
+   "description": "サイコロ 6の目",
+   "hitboxSuggestion": {
+    "w": 12,
+    "h": 12,
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "roll_a": {
+   "frame": 6,
+   "rect": [
+    149,
+    5,
+    14,
+    14
+   ],
+   "bboxInCell": [
+    5,
+    5,
+    18,
+    18
+   ],
+   "size": [
+    14,
+    14
+   ],
+   "description": "転がるサイコロ 0°（5の目）",
+   "hitboxSuggestion": {
+    "w": 12,
+    "h": 12,
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "roll_b": {
+   "frame": 7,
+   "rect": [
+    172,
+    4,
+    16,
+    16
+   ],
+   "bboxInCell": [
+    4,
+    4,
+    19,
+    19
+   ],
+   "size": [
+    16,
+    16
+   ],
+   "description": "転がるサイコロ 22.5°",
+   "hitboxSuggestion": {
+    "w": 12,
+    "h": 12,
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "roll_c": {
+   "frame": 8,
+   "rect": [
+    195,
+    3,
+    18,
+    18
+   ],
+   "bboxInCell": [
+    3,
+    3,
+    20,
+    20
+   ],
+   "size": [
+    18,
+    18
+   ],
+   "description": "転がるサイコロ 45°",
+   "hitboxSuggestion": {
+    "w": 12,
+    "h": 12,
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "roll_d": {
+   "frame": 9,
+   "rect": [
+    220,
+    4,
+    16,
+    16
+   ],
+   "bboxInCell": [
+    4,
+    4,
+    19,
+    19
+   ],
+   "size": [
+    16,
+    16
+   ],
+   "description": "転がるサイコロ 67.5°（→ roll_a に戻ると90°で1周）",
+   "hitboxSuggestion": {
+    "w": 12,
+    "h": 12,
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "card_back": {
+   "frame": 10,
+   "rect": [
+    247,
+    5,
+    10,
+    14
+   ],
+   "bboxInCell": [
+    7,
+    5,
+    16,
+    18
+   ],
+   "size": [
+    10,
+    14
+   ],
+   "description": "トランプ（赤い裏面・回転の正面）",
+   "hitboxSuggestion": {
+    "w": 8,
+    "h": 12,
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "card_edge": {
+   "frame": 11,
+   "rect": [
+    275,
+    5,
+    3,
+    14
+   ],
+   "bboxInCell": [
+    11,
+    5,
+    13,
+    18
+   ],
+   "size": [
+    3,
+    14
+   ],
+   "description": "トランプ（真横・回転の中間）",
+   "hitboxSuggestion": {
+    "w": 3,
+    "h": 12,
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "card_front": {
+   "frame": 12,
+   "rect": [
+    295,
+    5,
+    10,
+    14
+   ],
+   "bboxInCell": [
+    7,
+    5,
+    16,
+    18
+   ],
+   "size": [
+    10,
+    14
+   ],
+   "description": "トランプ（表・スペード）",
+   "hitboxSuggestion": {
+    "w": 8,
+    "h": 12,
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "chip_red": {
+   "frame": 13,
+   "rect": [
+    317,
+    5,
+    14,
+    14
+   ],
+   "bboxInCell": [
+    5,
+    5,
+    18,
+    18
+   ],
+   "size": [
+    14,
+    14
+   ],
+   "description": "カジノチップ（赤白）",
+   "hitboxSuggestion": {
+    "w": 12,
+    "h": 12,
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "chip_black": {
+   "frame": 14,
+   "rect": [
+    341,
+    5,
+    14,
+    14
+   ],
+   "bboxInCell": [
+    5,
+    5,
+    18,
+    18
+   ],
+   "size": [
+    14,
+    14
+   ],
+   "description": "カジノチップ（黒金）",
+   "hitboxSuggestion": {
+    "w": 12,
+    "h": 12,
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "roulette_ball": {
+   "frame": 15,
+   "rect": [
+    362,
+    8,
+    17,
+    8
+   ],
+   "bboxInCell": [
+    2,
+    8,
+    18,
+    15
+   ],
+   "size": [
+    17,
+    8
+   ],
+   "description": "ルーレットの銀の玉（左に軌跡＝右へ飛ぶ）",
+   "hitboxSuggestion": {
+    "w": 7,
+    "h": 7,
+    "centeredOn": "(15,12)（玉の中心。軌跡は当たり判定なし）"
+   }
+  },
+  "fiery_die": {
+   "frame": 16,
+   "rect": [
+    385,
+    3,
+    22,
+    19
+   ],
+   "bboxInCell": [
+    1,
+    3,
+    22,
+    21
+   ],
+   "size": [
+    22,
+    19
+   ],
+   "description": "燃えるサイコロ（赤・5の目、炎は後ろ＝左へなびく）",
+   "hitboxSuggestion": {
+    "w": 12,
+    "h": 12,
+    "centeredOn": "(13,12)（サイコロ本体。炎は判定外）"
+   }
+  }
+ },
+ "animations": {
+  "roll": {
+   "frames": [
+    6,
+    7,
+    8,
+    9
+   ],
+   "fps": 12,
+   "loop": true,
+   "note": "90°回転で1周（正方形なので4フレームで滑らかにループ）。左向きは反転するだけで逆回転になる"
+  },
+  "cardSpin": {
+   "frames": [
+    10,
+    11,
+    12,
+    11
+   ],
+   "fps": 10,
+   "loop": true,
+   "note": "裏→真横→表→真横。当たり判定は card_edge の間も 8x12 のままで可"
+  },
+  "diceFaces": {
+   "frames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "note": "出目で弾の性能を変えるなら die_n を使う（例：出た目の数だけ弾を撃つ）"
+  }
+ },
+ "note": "サイコロは 14x14（回転時は対角まで約19px）。ボス側の発生点は diceroll_dark.json の spawn.dice / spawn.cards"
+}

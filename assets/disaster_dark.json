@@ -1,0 +1,108 @@
+{
+  "image": "disaster_dark.png",
+  "frameWidth": 48,
+  "frameHeight": 48,
+  "facing": "right",
+  "anchor": "bottom edge of each frame（足元は y≈45、浮遊ボスなので下端から約2px浮いた位置）",
+  "cx": 23,
+  "character": "魔王ディザスター（スター）。中性的な見た目だが少年（男の子）。代名詞は he / 彼",
+  "alignment": "全14フレームで体（頭・胴の中心）が x≈23 に揃う（顔の位置の差は ±2px 程度。滑空と大鎌のフレームは前傾のため +2〜4px）。共通スケール 0.16（体の高さ約40px）。武器・エフェクトはフレーム内で左右にはみ出さない範囲で横方向に圧縮。cxF は不要",
+  "animations": {
+    "idle": {
+      "frames": [
+        0,
+        1
+      ],
+      "fps": 4,
+      "loop": true
+    },
+    "glide": {
+      "frames": [
+        2,
+        3
+      ],
+      "fps": 6,
+      "loop": true,
+      "note": "翼を広げ、マントをなびかせて浮遊移動"
+    },
+    "transform": {
+      "frames": [
+        4
+      ],
+      "loop": false,
+      "note": "錬金剣を掲げて紫の稲妻をまとう溜め／変形ポーズ。どの武器攻撃（5〜11）の前にも挟める"
+    },
+    "sword": {
+      "frames": [
+        5
+      ],
+      "loop": false,
+      "note": "剣の斬撃。紫の三日月の軌跡は x≈8-46、y≈19-42。剣撃波の発生点の目安 (46,27)"
+    },
+    "spear": {
+      "frames": [
+        6
+      ],
+      "loop": false,
+      "note": "槍の突き。穂先 ≈(46,23)"
+    },
+    "axe": {
+      "frames": [
+        7
+      ],
+      "loop": false,
+      "note": "斧を頭上に振りかぶる。斧頭は左上 x≈1-12、y≈1-32（体の後ろ側）。叩きつけの衝撃波は足元から出す想定"
+    },
+    "scythe": {
+      "frames": [
+        8
+      ],
+      "loop": false,
+      "note": "大鎌のなぎ払い。紫の軌跡は x≈9-46、y≈5-44。鎌の刃先 ≈(46,22)"
+    },
+    "bow": {
+      "frames": [
+        9
+      ],
+      "loop": false,
+      "note": "弓を引き絞る。矢の先端 ≈(46,22)"
+    },
+    "whip": {
+      "frames": [
+        10
+      ],
+      "loop": false,
+      "note": "鞭（連接剣）を振るう。先端 ≈(46,20)、鞭の軌跡は y≈16-43"
+    },
+    "lance": {
+      "frames": [
+        11
+      ],
+      "loop": false,
+      "note": "砲槍（キャノンランス）を構えて撃つ。砲口 ≈(46,24)"
+    },
+    "hurt": {
+      "frames": [
+        12
+      ],
+      "loop": false
+    },
+    "defeat": {
+      "frames": [
+        13
+      ],
+      "loop": false,
+      "note": "倒れて膝をつく。足元は下端（y=47）"
+    }
+  },
+  "weapons": {
+    "sword": 5,
+    "spear": 6,
+    "axe": 7,
+    "scythe": 8,
+    "bow": 9,
+    "whip": 10,
+    "lance": 11
+  },
+  "weaponsNote": "武器名 → フレーム番号。フレーム4（transform）はどの武器の前にも使える。座標は右向きフレーム内のピクセル座標。左向きでは x → 47-x"
+}

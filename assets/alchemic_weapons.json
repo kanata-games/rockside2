@@ -1,0 +1,226 @@
+{
+ "description": "魔王ディザスター（少年）の錬金武器アイコン（7種：剣・槍・斧・大鎌・弓・鞭・砲槍）と変形エフェクト、スター（少年）の剣と斬撃。武器はすべて右上向きの斜め（柄が左下、先端が右上）。座標は各セル内のピクセル座標（左上原点、右向き）",
+ "sheets": {
+  "alchemic_weapons.png": {
+   "frameWidth": 32,
+   "frameHeight": 32,
+   "colors": 24,
+   "frames": [
+    "sword",
+    "spear",
+    "axe",
+    "scythe",
+    "bow",
+    "whip",
+    "lance"
+   ],
+   "note": "砲槍（キャノン槍, lance）を 2026-10-03 にフレーム6として末尾に追加（既存0〜5のセルは無変更）。紫の光は fx 用に予約した 9 色"
+  },
+  "transform_fx.png": {
+   "frameWidth": 24,
+   "frameHeight": 24,
+   "colors": 12,
+   "frames": [
+    "spark",
+    "lightning_ring",
+    "burst_flash",
+    "fading_sparkles"
+   ],
+   "fps": 12,
+   "loop": false,
+   "note": "紫の変形エフェクト。0 手元の火花 → 1 稲妻の輪 → 2 閃光 → 3 消えていく火花。セル中央をエフェクトの中心に合わせて描く"
+  },
+  "star_weapon.png": {
+   "frameWidth": 32,
+   "frameHeight": 32,
+   "colors": 16,
+   "frames": [
+    "star_sword",
+    "star_slash"
+   ],
+   "note": "スターの剣（シアンの刃）と、シアンの斬撃の弧（右向き、上から右下へ振り下ろす形）"
+  }
+ },
+ "weapons": {
+  "sword": {
+   "frame": 0,
+   "bbox": [
+    5,
+    1,
+    26,
+    30
+   ],
+   "grip": [
+    8,
+    24
+   ],
+   "tip": [
+    25,
+    1
+   ],
+   "gripNorm": [
+    0.266,
+    0.766
+   ]
+  },
+  "spear": {
+   "frame": 1,
+   "bbox": [
+    6,
+    1,
+    25,
+    30
+   ],
+   "grip": [
+    9,
+    24
+   ],
+   "tip": [
+    24,
+    1
+   ],
+   "gripNorm": [
+    0.297,
+    0.766
+   ]
+  },
+  "axe": {
+   "frame": 2,
+   "bbox": [
+    5,
+    2,
+    26,
+    30
+   ],
+   "grip": [
+    7,
+    23
+   ],
+   "head": [
+    15,
+    10
+   ],
+   "gripNorm": [
+    0.234,
+    0.734
+   ],
+   "note": "head = 斧頭の中心"
+  },
+  "scythe": {
+   "frame": 3,
+   "bbox": [
+    4,
+    1,
+    27,
+    29
+   ],
+   "grip": [
+    8,
+    23
+   ],
+   "blade_tip": [
+    25,
+    19
+   ],
+   "gripNorm": [
+    0.266,
+    0.734
+   ]
+  },
+  "bow": {
+   "frame": 4,
+   "bbox": [
+    7,
+    1,
+    24,
+    29
+   ],
+   "grip": [
+    19,
+    17
+   ],
+   "gripNorm": [
+    0.609,
+    0.547
+   ],
+   "note": "弦は描き足した1pxの線。grip は弓の握り（弓幹の中央）"
+  },
+  "whip": {
+   "frame": 5,
+   "bbox": [
+    4,
+    1,
+    27,
+    30
+   ],
+   "grip": [
+    23,
+    11
+   ],
+   "blade_tip": [
+    11,
+    28
+   ],
+   "gripNorm": [
+    0.734,
+    0.359
+   ],
+   "note": "連接剣（鎖つきの刃）。grip は刃の柄。鎖と爪状の房は柄から伸びて後ろに垂れる"
+  },
+  "lance": {
+   "frame": 6,
+   "bbox": [
+    7,
+    4,
+    26,
+    27
+   ],
+   "grip": [
+    11,
+    23
+   ],
+   "muzzle": [
+    24,
+    4
+   ],
+   "gripNorm": [
+    0.359,
+    0.734
+   ],
+   "note": "砲槍（キャノンランス）。disaster_weapons_raw.jpg の砲槍ポーズ（disaster_dark.png フレーム11と同じ武器）から砲身と砲口を切り出し、原画では手に隠れている柄を描き足した。muzzle = 砲口（弾の発生点の目安）"
+  }
+ },
+ "star": {
+  "star_sword": {
+   "frame": 0,
+   "bbox": [
+    2,
+    1,
+    29,
+    30
+   ],
+   "grip": [
+    6,
+    25
+   ],
+   "tip": [
+    29,
+    1
+   ],
+   "gripNorm": [
+    0.203,
+    0.797
+   ]
+  },
+  "star_slash": {
+   "frame": 1,
+   "bbox": [
+    3,
+    5,
+    30,
+    26
+   ]
+  }
+ },
+ "drawHint": "今の drawDisasterWeapon は手の位置を画像の (0.34, 0.53) に置く前提。このアイコンでは gripNorm を使い g.drawImage(img, -size*gripNorm[0], -size*gripNorm[1], size, size) とすること。32px のセルなので size は 32 か 64（整数倍）にし、imageSmoothingEnabled=false 推奨（46〜56px だと拡大がにじむ・不揃いになる）"
+}

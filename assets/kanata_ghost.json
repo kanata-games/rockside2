@@ -1,0 +1,72 @@
+{
+  "image": "kanata_ghost.png",
+  "frameWidth": 32,
+  "frameHeight": 32,
+  "facing": "right",
+  "anchor": "浮遊。足（幽霊のしっぽ）の先が y≈30 付近、cx=16 は頭〜胴の中心",
+  "cx": 16,
+  "character": "カナタの幽霊形態（半透明）。淡い青の6段ランプに色を置き換え、しっぽの先は市松の抜き（アルファ0）で薄れていく表現",
+  "translucency": "アルファは 0/255 のみ。半透明に見せたい場合はゲーム側で全体を alpha 0.6〜0.75 で描画するか、1フレームおきに描画（ちらつき）してよい。加算合成も相性がよい",
+  "alignment": "全3フレームで頭〜胴の中心が x=16、しっぽの下端 y≈30。共通スケール 0.094（約29px）。上下のふわふわはゲーム側で1〜2pxのサイン波を推奨",
+  "animations": {
+    "idle": {
+      "frames": [
+        0,
+        1
+      ],
+      "fps": 3,
+      "loop": true,
+      "note": "ふわふわ浮遊（原画の2ポーズ）"
+    },
+    "throw": {
+      "frames": [
+        2
+      ],
+      "loop": false,
+      "note": "右手を前に出して青い玉を投げる。玉は描かれていない（kanata_bullets の ghost_fireball / ghost_bullet を spawn.orb から出す）"
+    }
+  },
+  "spawn": {
+    "orb": {
+      "2": [
+        27,
+        16
+      ],
+      "note": "投げる手の少し前。左向きでは x → 31-x"
+    }
+  },
+  "eyes": {
+    "0": [
+      [
+        14,
+        10
+      ],
+      [
+        18,
+        10
+      ]
+    ],
+    "1": [
+      [
+        14,
+        10
+      ],
+      [
+        18,
+        10
+      ]
+    ],
+    "2": [
+      [
+        14,
+        10
+      ],
+      [
+        18,
+        10
+      ]
+    ],
+    "note": "手置きのジト目（濃い紺のまぶた＋青い瞳）"
+  },
+  "source": "work/kanata_small_raw.jpg 上段（kanata_ghost_spec.json → body_sheet.py → kanata_small_post.py ghost）"
+}

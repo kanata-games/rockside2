@@ -1,0 +1,306 @@
+{
+ "image": "kanata_bullets.png",
+ "frameWidth": 24,
+ "frameHeight": 24,
+ "facing": "right",
+ "colors": 30,
+ "description": "清掃員カナタ（ボス）と暴走ミミックの弾。すべて右向き（幽霊弾・鬼火は原画が左向きだったので左右反転済み、頭が右）。左へ飛ぶときは左右反転。がれきは回転させて飛ばしてよい（ゲーム側で90°単位の回転を推奨）",
+ "order": [
+  "ghost_bullet_a",
+  "ghost_bullet_b",
+  "ghost_fireball",
+  "paper_ball",
+  "plank",
+  "tin_can",
+  "rock",
+  "plate_shard"
+ ],
+ "animations": {
+  "ghost_bullet": {
+   "frames": [
+    0,
+    1
+   ],
+   "fps": 8,
+   "loop": true
+  },
+  "ghost_fireball": {
+   "frames": [
+    2
+   ]
+  },
+  "debris": {
+   "frames": [
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "note": "5種類のがれき（どれか1つをランダムに使う）"
+  }
+ },
+ "frames": {
+  "ghost_bullet_a": {
+   "frame": 0,
+   "rect": [
+    3,
+    6,
+    19,
+    12
+   ],
+   "bboxInCell": [
+    3,
+    6,
+    21,
+    17
+   ],
+   "size": [
+    19,
+    12
+   ],
+   "description": "青い幽霊弾 A（にっこり顔・しっぽが後ろ）。アニメ1枚目",
+   "hitboxSuggestion": {
+    "w": 10,
+    "h": 10,
+    "center": [
+     16,
+     12
+    ],
+    "centeredOn": "頭（丸い部分）の中心 (16,12)"
+   }
+  },
+  "ghost_bullet_b": {
+   "frame": 1,
+   "rect": [
+    28,
+    6,
+    18,
+    12
+   ],
+   "bboxInCell": [
+    4,
+    6,
+    21,
+    17
+   ],
+   "size": [
+    18,
+    12
+   ],
+   "description": "青い幽霊弾 B（しっぽの揺れ違い）。アニメ2枚目",
+   "hitboxSuggestion": {
+    "w": 10,
+    "h": 10,
+    "center": [
+     16,
+     12
+    ],
+    "centeredOn": "頭の中心 (16,12)"
+   }
+  },
+  "ghost_fireball": {
+   "frame": 2,
+   "rect": [
+    51,
+    7,
+    20,
+    13
+   ],
+   "bboxInCell": [
+    3,
+    7,
+    22,
+    19
+   ],
+   "size": [
+    20,
+    13
+   ],
+   "description": "青い鬼火（白く光る芯＋炎の尾）",
+   "hitboxSuggestion": {
+    "w": 10,
+    "h": 10,
+    "center": [
+     17,
+     13
+    ],
+    "centeredOn": "光る芯の中心 (17,13)"
+   }
+  },
+  "paper_ball": {
+   "frame": 3,
+   "rect": [
+    77,
+    6,
+    14,
+    12
+   ],
+   "bboxInCell": [
+    5,
+    6,
+    18,
+    17
+   ],
+   "size": [
+    14,
+    12
+   ],
+   "description": "丸めた紙くず",
+   "hitboxSuggestion": {
+    "w": 11,
+    "h": 10,
+    "center": [
+     12,
+     12
+    ],
+    "centeredOn": "セル中央付近 (12,12)"
+   }
+  },
+  "plank": {
+   "frame": 4,
+   "rect": [
+    98,
+    5,
+    20,
+    14
+   ],
+   "bboxInCell": [
+    2,
+    5,
+    21,
+    18
+   ],
+   "size": [
+    20,
+    14
+   ],
+   "description": "木の板（割れた板2枚）。回転させて投げてよい",
+   "hitboxSuggestion": {
+    "w": 16,
+    "h": 10,
+    "center": [
+     12,
+     12
+    ],
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "tin_can": {
+   "frame": 5,
+   "rect": [
+    126,
+    5,
+    12,
+    14
+   ],
+   "bboxInCell": [
+    6,
+    5,
+    17,
+    18
+   ],
+   "size": [
+    12,
+    14
+   ],
+   "description": "空き缶（ブリキのバケツ風）",
+   "hitboxSuggestion": {
+    "w": 9,
+    "h": 11,
+    "center": [
+     12,
+     12
+    ],
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "rock": {
+   "frame": 6,
+   "rect": [
+    148,
+    5,
+    16,
+    14
+   ],
+   "bboxInCell": [
+    4,
+    5,
+    19,
+    18
+   ],
+   "size": [
+    16,
+    14
+   ],
+   "description": "石",
+   "hitboxSuggestion": {
+    "w": 12,
+    "h": 11,
+    "center": [
+     12,
+     12
+    ],
+    "centeredOn": "セル中央 (12,12)"
+   }
+  },
+  "plate_shard": {
+   "frame": 7,
+   "rect": [
+    171,
+    6,
+    18,
+    12
+   ],
+   "bboxInCell": [
+    3,
+    6,
+    20,
+    17
+   ],
+   "size": [
+    18,
+    12
+   ],
+   "description": "割れた皿の破片（青い模様）",
+   "hitboxSuggestion": {
+    "w": 14,
+    "h": 9,
+    "center": [
+     12,
+     12
+    ],
+    "centeredOn": "セル中央 (12,12)"
+   }
+  }
+ },
+ "wind": {
+  "image": "kanata_bullets_wind.png",
+  "frameWidth": 48,
+  "frameHeight": 24,
+  "frames": 3,
+  "facing": "right",
+  "description": "吸い込みの風（すじだけ。原画の小さな口は消した）。左端の収束点 (4,12) が掃除機の口の位置。すじは右（前方）へ広がり、口へ吸い込まれる向き。ゲームでは収束点を kanata_boss の spawn.mouth_suction（または mimic_rampage の spawn.mouth）に合わせて描く。左向きでは左右反転し収束点は (43,12)",
+  "animations": {
+   "suction": {
+    "frames": [
+     0,
+     1,
+     2
+    ],
+    "fps": 10,
+    "loop": true,
+    "note": "0 長いすじ / 1 弧のすじ / 2 渦（小さい）。0→1→2→0 のループで吸い込みに見える"
+   }
+  },
+  "anchor": [
+   4,
+   12
+  ],
+  "hitboxSuggestion": {
+   "note": "吸い込み判定は口の前方 x 4〜44, y 3〜21 の範囲（引き寄せる力の領域）。ダメージ判定にはしない想定"
+  },
+  "scale": 0.15,
+  "why_separate": "24x24 では長いすじが入らないため 48x24 の別シートにした"
+ }
+}
