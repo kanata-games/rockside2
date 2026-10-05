@@ -14,7 +14,7 @@ for(const [key,path] of [['poses','assets/umine-opening-poses.png'],['faces','as
  const img=new Image();img.onload=()=>openingArt[key]=img;img.onerror=()=>openingArt[key]=null;img.src=path;
 }
 function startOpening(){Object.assign(OPENING,{step:0,t:0,x:110,y:176,vx:0,vy:0,face:1,ground:true,cool:0,poseT:0,cam:0,shots:[],targets:[],firstShot:false,message:'',messageT:0,done:false,room:0});setState('opening');}
-function openingExplore(){OPENING.t=0;setState('openingPlay');}
+function openingExplore(){OPENING.t=0;mansionStart(false);}
 function openingHint(s){OPENING.message=s;OPENING.messageT=210;}
 function updateOpening(){
  const o=OPENING;o.t++;

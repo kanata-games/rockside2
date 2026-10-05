@@ -2101,6 +2101,7 @@ function update() {
   if (hitStop > 0) { hitStop--; }
   else {
     switch (state) {
+      case 'mansion': case 'mansionClear': updateMansion(); break;
       case 'opening': case 'openingPlay': case 'openingDone':
         updateOpening(); break;
       case 'title':
@@ -2108,7 +2109,7 @@ function update() {
         if (resetArmT > 0) resetArmT--;
         if (inp.resetPressed && clearedCount() > 0) {   // erase progress: press/tap twice within 3 s
           if (resetArmT > 0) { eraseProgress(); resetArmT = 0; sfx('erase'); } else { resetArmT = 180; sfx('buzz'); }
-        } else if (inp.startPressed && stateT > 10) { sfx('start'); startOpening(); }
+        } else if (inp.startPressed && stateT > 10) { sfx('start'); if(mansionRead())mansionStart(true);else startOpening(); }
         break;
       case 'select':
         titleScroll += 0.25;

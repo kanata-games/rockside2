@@ -452,7 +452,7 @@ document.addEventListener('touchend', stopEv, { passive: false });
 document.addEventListener('gesturestart', stopEv, { passive: false });
 document.addEventListener('dblclick', stopEv, { passive: false });
 document.addEventListener('contextmenu', stopEv);
-function releaseAll() { ptrs.clear(); keys.left = keys.right = keys.jump = keys.shoot = false; recomputeTouch(); }
+function releaseAll() { ptrs.clear(); keys.left = keys.right = keys.jump = keys.shoot = keys.up = keys.down = false; recomputeTouch(); }
 window.addEventListener('blur', releaseAll);
 document.addEventListener('visibilitychange', () => { if (document.hidden) releaseAll(); });
 
@@ -512,6 +512,7 @@ function doLayout() {
   const jx = W - margin - bs, sx = jx - bs - gap + 4, off = bs * 0.28;
   place(BTN.jump, jx, cy - bs / 2 - off, bs, bs); place(BTN.shoot, sx, cy - bs / 2 + off, bs, bs);
   layout.jumpX = jx + bs / 2; layout.jumpY = cy - off; layout.shotX = sx + bs / 2; layout.shotY = cy + off;
+  if(window.MANSION_LAYOUT)window.MANSION_LAYOUT();
 }
 window.addEventListener('resize', doLayout);
 window.addEventListener('orientationchange', () => setTimeout(doLayout, 100));

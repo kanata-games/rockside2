@@ -608,7 +608,7 @@ function renderTitle() {
   g.fillStyle = '#ffd84a'; g.fillRect(0, 18, VW, 1); g.fillRect(0, 73, VW, 1);
   drawText('ROCKSIDE II', VW / 2 + 2, 29, 'k', 3, 'c');
   drawText('ROCKSIDE II', VW / 2, 26, 'y', 3, 'c');
-  drawText('AWAKENING / OPENING TEST', VW / 2, 52, 'c', 1, 'c');
+  drawText('MOONLIT MANSION / ACTION TEST', VW / 2, 52, 'c', 1, 'c');
   drawText('VER ' + GAME_VERSION, VW / 2, 62, 'b', 1, 'c');
   if (isCleared('final')) { // game cleared: small star mark
     const sx = VW - 38, sy = 58; g.fillStyle = '#120e24'; g.fillRect(sx - 1, sy - 1, 34, 11); g.fillStyle = (frame >> 4) & 1 ? '#ffd84a' : '#fff4b0';
@@ -779,6 +779,8 @@ function renderAreaIntro() {
 
 function render() {
   g.setTransform(1, 0, 0, 1, 0, 0);
+  mansionUI();
+  if(state === 'mansion' || state === 'mansionClear'){renderMansion();return;}
   if (state === 'opening' || state === 'openingPlay' || state === 'openingDone') { renderOpening(); return; }
   if (state === 'title') { renderTitle(); blit(); drawHiText('〜 知らない天井と、ふしぎな右手 〜', VW / 2, 102, 8, '#ffd6ec', '#120e24'); return; }
   if (state === 'select' || (state === 'areaIntro' && stateT < 24)) { renderSelect(); return; }
@@ -888,7 +890,7 @@ requestAnimationFrame(loop);
 
 // Debug / test hook (harmless in production)
 window.ROCKSIDE = { CONFIG, P, boss, enemies, stats, cam, layout, DEBUG, shots, bullets, allies, arrows, SHEETS_LOADED, SHEET_DEFS,
-  AREAS, progress, support, stageUmimi, magic, PROGRESS_KEY, SEQUEL_MODEL, setSequelModel, sequelMuzzle, SEL, SEL_BACK, SEL_SUPPORT, TITLE_HARD, TITLE_RESET, cellRect, clearedCount, finalUnlocked,
+  M, MR, MC, mansionStart, mansionEnter, mansionInput, mansionUse, AREAS, progress, support, stageUmimi, magic, PROGRESS_KEY, SEQUEL_MODEL, setSequelModel, sequelMuzzle, SEL, SEL_BACK, SEL_SUPPORT, TITLE_HARD, TITLE_RESET, cellRect, clearedCount, finalUnlocked,
   get hardMode() { return hardMode; }, get playerMaxHP() { return playerMaxHP(); },
   get state() { return state; }, get stateT() { return stateT; }, get checkpoint() { return checkpoint; },
   get selCursor() { return selCursor; }, get selMsg() { return selMsg; }, get curArea() { return curArea.id; }, get bossSeen() { return boss.seen.slice(); }, get floorY() { return FLOOR_Y; }, get resetArmed() { return resetArmT > 0; },
