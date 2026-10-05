@@ -438,6 +438,7 @@ function updateAreaIntro() {
 }
 // taps inside the game view (called from the pointer handler, game-pixel coords). true = consumed
 function screenTap(x, y) {
+  if(state === 'opening' && x > 194 && y < 24){openingExplore();return true;}
   const inR = (R) => x >= R.x && x < R.x + R.w && y >= R.y && y < R.y + R.h;
   if (state === 'select') {
     if (stateT < 8) return true;
@@ -2100,12 +2101,14 @@ function update() {
   if (hitStop > 0) { hitStop--; }
   else {
     switch (state) {
+      case 'opening': case 'openingPlay': case 'openingDone':
+        updateOpening(); break;
       case 'title':
         titleScroll += 0.5;
         if (resetArmT > 0) resetArmT--;
         if (inp.resetPressed && clearedCount() > 0) {   // erase progress: press/tap twice within 3 s
           if (resetArmT > 0) { eraseProgress(); resetArmT = 0; sfx('erase'); } else { resetArmT = 180; sfx('buzz'); }
-        } else if (inp.startPressed && stateT > 10) { sfx('start'); openSelect(selCursor); }
+        } else if (inp.startPressed && stateT > 10) { sfx('start'); startOpening(); }
         break;
       case 'select':
         titleScroll += 0.25;

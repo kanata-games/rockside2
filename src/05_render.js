@@ -608,7 +608,7 @@ function renderTitle() {
   g.fillStyle = '#ffd84a'; g.fillRect(0, 18, VW, 1); g.fillRect(0, 73, VW, 1);
   drawText('ROCKSIDE II', VW / 2 + 2, 29, 'k', 3, 'c');
   drawText('ROCKSIDE II', VW / 2, 26, 'y', 3, 'c');
-  drawText('SEQUEL BASE / MODEL TEST', VW / 2, 52, 'c', 1, 'c');
+  drawText('AWAKENING / OPENING TEST', VW / 2, 52, 'c', 1, 'c');
   drawText('VER ' + GAME_VERSION, VW / 2, 62, 'b', 1, 'c');
   if (isCleared('final')) { // game cleared: small star mark
     const sx = VW - 38, sy = 58; g.fillStyle = '#120e24'; g.fillRect(sx - 1, sy - 1, 34, 11); g.fillStyle = (frame >> 4) & 1 ? '#ffd84a' : '#fff4b0';
@@ -779,7 +779,8 @@ function renderAreaIntro() {
 
 function render() {
   g.setTransform(1, 0, 0, 1, 0, 0);
-  if (state === 'title') { renderTitle(); blit(); drawHiText('〜 水の魔女と堕ちた天使 〜', VW / 2, 102, 8, '#ffd6ec', '#120e24'); return; }
+  if (state === 'opening' || state === 'openingPlay' || state === 'openingDone') { renderOpening(); return; }
+  if (state === 'title') { renderTitle(); blit(); drawHiText('〜 知らない天井と、ふしぎな右手 〜', VW / 2, 102, 8, '#ffd6ec', '#120e24'); return; }
   if (state === 'select' || (state === 'areaIntro' && stateT < 24)) { renderSelect(); return; }
   if (state === 'areaIntro') { renderAreaIntro(); return; }
   if (state === 'theEnd') { renderTheEnd(); return; }

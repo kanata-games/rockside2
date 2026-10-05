@@ -10,7 +10,7 @@ EDIT src/*, NEVER index.html directly - it is overwritten by this script.
 """
 import base64, json, os, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PARTS = ['01_head.html', '02_setup.js', '02b_chars.js', '02c_sequel.js', '03_world.js', '04_game.js', '04b_disaster.js', '04c_shiranui.js', '04d_diceroll.js', '04e_final.js', '04f_ending.js', '04g_darkumine.js', '05_render.js']
+PARTS = ['01_head.html', '02_setup.js', '02b_chars.js', '02c_sequel.js', '03_world.js', '04_game.js', '04b_disaster.js', '04c_shiranui.js', '04d_diceroll.js', '04e_final.js', '04f_ending.js', '04g_darkumine.js', '04h_opening.js', '05_render.js']
 EMBED = '--embed' in sys.argv
 OUT = os.path.join(ROOT, 'index.html')
 if '--out' in sys.argv: OUT = os.path.abspath(sys.argv[sys.argv.index('--out') + 1])
