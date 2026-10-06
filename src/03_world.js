@@ -445,7 +445,7 @@ pad.addEventListener('pointermove', e => {
 function ptrUp(e) { if (ptrs.delete(e.pointerId)) recomputeTouch(); }
 pad.addEventListener('pointerup', ptrUp); pad.addEventListener('pointercancel', ptrUp); pad.addEventListener('lostpointercapture', ptrUp);
 // Block scrolling, pinch/double-tap zoom, long-press menus
-const stopEv = e => { if (e.cancelable) e.preventDefault(); };
+const stopEv = e => { if(e.target?.closest?.('#mMenu'))return; if (e.cancelable) e.preventDefault(); };
 document.addEventListener('touchstart', stopEv, { passive: false });
 document.addEventListener('touchmove', stopEv, { passive: false });
 document.addEventListener('touchend', stopEv, { passive: false });

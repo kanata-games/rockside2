@@ -55,6 +55,19 @@ body.land #hint{display:none;}
 #mStatus .hp-fill{height:100%;background:#89e3f0}
 #mStatus .status-row{padding:calc(5 * var(--mu)) 0;border-top:calc(1 * var(--mu)) solid #384458}
 #mStatus strong{color:#a5e5f0}#mStatus .note{color:#ddcda9}
+
+html:has(body.mansion-menu-open),body.mansion-menu-open{touch-action:pan-y}
+body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-open #mMap{visibility:hidden;pointer-events:none}
+#mMenu{pointer-events:auto;background:#0b1426;border:1px solid #baa16c;flex-direction:column;touch-action:pan-y;overflow:hidden;padding-bottom:env(safe-area-inset-bottom,0px)}
+#mMenuBar{flex-shrink:0;border:0;border-bottom:1px solid #baa16c;align-items:center}
+#mMenu button{min-height:44px;font-size:clamp(13px,calc(8 * var(--mu)),18px)}
+#mMenuBody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+#mStatus{height:auto;min-height:100%;border:0;overflow:visible;font-size:clamp(13px,calc(8 * var(--mu)),18px);touch-action:pan-y}
+#mStatus .hp-track{width:min(100%,calc(130 * var(--mu)))}
+#mStatus .status-top>div:last-child{flex:1;min-width:0}
+#mMapContent{padding:16px;color:#d5e5ee;font-size:14px;line-height:1.7;touch-action:pan-y}
+#mMapContent h2{color:#fff1bd;font-size:20px;margin:0 0 12px}
+#mMapContent svg{display:block;width:100%;height:auto;margin:18px 0}
 </style>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%2311162d'/%3E%3Cpath d='M8 6h5v20H8zm11 0h5v20h-5z' fill='%23ffd84a'/%3E%3C/svg%3E">
 <style>
@@ -79,12 +92,12 @@ body.land #hint{display:none;}
 <div id="modelPicker" aria-label="海音ちゃんのモデル比較"><button data-model="32" aria-pressed="false">前作</button><button data-model="40" aria-pressed="false">新40px</button><button data-model="48" aria-pressed="true">新48px</button><span id="modelState">読込中</span></div>
 <button id="mSlide" aria-label="スライディング">SLIDE</button><button id="mMap" aria-label="探索メニュー">MENU</button>
 <section id="mMenu" role="dialog" aria-label="探索メニュー" aria-modal="true">
-<div id="mMenuBar"><button id="mStatusTab" aria-selected="true">ステータス</button><button id="mMapTab" aria-selected="false">マップ</button><button id="mMenuClose" aria-label="メニューを閉じる">戻る</button></div><div id="mStatus"></div></section>
+<div id="mMenuBar"><button id="mStatusTab" aria-selected="true">ステータス</button><button id="mMapTab" aria-selected="false">マップ</button><button id="mMenuClose" aria-label="メニューを閉じる">戻る</button></div><div id="mMenuBody"><div id="mStatus"></div><div id="mMapContent"></div></div></section>
 <div id="mTitle"><button id="mContinue">つづきから</button><button id="mNew">はじめから</button></div>
 <script>
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.4';
+const GAME_VERSION = '2.0.0-test.5';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.

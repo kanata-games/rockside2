@@ -41,6 +41,10 @@ clearKeys();run('M.x=477;mansionUse();render()');assert.equal(run('state'),'mans
 // Menu reflects live status, pauses all encounter timers, and preserves progression.
 clearKeys();run('mansionStart(false);M.hp=9;mansionMenuToggle()');
 assert(run("M.map&&M.menuTab==='status'"));assert(run("mansionStatusHTML().includes('HP 9 / 16')"));
+assert(run("mansionMapHTML().includes('現在地：目覚めの客室')"));
+run('layout.W=390;layout.H=700;layout.gameY=0;layout.gameW=390;mansionLayout()');
+assert.equal(run("mansionMenu.style.height"),'684px');
+assert.equal(run("mansionMenu.style.width"),'374px');
 const menuTime=run('M.t'),menuHP=run('M.hp');ticks(30);assert.equal(run('M.t'),menuTime);assert.equal(run('M.hp'),menuHP);
 run("M.menuTab='map';render();M.menuTab='status';render();M.flags.seal=true");assert(run("mansionStatusHTML().includes('地下の封印が解けた')"));
 run('mansionMenuToggle()');assert.equal(run('M.map'),false);ticks(1);assert(run('M.t')>menuTime);

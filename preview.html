@@ -55,6 +55,19 @@ body.land #hint{display:none;}
 #mStatus .hp-fill{height:100%;background:#89e3f0}
 #mStatus .status-row{padding:calc(5 * var(--mu)) 0;border-top:calc(1 * var(--mu)) solid #384458}
 #mStatus strong{color:#a5e5f0}#mStatus .note{color:#ddcda9}
+
+html:has(body.mansion-menu-open),body.mansion-menu-open{touch-action:pan-y}
+body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-open #mMap{visibility:hidden;pointer-events:none}
+#mMenu{pointer-events:auto;background:#0b1426;border:1px solid #baa16c;flex-direction:column;touch-action:pan-y;overflow:hidden;padding-bottom:env(safe-area-inset-bottom,0px)}
+#mMenuBar{flex-shrink:0;border:0;border-bottom:1px solid #baa16c;align-items:center}
+#mMenu button{min-height:44px;font-size:clamp(13px,calc(8 * var(--mu)),18px)}
+#mMenuBody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+#mStatus{height:auto;min-height:100%;border:0;overflow:visible;font-size:clamp(13px,calc(8 * var(--mu)),18px);touch-action:pan-y}
+#mStatus .hp-track{width:min(100%,calc(130 * var(--mu)))}
+#mStatus .status-top>div:last-child{flex:1;min-width:0}
+#mMapContent{padding:16px;color:#d5e5ee;font-size:14px;line-height:1.7;touch-action:pan-y}
+#mMapContent h2{color:#fff1bd;font-size:20px;margin:0 0 12px}
+#mMapContent svg{display:block;width:100%;height:auto;margin:18px 0}
 </style>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%2311162d'/%3E%3Cpath d='M8 6h5v20H8zm11 0h5v20h-5z' fill='%23ffd84a'/%3E%3C/svg%3E">
 <style>
@@ -79,12 +92,12 @@ body.land #hint{display:none;}
 <div id="modelPicker" aria-label="海音ちゃんのモデル比較"><button data-model="32" aria-pressed="false">前作</button><button data-model="40" aria-pressed="false">新40px</button><button data-model="48" aria-pressed="true">新48px</button><span id="modelState">読込中</span></div>
 <button id="mSlide" aria-label="スライディング">SLIDE</button><button id="mMap" aria-label="探索メニュー">MENU</button>
 <section id="mMenu" role="dialog" aria-label="探索メニュー" aria-modal="true">
-<div id="mMenuBar"><button id="mStatusTab" aria-selected="true">ステータス</button><button id="mMapTab" aria-selected="false">マップ</button><button id="mMenuClose" aria-label="メニューを閉じる">戻る</button></div><div id="mStatus"></div></section>
+<div id="mMenuBar"><button id="mStatusTab" aria-selected="true">ステータス</button><button id="mMapTab" aria-selected="false">マップ</button><button id="mMenuClose" aria-label="メニューを閉じる">戻る</button></div><div id="mMenuBody"><div id="mStatus"></div><div id="mMapContent"></div></div></section>
 <div id="mTitle"><button id="mContinue">つづきから</button><button id="mNew">はじめから</button></div>
 <script>
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.4';
+const GAME_VERSION = '2.0.0-test.5';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.
@@ -2672,7 +2685,7 @@ pad.addEventListener('pointermove', e => {
 function ptrUp(e) { if (ptrs.delete(e.pointerId)) recomputeTouch(); }
 pad.addEventListener('pointerup', ptrUp); pad.addEventListener('pointercancel', ptrUp); pad.addEventListener('lostpointercapture', ptrUp);
 // Block scrolling, pinch/double-tap zoom, long-press menus
-const stopEv = e => { if (e.cancelable) e.preventDefault(); };
+const stopEv = e => { if(e.target?.closest?.('#mMenu'))return; if (e.cancelable) e.preventDefault(); };
 document.addEventListener('touchstart', stopEv, { passive: false });
 document.addEventListener('touchmove', stopEv, { passive: false });
 document.addEventListener('touchend', stopEv, { passive: false });
@@ -7247,13 +7260,15 @@ document.getElementById('mContinue').addEventListener('pointerdown',e=>{e.preven
 document.getElementById('mNew').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();Snd.init();startOpening();});
 window.addEventListener('keydown',e=>{if(state!=='mansion'&&state!=='mansionClear')return;if(['ShiftLeft','ShiftRight','KeyQ','Tab','KeyE'].includes(e.code)){e.preventDefault();if(e.repeat)return;if(e.code==='KeyQ'||e.code==='Tab')mansionInput.map=true;else if(e.code==='KeyE')mansionInput.use=true;else mansionInput.slide=true;}});
 function mansionMenuToggle(){M.map=!M.map;releaseAll();mansionInput.slide=mansionInput.use=false;mansionUI();if(M.map)mansionStatusTab.focus?.();}
+const mansionMapContent=document.getElementById('mMapContent');
 const mansionMenu=document.getElementById('mMenu'),mansionStatus=document.getElementById('mStatus'),mansionStatusTab=document.getElementById('mStatusTab'),mansionMapTab=document.getElementById('mMapTab');
 for(const[button,tab]of [[mansionStatusTab,'status'],[mansionMapTab,'map']])button.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();M.menuTab=tab;releaseAll();mansionUI();});
 document.getElementById('mMenuClose').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();M.map=false;releaseAll();mansionUI();mansionMapBtn.focus?.();});
 mansionMenu.addEventListener('pointerdown',e=>{e.stopPropagation();});
 function mansionStatusHTML(){const memo=M.flags.complete?'門の先へ出られた！ みんなを探す旅は、まだ続く。':M.flags.boss?'中庭の番人を倒したよ。奥の門を調べてみよう。':M.flags.seal?'水脈の紋章で地下の封印が解けた。客室への近道も使えるよ。':'館の出口を探そう。大広間の上階に、何かあるかも。';return `<div class="status-top"><div class="portrait" role="img" aria-label="海音ちゃん"></div><div><h2>海音 ／ うみね</h2><div>水魔法が得意な、旅好きの魔女</div><strong>HP ${M.hp} / 16</strong><div class="hp-track"><div class="hp-fill" style="width:${M.hp/16*100}%"></div></div></div></div><div class="status-row"><strong>謎の右腕</strong>　正体不明<br>水弾を放てる。どうして付いているのかな……？</div><div class="status-row"><strong>使える能力</strong><br>水弾 ／ 魔法の壁キック ／ 壁滑り ／ スライディング</div><div class="status-row note"><strong>探索メモ</strong><br>${memo}</div><div class="status-row">現在地：${MR[M.room].name}<br>記録地点：${MR[M.checkpoint.room].name} ・ 訪問 ${M.visited.length} / 6 部屋</div>`;}
-function mansionUI(){const active=state==='mansion'||state==='mansionClear';mansionSlideBtn.style.display=active?'flex':'none';mansionMapBtn.style.display=active?'block':'none';orbBtn.textContent=active?'調べる':'ORB';mansionTitle.style.display=state==='title'?'flex':'none';if(state==='title')document.getElementById('mContinue').style.display=mansionRead()?'block':'none';document.getElementById('modelPicker').style.display=active?'none':'flex';const open=state==='mansion'&&M.map;mansionMenu.style.display=open?'block':'none';mansionStatus.style.display=M.menuTab==='status'?'block':'none';mansionStatusTab.setAttribute('aria-selected',String(M.menuTab==='status'));mansionMapTab.setAttribute('aria-selected',String(M.menuTab==='map'));if(open&&M.menuTab==='status'){const html=mansionStatusHTML();if(mansionStatus.innerHTML!==html)mansionStatus.innerHTML=html;} }
-function mansionLayout(){const p=layout.portrait,top=layout.gameY+layout.gameH;place(mansionSlideBtn,p?layout.W/2-28:layout.W-70,p?top+77:layout.H*.42,56,56);place(mansionMapBtn,p?14:14,p?top+14:52,72,34);mansionTitle.style.top=(p?top+76:layout.gameY+layout.gameH*.64)+'px';mansionTitle.style.left=(layout.gameX+layout.gameW/2)+'px';const unit=layout.gameW/256;place(mansionMenu,layout.gameX+10*unit,layout.gameY+29*unit,236*unit,204*unit);mansionMenu.style.setProperty?.('--mu',unit+'px');}
+function mansionMapHTML(){const names={bedroom:'客室',gallery:'回廊',hall:'大広間',archive:'書庫',cellar:'地下',garden:'中庭'};const pos=id=>[12+MR[id].map[0]*72,18+MR[id].map[1]*66];let paths='',rooms='';const links=new Set();for(const[id,r]of Object.entries(MR)){if(!M.visited.includes(id))continue;const[x,y]=pos(id);for(const d of r.doors){const key=[id,d.to].sort().join(':');if(links.has(key))continue;links.add(key);const[a,b]=pos(d.to);paths+=`<path d="M ${x+30} ${y+20} L ${a+30} ${b+20}" fill="none" stroke="${d.need&&!M.flags[d.need]?'#685269':'#6b8b9b'}" stroke-width="3"/>`;} }for(const[id,r]of Object.entries(MR)){const[x,y]=pos(id),seen=M.visited.includes(id);rooms+=`<rect x="${x}" y="${y}" width="60" height="40" rx="3" fill="${seen?'#264c63':'#182337'}" stroke="${id===M.room?'#ffe89e':'#667b92'}" stroke-width="${id===M.room?3:1}"/><text x="${x+30}" y="${y+25}" text-anchor="middle" fill="${id===M.room?'#fff0bb':'#d0e5ed'}" font-size="11">${seen?names[id]:'？'}</text>${seen&&r.cp?`<circle cx="${x+7}" cy="${y+7}" r="3" fill="#95f3ff"/>`:''}`;}return `<h2>月影の館・見取り図</h2><div>現在地：${MR[M.room].name}</div><svg viewBox="0 0 306 204" role="img" aria-label="館の部屋と通路">${paths}${rooms}</svg><div>金の枠：現在地 ／ 水色の点：記録の灯り</div><div>訪問 ${M.visited.length} / 6 部屋<br>記録地点：${MR[M.checkpoint.room].name}</div><p>${M.flags.seal?'水脈の封印は解除済み。客室と書庫の近道が使える。':'地下の封印はまだ閉じている。上階を探してみよう。'}</p>`;}
+function mansionUI(){const active=state==='mansion'||state==='mansionClear';mansionSlideBtn.style.display=active?'flex':'none';mansionMapBtn.style.display=active?'block':'none';orbBtn.textContent=active?'調べる':'ORB';mansionTitle.style.display=state==='title'?'flex':'none';if(state==='title')document.getElementById('mContinue').style.display=mansionRead()?'block':'none';document.getElementById('modelPicker').style.display=active?'none':'flex';const open=state==='mansion'&&M.map;mansionMenu.style.display=open?'flex':'none';document.body.classList.toggle('mansion-menu-open',open);mansionMapContent.style.display=M.menuTab==='map'?'block':'none';if(open&&M.menuTab==='map'){const map=mansionMapHTML();if(mansionMapContent.innerHTML!==map)mansionMapContent.innerHTML=map;}mansionStatus.style.display=M.menuTab==='status'?'block':'none';mansionStatusTab.setAttribute('aria-selected',String(M.menuTab==='status'));mansionMapTab.setAttribute('aria-selected',String(M.menuTab==='map'));if(open&&M.menuTab==='status'){const html=mansionStatusHTML();if(mansionStatus.innerHTML!==html)mansionStatus.innerHTML=html;} }
+function mansionLayout(){const p=layout.portrait,top=layout.gameY+layout.gameH;place(mansionSlideBtn,p?layout.W/2-28:layout.W-70,p?top+77:layout.H*.42,56,56);place(mansionMapBtn,p?14:14,p?top+14:52,72,34);mansionTitle.style.top=(p?top+76:layout.gameY+layout.gameH*.64)+'px';mansionTitle.style.left=(layout.gameX+layout.gameW/2)+'px';const unit=Math.max(1,Math.min(2,layout.W/256));const margin=8;place(mansionMenu,margin,layout.gameY+8,layout.W-margin*2,Math.max(120,layout.H-layout.gameY-16));mansionMenu.style.setProperty?.('--mu',unit+'px');}
 window.MANSION_LAYOUT=mansionLayout;mansionLayout();
 
 // =====================================================================
