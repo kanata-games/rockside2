@@ -41,6 +41,20 @@ body{position:fixed;inset:0;font-family:system-ui,-apple-system,"Segoe UI",sans-
 body.land .btn{opacity:.6;}
 body.land .btn.on{opacity:.9;}
 body.land #hint{display:none;}
+
+#mMenu{position:fixed;z-index:18;display:none;box-sizing:border-box;pointer-events:none;color:#e2f1fa;font-family:system-ui,sans-serif;--mu:1px}
+#mMenuBar{display:flex;gap:calc(4 * var(--mu));padding:calc(5 * var(--mu));background:#111b30;border:calc(1 * var(--mu)) solid #baa16c;pointer-events:auto}
+#mMenu button{font:600 calc(8 * var(--mu)) system-ui;padding:calc(5 * var(--mu)) calc(7 * var(--mu));border:calc(1 * var(--mu)) solid #8a795c;border-radius:calc(3 * var(--mu));background:#253349;color:#dcecf6;touch-action:manipulation}
+#mMenu button[aria-selected="true"]{background:#244f65;border-color:#91e5ef;color:#fff3c0}
+#mMenuClose{margin-left:auto}
+#mStatus{pointer-events:auto;background:rgba(11,20,38,.98);border:calc(1 * var(--mu)) solid #baa16c;border-top:0;padding:calc(10 * var(--mu));height:calc(176 * var(--mu));box-sizing:border-box;font-size:calc(7 * var(--mu));line-height:1.55;overflow:auto}
+#mStatus .status-top{display:flex;gap:calc(10 * var(--mu));align-items:center;margin-bottom:calc(7 * var(--mu))}
+#mStatus .portrait{width:calc(43 * var(--mu));height:calc(48 * var(--mu));flex-shrink:0;background-image:url('umine-sheet.jpeg');background-size:400% 200%;background-position:0 0;border:calc(1 * var(--mu)) solid #8daec2;image-rendering:pixelated}
+#mStatus h2{font-size:calc(11 * var(--mu));margin:0 0 calc(3 * var(--mu));color:#fff1bd}
+#mStatus .hp-track{height:calc(5 * var(--mu));width:calc(130 * var(--mu));background:#303d55;margin-top:calc(3 * var(--mu))}
+#mStatus .hp-fill{height:100%;background:#89e3f0}
+#mStatus .status-row{padding:calc(5 * var(--mu)) 0;border-top:calc(1 * var(--mu)) solid #384458}
+#mStatus strong{color:#a5e5f0}#mStatus .note{color:#ddcda9}
 </style>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%2311162d'/%3E%3Cpath d='M8 6h5v20H8zm11 0h5v20h-5z' fill='%23ffd84a'/%3E%3C/svg%3E">
 <style>
@@ -63,12 +77,14 @@ body.land #hint{display:none;}
   <div id="hint">ROCKSIDE II · 屋敷探索テスト</div>
 </div>
 <div id="modelPicker" aria-label="海音ちゃんのモデル比較"><button data-model="32" aria-pressed="false">前作</button><button data-model="40" aria-pressed="false">新40px</button><button data-model="48" aria-pressed="true">新48px</button><span id="modelState">読込中</span></div>
-<button id="mSlide" aria-label="スライディング">SLIDE</button><button id="mMap" aria-label="屋敷の地図">MAP</button>
+<button id="mSlide" aria-label="スライディング">SLIDE</button><button id="mMap" aria-label="探索メニュー">MENU</button>
+<section id="mMenu" role="dialog" aria-label="探索メニュー" aria-modal="true">
+<div id="mMenuBar"><button id="mStatusTab" aria-selected="true">ステータス</button><button id="mMapTab" aria-selected="false">マップ</button><button id="mMenuClose" aria-label="メニューを閉じる">戻る</button></div><div id="mStatus"></div></section>
 <div id="mTitle"><button id="mContinue">つづきから</button><button id="mNew">はじめから</button></div>
 <script>
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.3';
+const GAME_VERSION = '2.0.0-test.4';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.

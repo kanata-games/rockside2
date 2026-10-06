@@ -38,6 +38,12 @@ run('M.hp=16;M.hurt=0;M.h=MC.slideH;M.slideT=10;M.enemyShots=[{x:M.x,y:184,vx:0,
 // Readable guardian projectile can be ducked by sliding; shots defeat guardian.
 clearKeys();run('M.map=false;mansionEnter("garden",310,208);M.hurt=999;keys.shoot=true;');ticks(220);assert(run('M.flags.boss'));assert(run('mansionRead().flags.boss'));
 clearKeys();run('M.x=477;mansionUse();render()');assert.equal(run('state'),'mansionClear');assert(run('M.flags.complete'));
+// Menu reflects live status, pauses all encounter timers, and preserves progression.
+clearKeys();run('mansionStart(false);M.hp=9;mansionMenuToggle()');
+assert(run("M.map&&M.menuTab==='status'"));assert(run("mansionStatusHTML().includes('HP 9 / 16')"));
+const menuTime=run('M.t'),menuHP=run('M.hp');ticks(30);assert.equal(run('M.t'),menuTime);assert.equal(run('M.hp'),menuHP);
+run("M.menuTab='map';render();M.menuTab='status';render();M.flags.seal=true");assert(run("mansionStatusHTML().includes('地下の封印が解けた')"));
+run('mansionMenuToggle()');assert.equal(run('M.map'),false);ticks(1);assert(run('M.t')>menuTime);
 // Render all chambers and map. Storage failure does not stop play.
 for(const id of ['bedroom','gallery','hall','archive','cellar','garden'])run(`mansionEnter('${id}',64,${id==='hall'?368:208});setState('mansion');render();M.map=true;render();M.map=false`);
 run('localStorage.setItem=()=>{throw Error("quota")};mansionSave()');assert(run('M.saveError'));
