@@ -68,6 +68,9 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 #mMapContent{padding:16px;color:#d5e5ee;font-size:14px;line-height:1.7;touch-action:pan-y}
 #mMapContent h2{color:#fff1bd;font-size:20px;margin:0 0 12px}
 #mMapContent svg{display:block;width:100%;height:auto;margin:18px 0}
+
+#mMenuBar{gap:3px;padding:6px}#mMenuBar button{padding:6px 8px;font-size:clamp(12px,calc(8 * var(--mu)),17px)}
+#mAreaContent{padding:16px;font-size:14px;line-height:1.8;color:#d5e5ee}#mAreaContent h2{color:#fff1bd;font-size:20px}#mAreaContent #mAreaGo{width:100%;min-height:64px;background:#244f65;border-color:#91e5ef}#mAreaGo:disabled{opacity:.5}
 </style>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%2311162d'/%3E%3Cpath d='M8 6h5v20H8zm11 0h5v20h-5z' fill='%23ffd84a'/%3E%3C/svg%3E">
 <style>
@@ -92,12 +95,12 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 <div id="modelPicker" aria-label="海音ちゃんのモデル比較"><button data-model="32" aria-pressed="false">前作</button><button data-model="40" aria-pressed="false">新40px</button><button data-model="48" aria-pressed="true">新48px</button><span id="modelState">読込中</span></div>
 <button id="mSlide" aria-label="スライディング">SLIDE</button><button id="mMap" aria-label="探索メニュー">MENU</button>
 <section id="mMenu" role="dialog" aria-label="探索メニュー" aria-modal="true">
-<div id="mMenuBar"><button id="mStatusTab" aria-selected="true">ステータス</button><button id="mMapTab" aria-selected="false">マップ</button><button id="mMenuClose" aria-label="メニューを閉じる">戻る</button></div><div id="mMenuBody"><div id="mStatus"></div><div id="mMapContent"></div></div></section>
+<div id="mMenuBar"><button id="mStatusTab" aria-selected="true">ステータス</button><button id="mMapTab" aria-selected="false">マップ</button><button id="mAreaTab" aria-selected="false">攻略先</button><button id="mMenuClose" aria-label="メニューを閉じる">戻る</button></div><div id="mMenuBody"><div id="mStatus"></div><div id="mMapContent"></div><div id="mAreaContent"><h2>攻略先を選ぶ</h2><p>屋敷を拠点に、行き先を選んで探索しよう。</p><button id="mAreaGo">月影の館・探索区画へ</button><p>回廊 → 大広間 → 書庫 → 地下水路 → 中庭<br>魔法の壁キックと滑走で、封印の先へ。</p><p id="mAreaHint"></p></div></div></section>
 <div id="mTitle"><button id="mContinue">つづきから</button><button id="mNew">はじめから</button></div>
 <script>
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.5';
+const GAME_VERSION = '2.0.0-test.6';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.

@@ -405,6 +405,7 @@ const layout = { portrait: true, W: 390, H: 844, gameX: 0, gameY: 0, gameW: 390,
 // Whole left half of the pad = d-pad (split at the gap between the arrows);
 // right half = nearest of SHOT / JUMP. Big forgiving thumb zones.
 function zoneAt(x, y) {
+  if(window.MANSION_TOUCH_ZONE&&(state==='mansion'||state==='mansionClear'))return window.MANSION_TOUCH_ZONE(x,y);
   if (layout.portrait && y < layout.gameY + layout.gameH) return null;
   if (x < layout.W / 2) return x < layout.dpadMid ? 'left' : 'right';
   const ds = (x - layout.shotX) * (x - layout.shotX) + (y - layout.shotY) * (y - layout.shotY);
