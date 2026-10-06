@@ -4,6 +4,14 @@ function ticks(n){run(`for(let i=0;i<${n};i++)update()`)}
 function clearKeys(){run('releaseAll();mansionInput.slide=mansionInput.use=mansionInput.map=false;')}
 run('mansionStart(false)');ticks(30);assert.equal(run('M.y'),208);assert(run('M.ground'));assert(run('mansionRead().checkpoint.room==="bedroom"'));
 run('M.x=231;mansionInput.use=true;');ticks(1);assert.equal(run('M.room'),'bedroom');assert(run("M.map&&M.menuTab==='area'"));run("document.getElementById('mAreaGo').handlers.click({preventDefault(){},stopPropagation(){}})");assert.equal(run('M.room'),'gallery');
+// Walking traverses every pose by distance, freezes in menus, and restarts after stopping.
+clearKeys();run('mansionEnter("bedroom",130,208);M.enemies=[];');ticks(2);
+run('keys.right=true');const walkPoses=new Set();for(let i=0;i<25;i++){ticks(1);walkPoses.add(run('sequelWalkFrame(M.walkDistance)'));}assert.equal(walkPoses.size,4);
+const walkDistance=run('M.walkDistance');run('M.map=true');ticks(30);assert.equal(run('M.walkDistance'),walkDistance);
+run('M.map=false');clearKeys();ticks(8);assert.equal(run('M.walkDistance'),0);
+const walkImage=images.find(i=>i.src==='assets/umine-walk.png');assert(walkImage);walkImage.onload();assert.equal(run('SEQUEL_MODEL.walkFrames.length'),4);
+for(const face of [-1,1])for(let i=0;i<4;i++)run(`drawSequelWalk(${i*10.8},120,208,${face},false)`);
+run('keys.right=true;keys.shoot=true');ticks(10);assert(run('M.walkDistance>0&&M.poseT>0'));clearKeys();
 // Expanded gallery branch is reachable by ordinary jumps and provides a checkpoint.
 clearKeys();run('mansionEnter("gallery",208,208);M.enemies=[];');ticks(2);
 run('keys.right=true;keys.jump=true');

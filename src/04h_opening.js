@@ -1,5 +1,5 @@
 // ROCKSIDE II opening. Separate simulation; inherited stage content stays intact.
-const OPENING = {step:0,t:0,x:110,y:176,vx:0,vy:0,face:1,ground:true,cool:0,poseT:0,cam:0,
+const OPENING = {step:0,t:0,walkDistance:0,x:110,y:176,vx:0,vy:0,face:1,ground:true,cool:0,poseT:0,cam:0,
   shots:[],targets:[],firstShot:false,message:'',messageT:0,done:false,room:0};
 const OPEN_LINES = [
  {face:0,pose:0,lines:['いっぱい歌って、楽しかったなぁ……。','……ふふ。もう、食べられないよ……。'],dark:true},
@@ -19,7 +19,7 @@ const FURNITURE_CROP={bed:[73,93,1628,715],door:[159,69,674,1424]};
 for(const key of ['bed','door']){const img=new Image();img.onload=()=>mansionFurniture[key]=img;img.onerror=()=>mansionFurniture[key]=null;img.src='assets/mansion-'+key+'.png';}
 function drawMansionBed(x,bottom,width){if(!mansionFurniture.bed)return false;const b=FURNITURE_CROP.bed;g.drawImage(mansionFurniture.bed,...b,Math.round(x),Math.round(bottom-width*b[3]/b[2]),width,width*b[3]/b[2]);return true;}
 function drawMansionDoor(x,bottom,height,locked=false){if(!mansionFurniture.door)return false;const b=FURNITURE_CROP.door,w=height*b[2]/b[3];g.drawImage(mansionFurniture.door,...b,Math.round(x-w/2),Math.round(bottom-height),w,height);if(locked){g.fillStyle='rgba(31,18,48,.35)';g.fillRect(Math.round(x-w/2),Math.round(bottom-height),w,height);g.fillStyle='#8befff';g.fillRect(Math.round(x-4),Math.round(bottom-height*.45),8,2);}return true;}
-function startOpening(){Object.assign(OPENING,{step:0,t:0,x:110,y:176,vx:0,vy:0,face:1,ground:true,cool:0,poseT:0,cam:0,shots:[],targets:[],firstShot:false,message:'',messageT:0,done:false,room:0});setState('opening');}
+function startOpening(){Object.assign(OPENING,{step:0,t:0,walkDistance:0,x:110,y:176,vx:0,vy:0,face:1,ground:true,cool:0,poseT:0,cam:0,shots:[],targets:[],firstShot:false,message:'',messageT:0,done:false,room:0});setState('opening');}
 function openingExplore(){OPENING.t=0;mansionStart(false);}
 function openingHint(s){OPENING.message=s;OPENING.messageT=210;}
 function updateOpening(){
@@ -38,9 +38,10 @@ function updateOpening(){
  o.vx=(inp.right?1:0)-(inp.left?1:0);o.vx*=CONFIG.runSpeed;if(o.vx)o.face=Math.sign(o.vx);
  if(inp.jumpPressed&&o.ground){o.vy=-CONFIG.jumpVel;o.ground=false;sfx('jump');}
  if(!inp.jump&&o.vy<-CONFIG.jumpCutVel)o.vy=-CONFIG.jumpCutVel;
- const oldY=o.y;o.x=Math.max(16,Math.min(o.room?934:244,o.x+o.vx));o.vy=Math.min(CONFIG.maxFall,o.vy+CONFIG.gravity);o.y+=o.vy;o.ground=false;
+ const oldX=o.x,oldY=o.y;o.x=Math.max(16,Math.min(o.room?934:244,o.x+o.vx));o.vy=Math.min(CONFIG.maxFall,o.vy+CONFIG.gravity);o.y+=o.vy;o.ground=false;
  const floors=o.room?[[0,330,176],[374,960,176],[480,540,150],[640,700,132]]:[[0,256,176]];
  for(const [left,right,top] of floors){if(o.x+5>left&&o.x-5<right&&o.vy>=0&&oldY<=top&&o.y>=top){o.y=top;o.vy=0;o.ground=true;}}
+ if(o.ground&&Math.abs(o.x-oldX)>.1)o.walkDistance+=Math.abs(o.x-oldX);else o.walkDistance=0;
  if(o.y>260){o.x=280;o.y=176;o.vy=0;o.ground=true;openingHint('大丈夫。もう一度、跳んでみよう。');}
  if(inp.shoot&&o.cool===0&&o.shots.length<CONFIG.maxShots){
   const d=SEQUEL_MODEL,scale=d.size/d.cell;
@@ -92,7 +93,8 @@ function renderOpening(){
   if(line.dark){openingRect(0,0,VW,VH,'rgba(4,7,18,.75)');}
  }else{
   const fi=o.poseT?6:!o.ground?(o.vy<0?4:5):o.vx?2+((frame>>3)&1):(frame>>5)&1;
-  if(SEQUEL_MODEL.frames.length)drawSequelAt(fi,o.x-o.cam,o.y,o.face,false);
+  if(o.ground&&o.vx)drawSequelWalk(o.walkDistance,o.x-o.cam,o.y,o.face,false);
+  else if(SEQUEL_MODEL.frames.length)drawSequelAt(fi,o.x-o.cam,o.y,o.face,false);
   else g.drawImage(SPR.hero.stand[0].r,o.x-16-o.cam,o.y-32,32,32);
   for(const s of o.shots){openingRect(s.x-3-o.cam,Math.round(s.y)-2,6,4,'#a3f5ff');openingRect(s.x-1-o.cam,Math.round(s.y)-3,3,6,'#63c6fb');}
  }

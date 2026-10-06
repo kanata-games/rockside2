@@ -100,7 +100,7 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 <script>
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.7';
+const GAME_VERSION = '2.0.0-test.8';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.
@@ -2230,17 +2230,32 @@ function drawHiText(text, gx, gy, gsize, color, outline) {
   sctx.fillStyle = color; sctx.fillText(text, gx * s, gy * s); sctx.restore();
 }
 // Sequel-only model layer. Original body physics remain unchanged for comparison.
-const SEQUEL_MODEL = {size:48, frames:[], loading:true, failure:null, cell:128, cx:64, feet:124, muzzleX:105, muzzleY:80};
+const SEQUEL_MODEL = {size:48, frames:[], walkFrames:[], loading:true, failure:null, cell:128, cx:64, feet:124, muzzleX:105, muzzleY:80};
 try {const saved=Number(localStorage.getItem('rockside2_model_size'));if([32,40,48].includes(saved))SEQUEL_MODEL.size=saved;}catch{}
 function setSequelModel(size){if(![32,40,48].includes(size))throw new Error('Unknown model size');SEQUEL_MODEL.size=size;try{localStorage.setItem('rockside2_model_size',String(size));}catch{}refreshSequelModel();}
 function refreshSequelModel(){document.querySelectorAll('[data-model]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.model)===SEQUEL_MODEL.size)));document.getElementById('modelState').textContent=SEQUEL_MODEL.failure?'素材読込失敗':SEQUEL_MODEL.loading?'読込中':'サイズ比較';}
 for(const b of document.querySelectorAll('[data-model]'))b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();setSequelModel(Number(b.dataset.model));});
 function sequelMuzzle(){const d=SEQUEL_MODEL,s=d.size/d.cell;return{x:P.x+P.w/2+P.face*(d.muzzleX-d.cx)*s,y:P.y+P.h+(d.muzzleY-d.feet)*s};}
 function drawSequelAt(fi,cx,feet,face,white,size=SEQUEL_MODEL.size){const d=SEQUEL_MODEL,sp=d.frames[fi];if(!sp)return;const s=size/d.cell,ox=face>=0?d.cx:d.cell-d.cx;g.drawImage(pick(sp,face,white),Math.round(cx-ox*s),Math.round(feet-d.feet*s),size,size);}
-function drawSequelPlayer(camX,white){let fi=0;if(P.hurt>0)fi=0;else if(!P.onGround)fi=P.vy<0?4:5;else if(P.shootT>0)fi=6;else if(P.vx!==0)fi=2+((P.animT>>3)&1);else fi=(frame>>5)&1;drawSequelAt(fi,P.x+P.w/2-camX,P.y+P.h,P.face,white);}
+// Four ordered walk poses; one cycle per 43.2 world pixels at normal speed.
+function sequelWalkFrame(distance){return Math.floor(Math.max(0,distance)/10.8)%4;}
+function drawSequelWalk(distance,cx,feet,face,white,size=SEQUEL_MODEL.size){
+ const d=SEQUEL_MODEL,sp=d.walkFrames[sequelWalkFrame(distance)];
+ if(!sp){drawSequelAt(2+(sequelWalkFrame(distance)%2),cx,feet,face,white,size);return;}
+ const scale=size/d.cell;g.drawImage(pick(sp,face,white),Math.round(cx-d.cx*scale),Math.round(feet-d.feet*scale),size,size);
+}
+function loadSequelWalk(){const img=new Image();img.onload=()=>{
+ const feet=[612,614,590,588],frames=[];
+ for(let i=0;i<4;i++){const c=mkCanvas(128,128),p=c.getContext('2d');p.imageSmoothingEnabled=false;
+ p.drawImage(img,(i%2)*615,Math.floor(i/2)*639,615,639,64-330*.195,124-feet[i]*.195,615*.195,639*.195);frames.push(sheetSprite(c));}
+ SEQUEL_MODEL.walkFrames=frames;
+ };img.src='assets/umine-walk.png';}
+function drawSequelPlayer(camX,white){const x=P.x+P.w/2-camX,y=P.y+P.h;
+ if(P.hurt<=0&&P.onGround&&Math.abs(P.vx)>.1){drawSequelWalk(P.animT*1.8,x,y,P.face,white);return;}
+ const fi=P.hurt>0?0:!P.onGround?(P.vy<0?4:5):P.shootT>0?6:(frame>>5)&1;drawSequelAt(fi,x,y,P.face,white);}
 function stripConnectedWhite(c){const p=c.getContext('2d'),data=p.getImageData(0,0,c.width,c.height),d=data.data,seen=new Uint8Array(c.width*c.height),q=new Int32Array(c.width*c.height);let head=0,tail=0;function push(x,y){const n=y*c.width+x;if(seen[n])return;seen[n]=1;const k=n*4;if(d[k]>225&&d[k+1]>225&&d[k+2]>225)q[tail++]=n;}for(let x=0;x<c.width;x++){push(x,0);push(x,c.height-1);}for(let y=0;y<c.height;y++){push(0,y);push(c.width-1,y);}while(head<tail){const n=q[head++],x=n%c.width,y=Math.floor(n/c.width);d[n*4+3]=0;if(x)push(x-1,y);if(x<c.width-1)push(x+1,y);if(y)push(x,y-1);if(y<c.height-1)push(x,y+1);}p.putImageData(data,0,0);}
 function loadSequelModel(){const img=new Image();img.onload=()=>{try{const anchors=[[210,410],[208,410],[219,410],[234,410],[200,328],[205,328],[206,344],[241,344]];const frames=[];for(let i=0;i<8;i++){const c=mkCanvas(384,i<4?416:352),p=c.getContext('2d');p.drawImage(img,(i%4)*384,i<4?0:416,384,c.height,0,0,384,c.height);stripConnectedWhite(c);const cell=mkCanvas(128,128),cg=cell.getContext('2d');cg.imageSmoothingEnabled=false;cg.drawImage(c,64-anchors[i][0]*.29,124-anchors[i][1]*.29,384*.29,c.height*.29);frames.push(sheetSprite(cell));}SEQUEL_MODEL.frames=frames;SEQUEL_MODEL.loading=false;refreshSequelModel();}catch(e){SEQUEL_MODEL.failure=e.message;SEQUEL_MODEL.loading=false;refreshSequelModel();}};img.onerror=()=>{SEQUEL_MODEL.failure='Image unavailable';SEQUEL_MODEL.loading=false;refreshSequelModel();};img.src='umine-sheet.jpeg';}
-refreshSequelModel();loadSequelModel();
+refreshSequelModel();loadSequelModel();loadSequelWalk();
 
 // ---------------------------------------------------------------------
 //  Pre-rendered backgrounds and level tiles
@@ -7023,7 +7038,7 @@ function duRescue(b) {
   return true;
 }
 // ROCKSIDE II opening. Separate simulation; inherited stage content stays intact.
-const OPENING = {step:0,t:0,x:110,y:176,vx:0,vy:0,face:1,ground:true,cool:0,poseT:0,cam:0,
+const OPENING = {step:0,t:0,walkDistance:0,x:110,y:176,vx:0,vy:0,face:1,ground:true,cool:0,poseT:0,cam:0,
   shots:[],targets:[],firstShot:false,message:'',messageT:0,done:false,room:0};
 const OPEN_LINES = [
  {face:0,pose:0,lines:['いっぱい歌って、楽しかったなぁ……。','……ふふ。もう、食べられないよ……。'],dark:true},
@@ -7043,7 +7058,7 @@ const FURNITURE_CROP={bed:[73,93,1628,715],door:[159,69,674,1424]};
 for(const key of ['bed','door']){const img=new Image();img.onload=()=>mansionFurniture[key]=img;img.onerror=()=>mansionFurniture[key]=null;img.src='assets/mansion-'+key+'.png';}
 function drawMansionBed(x,bottom,width){if(!mansionFurniture.bed)return false;const b=FURNITURE_CROP.bed;g.drawImage(mansionFurniture.bed,...b,Math.round(x),Math.round(bottom-width*b[3]/b[2]),width,width*b[3]/b[2]);return true;}
 function drawMansionDoor(x,bottom,height,locked=false){if(!mansionFurniture.door)return false;const b=FURNITURE_CROP.door,w=height*b[2]/b[3];g.drawImage(mansionFurniture.door,...b,Math.round(x-w/2),Math.round(bottom-height),w,height);if(locked){g.fillStyle='rgba(31,18,48,.35)';g.fillRect(Math.round(x-w/2),Math.round(bottom-height),w,height);g.fillStyle='#8befff';g.fillRect(Math.round(x-4),Math.round(bottom-height*.45),8,2);}return true;}
-function startOpening(){Object.assign(OPENING,{step:0,t:0,x:110,y:176,vx:0,vy:0,face:1,ground:true,cool:0,poseT:0,cam:0,shots:[],targets:[],firstShot:false,message:'',messageT:0,done:false,room:0});setState('opening');}
+function startOpening(){Object.assign(OPENING,{step:0,t:0,walkDistance:0,x:110,y:176,vx:0,vy:0,face:1,ground:true,cool:0,poseT:0,cam:0,shots:[],targets:[],firstShot:false,message:'',messageT:0,done:false,room:0});setState('opening');}
 function openingExplore(){OPENING.t=0;mansionStart(false);}
 function openingHint(s){OPENING.message=s;OPENING.messageT=210;}
 function updateOpening(){
@@ -7062,9 +7077,10 @@ function updateOpening(){
  o.vx=(inp.right?1:0)-(inp.left?1:0);o.vx*=CONFIG.runSpeed;if(o.vx)o.face=Math.sign(o.vx);
  if(inp.jumpPressed&&o.ground){o.vy=-CONFIG.jumpVel;o.ground=false;sfx('jump');}
  if(!inp.jump&&o.vy<-CONFIG.jumpCutVel)o.vy=-CONFIG.jumpCutVel;
- const oldY=o.y;o.x=Math.max(16,Math.min(o.room?934:244,o.x+o.vx));o.vy=Math.min(CONFIG.maxFall,o.vy+CONFIG.gravity);o.y+=o.vy;o.ground=false;
+ const oldX=o.x,oldY=o.y;o.x=Math.max(16,Math.min(o.room?934:244,o.x+o.vx));o.vy=Math.min(CONFIG.maxFall,o.vy+CONFIG.gravity);o.y+=o.vy;o.ground=false;
  const floors=o.room?[[0,330,176],[374,960,176],[480,540,150],[640,700,132]]:[[0,256,176]];
  for(const [left,right,top] of floors){if(o.x+5>left&&o.x-5<right&&o.vy>=0&&oldY<=top&&o.y>=top){o.y=top;o.vy=0;o.ground=true;}}
+ if(o.ground&&Math.abs(o.x-oldX)>.1)o.walkDistance+=Math.abs(o.x-oldX);else o.walkDistance=0;
  if(o.y>260){o.x=280;o.y=176;o.vy=0;o.ground=true;openingHint('大丈夫。もう一度、跳んでみよう。');}
  if(inp.shoot&&o.cool===0&&o.shots.length<CONFIG.maxShots){
   const d=SEQUEL_MODEL,scale=d.size/d.cell;
@@ -7116,7 +7132,8 @@ function renderOpening(){
   if(line.dark){openingRect(0,0,VW,VH,'rgba(4,7,18,.75)');}
  }else{
   const fi=o.poseT?6:!o.ground?(o.vy<0?4:5):o.vx?2+((frame>>3)&1):(frame>>5)&1;
-  if(SEQUEL_MODEL.frames.length)drawSequelAt(fi,o.x-o.cam,o.y,o.face,false);
+  if(o.ground&&o.vx)drawSequelWalk(o.walkDistance,o.x-o.cam,o.y,o.face,false);
+  else if(SEQUEL_MODEL.frames.length)drawSequelAt(fi,o.x-o.cam,o.y,o.face,false);
   else g.drawImage(SPR.hero.stand[0].r,o.x-16-o.cam,o.y-32,32,32);
   for(const s of o.shots){openingRect(s.x-3-o.cam,Math.round(s.y)-2,6,4,'#a3f5ff');openingRect(s.x-1-o.cam,Math.round(s.y)-3,3,6,'#63c6fb');}
  }
@@ -7150,7 +7167,7 @@ const MR={
  cellar:{name:'蒼い地下水路',w:512,h:240,map:[2,2],tone:'#233f52',floor:[[0,208,304,32],[352,208,160,32]],blocks:[],gate:[224,32,16,176],doors:[{x:24,y:208,to:'hall',at:[455,368],label:'水鏡の大広間'},{x:486,y:208,to:'garden',at:[40,208],label:'月明かりの中庭'}],cp:[72,208],enemies:[['walk',165,208,116,200],['fly',389,144,358,450]]},
  garden:{name:'月明かりの中庭',w:512,h:240,map:[3,2],tone:'#293958',floor:[[0,208,512,32]],blocks:[[120,176,48,10],[232,160,48,10]],doors:[{x:24,y:208,to:'cellar',at:[460,208],label:'蒼い地下水路'}],cp:[64,208],enemies:[],boss:[379,208],goal:[477,208]}
 };
-const M={room:'bedroom',x:110,y:208,vx:0,vy:0,face:1,h:26,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,hp:16,hurt:0,dead:0,t:0,camX:0,camY:0,shots:[],enemyShots:[],enemies:[],fx:[],flags:{seal:false,boss:false,complete:false},visited:['bedroom'],checkpoint:{room:'bedroom',x:110,y:208},message:'',messageT:0,prompt:'',near:null,map:false,menuTab:'status',saved:false,saveError:false,transition:0};
+const M={room:'bedroom',x:110,y:208,vx:0,vy:0,face:1,h:26,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,hp:16,hurt:0,dead:0,t:0,walkDistance:0,camX:0,camY:0,shots:[],enemyShots:[],enemies:[],fx:[],flags:{seal:false,boss:false,complete:false},visited:['bedroom'],checkpoint:{room:'bedroom',x:110,y:208},message:'',messageT:0,prompt:'',near:null,map:false,menuTab:'status',saved:false,saveError:false,transition:0};
 const mansionInput={slide:false,map:false,use:false};
 let mansionActionArt=null,mansionBackdrop=null;
 for(const [name,url] of [['actions','assets/umine-mansion-actions.png'],['background','assets/mansion-background.png']]){const image=new Image();image.onload=()=>{if(name==='actions')mansionActionArt=image;else mansionBackdrop=image;};image.src=url;}
@@ -7158,7 +7175,7 @@ function mansionRead(){try{const s=JSON.parse(localStorage.getItem(MANSION_KEY))
 function mansionSave(){try{localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:M.flags,visited:M.visited,checkpoint:M.checkpoint}));M.saved=true;M.saveError=false;}catch{M.saveError=true;}}
 function mansionSay(text,time=220){M.message=text;M.messageT=time;}
 function mansionStart(resume=false){const saved=resume?mansionRead():null;Object.assign(M,{hp:16,hurt:0,dead:0,t:0,flags:saved?.flags||{seal:false,boss:false,complete:false},visited:saved?.visited||['bedroom'],checkpoint:saved?.checkpoint||{room:'bedroom',x:110,y:208},map:false,menuTab:'status',saved:!!saved,saveError:false});mansionEnter(M.checkpoint.room,M.checkpoint.x,M.checkpoint.y);setState('mansion');mansionSay(resume?'また、ここから探してみよう。':'まずは出口へ。扉の前で「調べる」。');mansionUI();}
-function mansionEnter(room,x,y){Object.assign(M,{room,x,y,vx:0,vy:0,h:MC.h,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,shots:[],enemyShots:[],fx:[],transition:16,near:null,prompt:''});M.enemies=MR[room].enemies.map((e,i)=>({kind:e[0],x:e[1],y:e[2],baseY:e[2],min:e[3],max:e[4],dir:i%2?-1:1,hp:e[0]==='fly'?2:3,t:0,flash:0}));if(MR[room].boss&&!M.flags.boss)M.enemies.push({kind:'boss',x:379,y:208,baseY:208,hp:16,maxHp:16,t:0,dir:-1,flash:0});if(!M.visited.includes(room))M.visited.push(room);mansionCamera(true);mansionSave();}
+function mansionEnter(room,x,y){Object.assign(M,{room,x,y,walkDistance:0,vx:0,vy:0,h:MC.h,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,shots:[],enemyShots:[],fx:[],transition:16,near:null,prompt:''});M.enemies=MR[room].enemies.map((e,i)=>({kind:e[0],x:e[1],y:e[2],baseY:e[2],min:e[3],max:e[4],dir:i%2?-1:1,hp:e[0]==='fly'?2:3,t:0,flash:0}));if(MR[room].boss&&!M.flags.boss)M.enemies.push({kind:'boss',x:379,y:208,baseY:208,hp:16,maxHp:16,t:0,dir:-1,flash:0});if(!M.visited.includes(room))M.visited.push(room);mansionCamera(true);mansionSave();}
 function mansionSolids(){const r=MR[M.room];return [...r.floor,...r.blocks,[0,-16,r.w,16],[-16,0,16,r.h],[r.w,0,16,r.h],...(r.gate&&!M.flags.seal?[r.gate]:[])];}
 function mansionOverlap(x,y,w,h,b){return x<b[0]+b[2]&&x+w>b[0]&&y<b[1]+b[3]&&y+h>b[1];}
 function mansionFits(x,y,h=MC.h){return !mansionSolids().some(b=>mansionOverlap(x-MC.w/2,y-h,MC.w,h,b));}
@@ -7193,7 +7210,7 @@ function updateMansion(){
  if(M.buffer&&!M.slideT){if(M.ground||M.coyote){M.vy=-MC.jump;M.buffer=M.coyote=0;M.ground=false;sfx('jump');}else if(M.wall||M.wallGrace){const away=-(M.wall||M.lastWall||1);M.vx=away*MC.wallPush;M.face=away;M.vy=-MC.wallJump;M.kickLock=6;M.buffer=M.wallGrace=0;mansionBurst(M.x-away*9,M.y-8);sfx('jump');}}
  if(!inp.jump&&M.vy<-2&&M.kickLock===0)M.vy=-2;
  M.vy=Math.min(MC.fall,M.vy+MC.gravity);const solids=mansionSolids();
- M.x+=M.vx;M.wall=0;
+ const walkStartX=M.x;M.x+=M.vx;M.wall=0;
  for(const b of solids)if(mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,b)){if(M.vx>0){M.x=b[0]-MC.w/2;M.wall=1;}else if(M.vx<0){M.x=b[0]+b[2]+MC.w/2;M.wall=-1;}M.vx=0;}
  // Keep wall contact stable while holding against a wall; tolerate subpixel positions.
  for(const side of [-1,1])if(dx===side&&solids.some(b=>mansionOverlap(M.x-MC.w/2+side*.7,M.y-M.h+2,MC.w,M.h-3,b)))M.wall=side;
@@ -7201,6 +7218,7 @@ function updateMansion(){
  M.y+=M.vy;M.ground=false;
  for(const b of solids)if(mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,b)){if(M.vy>0){M.y=b[1];M.ground=true;M.coyote=6;}else if(M.vy<0)M.y=b[1]+b[3]+M.h;M.vy=0;}
  if(M.ground)M.wallGrace=0;
+ if(M.ground&&!M.slideT&&!M.hurt&&Math.abs(M.x-walkStartX)>.1)M.walkDistance+=Math.abs(M.x-walkStartX);else M.walkDistance=0;
  if(M.y>MR[M.room].h+40){M.hp=Math.max(1,M.hp-3);const cp=M.checkpoint;mansionEnter(cp.room,cp.x,cp.y);M.hurt=90;mansionSay('水の灯りまで戻ってきた。');return;}
  if(inp.shoot&&M.cool===0&&M.shots.length<3){M.shots.push({x:M.x+M.face*13,y:M.y-(M.slideT?7:17),vx:M.face*4.8});M.cool=10;M.poseT=14;sfx('shot');}
  for(const shot of M.shots){shot.x+=shot.vx;if(solids.some(b=>mansionOverlap(shot.x-2,shot.y-2,4,4,b))){shot.dead=true;mansionBurst(shot.x,shot.y,'#96eaff',3);}for(const e of M.enemies){if(!shot.dead&&e.hp>0&&Math.abs(shot.x-e.x)<(e.kind==='boss'?19:12)&&shot.y>e.y-(e.kind==='boss'?35:24)&&shot.y<e.y+2){e.hp--;e.flash=6;shot.dead=true;mansionBurst(shot.x,shot.y,'#b1f8ff',4);sfx('hit');if(e.hp<=0){mansionBurst(e.x,e.y-12,'#ffdca1',14);if(e.kind==='boss'){M.flags.boss=true;M.enemyShots=[];mansionSave();mansionSay('道が開いた……！ 門の向こうへ行ってみよう。',260);}else if(M.hp<16)M.hp++;}}}}
@@ -7241,7 +7259,8 @@ function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.roun
  if(!M.dead||M.dead%8<4){if(!M.hurt||M.hurt%6<3){
  const action=M.slideT?'slide':(!M.ground&&(M.wall||M.kickLock))?'wall':null;
  if(action&&mansionActionArt){const box=action==='slide'?[887,290,873,560]:[55,75,810,685],height=action==='slide'?24:42,width=box[2]/box[3]*height;const facing=action==='wall'?(M.wall?-M.wall:M.face):M.face;const flip=action==='wall'?facing===1:facing===-1;g.save();g.translate(Math.round(M.x),Math.round(M.y));if(flip)g.scale(-1,1);g.drawImage(mansionActionArt,...box,-width/2,-height,width,height);g.restore();}
- else {const fi=M.poseT?6:!M.ground?(M.vy<0?4:5):Math.abs(M.vx)>.1?2+((frame>>3)&1):(frame>>5)&1;drawSequelAt(fi,M.x,M.y,M.face,false,SEQUEL_MODEL.size);}
+ else if(M.ground&&Math.abs(M.vx)>.1&&!M.hurt)drawSequelWalk(M.walkDistance,M.x,M.y,M.face,false);
+ else {const fi=M.poseT?6:!M.ground?(M.vy<0?4:5):(frame>>5)&1;drawSequelAt(fi,M.x,M.y,M.face,false,SEQUEL_MODEL.size);}
  }}
  if(M.wall&&!M.ground){mansionDiamond(M.x+M.wall*8,M.y-5,4,'#99faff');}
 
