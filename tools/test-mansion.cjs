@@ -62,6 +62,10 @@ for(const [id,r]of Object.entries(rs)){assert(r[0]>=0&&r[1]>=0&&r[0]+r[2]<=w+1&&
 for(const id of ['left','right','shoot','jump']){const r=rs[id];assert.equal(run(`zoneAt(${r[0]+r[2]/2},${r[1]+r[3]/2})`),id);}
 run('M.map=true');assert.equal(run('zoneAt(30,500)'),null);
 }
+// Generated furniture loads into both renderers, with fallback only on failure.
+for(const key of ['bed','door']){const img=images.find(i=>i.src==='assets/mansion-'+key+'.png');assert(img);img.onload();}
+assert(run('drawMansionBed(23,176,120)'));assert(run('drawMansionDoor(232,176,80,true)'));
+run('startOpening();OPENING.step=1;render();OPENING.step=3;render();mansionStart(false);render()');
 // Render all chambers and map. Storage failure does not stop play.
 for(const id of ['bedroom','gallery','hall','archive','cellar','garden'])run(`mansionEnter('${id}',64,${id==='hall'?368:208});setState('mansion');render();M.map=true;render();M.map=false`);
 run('localStorage.setItem=()=>{throw Error("quota")};mansionSave()');assert(run('M.saveError'));
