@@ -103,7 +103,8 @@ function drawOpeningRoom(){
 function openingTextLeft(text,x,y,size,color){const scale=hiS();sctx.save();sctx.font='700 '+Math.max(11,Math.round(size*scale))+'px '+JP_FONT;sctx.textAlign='left';sctx.textBaseline='top';sctx.fillStyle=color;sctx.fillText(text,x*scale,y*scale);sctx.restore();}
 // Face-focused crop from each existing expression; draw directly at screen resolution.
 function drawOpeningPortrait(line,x=9,y=187,size=44){
- const masked=!!line.speaker,img=masked?RORU_ART.image:openingArt.faces;if(!img)return;
+ const masked=!!line.speaker,img=masked?RORU_ART.image:openingArt.faces;
+ if(!img){const fallback=masked?sheetFrame('dicerollDark','idle',0)?.r:SEQUEL_MODEL.frames[0]?.r||SPR.hero.stand[0].r;if(fallback){const scale=hiS();sctx.drawImage(fallback,Math.round(x*scale),Math.round(y*scale),Math.round(size*scale),Math.round(size*scale));}return;}
  const fi=line.face||0,box=masked?[305,0,380,440]:[(fi%2)*627+190,Math.floor(fi/2)*627+200,400,400];
  const scale=hiS();sctx.save();sctx.imageSmoothingEnabled=true;sctx.imageSmoothingQuality='high';
  sctx.drawImage(img,...box,Math.round(x*scale),Math.round(y*scale),Math.round(size*scale),Math.round(size*scale));sctx.restore();

@@ -112,7 +112,7 @@ function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.roun
  for(const s of M.enemyShots){mansionDiamond(s.x,s.y,5,'#ffbc79');mansionDiamond(s.x,s.y,2,'#fff4d0');}
  for(const f of M.fx){g.globalAlpha=Math.min(1,f.life/12);mrect(f.x,f.y,2,2,f.color);}g.globalAlpha=1;g.restore();
  // Dark edge vignette uses stepped pixel bars; all solid surfaces keep bright top edges.
- mrect(0,0,VW,27,'rgba(5,10,24,.94)');drawText('UMINE',7,6,'c',1);for(let i=0;i<16;i++)mrect(7+i*4,17,3,6,i<M.hp?'#8de5f9':'#303b54');
+ mrect(0,0,VW,27,'rgba(5,10,24,.94)');rectLine(4,2,23,23,'#6688a2');drawText('UMINE',34,6,'c',1);for(let i=0;i<16;i++)mrect(34+i*4,17,3,6,i<M.hp?'#8de5f9':'#303b54');
  drawText(M.flags.seal?'SEAL':'----',VW-8,17,M.flags.seal?'y':'b',1,'r');
  if(M.messageT>0||M.prompt)mrect(3,204,250,33,'rgba(6,14,29,.93)');
 }
@@ -120,6 +120,7 @@ function mansionMapDraw(){mrect(10,40,236,157,'rgba(5,13,29,.97)');rectLine(10,4
  for(const [id,r] of Object.entries(MR))for(const d of r.doors){if(!M.visited.includes(id))continue;const a=pos(id),b=pos(d.to);g.strokeStyle=d.need&&!M.flags[d.need]?'#64536a':'#536f83';g.lineWidth=2;g.beginPath();g.moveTo(a[0]+16,a[1]+9);g.lineTo(b[0]+16,b[1]+9);g.stroke();}
  for(const [id,r] of Object.entries(MR)){const p=pos(id),seen=M.visited.includes(id);mrect(p[0],p[1],35,20,seen?'#335f76':'#18283f');rectLine(p[0],p[1],35,20,id===M.room?'#fff1aa':seen?'#92c9db':'#3e4b64');if(id===M.room)mansionDiamond(p[0]+17,p[1]+10,4,'#fff2b3');if(r.cp&&seen)mrect(p[0]+3,p[1]+3,3,3,'#95f3ff');} }
 function renderMansion(){mansionRoomDraw();if(M.map&&M.menuTab==='map')mansionMapDraw();if(state==='mansionClear'){mrect(14,63,228,102,'rgba(6,14,30,.96)');rectLine(14,63,228,102,'#b9d8d2');}blit();
+ drawOpeningPortrait({face:0},5,3,21);
  drawHiText(MR[M.room].name,165,5,6.5,'#d9edf5','#0c1528');
  if(M.map&&M.menuTab!=='map')return;
  if(M.map){drawHiText('屋敷の見取り図',128,64,9,'#d9f3fb','#0b1528');drawHiText('金色：現在地　 水色：記録の灯り',128,183,6,'#a6c8d8','#0b1528');for(const[id,r]of Object.entries(MR))if(M.visited.includes(id)){const names={bedroom:'客室',gallery:'回廊',hall:'大広間',archive:'書庫',cellar:'地下',garden:'中庭'};drawHiText(names[id],51+r.map[0]*53,100+r.map[1]*35,5,'#d5e5ee','#0b1528');}return;}
