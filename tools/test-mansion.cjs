@@ -152,7 +152,7 @@ run('M.enemies[0].hp=20;M.enemies[0].t=299;M.x=400;M.y=256');ticks(1);const rain
 run('M.enemyShots=[];M.enemies[0].hp=21;M.enemies[0].t=299');ticks(1);run('M.enemies[0].hp=20;M.enemies[0].t=329');ticks(1);assert.equal(run('M.enemyShots.length'),0);
 run('M.enemies[0].x=500;M.enemies[0].y=256;M.enemies[0].t=0');
 // Victory grants guide role and survives resume, without killing the friend.
-run('M.enemies[0].hp=1;M.shots=[{x:495.2,y:239,vx:4.8}];M.hurt=999');ticks(1);assert(run('M.flags.boss&&M.sparState==="done"&&M.talk.speaker==="アスターテ"'));assert.equal(run('M.hp'),16);assert.equal(run('M.enemyShots.length'),0);assert(run('mansionRead().flags.boss'));
+run('M.enemies[0].hp=21;M.shots=[{x:495.2,y:239,vx:4.8}];M.hurt=999');ticks(1);assert(run('M.flags.boss&&M.sparState==="done"&&M.talk.speaker==="アスターテ"'));assert.equal(run('M.hp'),16);assert.equal(run('M.enemyShots.length'),0);assert(run('mansionRead().flags.boss'));
 run('mansionTalkClose();M.map=false;mansionEnter("garden",500,256);mansionUse()');assert(run('M.talk.speaker==="アスターテ"'));assert.equal(run('M.enemies.length'),0);
 run('mansionTalkClose();M.map=false;mansionEnter("bedroom",612,208);mansionUse()');assert(run('M.talk.lines[0].includes("行き先")'));
 run('mansionTalkClose();M.map=false;M.flags.seal=false;mansionEnter("cellar",267,208);mansionUse()');assert(run('M.talk.lines[0].includes("紋章がない")'));
@@ -170,14 +170,14 @@ run('M.enemies[0].guard=0;M.shots=[{x:M.enemies[0].x-4.8,y:239,vx:4.8}]');ticks(
 run('M.enemies[0].t=174;M.enemies[0].x=500;M.x=350;M.enemyShots=[]');ticks(1);assert.equal(run('M.enemies[0].pose'),8);assert.equal(run('M.enemies[0].slashDir'),-1);
 run('M.x=560;M.enemies[0].t=195');const dashX=run('M.enemies[0].x');ticks(20);assert(run('M.enemies[0].x')<dashX-70);assert.equal(run('M.enemies[0].dir'),-1);
 run('M.enemies[0].hp=20;M.enemies[0].t=234');ticks(1);assert(run('M.enemies[0].striking'));assert.equal(run('M.enemies[0].pose'),10);
-// No movement or dodge input: even firing toward her cannot finish the spar before a retry.
-clearKeys();run('mansionStart(false);mansionEnter("garden",350,256);mansionSparStart();M.hurt=0;keys.shoot=true');let idleFrames=0;
-for(;idleFrames<2400&&!run('M.talk||M.flags.boss');idleFrames++){run('M.face=M.enemies[0].x<M.x?-1:1');ticks(1);}
-assert(run('M.talk&&M.talk.after==="sparStart"&&!M.flags.boss'),'standing fire should require dodging');
+// No movement or dodge input: full battle still requires dodging.
+clearKeys();run('mansionStart(false);M.flags.boss=true;mansionEnter("bedroom",612,208);mansionUse();mansionFullBattle();M.hurt=0;keys.shoot=true');let idleFrames=0;
+for(;idleFrames<2400&&!run('M.talk||M.sparState==="done"');idleFrames++){run('M.face=M.enemies[0].x<M.x?-1:1');ticks(1);}
+assert(run('M.talk&&M.talk.after==="sparStart"&&!M.flags.astarteFull'),'full battle standing fire should require dodging');
 console.log('PASS action boss: 12 new poses, shot guard, locked dash, second slash, stationary-fire retry in '+idleFrames+' frames.');
 for(const style of [0]){
-clearKeys();run('mansionStart(false);mansionEnter("garden",350,256);mansionSparStart();M.hurt=0;keys.shoot=true');let frameCount=0;
-for(;frameCount<5000&&!run('M.talk||M.flags.boss');frameCount++){
+clearKeys();run('mansionStart(false);M.flags.boss=true;mansionEnter("bedroom",612,208);mansionUse();mansionFullBattle();M.hurt=0;keys.shoot=true');let frameCount=0;
+for(;frameCount<5000&&!run('M.talk||M.sparState==="done"');frameCount++){
 run(`{const botE=M.enemies[0],botP=botE.t%360;keys.left=keys.right=keys.jump=false;M.face=botE.x<M.x?-1:1;
 const approaching=M.enemyShots.filter(s=>(s.x-M.x)*s.vx<0&&Math.abs(s.x-M.x)<${style===0?50:65});
 if(M.ground&&!M.slideT&&approaching.some(s=>s.kind==='crescent'&&s.y>240)){keys.jump=true;inp.jumpPressed=true;}
@@ -187,5 +187,31 @@ const rain=M.enemyShots.find(s=>s.kind==='star'&&Math.abs(s.x-M.x)<40&&s.y<M.y&&
 if((botE.rainX!=null&&Math.abs(M.x-botE.rainX)<48)||rain){if(M.x<420)keys.right=true;else keys.left=true;}
 }`);ticks(1);
 }
-assert(run('M.flags.boss'),'normal dodge inputs must clear without health overrides');console.log('PASS fair boss: jump/slide/rain movement with normal health clears in '+frameCount+' frames.');
+assert(run('M.flags.astarteFull'),'normal dodge inputs must clear full battle without health overrides');console.log('PASS fair boss: jump/slide/rain movement with normal health clears in '+frameCount+' frames.');
 }
+// Tutorial stops exactly at half, without granting the full-battle reward.
+clearKeys();run('mansionStart(false);mansionEnter("garden",350,256);mansionSparStart();M.hurt=999');
+for(let hit=0;hit<19;hit++){run('M.enemies[0].guard=0;M.enemies[0].x=500;M.enemies[0].t=0;M.shots=[{x:495.2,y:239,vx:4.8}]');ticks(1);}
+assert.equal(run('M.enemies[0].hp'),21);assert.equal(run('M.flags.boss'),false);
+run('M.enemies[0].guard=0;M.enemies[0].x=500;M.shots=[{x:495.2,y:239,vx:4.8}]');ticks(1);
+assert(run('M.flags.boss&&!M.flags.astarteReward&&!M.flags.astarteFull'));assert.equal(run('mansionMaxHP()'),16);assert.equal(run('M.enemies.length'),0);assert.equal(run('M.enemyShots.length'),0);
+// Hub dialogue offers an explicit choice: reading or cancelling never starts a battle.
+run('mansionTalkClose();M.map=false;mansionEnter("bedroom",612,208);mansionUse()');assert.equal(elements.get('mTalkBattle').style.display,'block');assert.equal(run('M.room'),'bedroom');run('mansionTalkClose();M.map=false');assert.equal(run('M.room'),'bedroom');
+run('mansionUse()');const trialCheckpoint=run('JSON.stringify(M.checkpoint)');run('document.getElementById("mTalkBattle").handlers.click({preventDefault(){},stopPropagation(){}})');assert(run('M.sparMode==="full"&&M.sparState==="active"'));assert.equal(run('M.enemies[0].hp'),40);assert.equal(run('mansionNearbyNPC()'),undefined);
+run('M.enemies[0].hp=21;M.enemies[0].x=500;M.enemies[0].t=0;M.enemies[0].guard=0;M.hurt=999;M.shots=[{x:495.2,y:239,vx:4.8}]');ticks(1);assert.equal(run('M.enemies[0].hp'),20);assert.equal(run('M.sparState'),'active');assert(!run('M.flags.astarteReward'));
+// Abandonment and a stopped losing fight never grant a reward or alter exploration progress.
+run('M.map=true;mansionUI()');assert.equal(elements.get('mBattleLeave').style.display,'block');run('document.getElementById("mBattleLeave").handlers.click({preventDefault(){},stopPropagation(){}})');assert.equal(run('M.room'),'bedroom');assert.equal(run('JSON.stringify(M.checkpoint)'),trialCheckpoint);assert(!run('M.flags.astarteReward'));
+run('mansionUse();mansionFullBattle();M.hp=1;M.hurt=0;mansionDamage(2)');assert(run('M.talk.after==="sparStart"'));const retryT=run('M.enemies[0].t');ticks(50);assert.equal(run('M.enemies[0].t'),retryT);run('mansionTalkClose();M.map=false');assert.equal(run('M.room'),'bedroom');assert(!run('M.flags.astarteReward'));
+// Full victory grants the permanent item once, then conversation returns to the hub.
+run('mansionUse();mansionFullBattle();M.enemies[0].hp=1;M.enemies[0].guard=0;M.enemies[0].x=500;M.enemies[0].t=0;M.hurt=999;M.shots=[{x:495.2,y:239,vx:4.8}]');ticks(1);
+assert(run('M.flags.astarteFull&&M.flags.astarteReward&&M.talk.after==="fullReturn"'));assert.equal(run('mansionMaxHP()'),18);assert.equal(run('M.hp'),18);assert(run('mansionStatusHTML().includes("星詠みの護符")&&mansionStatusHTML().includes("HP 18 / 18")'));assert(run('mansionRead().flags.astarteReward'));
+run('mansionTalkClose()');assert.equal(run('M.room'),'bedroom');assert.equal(run('JSON.stringify(M.checkpoint)'),trialCheckpoint);
+run('mansionUse();mansionFullBattle();M.enemies[0].hp=1;M.enemies[0].guard=0;M.enemies[0].x=500;M.enemies[0].t=0;M.hurt=999;M.shots=[{x:495.2,y:239,vx:4.8}]');ticks(1);assert.equal(run('mansionMaxHP()'),18);assert(run('M.talk.lines[1].includes("最初の一度")'));
+run('for(let i=0;i<2;i++)mansionTalkNext()');assert.equal(run('M.room'),'bedroom');assert.equal(run('M.map'),false);
+run('mansionStart(true)');assert.equal(run('mansionMaxHP()'),18);assert.equal(run('M.hp'),18);
+run('M.map=false;mansionEnter("bedroom",135,208);M.hp=3;mansionUse()');assert.equal(run('M.hp'),18);
+run('M.hp=17;M.pickups=[{kind:"water",x:M.x,y:M.y-12,vy:0,age:11}]');ticks(1);assert.equal(run('M.hp'),18);
+run('M.hp=1;M.hurt=0;mansionDamage(2)');ticks(65);assert.equal(run('M.hp'),18);
+// Old records unlock repeat fights but never receive the new reward retroactively.
+run('localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{boss:true,seal:true,complete:true},visited:["bedroom"],checkpoint:{room:"bedroom",x:110,y:208}}));mansionStart(true)');assert.equal(run('mansionMaxHP()'),16);assert(!run('M.flags.astarteReward'));run('mansionEnter("bedroom",612,208);mansionUse()');assert(run('M.talk.offerFull'));assert.equal(run('mansionFullBattle()'),true);run('mansionFullReturn()');assert(run('M.flags.seal&&M.flags.complete'));
+console.log('PASS trial/reward: half-stop, full-zero goal, hub choice, abandon/retry, one-time permanent item, resume/heal/respawn, old-record migration.');
