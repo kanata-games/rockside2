@@ -141,15 +141,15 @@ clearKeys();run('mansionStart(false);mansionEnter("garden",350,256);M.hurt=0');t
 run('mansionTalkClose();M.map=false');assert.equal(run('M.sparState'),'waiting');ticks(1);assert(run('M.talk'));
 run('for(let i=0;i<6;i++)mansionTalkNext()');assert.equal(run('M.sparState'),'active');assert.equal(run('M.map'),false);
 run('M.hp=1;M.hurt=0;mansionDamage(2)');assert.equal(run('M.dead'),0);assert.equal(run('M.hp'),16);assert.equal(run('M.flags.boss'),false);assert(run('M.talk&&M.talk.after==="sparStart"'));
-run('mansionTalkNext();mansionTalkNext()');assert.equal(run('M.sparState'),'active');assert.equal(run('M.enemies[0].hp'),32);
+run('mansionTalkNext();mansionTalkNext()');assert.equal(run('M.sparState'),'active');assert.equal(run('M.enemies[0].hp'),40);
 run('M.enemies[0].t=39;M.hurt=999');ticks(1);assert(run('M.enemyShots.some(s=>s.y===246)'));
 run('M.enemyShots=[];M.enemies[0].t=129');ticks(1);assert(run('M.enemyShots.some(s=>s.y===232)'));
 run('M.enemyShots=[];M.enemies[0].t=219;M.enemies[0].slashDir=-1;M.x=460;M.y=256;M.hurt=0');ticks(1);assert.equal(run('M.hp'),13);
 run('M.enemyShots=[];M.enemies[0].t=219;M.x=460;M.y=210;M.vy=0;M.hurt=0');ticks(1);assert.equal(run('M.hp'),13);
 // Leap changes sides, and second-half rain is telegraphed at a captured position.
 run('M.enemies[0].t=249;M.shots=[];M.enemyShots=[]');ticks(1);const leapFrom=run('M.enemies[0].x');ticks(22);assert(run('M.enemies[0].y<200'));ticks(23);assert(Math.abs(run('M.enemies[0].x')-leapFrom)>100);assert.equal(run('M.enemies[0].y'),256);
-run('M.enemies[0].hp=16;M.enemies[0].t=299;M.x=400;M.y=256');ticks(1);const rainX=run('M.enemies[0].rainX');assert.equal(rainX,400);run('M.x=450');ticks(30);assert.equal(run('M.enemyShots.filter(s=>s.kind==="star").length'),3);assert(run('M.enemyShots.every(s=>Number.isFinite(s.x))'));assert.equal(run('M.enemies[0].rainX'),null);
-run('M.enemyShots=[];M.enemies[0].hp=17;M.enemies[0].t=299');ticks(1);run('M.enemies[0].hp=16;M.enemies[0].t=329');ticks(1);assert.equal(run('M.enemyShots.length'),0);
+run('M.enemies[0].hp=20;M.enemies[0].t=299;M.x=400;M.y=256');ticks(1);const rainX=run('M.enemies[0].rainX');assert.equal(rainX,400);run('M.x=450');ticks(30);assert.equal(run('M.enemyShots.filter(s=>s.kind==="star").length'),5);assert(run('M.enemyShots.every(s=>Number.isFinite(s.x))'));assert.equal(run('M.enemies[0].rainX'),null);
+run('M.enemyShots=[];M.enemies[0].hp=21;M.enemies[0].t=299');ticks(1);run('M.enemies[0].hp=20;M.enemies[0].t=329');ticks(1);assert.equal(run('M.enemyShots.length'),0);
 run('M.enemies[0].x=500;M.enemies[0].y=256;M.enemies[0].t=0');
 // Victory grants guide role and survives resume, without killing the friend.
 run('M.enemies[0].hp=1;M.shots=[{x:495.2,y:239,vx:4.8}];M.hurt=999');ticks(1);assert(run('M.flags.boss&&M.sparState==="done"&&M.talk.speaker==="アスターテ"'));assert.equal(run('M.hp'),16);assert.equal(run('M.enemyShots.length'),0);assert(run('mansionRead().flags.boss'));
@@ -160,3 +160,32 @@ run('mansionTalkClose();M.map=false;mansionEnter("bedroom",390,208);mansionUse()
 for(const key of ['astarte-sequel.png','astarte-sequel-face.png']){const img=images.find(i=>i.src==='assets/'+key);assert(img);img.onload();}
 run('mansionTalkClose();M.map=false;mansionEnter("garden",350,256);renderMansion();mansionAstarteGuide();mansionUI()');
 console.log('PASS Astarte: introduction, pause/cancel, safe retry, telegraphed attacks, spar victory and later guides.');
+// Extra frames are loaded as their own sheet; all action poses support both directions.
+const actionImage=images.find(i=>i.src==='assets/astarte-actions.png');assert(actionImage);actionImage.onload();assert.equal(run('ASTARTE_ACTION_CROPS.length'),12);
+for(const face of [-1,1])for(let pose=4;pose<16;pose++)run(`drawMansionAstarte(120,208,0,${face},${pose})`);
+// A brief guard prevents point-blank rapid-fire stacking; the recovery window remains hittable.
+clearKeys();run('mansionStart(false);mansionEnter("garden",350,256);mansionSparStart();M.enemies[0].guard=10;M.hurt=999;M.shots=[{x:495.2,y:239,vx:4.8}]');ticks(1);assert.equal(run('M.enemies[0].hp'),40);assert.equal(run('M.shots.length'),0);
+run('M.enemies[0].guard=0;M.shots=[{x:M.enemies[0].x-4.8,y:239,vx:4.8}]');ticks(1);assert.equal(run('M.enemies[0].hp'),39);
+// Locked-direction dash stays predictable even when the hero passes behind her.
+run('M.enemies[0].t=174;M.enemies[0].x=500;M.x=350;M.enemyShots=[]');ticks(1);assert.equal(run('M.enemies[0].pose'),8);assert.equal(run('M.enemies[0].slashDir'),-1);
+run('M.x=560;M.enemies[0].t=195');const dashX=run('M.enemies[0].x');ticks(20);assert(run('M.enemies[0].x')<dashX-70);assert.equal(run('M.enemies[0].dir'),-1);
+run('M.enemies[0].hp=20;M.enemies[0].t=234');ticks(1);assert(run('M.enemies[0].striking'));assert.equal(run('M.enemies[0].pose'),10);
+// No movement or dodge input: even firing toward her cannot finish the spar before a retry.
+clearKeys();run('mansionStart(false);mansionEnter("garden",350,256);mansionSparStart();M.hurt=0;keys.shoot=true');let idleFrames=0;
+for(;idleFrames<2400&&!run('M.talk||M.flags.boss');idleFrames++){run('M.face=M.enemies[0].x<M.x?-1:1');ticks(1);}
+assert(run('M.talk&&M.talk.after==="sparStart"&&!M.flags.boss'),'standing fire should require dodging');
+console.log('PASS action boss: 12 new poses, shot guard, locked dash, second slash, stationary-fire retry in '+idleFrames+' frames.');
+for(const style of [0]){
+clearKeys();run('mansionStart(false);mansionEnter("garden",350,256);mansionSparStart();M.hurt=0;keys.shoot=true');let frameCount=0;
+for(;frameCount<5000&&!run('M.talk||M.flags.boss');frameCount++){
+run(`{const botE=M.enemies[0],botP=botE.t%360;keys.left=keys.right=keys.jump=false;M.face=botE.x<M.x?-1:1;
+const approaching=M.enemyShots.filter(s=>(s.x-M.x)*s.vx<0&&Math.abs(s.x-M.x)<${style===0?50:65});
+if(M.ground&&!M.slideT&&approaching.some(s=>s.kind==='crescent'&&s.y>240)){keys.jump=true;inp.jumpPressed=true;}
+if(M.ground&&!M.slideT&&approaching.some(s=>s.kind==='crescent'&&s.y<240)){mansionInput.slide=true;}
+if(M.ground&&!M.slideT&&botP>=${style===2?190:195}&&botP<=215&&Math.abs(M.x-botE.x)<155){keys.jump=true;inp.jumpPressed=true;}
+const rain=M.enemyShots.find(s=>s.kind==='star'&&Math.abs(s.x-M.x)<40&&s.y<M.y&&s.y>M.y-110);
+if((botE.rainX!=null&&Math.abs(M.x-botE.rainX)<48)||rain){if(M.x<420)keys.right=true;else keys.left=true;}
+}`);ticks(1);
+}
+assert(run('M.flags.boss'),'normal dodge inputs must clear without health overrides');console.log('PASS fair boss: jump/slide/rain movement with normal health clears in '+frameCount+' frames.');
+}

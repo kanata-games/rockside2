@@ -1,0 +1,188 @@
+{
+  "frameWidth": 192,
+  "frameHeight": 160,
+  "columns": 4,
+  "rows": 3,
+  "anchor": [
+    96,
+    148
+  ],
+  "drawSize": [
+    96,
+    80
+  ],
+  "bodyScale": 0.4,
+  "frames": [
+    "run0",
+    "run1",
+    "run2",
+    "run3",
+    "anticipation",
+    "slash",
+    "overhead",
+    "recovery",
+    "launch",
+    "rise",
+    "fall",
+    "cast"
+  ],
+  "sourceFrames": [
+    {
+      "index": 0,
+      "sourceRect": [
+        55,
+        70,
+        299,
+        349
+      ],
+      "sourceAnchor": [
+        219,
+        345
+      ]
+    },
+    {
+      "index": 1,
+      "sourceRect": [
+        399,
+        88,
+        669,
+        345
+      ],
+      "sourceAnchor": [
+        564,
+        341
+      ]
+    },
+    {
+      "index": 2,
+      "sourceRect": [
+        792,
+        74,
+        1021,
+        345
+      ],
+      "sourceAnchor": [
+        937,
+        341
+      ]
+    },
+    {
+      "index": 3,
+      "sourceRect": [
+        1125,
+        89,
+        1365,
+        346
+      ],
+      "sourceAnchor": [
+        1290,
+        342
+      ]
+    },
+    {
+      "index": 4,
+      "sourceRect": [
+        31,
+        453,
+        327,
+        701
+      ],
+      "sourceAnchor": [
+        231,
+        697
+      ]
+    },
+    {
+      "index": 5,
+      "sourceRect": [
+        385,
+        489,
+        759,
+        700
+      ],
+      "sourceAnchor": [
+        553,
+        696
+      ]
+    },
+    {
+      "index": 6,
+      "sourceRect": [
+        773,
+        378,
+        1046,
+        705
+      ],
+      "sourceAnchor": [
+        928,
+        701
+      ]
+    },
+    {
+      "index": 7,
+      "sourceRect": [
+        1129,
+        485,
+        1431,
+        705
+      ],
+      "sourceAnchor": [
+        1290,
+        701
+      ]
+    },
+    {
+      "index": 8,
+      "sourceRect": [
+        51,
+        854,
+        327,
+        1055
+      ],
+      "sourceAnchor": [
+        244,
+        1051
+      ]
+    },
+    {
+      "index": 9,
+      "sourceRect": [
+        404,
+        736,
+        668,
+        995
+      ],
+      "sourceAnchor": [
+        559,
+        1025
+      ]
+    },
+    {
+      "index": 10,
+      "sourceRect": [
+        767,
+        734,
+        1021,
+        1046
+      ],
+      "sourceAnchor": [
+        948,
+        1042
+      ]
+    },
+    {
+      "index": 11,
+      "sourceRect": [
+        1122,
+        760,
+        1397,
+        1053
+      ],
+      "sourceAnchor": [
+        1298,
+        1049
+      ]
+    }
+  ],
+  "generationPrompt": "12 transparent action frames preserving Astarte's existing appearance: 4 running, anticipation, slash, overhead, recovery, launch, rise, fall, cast; common scale and anchors; no baked effects or labels."
+}
