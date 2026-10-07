@@ -102,3 +102,16 @@ run('mansionEnter("bedroom",231,208);mansionUse()');assert(run('M.map&&M.menuTab
 for(const id of Object.keys(run('MR')))run(`mansionEnter('${id}',64,${id==='hall'?368:208});setState('mansion');render();M.map=true;render();M.map=false`);
 run('localStorage.setItem=()=>{throw Error("quota")};mansionSave()');assert(run('M.saveError'));
 console.log('PASS: room transitions, low passage collision, safe stand-up, wall fall/kick/climb, seal gates + shortcut, checkpoint/death/resume, paused map, guardian and clear, every chamber render, storage failure');
+
+// Breakables absorb shots without blocking movement; drops heal once and pause in menus.
+clearKeys();run('mansionStart(false);mansionEnter("gallery",80,208);M.enemies=[];M.transition=0;M.hp=7;');
+assert(run('mansionFits(104,208)'),'candlestick must not be a movement blocker');
+run('M.shots=[{x:99.2,y:191,vx:4.8}]');ticks(1);assert.equal(run('M.props[0].hp'),1);assert.equal(run('M.pickups.length'),0);assert.equal(run('M.shots.length'),0);
+run('M.shots=[{x:99.2,y:191,vx:4.8}]');ticks(1);assert.equal(run('M.props[0].hp'),0);assert.equal(run('M.pickups.length'),1);
+run('M.map=true');const age=run('M.pickups[0].age');ticks(20);assert.equal(run('M.pickups[0].age'),age);
+run('M.map=false;M.x=104');ticks(30);assert.equal(run('M.hp'),10);assert.equal(run('M.pickups.length'),0);ticks(10);assert.equal(run('M.hp'),10);
+run('M.hp=15;M.pickups=[{kind:"water",x:M.x,y:M.y-12,vy:0,age:11}]');ticks(1);assert.equal(run('M.hp'),16);
+run('mansionEnter("gallery",80,208)');assert.equal(run('M.props[0].hp'),2);assert.equal(run('M.pickups.length'),0);
+run('M.props[0].hp=0;M.pickups=[{kind:"water",x:100,y:180,vy:0,age:0}];mansionEnter("bedroom",430,208)');assert.equal(run('M.props.length'),0);assert.equal(run('M.pickups.length'),0);
+const propImage=images.find(i=>i.src==='assets/mansion-props.png');assert(propImage);propImage.onload();run('renderMansion()');
+console.log('PASS mansion props: break, heal, pause, pass-through, reentry and generated furniture.');

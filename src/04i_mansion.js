@@ -14,7 +14,16 @@ const MR={
 const HUB_NPCS=[{id:'roru',room:'bedroom',x:390,y:208,name:'ダイスロール',draw:drawRoru,talk:mansionRoruTalk}];
 function mansionNearbyNPC(){return HUB_NPCS.find(n=>n.room===M.room&&Math.abs(M.x-n.x)<20&&Math.abs(M.y-n.y)<24);}
 function mansionLocationName(){return M.room==='bedroom'&&M.x>=280?'拠点の談話室':MR[M.room].name;}
-const M={room:'bedroom',x:110,y:208,vx:0,vy:0,face:1,h:26,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,hp:16,hurt:0,dead:0,t:0,walkDistance:0,camX:0,camY:0,shots:[],enemyShots:[],enemies:[],fx:[],flags:{seal:false,boss:false,complete:false},visited:['bedroom'],checkpoint:{room:'bedroom',x:110,y:208},message:'',messageT:0,prompt:'',near:null,map:false,talk:null,menuTab:'status',saved:false,saveError:false,transition:0};
+const M={room:'bedroom',x:110,y:208,vx:0,vy:0,face:1,h:26,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,hp:16,hurt:0,dead:0,t:0,walkDistance:0,camX:0,camY:0,shots:[],enemyShots:[],enemies:[],props:[],pickups:[],fx:[],flags:{seal:false,boss:false,complete:false},visited:['bedroom'],checkpoint:{room:'bedroom',x:110,y:208},message:'',messageT:0,prompt:'',near:null,map:false,talk:null,menuTab:'status',saved:false,saveError:false,transition:0};
+// Furniture has no movement collider; only breakable props receive player shots.
+const MANSION_PROP_FRAMES={"candle":{"rect":[23,5,17,54],"cell":0},"candleCracked":{"rect":[86,7,19,52],"cell":1},"candleBroken":{"rect":[140,32,40,27],"cell":2},"vase":{"rect":[206,21,35,38],"cell":3},"vaseCracked":{"rect":[11,80,41,43],"cell":4},"vaseBroken":{"rect":[69,89,54,34],"cell":5},"box":{"rect":[134,89,52,34],"cell":6},"boxCracked":{"rect":[199,90,50,33],"cell":7},"boxBroken":{"rect":[5,153,54,34],"cell":8},"books":{"rect":[69,151,54,36],"cell":9},"chair":{"rect":[143,133,34,54],"cell":10},"table":{"rect":[200,133,48,54],"cell":11},"shelf":{"rect":[16,197,32,54],"cell":12},"picture":{"rect":[81,197,30,54],"cell":13},"water":{"rect":[143,197,33,54],"cell":14},"moon":{"rect":[201,197,46,54],"cell":15}};
+let mansionPropArt=null;{const image=new Image();image.onload=()=>mansionPropArt=image;image.src='assets/mansion-props.png';}
+const MANSION_PROPS={gallery:[['candle',104,208,'water'],['vase',320,144,'water'],['box',650,208,'water'],['candle',780,208,'water']],hall:[['vase',112,368,'water'],['candle',346,176,'water']],archive:[['candle',105,208,'water'],['box',375,208,'water']],cellar:[['vase',190,208,'water'],['box',420,208,'water']],garden:[['candle',180,208,'water']]};
+function mansionPropDraw(frame,x,y,height){if(!mansionPropArt)return false;const b=MANSION_PROP_FRAMES[frame].rect;const w=b[2]/b[3]*height;g.drawImage(mansionPropArt,...b,Math.round(x-w/2),Math.round(y-height),w,height);return true;}
+function mansionPropsEnter(room){M.props=(MANSION_PROPS[room]||[]).map(([kind,x,y,drop])=>({kind,x,y,drop,hp:2,brokenT:0}));M.pickups=[];}
+function mansionPropsHit(shot){if(shot.dead)return;for(const p of M.props){if(p.hp<=0)continue;const h=p.kind==='candle'?36:22,w=p.kind==='candle'?12:22;if(!mansionOverlap(shot.x-3,shot.y-3,6,6,[p.x-w/2,p.y-h,w,h]))continue;shot.dead=true;p.hp--;mansionBurst(p.x,p.y-12,'#d9bd86',6);sfx('hit');if(!p.hp){p.brokenT=32;M.pickups.push({kind:p.drop,x:p.x,y:p.y-14,vy:-1.8,age:0});}break;}}
+function mansionPickupsUpdate(){for(const p of M.props)if(p.brokenT>0)p.brokenT--;for(const p of M.pickups){p.age++;p.vy=Math.min(3,p.vy+.12);const oldY=p.y;p.y+=p.vy;for(const b of mansionSolids())if(p.vy>=0&&p.x>b[0]&&p.x<b[0]+b[2]&&oldY<=b[1]-6&&p.y>=b[1]-6){p.y=b[1]-6;p.vy=0;}if(p.age>10&&mansionOverlap(M.x-MC.w/2-3,M.y-M.h,MC.w+6,M.h,[p.x-6,p.y-6,12,12])){M.hp=Math.min(16,M.hp+3);p.taken=true;mansionBurst(p.x,p.y,'#9df6ff',6);mansionSay('水滴を拾った！ HPが３回復。',100);sfx('heal');}}M.pickups=M.pickups.filter(p=>!p.taken&&p.age<900&&p.y<MR[M.room].h+24);}
+function mansionPropsDraw(){for(const p of M.props){const h=p.kind==='candle'?36:22;if(p.hp>0){if(!mansionPropDraw(p.kind+(p.hp===1?'Cracked':''),p.x,p.y,h))mrect(p.x-5,p.y-h,10,h,'#bfa375');}else if(p.brokenT>0)mansionPropDraw(p.kind+'Broken',p.x,p.y,p.kind==='candle'?18:14);}for(const p of M.pickups){if(p.age>780&&(p.age&8))continue;if(!mansionPropDraw(p.kind,p.x,p.y+6+Math.sin(p.age*.12),12))mansionDiamond(p.x,p.y,5,'#8beeff');}}
 const mansionInput={slide:false,map:false,use:false};
 let mansionActionArt=null,mansionBackdrop=null;
 for(const [name,url] of [['actions','assets/umine-mansion-actions.png'],['background','assets/mansion-background.png']]){const image=new Image();image.onload=()=>{if(name==='actions')mansionActionArt=image;else mansionBackdrop=image;};image.src=url;}
@@ -22,7 +31,7 @@ function mansionRead(){try{const s=JSON.parse(localStorage.getItem(MANSION_KEY))
 function mansionSave(){try{localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:M.flags,visited:M.visited,checkpoint:M.checkpoint}));M.saved=true;M.saveError=false;}catch{M.saveError=true;}}
 function mansionSay(text,time=220){M.message=text;M.messageT=time;}
 function mansionStart(resume=false){const saved=resume?mansionRead():null;Object.assign(M,{hp:16,hurt:0,dead:0,t:0,flags:saved?.flags||{seal:false,boss:false,complete:false},visited:saved?.visited||['bedroom'],checkpoint:saved?.checkpoint||{room:'bedroom',x:110,y:208},map:false,talk:null,menuTab:'status',saved:!!saved,saveError:false});mansionEnter(M.checkpoint.room,M.checkpoint.x,M.checkpoint.y);setState('mansion');mansionSay(resume?'また、ここから探してみよう。':'右に談話室。攻略先は客室の扉で「調べる」。');mansionUI();}
-function mansionEnter(room,x,y){Object.assign(M,{room,x,y,walkDistance:0,vx:0,vy:0,h:MC.h,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,shots:[],enemyShots:[],fx:[],transition:16,near:null,prompt:''});M.enemies=MR[room].enemies.map((e,i)=>({kind:e[0],x:e[1],y:e[2],baseY:e[2],min:e[3],max:e[4],dir:i%2?-1:1,hp:e[0]==='fly'?2:3,t:0,flash:0}));if(MR[room].boss&&!M.flags.boss)M.enemies.push({kind:'boss',x:379,y:208,baseY:208,hp:16,maxHp:16,t:0,dir:-1,flash:0});if(!M.visited.includes(room))M.visited.push(room);mansionCamera(true);mansionSave();}
+function mansionEnter(room,x,y){Object.assign(M,{room,x,y,walkDistance:0,vx:0,vy:0,h:MC.h,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,shots:[],enemyShots:[],fx:[],transition:16,near:null,prompt:''});mansionPropsEnter(room);M.enemies=MR[room].enemies.map((e,i)=>({kind:e[0],x:e[1],y:e[2],baseY:e[2],min:e[3],max:e[4],dir:i%2?-1:1,hp:e[0]==='fly'?2:3,t:0,flash:0}));if(MR[room].boss&&!M.flags.boss)M.enemies.push({kind:'boss',x:379,y:208,baseY:208,hp:16,maxHp:16,t:0,dir:-1,flash:0});if(!M.visited.includes(room))M.visited.push(room);mansionCamera(true);mansionSave();}
 function mansionSolids(){const r=MR[M.room];return [...r.floor,...r.blocks,[0,-16,r.w,16],[-16,0,16,r.h],[r.w,0,16,r.h],...(r.gate&&!M.flags.seal?[r.gate]:[])];}
 function mansionOverlap(x,y,w,h,b){return x<b[0]+b[2]&&x+w>b[0]&&y<b[1]+b[3]&&y+h>b[1];}
 function mansionFits(x,y,h=MC.h){return !mansionSolids().some(b=>mansionOverlap(x-MC.w/2,y-h,MC.w,h,b));}
@@ -68,8 +77,9 @@ function updateMansion(){
  if(M.ground&&!M.slideT&&!M.hurt&&Math.abs(M.x-walkStartX)>.1)M.walkDistance+=Math.abs(M.x-walkStartX);else M.walkDistance=0;
  if(M.y>MR[M.room].h+40){M.hp=Math.max(1,M.hp-3);const cp=M.checkpoint;mansionEnter(cp.room,cp.x,cp.y);M.hurt=90;mansionSay('水の灯りまで戻ってきた。');return;}
  if(inp.shoot&&M.cool===0&&M.shots.length<3){M.shots.push({x:M.x+M.face*13,y:M.y-(M.slideT?7:17),vx:M.face*4.8});M.cool=10;M.poseT=14;sfx('shot');}
- for(const shot of M.shots){shot.x+=shot.vx;if(solids.some(b=>mansionOverlap(shot.x-2,shot.y-2,4,4,b))){shot.dead=true;mansionBurst(shot.x,shot.y,'#96eaff',3);}for(const e of M.enemies){if(!shot.dead&&e.hp>0&&Math.abs(shot.x-e.x)<(e.kind==='boss'?19:12)&&shot.y>e.y-(e.kind==='boss'?35:24)&&shot.y<e.y+2){e.hp--;e.flash=6;shot.dead=true;mansionBurst(shot.x,shot.y,'#b1f8ff',4);sfx('hit');if(e.hp<=0){mansionBurst(e.x,e.y-12,'#ffdca1',14);if(e.kind==='boss'){M.flags.boss=true;M.enemyShots=[];mansionSave();mansionSay('道が開いた……！ 門の向こうへ行ってみよう。',260);}else if(M.hp<16)M.hp++;}}}}
+ for(const shot of M.shots){shot.x+=shot.vx;if(solids.some(b=>mansionOverlap(shot.x-2,shot.y-2,4,4,b))){shot.dead=true;mansionBurst(shot.x,shot.y,'#96eaff',3);}mansionPropsHit(shot);for(const e of M.enemies){if(!shot.dead&&e.hp>0&&Math.abs(shot.x-e.x)<(e.kind==='boss'?19:12)&&shot.y>e.y-(e.kind==='boss'?35:24)&&shot.y<e.y+2){e.hp--;e.flash=6;shot.dead=true;mansionBurst(shot.x,shot.y,'#b1f8ff',4);sfx('hit');if(e.hp<=0){mansionBurst(e.x,e.y-12,'#ffdca1',14);if(e.kind==='boss'){M.flags.boss=true;M.enemyShots=[];mansionSave();mansionSay('道が開いた……！ 門の向こうへ行ってみよう。',260);}else if(M.hp<16)M.hp++;}}}}
  M.shots=M.shots.filter(s=>!s.dead&&Math.abs(s.x-M.x)<300);
+ mansionPickupsUpdate();
  for(const e of M.enemies){if(e.hp<=0)continue;e.t++;if(e.flash)e.flash--;
   if(e.kind==='walk'){e.x+=e.dir*.55;if(e.x<e.min||e.x>e.max)e.dir*=-1;}
   if(e.kind==='fly'){e.x+=e.dir*.55;if(e.x<e.min||e.x>e.max)e.dir*=-1;e.y=e.baseY+Math.sin(e.t*.055)*14;}
@@ -96,15 +106,15 @@ function mansionHubDecor(){
   for(const x of [270,300]){mrect(x,35,6,173,'#7f718b');mrect(x+1,38,3,166,'#4f516e');mrect(x-3,190,12,18,'#7a8298');}mrect(268,30,40,6,'#a09bb4');
   // Carpet, framed moon painting, two chairs, and a low table are scenery, not blockers.
   mrect(330,203,175,5,'#856373');mrect(334,204,167,2,'#c19b79');
-  mrect(430,74,51,42,'#bba475');mrect(433,77,45,36,'#253d5f');mansionDiamond(455,93,9,'#bedcdb');mrect(436,104,38,4,'#506280');
-  for(const x of [342,474]){mrect(x,169,22,28,'#554965');mrect(x+2,171,18,18,'#7a5a75');mrect(x-2,190,26,6,'#997783');mrect(x+2,196,3,12,'#635d79');mrect(x+18,196,3,12,'#635d79');}
-  mrect(413,188,39,5,'#b0928b');mrect(417,193,3,15,'#70677d');mrect(445,193,3,15,'#70677d');mrect(428,182,9,6,'#d6d6c0');
-  mrect(520,102,30,75,'#63516b');for(let y=109;y<169;y+=20){mrect(522,y+14,26,3,'#a18d93');for(let i=0;i<5;i++)mrect(524+i*4,y,3,14,['#748e9e','#a07986','#b19e79'][i%3]);}
+  mansionPropDraw('picture',455,124,48);
+  for(const x of [353,485])mansionPropDraw('chair',x,208,44);
+  mansionPropDraw('table',433,208,31);mansionPropDraw('books',433,177,8);
+  mansionPropDraw('shelf',535,208,67);
  }else if(M.room==='hubCellar'){
   // Workshop/storage shell; later rooms attach via MR doors, not the combat waterway.
   for(let y=28;y<208;y+=24)for(let x=0;x<384;x+=32){const off=(y/24|0)%2?16:0;mrect(x-off,y,31,23,'#283444');mrect(x-off+1,y+1,29,2,'#526274');}
   for(const x of [184,221]){mrect(x,137,27,66,'#527283');mrect(x+3,140,21,57,'#1b354b');mrect(x+4,169,19,25,'#437c93');mrect(x+4,166+Math.sin(M.t*.03)*2,19,2,'#89d6df');mrect(x+10,144,3,17,'#8eafbe');}mrect(182,129,69,7,'#909b9e');
-  for(const [x,y]of [[268,183],[292,183],[280,159]]){mrect(x,y,23,24,'#5c5666');rectLine(x+2,y+2,19,19,'#9b8b92');mrect(x+10,y+3,3,18,'#807780');}
+  for(const x of [280,309])mansionPropDraw('box',x,208,23);
  }
 }
 function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.round(M.camY);
@@ -121,6 +131,7 @@ function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.roun
  if(r.cp){const [x,y]=r.cp;mansionTile(x-12,y-6,24,6);mansionDiamond(x,y-27+Math.sin(M.t*.05)*2,11,'#305876');mansionDiamond(x,y-27+Math.sin(M.t*.05)*2,7,'#95f3ff');mrect(x-1,y-34,2,8,'#efffff');}
  if(r.seal&&!M.flags.seal){const[x,y]=r.seal;g.strokeStyle='#dfc77d';g.lineWidth=2;g.beginPath();g.arc(x,y-8,13,0,7);g.stroke();mansionDiamond(x,y-8+Math.sin(M.t*.06)*2,9,'#97f4ff');}
  if(M.room==='bedroom'&&!drawMansionBed(34,208,90)){mrect(34,168,83,15,'#657f9f');mrect(36,165,79,6,'#d2dfe9');mrect(32,150,4,55,'#8b7281');mrect(115,174,4,31,'#8b7281');mrect(40,161,19,6,'#f4f1ee');mrect(65,168,47,13,'#8fa8ca');mrect(42,183,4,25,'#705b72');}
+ mansionPropsDraw();
  for(const n of HUB_NPCS)if(n.room===M.room)n.draw(n.x,n.y,M.t,M.x<n.x?-1:1);
  if(M.room==='hall'){for(let y=208;y<360;y+=24){mansionDiamond(157,y,3,'#80e4ee');mansionDiamond(243,y,3,'#80e4ee');}}
  if(r.goal){const[x,y]=r.goal;mrect(x-17,y-75,34,75,'#0b142a');for(let z=-14;z<=14;z+=7)if(!M.flags.boss)mrect(x+z,y-72,3,72,'#c6b37c');mrect(x-19,y-77,38,4,'#f0dbaa');}
