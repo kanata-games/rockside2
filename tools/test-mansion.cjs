@@ -93,7 +93,7 @@ run('M.x=390;M.y=208;M.transition=0;M.vx=1.8;mansionInput.use=true;');ticks(1);a
 assert.equal(elements.get('mTalk').style.display,'block');assert.equal(elements.get('mMapTab').style.display,'none');
 run('document.getElementById("mTalkNext").handlers.click({preventDefault(){},stopPropagation(){}})');assert.equal(run('M.talk.index'),1);
 run('mansionInput.use=true');ticks(1);assert.equal(run('M.talk.index'),2);
-run('mansionInput.use=true');ticks(1);assert(run('!M.talk&&!M.map'));assert.equal(run('M.menuTab'),'status');
+run('while(M.talk)mansionTalkNext()');assert(run('!M.talk&&!M.map'));assert.equal(run('M.menuTab'),'status');
 run('mansionRoruTalk();document.getElementById("mMenuClose").handlers.click({preventDefault(){},stopPropagation(){}})');assert(run('!M.talk&&!M.map'));
 run('M.flags.seal=true;mansionRoruTalk()');assert(run('M.talk.lines[0].includes("紋章")'));run('inp.backPressed=true');ticks(1);run('inp.backPressed=false');assert(run('!M.talk&&!M.map'));
 run('M.flags.complete=true;mansionRoruTalk()');assert(run('M.talk.lines[0].includes("お帰り")'));run('mansionTalkClose();M.map=false');
@@ -272,3 +272,46 @@ console.log('PASS guard: front chip/knockback, rear/vertical vulnerability, grou
 assert(!html.includes('#mMap{visibility:hidden'));
 assert(html.includes('body.mansion-menu-open #mMap,body.mansion-menu-open #mSwap,body.mansion-menu-open #mAbility{visibility:hidden;pointer-events:none}'));
 console.log('PASS menu CSS: hide only while open, keep MENU available in gameplay.');
+
+// Dice practice keeps the chosen hero, progression and recorded checkpoint intact.
+clearKeys();run('mansionStart(false);M.flags.boss=true;M.actor="astarte";M.x=390;mansionRoruTalk()');
+const diceFlags=run('JSON.stringify(M.flags)'),diceCheckpoint=run('JSON.stringify(M.checkpoint)');
+assert.equal(run('mansionDiceChallenge()'),true);assert.equal(run('M.room'),'diceArena');assert.equal(run('M.actor'),'astarte');
+const diceTime=run('M.enemies[0].t');ticks(30);assert.equal(run('M.enemies[0].t'),diceTime);assert.equal(run('mansionDiceChallenge()'),false);
+run('while(M.talk)mansionTalkNext();M.transition=0;M.hurt=0');assert.equal(run('M.diceState'),'active');
+run('M.map=true');ticks(20);assert.equal(run('M.enemies[0].t'),0);run('M.map=false');
+// Telegraphs precede volleys; jumping relocates the boss to its marked target.
+run('M.enemies[0].t=70;mansionDiceAI(M.enemies[0])');assert.equal(run('M.enemies[0].anim'),'windup');assert.equal(run('M.enemyShots.length'),0);
+run('M.enemies[0].t=112;mansionDiceAI(M.enemies[0]);M.enemies[0].t=225;mansionDiceAI(M.enemies[0])');assert(run('M.enemyShots.some(b=>b.kind==="dice")&&M.enemyShots.some(b=>b.kind==="card")'));
+run('M.enemies[0].t=280;mansionDiceAI(M.enemies[0]);M.enemies[0].t=320;mansionDiceAI(M.enemies[0])');assert(run('M.enemies[0].y<200'));run('renderMansion()');
+// Each scythe swing deals two; water one; the star action two.
+run('M.enemyShots=[];M.enemies[0].x=200;M.enemies[0].y=256;M.x=160;M.y=256;M.face=1;mansionScythe(1);mansionScytheHit()');assert.equal(run('M.enemies[0].hp'),38);
+run('mansionScythe(2);mansionScytheHit()');assert.equal(run('M.enemies[0].hp'),36);
+run('M.poseT=0;M.shots=[{x:195.2,y:239,vx:4.8}];M.enemies[0].t=140');ticks(1);assert.equal(run('M.enemies[0].hp'),35);
+run('M.shots=[{kind:"star",damage:2,x:196.6,y:239,vx:3.4}]');ticks(1);assert.equal(run('M.enemies[0].hp'),33);
+// Frontal guard reduces a card from two to one, and losing never kills the hero.
+run('M.enemyShots=[{kind:"card",x:163,y:233,vx:-3,vy:0}];M.ground=true;M.hurt=0;mansionGuardKeys.add("ShiftLeft")');const diceHP=run('M.hp');ticks(1);assert.equal(run('M.hp'),diceHP-1);
+run('mansionGuardRelease();M.hurt=0;M.hp=1;mansionDamage(2,-1)');assert(run('M.map&&M.diceState==="ready"&&M.dead===0'));assert.equal(run('M.actor'),'astarte');
+run('while(M.talk)mansionTalkNext();M.enemies[0].hp=2;M.enemies[0].x=200;M.x=160;M.face=1;mansionScythe();mansionScytheHit()');assert(run('M.diceState==="done"&&M.map&&M.enemyShots.length===0'));assert.equal(run('JSON.stringify(M.flags)'),diceFlags);
+run('while(M.talk)mansionTalkNext()');assert.equal(run('M.room'),'bedroom');assert.equal(run('M.actor'),'astarte');assert.equal(run('JSON.stringify(M.checkpoint)'),diceCheckpoint);
+run('M.x=390;mansionRoruTalk();mansionDiceChallenge();mansionTalkClose();M.map=false');assert.equal(run('M.room'),'bedroom');
+run('M.x=390;mansionRoruTalk();mansionDiceChallenge();while(M.talk)mansionTalkNext();M.map=true;document.getElementById("mBattleLeave").handlers.click({preventDefault(){},stopPropagation(){}})');assert.equal(run('M.room'),'bedroom');
+run('mansionStart(true)');assert.equal(run('M.room'),'bedroom');assert(!run('M.diceReturn'));
+console.log('PASS Dice boss: optional arena, both heroes, telegraphs, attacks, guard, pause, retry, victory, abandon and safe saved checkpoint.');
+
+run('M.x=390;mansionRoruTalk()');assert(run('M.talk.lines.some(l=>l.includes("本番")&&l.includes("館の謎"))'));assert.equal(elements.get('mTalkDice').style.display,'block');
+assert(!run('mansionDiceDraw.toString().includes("dicerollDark")'));run('mansionDiceDraw(mansionNewDice())');
+console.log('PASS Dice practice: current Roru model, full-battle story notice.');
+
+// All six announced outcomes strengthen predictable volleys; the jackpot rain is marked.
+run('M.map=false;M.diceState="active"');
+for(let face=1;face<=6;face++){
+ run(`M.enemies=[mansionNewDice()];M.enemies[0].roll=${face};M.enemyShots=[];for(const t of [112,136,160,225,243,261]){M.enemies[0].t=t;mansionDiceAI(M.enemies[0]);}`);
+ assert.equal(run('M.enemyShots.filter(b=>b.kind==="dice").length'),Math.min(face,3));assert.equal(run('M.enemyShots.filter(b=>b.kind==="card").length'),face>=4?3:1);
+ assert.equal(run('M.enemyShots[0].damage'),face>=5?3:2);
+ run('M.enemies[0].t=280;mansionDiceAI(M.enemies[0]);renderMansion();M.enemies[0].t=300;mansionDiceAI(M.enemies[0]);renderMansion()');assert.equal(run('M.enemyShots.filter(b=>b.kind==="chip").length'),face===6?5:0);
+}
+run('M.enemies=[mansionNewDice()];M.enemies[0].t=40;mansionDiceAI(M.enemies[0])');assert.equal(run('M.enemies[0].roll'),0);run('M.map=true');const rollTimer=run('M.enemies[0].t');ticks(20);assert.equal(run('M.enemies[0].t'),rollTimer);
+run('M.map=false;M.enemies[0].t=76;mansionDiceAI(M.enemies[0])');assert(run('M.enemies[0].roll>=1&&M.enemies[0].roll<=6'));assert(run('M.message.includes("出目")'));
+run('M.enemies[0].roll=6;M.enemies[0].t=90;renderMansion()');const heldRoll=run('M.enemies[0].roll');run('renderMansion()');assert.equal(run('M.enemies[0].roll'),heldRoll);
+console.log('PASS Dice roll: six distinct intensities, rolling/reveal lead time, fixed attack sequence, targeted jackpot rain, pause and read-only face rendering.');
