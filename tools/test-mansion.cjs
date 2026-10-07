@@ -74,6 +74,20 @@ run('M.map=true');assert.equal(run('zoneAt(30,500)'),null);
 for(const key of ['bed','door']){const img=images.find(i=>i.src==='assets/mansion-'+key+'.png');assert(img);img.onload();}
 assert(run('drawMansionBed(23,176,120)'));assert(run('drawMansionDoor(232,176,80,true)'));
 run('startOpening();OPENING.step=1;render();OPENING.step=3;render();mansionStart(false);render()');
+// Roru is friendly, repeatable, and all conversation input paths pause exploration.
+const roruImage=images.find(i=>i.src==='assets/roru-masked-idle.png');assert(roruImage);roruImage.onload();assert.equal(run('RORU_ART.frames.length'),2);
+run('startOpening()');assert(run('OPEN_LINES.some(l=>l.speaker==="ダイスロール"&&l.lines[0].includes("目覚めましたか"))'));
+for(let i=0;i<run('OPEN_LINES.length');i++)run(`OPENING.step=${i};render()`);
+run('startOpening();OPENING.step=OPEN_LINES.length-1;OPENING.t=20;inp.startPressed=true;updateOpening();inp.startPressed=false');assert.equal(run('state'),'mansion');
+run('M.x=180;M.y=208;M.transition=0;M.vx=1.8;mansionInput.use=true;');ticks(1);assert(run('M.map&&M.talk&&M.menuTab==="talk"'));const talkTimer=run('M.t');const talkX=run('M.x');ticks(45);assert.equal(run('M.t'),talkTimer);assert.equal(run('M.x'),talkX);
+assert.equal(elements.get('mTalk').style.display,'block');assert.equal(elements.get('mMapTab').style.display,'none');
+run('document.getElementById("mTalkNext").handlers.click({preventDefault(){},stopPropagation(){}})');assert.equal(run('M.talk.index'),1);
+run('mansionInput.use=true');ticks(1);assert.equal(run('M.talk.index'),2);
+run('mansionInput.use=true');ticks(1);assert(run('!M.talk&&!M.map'));assert.equal(run('M.menuTab'),'status');
+run('mansionRoruTalk();document.getElementById("mMenuClose").handlers.click({preventDefault(){},stopPropagation(){}})');assert(run('!M.talk&&!M.map'));
+run('M.flags.seal=true;mansionRoruTalk()');assert(run('M.talk.lines[0].includes("紋章")'));run('inp.backPressed=true');ticks(1);run('inp.backPressed=false');assert(run('!M.talk&&!M.map'));
+run('M.flags.complete=true;mansionRoruTalk()');assert(run('M.talk.lines[0].includes("お帰り")'));run('mansionTalkClose();M.map=false');
+run('mansionEnter("bedroom",231,208);mansionUse()');assert(run('M.map&&M.menuTab==="area"&&!M.talk'));run('M.map=false');
 // Render all chambers and map. Storage failure does not stop play.
 for(const id of ['bedroom','gallery','hall','archive','cellar','garden'])run(`mansionEnter('${id}',64,${id==='hall'?368:208});setState('mansion');render();M.map=true;render();M.map=false`);
 run('localStorage.setItem=()=>{throw Error("quota")};mansionSave()');assert(run('M.saveError'));

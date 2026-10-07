@@ -7,8 +7,27 @@ const OPEN_LINES = [
  {face:3,pose:1,lines:['みんな……？ カナタちゃん……？','昨日は、みんなでパーティーをして……。']},
  {face:2,pose:1,lines:['……えっ！？','右手に、なにかついてる！']},
  {face:3,pose:1,lines:['んん……外れないよ……。','お洋服も変わってる。どうして……？']},
- {face:0,pose:1,lines:['まずは、みんなを探そう。','このお部屋の外に、誰かいるかな？']}
+ {speaker:'ダイスロール',rol:true,pose:1,lines:['おやおや……目覚めましたか……？','ずいぶん、よくお休みでしたねえ。']},
+ {face:2,rol:true,pose:1,lines:['ひゃっ！？ サイコロの怪人さん！','……あれ？ その声、ロルちゃん？']},
+ {speaker:'ダイスロール',rol:true,pose:1,lines:['おや。今はダイスロールとお呼びを。','せっかくの登場が、台無しですよ……。']},
+ {face:3,rol:true,pose:1,lines:['えへへ、ごめんね。ここ、どこ？','それに、この右手……外れないの。']},
+ {speaker:'ダイスロール',rol:true,pose:1,lines:['ふむ……まずは、慌てずに。','その腕、動かすことはできますか？']},
+ {face:1,rol:true,pose:1,lines:['うん。痛くはないけど……変な感じ。','みんなの姿も見えないんだ。']},
+ {speaker:'ダイスロール',rol:true,pose:1,lines:['では、ひとつずつ確かめましょう。','お話なら、またこちらで……。']},
+ {face:0,rol:true,pose:1,lines:['わかった！ まずはお部屋の外へ。','ロルちゃん、またあとでね！']}
 ];
+// Roru's monster costume is a disguise; she remains a friendly NPC.
+const RORU_ART={frames:[],image:null};
+{const image=new Image();image.onload=()=>{RORU_ART.image=image;for(let i=0;i<2;i++){const c=mkCanvas(64,64),p=c.getContext('2d');p.imageSmoothingEnabled=false;p.drawImage(image,i*887,0,887,887,32-500*.067,61-875*.067,887*.067,887*.067);RORU_ART.frames.push(sheetSprite(c));}
+ const p=document.getElementById('mTalkPortrait').getContext('2d');p.imageSmoothingEnabled=false;p.drawImage(image,305,0,380,440,0,0,96,96);
+};image.src='assets/roru-masked-idle.png';}
+function drawRoru(x,feet,time,face=-1){const fi=(time>>6)&1,sp=RORU_ART.frames[fi];
+ if(sp)g.drawImage(pick(sp,face,false),Math.round(x-24),Math.round(feet-61*.75),48,48);
+ else {const old=sheetFrame('dicerollDark','idle',fi);if(old)g.drawImage(pick(old,face,false),Math.round(x-24),Math.round(feet-47),48,48);}
+ // Small separate smoke pixels rise from the cigarette; no smoke baked into the body.
+ const sx=x+face*(fi?10:-18),sy=feet-27;
+ for(let i=0;i<3;i++){const age=(time+i*13)%40;g.globalAlpha=(1-age/40)*.42;g.fillStyle='#b5b2c2';g.fillRect(Math.round(sx+Math.sin(age*.16+i)*2),Math.round(sy-age*.22),1+i%2,2);}g.globalAlpha=1;
+}
 const openingArt={};
 for(const [key,path] of [['poses','assets/umine-opening-poses.png'],['faces','assets/umine-expressions.png']]) {
  const img=new Image();img.onload=()=>openingArt[key]=img;img.onerror=()=>openingArt[key]=null;img.src=path;
@@ -90,6 +109,7 @@ function renderOpening(){
   else drawSequelAt(0,80,mansionFurniture.bed?153:130,1,false);
   // Blanket sits in front of the sleeping body only.
   if(!line.pose){if(mansionFurniture.bed)g.drawImage(mansionFurniture.bed,650,490,900,110,77,147,55,10);else{openingRect(77,124,55,10,'#819bbf');openingRect(78,125,52,2,'#c1d9ef');}}
+  if(line.rol)drawRoru(195,176,o.t,-1);
   if(line.dark){openingRect(0,0,VW,VH,'rgba(4,7,18,.75)');}
  }else{
   const fi=o.poseT?6:!o.ground?(o.vy<0?4:5):o.vx?2+((frame>>3)&1):(frame>>5)&1;
@@ -102,8 +122,9 @@ function renderOpening(){
  if(state==='opening'){
   openingRect(6,185,244,49,'#0b1429');rectLine(6,185,244,49,'#6d9ab7');
   const img=openingArt.faces;const fi=OPEN_LINES[o.step].face;
-  if(img)g.drawImage(img,(fi%2)*627,Math.floor(fi/2)*627,627,627,9,187,44,44);
-  blit();openingTextLeft('海音',61,190,7,'#91e5ff');
+  if(OPEN_LINES[o.step].speaker&&RORU_ART.image)g.drawImage(RORU_ART.image,305,0,380,440,9,187,44,44);
+  else if(img)g.drawImage(img,(fi%2)*627,Math.floor(fi/2)*627,627,627,9,187,44,44);
+  blit();openingTextLeft(OPEN_LINES[o.step].speaker||'海音',61,190,7,OPEN_LINES[o.step].speaker?'#f4c795':'#91e5ff');
   OPEN_LINES[o.step].lines.forEach((s,i)=>openingTextLeft(s,61,202+i*10,6.3,'#edf7ff'));
   drawHiText('タップ / Enter / SHOTで次へ',128,230,5,'#829ab4','#0b1429');return;
  }

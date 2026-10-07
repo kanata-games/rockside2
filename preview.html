@@ -71,6 +71,8 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 
 #mMenuBar{gap:3px;padding:6px}#mMenuBar button{padding:6px 8px;font-size:clamp(12px,calc(8 * var(--mu)),17px)}
 #mAreaContent{padding:16px;font-size:14px;line-height:1.8;color:#d5e5ee}#mAreaContent h2{color:#fff1bd;font-size:20px}#mAreaContent #mAreaGo{width:100%;min-height:64px;background:#244f65;border-color:#91e5ef}#mAreaGo:disabled{opacity:.5}
+#mTalk{padding:20px;font-size:clamp(16px,calc(9 * var(--mu)),20px);line-height:1.85;color:#edf3fa}
+#mTalk header{display:flex;align-items:center;gap:16px;margin-bottom:20px}#mTalkPortrait{width:96px;height:96px;background:#182338;border:1px solid #baa16c;image-rendering:pixelated}#mTalk h2{color:#f4c795;margin:0;font-size:22px}#mTalkText{white-space:pre-line}#mTalkNext{display:block;width:100%;margin-top:26px;background:#244f65!important}
 </style>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%2311162d'/%3E%3Cpath d='M8 6h5v20H8zm11 0h5v20h-5z' fill='%23ffd84a'/%3E%3C/svg%3E">
 <style>
@@ -95,12 +97,12 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 <div id="modelPicker" aria-label="海音ちゃんのモデル比較"><button data-model="32" aria-pressed="false">前作</button><button data-model="40" aria-pressed="false">新40px</button><button data-model="48" aria-pressed="true">新48px</button><span id="modelState">読込中</span></div>
 <button id="mSlide" aria-label="スライディング">SLIDE</button><button id="mMap" aria-label="探索メニュー">MENU</button>
 <section id="mMenu" role="dialog" aria-label="探索メニュー" aria-modal="true">
-<div id="mMenuBar"><button id="mStatusTab" aria-selected="true">ステータス</button><button id="mMapTab" aria-selected="false">マップ</button><button id="mAreaTab" aria-selected="false">攻略先</button><button id="mMenuClose" aria-label="メニューを閉じる">戻る</button></div><div id="mMenuBody"><div id="mStatus"></div><div id="mMapContent"></div><div id="mAreaContent"><h2>攻略先を選ぶ</h2><p>屋敷を拠点に、行き先を選んで探索しよう。</p><button id="mAreaGo">月影の館・探索区画へ</button><p>回廊 → 大広間 → 書庫 → 地下水路 → 中庭<br>魔法の壁キックと滑走で、封印の先へ。</p><p id="mAreaHint"></p></div></div></section>
+<div id="mMenuBar"><button id="mStatusTab" aria-selected="true">ステータス</button><button id="mMapTab" aria-selected="false">マップ</button><button id="mAreaTab" aria-selected="false">攻略先</button><button id="mMenuClose" aria-label="メニューを閉じる">戻る</button></div><div id="mMenuBody"><div id="mTalk" style="display:none"><header><canvas id="mTalkPortrait" width="96" height="96" aria-label="被り物姿のダイスロール"></canvas><h2>ダイスロール</h2></header><p id="mTalkText" aria-live="polite"></p><button id="mTalkNext">次へ</button></div><div id="mStatus"></div><div id="mMapContent"></div><div id="mAreaContent"><h2>攻略先を選ぶ</h2><p>屋敷を拠点に、行き先を選んで探索しよう。</p><button id="mAreaGo">月影の館・探索区画へ</button><p>回廊 → 大広間 → 書庫 → 地下水路 → 中庭<br>魔法の壁キックと滑走で、封印の先へ。</p><p id="mAreaHint"></p></div></div></section>
 <div id="mTitle"><button id="mContinue">つづきから</button><button id="mNew">はじめから</button></div>
 <script>
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.8';
+const GAME_VERSION = '2.0.0-test.9';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.
@@ -7046,8 +7048,27 @@ const OPEN_LINES = [
  {face:3,pose:1,lines:['みんな……？ カナタちゃん……？','昨日は、みんなでパーティーをして……。']},
  {face:2,pose:1,lines:['……えっ！？','右手に、なにかついてる！']},
  {face:3,pose:1,lines:['んん……外れないよ……。','お洋服も変わってる。どうして……？']},
- {face:0,pose:1,lines:['まずは、みんなを探そう。','このお部屋の外に、誰かいるかな？']}
+ {speaker:'ダイスロール',rol:true,pose:1,lines:['おやおや……目覚めましたか……？','ずいぶん、よくお休みでしたねえ。']},
+ {face:2,rol:true,pose:1,lines:['ひゃっ！？ サイコロの怪人さん！','……あれ？ その声、ロルちゃん？']},
+ {speaker:'ダイスロール',rol:true,pose:1,lines:['おや。今はダイスロールとお呼びを。','せっかくの登場が、台無しですよ……。']},
+ {face:3,rol:true,pose:1,lines:['えへへ、ごめんね。ここ、どこ？','それに、この右手……外れないの。']},
+ {speaker:'ダイスロール',rol:true,pose:1,lines:['ふむ……まずは、慌てずに。','その腕、動かすことはできますか？']},
+ {face:1,rol:true,pose:1,lines:['うん。痛くはないけど……変な感じ。','みんなの姿も見えないんだ。']},
+ {speaker:'ダイスロール',rol:true,pose:1,lines:['では、ひとつずつ確かめましょう。','お話なら、またこちらで……。']},
+ {face:0,rol:true,pose:1,lines:['わかった！ まずはお部屋の外へ。','ロルちゃん、またあとでね！']}
 ];
+// Roru's monster costume is a disguise; she remains a friendly NPC.
+const RORU_ART={frames:[],image:null};
+{const image=new Image();image.onload=()=>{RORU_ART.image=image;for(let i=0;i<2;i++){const c=mkCanvas(64,64),p=c.getContext('2d');p.imageSmoothingEnabled=false;p.drawImage(image,i*887,0,887,887,32-500*.067,61-875*.067,887*.067,887*.067);RORU_ART.frames.push(sheetSprite(c));}
+ const p=document.getElementById('mTalkPortrait').getContext('2d');p.imageSmoothingEnabled=false;p.drawImage(image,305,0,380,440,0,0,96,96);
+};image.src='assets/roru-masked-idle.png';}
+function drawRoru(x,feet,time,face=-1){const fi=(time>>6)&1,sp=RORU_ART.frames[fi];
+ if(sp)g.drawImage(pick(sp,face,false),Math.round(x-24),Math.round(feet-61*.75),48,48);
+ else {const old=sheetFrame('dicerollDark','idle',fi);if(old)g.drawImage(pick(old,face,false),Math.round(x-24),Math.round(feet-47),48,48);}
+ // Small separate smoke pixels rise from the cigarette; no smoke baked into the body.
+ const sx=x+face*(fi?10:-18),sy=feet-27;
+ for(let i=0;i<3;i++){const age=(time+i*13)%40;g.globalAlpha=(1-age/40)*.42;g.fillStyle='#b5b2c2';g.fillRect(Math.round(sx+Math.sin(age*.16+i)*2),Math.round(sy-age*.22),1+i%2,2);}g.globalAlpha=1;
+}
 const openingArt={};
 for(const [key,path] of [['poses','assets/umine-opening-poses.png'],['faces','assets/umine-expressions.png']]) {
  const img=new Image();img.onload=()=>openingArt[key]=img;img.onerror=()=>openingArt[key]=null;img.src=path;
@@ -7129,6 +7150,7 @@ function renderOpening(){
   else drawSequelAt(0,80,mansionFurniture.bed?153:130,1,false);
   // Blanket sits in front of the sleeping body only.
   if(!line.pose){if(mansionFurniture.bed)g.drawImage(mansionFurniture.bed,650,490,900,110,77,147,55,10);else{openingRect(77,124,55,10,'#819bbf');openingRect(78,125,52,2,'#c1d9ef');}}
+  if(line.rol)drawRoru(195,176,o.t,-1);
   if(line.dark){openingRect(0,0,VW,VH,'rgba(4,7,18,.75)');}
  }else{
   const fi=o.poseT?6:!o.ground?(o.vy<0?4:5):o.vx?2+((frame>>3)&1):(frame>>5)&1;
@@ -7141,8 +7163,9 @@ function renderOpening(){
  if(state==='opening'){
   openingRect(6,185,244,49,'#0b1429');rectLine(6,185,244,49,'#6d9ab7');
   const img=openingArt.faces;const fi=OPEN_LINES[o.step].face;
-  if(img)g.drawImage(img,(fi%2)*627,Math.floor(fi/2)*627,627,627,9,187,44,44);
-  blit();openingTextLeft('海音',61,190,7,'#91e5ff');
+  if(OPEN_LINES[o.step].speaker&&RORU_ART.image)g.drawImage(RORU_ART.image,305,0,380,440,9,187,44,44);
+  else if(img)g.drawImage(img,(fi%2)*627,Math.floor(fi/2)*627,627,627,9,187,44,44);
+  blit();openingTextLeft(OPEN_LINES[o.step].speaker||'海音',61,190,7,OPEN_LINES[o.step].speaker?'#f4c795':'#91e5ff');
   OPEN_LINES[o.step].lines.forEach((s,i)=>openingTextLeft(s,61,202+i*10,6.3,'#edf7ff'));
   drawHiText('タップ / Enter / SHOTで次へ',128,230,5,'#829ab4','#0b1429');return;
  }
@@ -7167,21 +7190,21 @@ const MR={
  cellar:{name:'蒼い地下水路',w:512,h:240,map:[2,2],tone:'#233f52',floor:[[0,208,304,32],[352,208,160,32]],blocks:[],gate:[224,32,16,176],doors:[{x:24,y:208,to:'hall',at:[455,368],label:'水鏡の大広間'},{x:486,y:208,to:'garden',at:[40,208],label:'月明かりの中庭'}],cp:[72,208],enemies:[['walk',165,208,116,200],['fly',389,144,358,450]]},
  garden:{name:'月明かりの中庭',w:512,h:240,map:[3,2],tone:'#293958',floor:[[0,208,512,32]],blocks:[[120,176,48,10],[232,160,48,10]],doors:[{x:24,y:208,to:'cellar',at:[460,208],label:'蒼い地下水路'}],cp:[64,208],enemies:[],boss:[379,208],goal:[477,208]}
 };
-const M={room:'bedroom',x:110,y:208,vx:0,vy:0,face:1,h:26,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,hp:16,hurt:0,dead:0,t:0,walkDistance:0,camX:0,camY:0,shots:[],enemyShots:[],enemies:[],fx:[],flags:{seal:false,boss:false,complete:false},visited:['bedroom'],checkpoint:{room:'bedroom',x:110,y:208},message:'',messageT:0,prompt:'',near:null,map:false,menuTab:'status',saved:false,saveError:false,transition:0};
+const M={room:'bedroom',x:110,y:208,vx:0,vy:0,face:1,h:26,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,hp:16,hurt:0,dead:0,t:0,walkDistance:0,camX:0,camY:0,shots:[],enemyShots:[],enemies:[],fx:[],flags:{seal:false,boss:false,complete:false},visited:['bedroom'],checkpoint:{room:'bedroom',x:110,y:208},message:'',messageT:0,prompt:'',near:null,map:false,talk:null,menuTab:'status',saved:false,saveError:false,transition:0};
 const mansionInput={slide:false,map:false,use:false};
 let mansionActionArt=null,mansionBackdrop=null;
 for(const [name,url] of [['actions','assets/umine-mansion-actions.png'],['background','assets/mansion-background.png']]){const image=new Image();image.onload=()=>{if(name==='actions')mansionActionArt=image;else mansionBackdrop=image;};image.src=url;}
 function mansionRead(){try{const s=JSON.parse(localStorage.getItem(MANSION_KEY));if(!s||s.version!==1||!MR[s.checkpoint?.room]||!Number.isFinite(s.checkpoint.x)||!Number.isFinite(s.checkpoint.y))return null;const r=MR[s.checkpoint.room];if(s.checkpoint.x<8||s.checkpoint.x>r.w-8||s.checkpoint.y<0||s.checkpoint.y>r.h)return null;return{flags:{seal:s.flags?.seal===true,boss:s.flags?.boss===true,complete:s.flags?.complete===true},visited:Array.isArray(s.visited)?s.visited.filter(x=>MR[x]):['bedroom'],checkpoint:s.checkpoint};}catch{return null;}}
 function mansionSave(){try{localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:M.flags,visited:M.visited,checkpoint:M.checkpoint}));M.saved=true;M.saveError=false;}catch{M.saveError=true;}}
 function mansionSay(text,time=220){M.message=text;M.messageT=time;}
-function mansionStart(resume=false){const saved=resume?mansionRead():null;Object.assign(M,{hp:16,hurt:0,dead:0,t:0,flags:saved?.flags||{seal:false,boss:false,complete:false},visited:saved?.visited||['bedroom'],checkpoint:saved?.checkpoint||{room:'bedroom',x:110,y:208},map:false,menuTab:'status',saved:!!saved,saveError:false});mansionEnter(M.checkpoint.room,M.checkpoint.x,M.checkpoint.y);setState('mansion');mansionSay(resume?'また、ここから探してみよう。':'まずは出口へ。扉の前で「調べる」。');mansionUI();}
+function mansionStart(resume=false){const saved=resume?mansionRead():null;Object.assign(M,{hp:16,hurt:0,dead:0,t:0,flags:saved?.flags||{seal:false,boss:false,complete:false},visited:saved?.visited||['bedroom'],checkpoint:saved?.checkpoint||{room:'bedroom',x:110,y:208},map:false,talk:null,menuTab:'status',saved:!!saved,saveError:false});mansionEnter(M.checkpoint.room,M.checkpoint.x,M.checkpoint.y);setState('mansion');mansionSay(resume?'また、ここから探してみよう。':'まずは出口へ。扉の前で「調べる」。');mansionUI();}
 function mansionEnter(room,x,y){Object.assign(M,{room,x,y,walkDistance:0,vx:0,vy:0,h:MC.h,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,shots:[],enemyShots:[],fx:[],transition:16,near:null,prompt:''});M.enemies=MR[room].enemies.map((e,i)=>({kind:e[0],x:e[1],y:e[2],baseY:e[2],min:e[3],max:e[4],dir:i%2?-1:1,hp:e[0]==='fly'?2:3,t:0,flash:0}));if(MR[room].boss&&!M.flags.boss)M.enemies.push({kind:'boss',x:379,y:208,baseY:208,hp:16,maxHp:16,t:0,dir:-1,flash:0});if(!M.visited.includes(room))M.visited.push(room);mansionCamera(true);mansionSave();}
 function mansionSolids(){const r=MR[M.room];return [...r.floor,...r.blocks,[0,-16,r.w,16],[-16,0,16,r.h],[r.w,0,16,r.h],...(r.gate&&!M.flags.seal?[r.gate]:[])];}
 function mansionOverlap(x,y,w,h,b){return x<b[0]+b[2]&&x+w>b[0]&&y<b[1]+b[3]&&y+h>b[1];}
 function mansionFits(x,y,h=MC.h){return !mansionSolids().some(b=>mansionOverlap(x-MC.w/2,y-h,MC.w,h,b));}
 function mansionBurst(x,y,color='#8beeff',n=9){for(let i=0;i<n;i++)M.fx.push({x,y,vx:Math.cos(i/n*6.28)*(1+i%3),vy:Math.sin(i/n*6.28)*(1+i%3),life:20+i%7,color});}
 function mansionDamage(n,dir=0){if(M.hurt||M.dead)return;M.hp=Math.max(0,M.hp-n);M.hurt=75;M.vx=dir*2.8;M.vy=-3;M.kickLock=10;M.slideT=0;mansionBurst(M.x,M.y-14,'#ff9abb');sfx('hurt');if(!M.hp){M.dead=65;mansionSay('……もう一度、あの灯りのところから。',100);}}
-function mansionUse(){const r=MR[M.room];if(r.seal&&!M.flags.seal&&Math.hypot(M.x-r.seal[0],M.y-18-r.seal[1])<34){M.flags.seal=true;mansionSave();mansionBurst(r.seal[0],r.seal[1],'#ffe48f',18);mansionSay('水脈の紋章！ 地下の封印と、近道が開いた。',280);sfx('start');return;}
+function mansionUse(){if(M.room==='bedroom'&&Math.abs(M.x-180)<20&&Math.abs(M.y-208)<24){mansionRoruTalk();return;}const r=MR[M.room];if(r.seal&&!M.flags.seal&&Math.hypot(M.x-r.seal[0],M.y-18-r.seal[1])<34){M.flags.seal=true;mansionSave();mansionBurst(r.seal[0],r.seal[1],'#ffe48f',18);mansionSay('水脈の紋章！ 地下の封印と、近道が開いた。',280);sfx('start');return;}
  if(r.cp&&Math.abs(M.x-r.cp[0])<24&&Math.abs(M.y-r.cp[1])<24){M.hp=16;M.checkpoint={room:M.room,x:r.cp[0],y:r.cp[1]};mansionSave();mansionSay(M.saveError?'回復したよ。記録できないため、この画面を閉じないでね。':'水の灯りに記録したよ。体力も回復！');sfx('heal');return;}
  for(const d of r.doors)if(Math.abs(M.x-d.x)<25&&Math.abs(M.y-d.y)<28){if(d.need&&!M.flags[d.need]){mansionSay('向こう側から、鍵がかかっているみたい。');return;}if(M.room==='bedroom'&&d.to==='gallery'){M.menuTab='area';M.map=true;releaseAll();mansionUI();return;}mansionEnter(d.to,...d.at);mansionSay(MR[d.to].name,110);return;}
  if(r.goal&&M.flags.boss&&Math.abs(M.x-r.goal[0])<28){M.flags.complete=true;mansionSave();setState('mansionClear');mansionUI();}}
@@ -7190,15 +7213,15 @@ function updateMansion(){
  mansionUI();
  if(state==='mansionClear'){if(stateT>25&&(inp.startPressed||inp.shootPressed||mansionInput.use)){setState('mansion');M.checkpoint={room:'bedroom',x:110,y:208};mansionEnter('bedroom',110,208);mansionSay('拠点に戻ったよ。攻略先は客室の出口から選べる。');}if(inp.backPressed)setState('title');mansionInput.use=mansionInput.slide=mansionInput.map=false;return;}
  if(mansionInput.map){mansionMenuToggle();}mansionInput.map=false;
- if(inp.backPressed){if(M.map){M.map=false;releaseAll();mansionUI();}else{mansionSave();setState('title');}mansionInput.slide=mansionInput.use=false;return;}
- if(M.map){mansionInput.slide=mansionInput.use=false;return;}
+ if(inp.backPressed){if(M.map){mansionTalkClose();M.map=false;releaseAll();mansionUI();}else{mansionSave();setState('title');}mansionInput.slide=mansionInput.use=false;return;}
+ if(M.map){if(M.talk&&(mansionInput.use||inp.startPressed||inp.shootPressed||inp.jumpPressed))mansionTalkNext();mansionInput.slide=mansionInput.use=false;return;}
  M.t++;
  if(M.transition>0)M.transition--;if(M.messageT>0)M.messageT--;if(M.hurt>0)M.hurt--;if(M.cool>0)M.cool--;if(M.poseT>0)M.poseT--;
  for(const f of M.fx){f.x+=f.vx;f.y+=f.vy;f.vy+=.07;f.life--;}M.fx=M.fx.filter(f=>f.life>0);
  if(M.dead){if(--M.dead===0){M.hp=16;M.hurt=90;mansionEnter(M.checkpoint.room,M.checkpoint.x,M.checkpoint.y);}mansionInput.slide=mansionInput.use=false;return;}
  if(M.slideT&&M.t%3===0)M.fx.push({x:M.x-M.face*13,y:M.y-3,vx:-M.face,vy:-.1,life:8,color:'#80dfff'});
  const use=mansionInput.use||inp.magicPressed||inp.upPressed; mansionInput.use=false;
- if(use&&!M.transition){mansionUse();if(M.transition||state!=='mansion')return;}
+ if(use&&!M.transition){mansionUse();if(M.transition||M.map||state!=='mansion')return;}
  const dx=(inp.right?1:0)-(inp.left?1:0);if(M.ground)M.coyote=6;else if(M.coyote>0)M.coyote--;
  if(inp.jumpPressed)M.buffer=7;else if(M.buffer>0)M.buffer--;
  if(M.wall)M.wallGrace=6;else if(M.wallGrace>0)M.wallGrace--;
@@ -7236,6 +7259,7 @@ function updateMansion(){
  for(const d of r.doors)if(Math.abs(M.x-d.x)<25&&Math.abs(M.y-d.y)<28)M.prompt=d.need&&!M.flags[d.need]?'鍵がかかっている':'調べる：'+d.label;
  if(r.seal&&!M.flags.seal&&Math.abs(M.x-r.seal[0])<30)M.prompt='調べる：水脈の紋章';
  if(r.goal&&M.flags.boss&&Math.abs(M.x-r.goal[0])<28)M.prompt='調べる：屋敷の外へ';
+ if(M.room==='bedroom'&&Math.abs(M.x-180)<20&&Math.abs(M.y-208)<24)M.prompt='調べる：ダイスロールと話す';
  mansionCamera();
 }
 function mrect(x,y,w,h,color){g.fillStyle=color;g.fillRect(Math.round(x),Math.round(y),w,h);}
@@ -7253,6 +7277,7 @@ function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.roun
  if(r.cp){const [x,y]=r.cp;mansionTile(x-12,y-6,24,6);mansionDiamond(x,y-27+Math.sin(M.t*.05)*2,11,'#305876');mansionDiamond(x,y-27+Math.sin(M.t*.05)*2,7,'#95f3ff');mrect(x-1,y-34,2,8,'#efffff');}
  if(r.seal&&!M.flags.seal){const[x,y]=r.seal;g.strokeStyle='#dfc77d';g.lineWidth=2;g.beginPath();g.arc(x,y-8,13,0,7);g.stroke();mansionDiamond(x,y-8+Math.sin(M.t*.06)*2,9,'#97f4ff');}
  if(M.room==='bedroom'&&!drawMansionBed(34,208,90)){mrect(34,168,83,15,'#657f9f');mrect(36,165,79,6,'#d2dfe9');mrect(32,150,4,55,'#8b7281');mrect(115,174,4,31,'#8b7281');mrect(40,161,19,6,'#f4f1ee');mrect(65,168,47,13,'#8fa8ca');mrect(42,183,4,25,'#705b72');}
+ if(M.room==='bedroom')drawRoru(180,208,M.t,M.x<180?-1:1);
  if(M.room==='hall'){for(let y=208;y<360;y+=24){mansionDiamond(157,y,3,'#80e4ee');mansionDiamond(243,y,3,'#80e4ee');}}
  if(r.goal){const[x,y]=r.goal;mrect(x-17,y-75,34,75,'#0b142a');for(let z=-14;z<=14;z+=7)if(!M.flags.boss)mrect(x+z,y-72,3,72,'#c6b37c');mrect(x-19,y-77,38,4,'#f0dbaa');}
  for(const e of M.enemies){if(e.hp<=0)continue;const white=e.flash>0;if(e.kind==='fly'){g.drawImage(pick(SPR.flyer[(frame>>3)&1],e.dir,white),Math.round(e.x-12),Math.round(e.y-22),24,24);}else{const sz=e.kind==='boss'?38:24;g.drawImage(pick(SPR.walker[(frame>>3)&1],e.dir,white),Math.round(e.x-sz/2),Math.round(e.y-sz),sz,sz);if(e.kind==='boss'){if(e.t%120>=54&&e.t%120<90){g.strokeStyle=(e.t&4)?'#ffb86e':'#fff3b3';g.lineWidth=2;g.beginPath();g.arc(e.x,e.y-22,24,0,7);g.stroke();}mrect(e.x-21,e.y-47,42,4,'#111a2c');mrect(e.x-20,e.y-46,40*e.hp/e.maxHp,2,'#ffb78c');}}}
@@ -7289,17 +7314,26 @@ for(const [button,key]of [[mansionSlideBtn,'slide'],[mansionMapBtn,'map']])butto
 document.getElementById('mContinue').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();Snd.init();mansionStart(true);});
 document.getElementById('mNew').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();Snd.init();startOpening();});
 window.addEventListener('keydown',e=>{if(state!=='mansion'&&state!=='mansionClear')return;if(['ShiftLeft','ShiftRight','KeyQ','Tab','KeyE'].includes(e.code)){e.preventDefault();if(e.repeat)return;if(e.code==='KeyQ'||e.code==='Tab')mansionInput.map=true;else if(e.code==='KeyE')mansionInput.use=true;else mansionInput.slide=true;}});
-function mansionMenuToggle(){M.map=!M.map;releaseAll();mansionInput.slide=mansionInput.use=false;mansionUI();if(M.map)mansionStatusTab.focus?.();}
+function mansionMenuToggle(){mansionTalkClose();M.map=!M.map;releaseAll();mansionInput.slide=mansionInput.use=false;mansionUI();if(M.map)mansionStatusTab.focus?.();}
 const mansionAreaContent=document.getElementById('mAreaContent'),mansionAreaTab=document.getElementById('mAreaTab');
 const mansionMapContent=document.getElementById('mMapContent');
 const mansionMenu=document.getElementById('mMenu'),mansionStatus=document.getElementById('mStatus'),mansionStatusTab=document.getElementById('mStatusTab'),mansionMapTab=document.getElementById('mMapTab');
 for(const[button,tab]of [[mansionStatusTab,'status'],[mansionMapTab,'map'],[mansionAreaTab,'area']])button.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();M.menuTab=tab;releaseAll();mansionUI();});
-document.getElementById('mMenuClose').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();M.map=false;releaseAll();mansionUI();mansionMapBtn.focus?.();});
+document.getElementById('mMenuClose').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionTalkClose();M.map=false;releaseAll();mansionUI();mansionMapBtn.focus?.();});
 mansionMenu.addEventListener('pointerdown',e=>{e.stopPropagation();});
+function mansionTalkClose(){M.talk=null;if(M.menuTab==='talk')M.menuTab='status';}
+function mansionRoruTalk(){
+ const lines=M.flags.complete?['おやおや……お帰りなさい。\n探索は、お楽しみいただけましたか？','……その呼び方は、ここまでにして。\nお疲れ、海音。一服したら話を聞くよ。']:
+ M.flags.seal?['おや。水脈の紋章をお持ちですねえ。\n地下の道も、通れるようになったでしょう。','書庫から客室への近道もありますよ。\nひと息ついてから、次へどうぞ……。']:
+ ['おやおや……もうお出かけですか……？\nお足元には、お気をつけて。','客室の出口から、攻略先を選べますよ。\n回廊の上段には、記録の灯りもございます。','……ふう。ここなら、一服できる。\n無理するなよ、海音。'];
+ M.talk={lines,index:0};M.map=true;M.menuTab='talk';releaseAll();mansionUI();document.getElementById('mTalkNext').focus?.();
+}
+function mansionTalkNext(){if(!M.talk)return;if(++M.talk.index>=M.talk.lines.length){mansionTalkClose();M.map=false;releaseAll();}mansionUI();}
+document.getElementById('mTalkNext').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionTalkNext();});
 function mansionStatusHTML(){const memo=M.flags.complete?'門の先へ出られた！ みんなを探す旅は、まだ続く。':M.flags.boss?'中庭の番人を倒したよ。奥の門を調べてみよう。':M.flags.seal?'水脈の紋章で地下の封印が解けた。客室への近道も使えるよ。':'館の出口を探そう。大広間の上階に、何かあるかも。';return `<div class="status-top"><div class="portrait" role="img" aria-label="海音ちゃん"></div><div><h2>海音 ／ うみね</h2><div>水魔法が得意な、旅好きの魔女</div><strong>HP ${M.hp} / 16</strong><div class="hp-track"><div class="hp-fill" style="width:${M.hp/16*100}%"></div></div></div></div><div class="status-row"><strong>謎の右腕</strong>　正体不明<br>水弾を放てる。どうして付いているのかな……？</div><div class="status-row"><strong>使える能力</strong><br>水弾 ／ 魔法の壁キック ／ 壁滑り ／ スライディング</div><div class="status-row note"><strong>探索メモ</strong><br>${memo}</div><div class="status-row">現在地：${MR[M.room].name}<br>記録地点：${MR[M.checkpoint.room].name} ・ 訪問 ${M.visited.length} / 6 部屋</div>`;}
 function mansionMapHTML(){const names={bedroom:'客室',gallery:'回廊',hall:'大広間',archive:'書庫',cellar:'地下',garden:'中庭'};const pos=id=>[12+MR[id].map[0]*72,18+MR[id].map[1]*66];let paths='',rooms='';const links=new Set();for(const[id,r]of Object.entries(MR)){if(!M.visited.includes(id))continue;const[x,y]=pos(id);for(const d of r.doors){const key=[id,d.to].sort().join(':');if(links.has(key))continue;links.add(key);const[a,b]=pos(d.to);paths+=`<path d="M ${x+30} ${y+20} L ${a+30} ${b+20}" fill="none" stroke="${d.need&&!M.flags[d.need]?'#685269':'#6b8b9b'}" stroke-width="3"/>`;} }for(const[id,r]of Object.entries(MR)){const[x,y]=pos(id),seen=M.visited.includes(id);rooms+=`<rect x="${x}" y="${y}" width="60" height="40" rx="3" fill="${seen?'#264c63':'#182337'}" stroke="${id===M.room?'#ffe89e':'#667b92'}" stroke-width="${id===M.room?3:1}"/><text x="${x+30}" y="${y+25}" text-anchor="middle" fill="${id===M.room?'#fff0bb':'#d0e5ed'}" font-size="11">${seen?names[id]:'？'}</text>${seen&&r.cp?`<circle cx="${x+7}" cy="${y+7}" r="3" fill="#95f3ff"/>`:''}`;}return `<h2>月影の館・見取り図</h2><div>現在地：${MR[M.room].name}</div><svg viewBox="0 0 306 204" role="img" aria-label="館の部屋と通路">${paths}${rooms}</svg><div>金の枠：現在地 ／ 水色の点：記録の灯り</div><div>訪問 ${M.visited.length} / 6 部屋<br>記録地点：${MR[M.checkpoint.room].name}</div><p>${M.flags.seal?'水脈の封印は解除済み。客室と書庫の近道が使える。':'地下の封印はまだ閉じている。上階を探してみよう。'}</p>`;}
 let mansionControlsActive=false;
-function mansionUI(){const active=state==='mansion'||state==='mansionClear';mansionSlideBtn.style.display=active?'flex':'none';mansionMapBtn.style.display=active?'block':'none';orbBtn.textContent=active?'調べる':'ORB';mansionTitle.style.display=state==='title'?'flex':'none';if(state==='title')document.getElementById('mContinue').style.display=mansionRead()?'block':'none';document.getElementById('modelPicker').style.display=active?'none':'flex';if(active!==mansionControlsActive){mansionControlsActive=active;doLayout();}const open=state==='mansion'&&M.map;mansionMenu.style.display=open?'flex':'none';document.body.classList.toggle('mansion-menu-open',open);mansionMapContent.style.display=M.menuTab==='map'?'block':'none';mansionAreaContent.style.display=M.menuTab==='area'?'block':'none';mansionAreaTab.setAttribute('aria-selected',String(M.menuTab==='area'));document.getElementById('mAreaGo').disabled=M.room!=='bedroom';document.getElementById('mAreaHint').textContent=M.room==='bedroom'?(M.flags.complete?'この区画は踏破済み。再探索できるよ。':'新しい攻略先は、今後ここに増えていくよ。'):'攻略先は拠点の客室から選べるよ。';if(open&&M.menuTab==='map'){const map=mansionMapHTML();if(mansionMapContent.innerHTML!==map)mansionMapContent.innerHTML=map;}mansionStatus.style.display=M.menuTab==='status'?'block':'none';mansionStatusTab.setAttribute('aria-selected',String(M.menuTab==='status'));mansionMapTab.setAttribute('aria-selected',String(M.menuTab==='map'));if(open&&M.menuTab==='status'){const html=mansionStatusHTML();if(mansionStatus.innerHTML!==html)mansionStatus.innerHTML=html;} }
+function mansionUI(){const active=state==='mansion'||state==='mansionClear';mansionSlideBtn.style.display=active?'flex':'none';mansionMapBtn.style.display=active?'block':'none';orbBtn.textContent=active?'調べる':'ORB';mansionTitle.style.display=state==='title'?'flex':'none';if(state==='title')document.getElementById('mContinue').style.display=mansionRead()?'block':'none';document.getElementById('modelPicker').style.display=active?'none':'flex';if(active!==mansionControlsActive){mansionControlsActive=active;doLayout();}const open=state==='mansion'&&M.map;const talking=open&&M.menuTab==='talk'&&!!M.talk;for(const b of [mansionStatusTab,mansionMapTab,mansionAreaTab])b.style.display=talking?'none':'';document.getElementById('mTalk').style.display=talking?'block':'none';if(talking){document.getElementById('mTalkText').textContent=M.talk.lines[M.talk.index];document.getElementById('mTalkNext').textContent=M.talk.index===M.talk.lines.length-1?'話を終える':'次へ';}mansionMenu.style.display=open?'flex':'none';document.body.classList.toggle('mansion-menu-open',open);mansionMapContent.style.display=M.menuTab==='map'?'block':'none';mansionAreaContent.style.display=M.menuTab==='area'?'block':'none';mansionAreaTab.setAttribute('aria-selected',String(M.menuTab==='area'));document.getElementById('mAreaGo').disabled=M.room!=='bedroom';document.getElementById('mAreaHint').textContent=M.room==='bedroom'?(M.flags.complete?'この区画は踏破済み。再探索できるよ。':'新しい攻略先は、今後ここに増えていくよ。'):'攻略先は拠点の客室から選べるよ。';if(open&&M.menuTab==='map'){const map=mansionMapHTML();if(mansionMapContent.innerHTML!==map)mansionMapContent.innerHTML=map;}mansionStatus.style.display=M.menuTab==='status'?'block':'none';mansionStatusTab.setAttribute('aria-selected',String(M.menuTab==='status'));mansionMapTab.setAttribute('aria-selected',String(M.menuTab==='map'));if(open&&M.menuTab==='status'){const html=mansionStatusHTML();if(mansionStatus.innerHTML!==html)mansionStatus.innerHTML=html;} }
 function mansionLayout(){const p=layout.portrait,top=layout.gameY+layout.gameH;place(mansionSlideBtn,p?layout.W/2-28:layout.W-70,p?top+77:layout.H*.42,56,56);place(mansionMapBtn,p?14:14,p?top+14:52,72,34);mansionTitle.style.top=(p?top+76:layout.gameY+layout.gameH*.64)+'px';mansionTitle.style.left=(layout.gameX+layout.gameW/2)+'px';const unit=Math.max(1,Math.min(2,layout.W/256));const margin=8;place(mansionMenu,margin,layout.gameY+8,layout.W-margin*2,Math.max(120,layout.H-layout.gameY-16));mansionMenu.style.setProperty?.('--mu',unit+'px');if(state==='mansion'||state==='mansionClear')mansionControlsLayout();}
 document.getElementById('mAreaGo').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(M.room!=='bedroom')return;M.map=false;releaseAll();mansionEnter('gallery',32,208);mansionSay('上段の灯りに寄り道して、記録してみよう。');mansionUI();});
 const mansionControlRects={};
