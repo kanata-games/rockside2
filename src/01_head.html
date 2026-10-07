@@ -57,7 +57,7 @@ body.land #hint{display:none;}
 #mStatus strong{color:#a5e5f0}#mStatus .note{color:#ddcda9}
 
 html:has(body.mansion-menu-open),body.mansion-menu-open{touch-action:pan-y}
-body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-open #mMap{visibility:hidden;pointer-events:none}
+body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-open #mMap,body.mansion-menu-open #mSwap,body.mansion-menu-open #mAbility{visibility:hidden;pointer-events:none}
 #mMenu{pointer-events:auto;background:#0b1426;border:1px solid #baa16c;flex-direction:column;touch-action:pan-y;overflow:hidden;padding-bottom:env(safe-area-inset-bottom,0px)}
 #mMenuBar{flex-shrink:0;border:0;border-bottom:1px solid #baa16c;align-items:center}
 #mMenu button{min-height:44px;font-size:clamp(13px,calc(8 * var(--mu)),18px)}
@@ -78,8 +78,8 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 <style>
 #modelPicker{position:fixed;z-index:12;display:flex;gap:5px;justify-content:center;align-items:center;font:14px system-ui;color:#b9cce7;left:0;width:100%;padding:6px;pointer-events:auto}#modelPicker button{font:inherit;border:1px solid #4f608a;border-radius:6px;color:#dceaff;background:#17203a;padding:7px 10px;touch-action:manipulation}#modelPicker button[aria-pressed="true"]{border-color:#9aeaff;background:#234b65;color:#fff}body.land #modelPicker{width:auto;left:50%;transform:translateX(-50%);top:4px!important}body.land #modelPicker button{padding:4px 8px;font-size:12px}#modelState{font-size:12px;max-width:85px}
 </style><style>
-#mSlide{position:fixed;z-index:15;border-radius:50%;border:3px solid #93dcf1;background:#203e58;color:#e7faff;display:none;align-items:center;justify-content:center;font:bold 12px system-ui;touch-action:none;box-shadow:0 5px #070c17}
-#mMap{position:fixed;z-index:15;background:#172d45;color:#caedf5;border:2px solid #668ca7;border-radius:8px;font:bold 13px system-ui;display:none;touch-action:none}
+#mAbility{position:fixed;z-index:15;border-radius:50%;border:2px solid #d3b66e;background:#312a48;color:#fff0c5;align-items:center;justify-content:center;font:bold 11px system-ui;touch-action:none;padding:0}#mSlide:disabled{opacity:.35}#mSlide{position:fixed;z-index:15;border-radius:50%;border:3px solid #93dcf1;background:#203e58;color:#e7faff;display:none;align-items:center;justify-content:center;font:bold 12px system-ui;touch-action:none;box-shadow:0 5px #070c17}
+#mSwap{position:fixed;z-index:15;background:#382a54;color:#fff0be;border:1px solid #c2a1ee;border-radius:4px;font:bold 10px system-ui;touch-action:none;padding:0}#mSwap:disabled{opacity:.5}#mMap{position:fixed;z-index:15;background:#172d45;color:#caedf5;border:2px solid #668ca7;border-radius:8px;font:bold 13px system-ui;display:none;touch-action:none}
 #mTitle{position:fixed;z-index:14;display:none;gap:10px;transform:translateX(-50%);white-space:nowrap}#mTitle button{background:#1a3047;color:#e9f8ff;border:1px solid #83b9ca;border-radius:6px;padding:9px 16px;font:bold 14px system-ui;touch-action:manipulation}
 </style></head>
 <body>
@@ -95,14 +95,14 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
   <div id="hint">ROCKSIDE II · 屋敷探索テスト</div>
 </div>
 <div id="modelPicker" aria-label="海音ちゃんのモデル比較"><button data-model="32" aria-pressed="false">前作</button><button data-model="40" aria-pressed="false">新40px</button><button data-model="48" aria-pressed="true">新48px</button><span id="modelState">読込中</span></div>
-<button id="mSlide" aria-label="スライディング">SLIDE</button><button id="mMap" aria-label="探索メニュー">MENU</button>
+<button id="mAbility" aria-label="固有行動" style="display:none">固有</button><button id="mSwap" aria-label="アスターテに交代" style="display:none">交代</button><button id="mSlide" aria-label="スライディング">SLIDE</button><button id="mMap" aria-label="探索メニュー">MENU</button>
 <section id="mMenu" role="dialog" aria-label="探索メニュー" aria-modal="true">
 <div id="mMenuBar"><button id="mStatusTab" aria-selected="true">ステータス</button><button id="mMapTab" aria-selected="false">マップ</button><button id="mAreaTab" aria-selected="false">ワープ</button><button id="mBattleLeave" style="display:none">手合わせをやめて拠点へ</button><button id="mMenuClose" aria-label="メニューを閉じる">戻る</button></div><div id="mMenuBody"><div id="mTalk" style="display:none"><header><canvas id="mTalkPortrait" width="96" height="96" aria-label="被り物姿のダイスロール"></canvas><h2 id="mTalkName">ダイスロール</h2></header><p id="mTalkText" aria-live="polite"></p><button id="mTalkNext">次へ</button><button id="mTalkBattle" style="display:none">本番の手合わせに挑む</button></div><div id="mStatus"></div><div id="mMapContent"></div><div id="mAreaContent"></div></div></section>
 <div id="mTitle"><button id="mContinue">つづきから</button><button id="mNew">はじめから</button></div>
 <script>
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.18';
+const GAME_VERSION = '2.0.0-test.24';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.

@@ -215,3 +215,60 @@ run('M.hp=1;M.hurt=0;mansionDamage(2)');ticks(65);assert.equal(run('M.hp'),18);
 // Old records unlock repeat fights but never receive the new reward retroactively.
 run('localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{boss:true,seal:true,complete:true},visited:["bedroom"],checkpoint:{room:"bedroom",x:110,y:208}}));mansionStart(true)');assert.equal(run('mansionMaxHP()'),16);assert(!run('M.flags.astarteReward'));run('mansionEnter("bedroom",612,208);mansionUse()');assert(run('M.talk.offerFull'));assert.equal(run('mansionFullBattle()'),true);run('mansionFullReturn()');assert(run('M.flags.seal&&M.flags.complete'));
 console.log('PASS trial/reward: half-stop, full-zero goal, hub choice, abandon/retry, one-time permanent item, resume/heal/respawn, old-record migration.');
+
+// Reserve-only buddy: switch preserves all movement/health, locks during actions and menus.
+clearKeys();run('mansionStart(false);M.transition=0');assert.equal(run('mansionSwap()'),false);
+run('M.flags.boss=true;M.hp=7;M.x=130;M.y=208;M.vx=1.2;M.vy=-1;M.hurt=50');
+assert.equal(run('mansionSwap()'),true);assert.equal(run('M.actor'),'astarte');assert.equal(run('M.hp'),7);assert.equal(run('M.x'),130);assert.equal(run('M.vx'),1.2);assert.equal(run('M.hurt'),50);assert.equal(run('mansionSwap()'),false);
+run('M.swapCool=0;M.map=true');assert.equal(run('mansionSwap()'),false);run('M.map=false;M.slideT=1');assert.equal(run('mansionSwap()'),false);run('M.slideT=0;M.poseT=1');assert.equal(run('mansionSwap()'),false);
+for(const face of [-1,1]){
+clearKeys();run(`M.poseT=0;mansionEnter("bedroom",130,208);M.actor='astarte';M.transition=0;M.face=${face};M.hurt=0;M.enemies=[{kind:'walk',x:130+${face}*30,y:208,min:0,max:600,dir:1,hp:3,t:0,flash:0},{kind:'walk',x:130-(${face})*30,y:208,min:0,max:600,dir:1,hp:3,t:0,flash:0}];M.props=[];keys.shoot=true;`);ticks(1);clearKeys();ticks(8);
+assert.equal(run('M.enemies[0].hp'),1);assert.equal(run('M.enemies[1].hp'),3);assert.equal(run('M.shots.length'),0);ticks(4);assert.equal(run('M.enemies[0].hp'),1);
+run('M.map=true');const pose=run('M.poseT');ticks(5);assert.equal(run('M.poseT'),pose);run('M.map=false');
+for(const image of images.filter(i=>i.src==='assets/astarte-sequel-face.png'))image.onload();run('renderMansion()');
+}
+clearKeys();run('mansionEnter("bedroom",130,208);M.actor="astarte";M.face=1;M.enemies=[];M.props=[{kind:"vase",x:160,y:208,drop:"water",hp:2,brokenT:0}];mansionScythe();mansionScytheHit();mansionScytheHit()');assert.equal(run('M.props[0].hp'),1);run('mansionScythe();mansionScytheHit()');assert.equal(run('M.props[0].hp'),0);assert.equal(run('M.pickups.length'),1);
+run('M.poseT=0;M.swapCool=0;M.transition=0;M.hp=9;M.hurt=0');assert.equal(run('mansionSwap()'),true);assert.equal(run('M.hp'),9);assert.equal(run('M.actor'),'umine');run('M.cool=0;keys.shoot=true');ticks(1);assert(run('M.shots.length>0'));clearKeys();
+run('M.actor="astarte";mansionEnter("gallery",42,208)');assert.equal(run('M.actor'),'astarte');run('mansionEnter("garden",350,256);mansionSparStart()');assert.equal(run('M.actor'),'umine');assert.equal(run('mansionSwap()'),false);
+run('mansionStart(true)');assert.equal(run('M.actor'),'umine');
+console.log('PASS buddy: unlock, shared HP/momentum, cooldown/action/menu locks, two-direction single-hit scythe, props, rendering, water-shot return, rooms and spar safety.');
+
+// Two-stage combo buffers taps and hold; each stage hits once with its own range and damage.
+for(const face of [-1,1]){
+clearKeys();run(`mansionStart(false);M.flags.boss=true;mansionEnter('bedroom',200,208);M.actor='astarte';M.transition=0;M.hurt=0;M.face=${face};M.props=[];M.enemies=[{kind:'fly',x:200+(${face})*32,y:208,baseY:208,min:0,max:600,dir:1,hp:20,t:0,flash:0}];keys.shoot=true;`);ticks(1);clearKeys();ticks(8);assert.equal(run('M.enemies[0].hp'),18);assert.equal(run('M.scytheStage'),1);
+run('inp.shootPressed=true');ticks(1);ticks(8);assert.equal(run('M.scytheStage'),2);assert.equal(run('M.poseT'),22);assert.equal(run('M.enemies[0].hp'),18);ticks(8);assert.equal(run('M.enemies[0].hp'),16);ticks(6);assert.equal(run('M.enemies[0].hp'),16);run('renderMansion()');ticks(20);assert.equal(run('M.scytheStage'),2);assert.equal(run('M.poseT'),0);
+}
+clearKeys();run("mansionEnter('bedroom',200,208);M.actor='astarte';M.face=1;M.enemies=[];M.props=[];keys.shoot=true");ticks(26);assert.equal(run('M.scytheStage'),2);clearKeys();ticks(40);assert.equal(run('M.poseT'),0);
+run("mansionScythe();M.poseT=14;M.scytheQueued=true;M.hurt=0;mansionDamage(1)");assert.equal(run('M.poseT'),0);ticks(25);assert.equal(run('M.scytheStage'),1);
+run("mansionEnter('bedroom',200,208);M.actor='astarte';M.face=1;M.enemies=[{kind:'fly',x:259,y:208,hp:10,flash:0}];M.props=[];mansionScythe(1);mansionScytheHit()");assert.equal(run('M.enemies[0].hp'),10);run('mansionScythe(2);mansionScytheHit();mansionScytheHit()');assert.equal(run('M.enemies[0].hp'),8);
+assert.equal(run('ASTARTE_PLAYER_SIZE'),80);run('M.map=true');const remaining=run('M.poseT');ticks(10);assert.equal(run('M.poseT'),remaining);
+console.log('PASS combo: buffered tap, hold, two-stage only, single damage per stage, reach, interruption, pause and mirrored rendering.');
+
+// Visual effects are finite, freeze in the menu, and rendering is read-only.
+clearKeys();run('mansionStart(false);M.actor="astarte";M.scytheFace=-1;M.fx=[];mansionScytheImpact(170,190,true);M.map=true');ticks(10);assert.equal(run('M.fx[0].life'),12);const beforeFx=run('JSON.stringify(M.fx)');run('for(let i=0;i<20;i++)renderMansion()');assert.equal(run('JSON.stringify(M.fx)'),beforeFx);run('M.map=false');ticks(6);assert.equal(run('M.fx[0].x'),170);assert.equal(run('M.fx[0].y'),190);ticks(6);assert.equal(run('M.fx.length'),0);
+for(const face of [-1,1])for(const stage of [1,2])for(const remaining of [22,18,14,10,6,3])run(`M.actor='astarte';M.scytheStage=${stage};M.scytheFace=${face};M.poseT=${remaining};renderMansion()`);
+console.log('PASS scythe effects: finite lifetime, stable impact position, pause, read-only rendering and every swing stage in both directions.');
+
+// Exclusive movement and progression-gated actions keep the two heroes distinct.
+clearKeys();run('mansionStart(false);M.transition=0;M.flags.seal=false');assert.equal(run('mansionAbility()'),false);assert(!run('M.waterPlatform'));run('M.flags.seal=true;M.x=130;M.y=208');assert.equal(run('mansionAbility()'),true);assert.equal(run('M.waterPlatform.life'),240);assert.equal(run('M.abilityCool'),300);const platformBox=run('JSON.stringify(M.waterPlatform.box)');assert(run('mansionSolids().some(b=>b===M.waterPlatform.box)'));assert.equal(run('mansionAbility()'),false);
+run('M.map=true');ticks(10);assert.equal(run('M.waterPlatform.life'),240);assert.equal(run('M.abilityCool'),300);run('M.map=false;M.poseT=0;M.x=M.waterPlatform.box[0]+20;M.y=M.waterPlatform.box[1]-8;M.vy=1;M.enemies=[]');ticks(10);assert(run('M.ground&&M.y===M.waterPlatform.box[1]'),'water platform must support landing');run('renderMansion()');ticks(230);assert(!run('M.waterPlatform'));run('M.abilityCool=0;M.poseT=0;mansionEnter("bedroom",14,208);M.face=-1;M.transition=0');assert.equal(run('mansionAbility()'),false);assert.equal(run('M.abilityCool'),0);
+clearKeys();run('mansionEnter("hall",153,310);M.actor="astarte";M.enemies=[];M.vy=4;keys.right=true');ticks(1);assert(run('M.vy>MC.wallFall'));run('keys.jump=true;inp.jumpPressed=true');ticks(1);assert(run('M.vy>0'),'Astarte cannot magic wall-kick');
+clearKeys();run('mansionEnter("bedroom",130,208);M.actor="astarte";M.enemies=[];M.ground=true;mansionInput.slide=true');ticks(1);assert.equal(run('M.slideT'),0);assert.equal(run('M.h'),26);
+run('M.flags.boss=true;M.transition=0;M.abilityCool=0;M.poseT=0;M.hurt=0;M.face=1;M.enemies=[{kind:"walk",x:174,y:208,min:0,max:600,dir:1,hp:6,t:0,flash:0}];M.props=[]');assert.equal(run('mansionAbility()'),true);assert.equal(run('M.shots[0].kind'),'star');assert.equal(run('M.abilityCool'),75);assert.equal(run('mansionAbility()'),false);ticks(12);assert.equal(run('M.enemies[0].hp'),4);run('renderMansion()');const abilityTimer=run('M.abilityCool');run('M.map=true');ticks(15);assert.equal(run('M.abilityCool'),abilityTimer);run('M.map=false;M.castT=0;M.swapCool=0;M.poseT=0');assert.equal(run('mansionSwap()'),true);assert.equal(run('M.abilityCool'),abilityTimer);
+run('M.abilityCool=0;M.poseT=0;mansionEnter("bedroom",130,208);M.transition=0;M.flags.seal=true;mansionAbility();mansionEnter("gallery",40,208)');assert(!run('M.waterPlatform'));assert.equal(run('M.abilityCool'),300);run('mansionStart(true)');assert(run('M.flags.seal'));assert.equal(run('M.abilityCool'),0);
+console.log('PASS abilities: progression gate, platform placement/landing/expiry/pause/room reset, exclusive wall/slide movement, star damage/cooldown, swap and old saves.');
+
+// Directional guard chips HP; neither a rear hit nor falling stars are blocked.
+for(const face of [-1,1]){
+clearKeys();run(`mansionStart(false);M.flags.boss=true;M.actor='astarte';M.ground=true;M.face=${face};M.hurt=0;M.hp=10;mansionInput.guardPointer=7;`);assert.equal(run('mansionGuarding()'),true);run(`mansionDamage(2,${-face})`);assert.equal(run('M.hp'),9);assert.equal(run('M.vy'),0);assert.equal(run('Math.abs(M.vx)'),.8);assert.equal(run('M.hurt'),36);assert.equal(run('M.guardFlash'),10);run('renderMansion()');run('M.hurt=0;M.ground=true');run(`mansionDamage(2,${face})`);assert.equal(run('M.hp'),7);assert.equal(run('M.vy'),-3);run('M.hurt=0;M.ground=true;mansionDamage(2,0)');assert.equal(run('M.hp'),5);
+}
+clearKeys();run('mansionStart(false);M.flags.boss=true;mansionEnter("bedroom",130,208);M.actor="astarte";M.transition=0;M.ground=true;M.enemies=[];M.props=[];mansionInput.guardPointer=7;keys.shoot=true');ticks(4);assert.equal(run('M.poseT'),0);assert.equal(run('M.shots.length'),0);assert.equal(run('mansionAbility()'),false);clearKeys();run('M.ground=false');assert.equal(run('mansionGuarding()'),false);run('M.ground=true;M.poseT=10');assert.equal(run('mansionGuarding()'),false);run('M.poseT=0;M.castT=5');assert.equal(run('mansionGuarding()'),false);run('M.castT=0;mansionMenuToggle()');assert.equal(run('mansionInput.guardPointer'),null);assert.equal(run('mansionGuarding()'),false);
+run('M.map=false;M.actor="astarte";M.ground=true;mansionInput.guardPointer=7');elements.get('mSlide').handlers.pointerup({pointerId:8});assert.equal(run('mansionGuarding()'),true);elements.get('mSlide').handlers.pointercancel({pointerId:7});assert.equal(run('mansionGuarding()'),false);
+run('mansionGuardKeys.add("ShiftLeft");mansionGuardKeys.add("ShiftRight")');for(const fn of listeners.keyup)fn({code:'ShiftLeft'});assert.equal(run('mansionGuarding()'),true);for(const fn of listeners.blur)fn({});assert.equal(run('mansionGuarding()'),false);
+run('M.ground=true;mansionInput.guardPointer=7;M.swapCool=0;M.transition=0');assert.equal(run('mansionSwap()'),true);assert.equal(run('mansionInput.guardPointer'),null);assert.equal(run('M.actor'),'umine');assert.equal(run('mansionGuarding()'),false);run('mansionUI()');assert.equal(elements.get('mSlide').textContent,'SLIDE');run('M.actor="astarte";mansionUI()');assert.equal(elements.get('mSlide').textContent,'GUARD');run('mansionInput.guardPointer=7;mansionEnter("gallery",40,208)');assert.equal(run('mansionInput.guardPointer'),null);
+console.log('PASS guard: front chip/knockback, rear/vertical vulnerability, ground/action restrictions, blocked offense, cancel/menu/swap/room/blur release and button labels.');
+
+// MENU visibility must be scoped to the open menu, including new buddy controls.
+assert(!html.includes('#mMap{visibility:hidden'));
+assert(html.includes('body.mansion-menu-open #mMap,body.mansion-menu-open #mSwap,body.mansion-menu-open #mAbility{visibility:hidden;pointer-events:none}'));
+console.log('PASS menu CSS: hide only while open, keep MENU available in gameplay.');
