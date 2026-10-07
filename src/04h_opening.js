@@ -101,6 +101,13 @@ function drawOpeningRoom(){
  }
 }
 function openingTextLeft(text,x,y,size,color){const scale=hiS();sctx.save();sctx.font='700 '+Math.max(11,Math.round(size*scale))+'px '+JP_FONT;sctx.textAlign='left';sctx.textBaseline='top';sctx.fillStyle=color;sctx.fillText(text,x*scale,y*scale);sctx.restore();}
+// Face-focused crop from each existing expression; draw directly at screen resolution.
+function drawOpeningPortrait(line,x=9,y=187,size=44){
+ const masked=!!line.speaker,img=masked?RORU_ART.image:openingArt.faces;if(!img)return;
+ const fi=line.face||0,box=masked?[305,0,380,440]:[(fi%2)*627+190,Math.floor(fi/2)*627+200,400,400];
+ const scale=hiS();sctx.save();sctx.imageSmoothingEnabled=true;sctx.imageSmoothingQuality='high';
+ sctx.drawImage(img,...box,Math.round(x*scale),Math.round(y*scale),Math.round(size*scale),Math.round(size*scale));sctx.restore();
+}
 function renderOpening(){
  const o=OPENING;drawOpeningRoom();
  if(state==='opening'){
@@ -121,10 +128,7 @@ function renderOpening(){
  openingRect(0,0,VW,20,'rgba(8,13,27,.86)');drawText('ROCKSIDE II',8,7,'c',1);drawText(state==='opening'?'SKIP >':'ESC: TITLE',247,7,'b',1,'r');
  if(state==='opening'){
   openingRect(6,185,244,49,'#0b1429');rectLine(6,185,244,49,'#6d9ab7');
-  const img=openingArt.faces;const fi=OPEN_LINES[o.step].face;
-  if(OPEN_LINES[o.step].speaker&&RORU_ART.image)g.drawImage(RORU_ART.image,305,0,380,440,9,187,44,44);
-  else if(img)g.drawImage(img,(fi%2)*627,Math.floor(fi/2)*627,627,627,9,187,44,44);
-  blit();openingTextLeft(OPEN_LINES[o.step].speaker||'海音',61,190,7,OPEN_LINES[o.step].speaker?'#f4c795':'#91e5ff');
+  blit();drawOpeningPortrait(OPEN_LINES[o.step]);openingTextLeft(OPEN_LINES[o.step].speaker||'海音',61,190,7,OPEN_LINES[o.step].speaker?'#f4c795':'#91e5ff');
   OPEN_LINES[o.step].lines.forEach((s,i)=>openingTextLeft(s,61,202+i*10,6.3,'#edf7ff'));
   drawHiText('タップ / Enter / SHOTで次へ',128,230,5,'#829ab4','#0b1429');return;
  }
