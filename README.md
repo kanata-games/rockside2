@@ -137,3 +137,9 @@ Sites 用は `python3 tools/build.py --out dist/index.html` で生成し、asset
 - 月弧は濃紺の外縁/鮮やかな紫/明るい芯。星雨は濃紺の外縁/橙と黄/白い芯。鎌の軌跡も輪郭と芯を追加し、雨の予兆は明るい柱と金色の床印へ。攻撃判定と難易度は変更せず視認性を改善。
 - 旧クリア記録はチュートリアル済みとして本番に挑める。新報酬は遡及付与せず本番初勝利で取得。未取得の古い記録は最大HP16のまま。
 - 検証：HP21では続行、次の命中で初回終了。本番HP20では継続、0で報酬。拠点選択、中断/再挑戦、報酬重複防止、保存/再開/全回復/水滴/復帰、旧保存移行、従来の探索・ワープ・小物・通常入力での本番勝利。Canvasで新しい攻撃色を確認。スマホ実機の操作確認は未実施。前作と本番index.htmlは変更なし。
+
+
+## GitHub Pagesの普段の入口（2026-10-07）
+- 続編の `index.html` を最新 `preview.html` へ移動する固定入口に変更。普段のURLは `https://kanata-games.github.io/rockside2/`。ゲーム本体の更新は引き続きpreview.htmlとsrc/assetsへ反映し、この入口を古い前作ベースのHTMLで上書きしない。
+- この時点ではGitHub Pagesは未有効。リポジトリ Settings → Pages → Source: Deploy from a branch → main / (root) → Save が必要。設定の有効化は利用可能なGitHub連携で操作できないため、所有者側で行う。
+- 別テストサイトは削除せず維持。前作 `kanata-games/rockside` は変更なし。続編の旧index.htmlはGit履歴から復元可能。
