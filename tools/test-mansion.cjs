@@ -12,6 +12,16 @@ run('M.map=false');clearKeys();ticks(8);assert.equal(run('M.walkDistance'),0);
 const walkImage=images.find(i=>i.src==='assets/umine-walk.png');assert(walkImage);walkImage.onload();assert.equal(run('SEQUEL_MODEL.walkFrames.length'),4);
 for(const face of [-1,1])for(let i=0;i<4;i++)run(`drawSequelWalk(${i*10.8},120,208,${face},false)`);
 run('keys.right=true;keys.shoot=true');ticks(10);assert(run('M.walkDistance>0&&M.poseT>0'));clearKeys();
+// Continuous hub: walk beyond the area-select doorway; talking and cellar do not alter progression.
+clearKeys();run('mansionEnter("bedroom",207,208);keys.right=true;');ticks(130);assert(run('M.room==="bedroom"&&M.x>400&&M.camX>100'));assert.equal(run('mansionLocationName()'),'拠点の談話室');
+clearKeys();run('M.x=390;mansionUse()');assert(run('M.talk&&M.map'));run('mansionTalkClose();M.map=false');
+run('M.x=580;mansionUse()');assert.equal(run('M.room'),'hubCellar');assert.equal(run('M.enemies.length'),0);assert(run('mansionMapHTML().includes("拠点地下")'));
+run('M.x=110;M.hp=4;mansionUse()');assert.equal(run('M.hp'),16);assert.equal(run('M.checkpoint.room'),'hubCellar');run('mansionStart(true)');assert.equal(run('M.room'),'hubCellar');
+run('M.x=350;mansionUse()');assert(run('M.message.includes("鍵")'));assert.equal(run('M.room'),'hubCellar');
+run('M.x=24;mansionUse()');assert.equal(run('M.room'),'bedroom');assert.equal(run('M.x'),550);
+run('M.x=231;mansionUse()');assert(run('M.map&&M.menuTab==="area"'));run('M.map=false');
+// Old saves with a 256px guest-room checkpoint remain valid after expansion.
+run('localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{},visited:["bedroom"],checkpoint:{room:"bedroom",x:110,y:208}}));mansionStart(true)');assert.equal(run('M.room'),'bedroom');assert.equal(run('M.x'),110);
 // Expanded gallery branch is reachable by ordinary jumps and provides a checkpoint.
 clearKeys();run('mansionEnter("gallery",208,208);M.enemies=[];');ticks(2);
 run('keys.right=true;keys.jump=true');
@@ -79,7 +89,7 @@ const roruImage=images.find(i=>i.src==='assets/roru-masked-idle.png');assert(ror
 run('startOpening()');assert(run('OPEN_LINES.some(l=>l.speaker==="ダイスロール"&&l.lines[0].includes("目覚めましたか"))'));
 for(let i=0;i<run('OPEN_LINES.length');i++)run(`OPENING.step=${i};render()`);
 run('startOpening();OPENING.step=OPEN_LINES.length-1;OPENING.t=20;inp.startPressed=true;updateOpening();inp.startPressed=false');assert.equal(run('state'),'mansion');
-run('M.x=180;M.y=208;M.transition=0;M.vx=1.8;mansionInput.use=true;');ticks(1);assert(run('M.map&&M.talk&&M.menuTab==="talk"'));const talkTimer=run('M.t');const talkX=run('M.x');ticks(45);assert.equal(run('M.t'),talkTimer);assert.equal(run('M.x'),talkX);
+run('M.x=390;M.y=208;M.transition=0;M.vx=1.8;mansionInput.use=true;');ticks(1);assert(run('M.map&&M.talk&&M.menuTab==="talk"'));const talkTimer=run('M.t');const talkX=run('M.x');ticks(45);assert.equal(run('M.t'),talkTimer);assert.equal(run('M.x'),talkX);
 assert.equal(elements.get('mTalk').style.display,'block');assert.equal(elements.get('mMapTab').style.display,'none');
 run('document.getElementById("mTalkNext").handlers.click({preventDefault(){},stopPropagation(){}})');assert.equal(run('M.talk.index'),1);
 run('mansionInput.use=true');ticks(1);assert.equal(run('M.talk.index'),2);
@@ -89,6 +99,6 @@ run('M.flags.seal=true;mansionRoruTalk()');assert(run('M.talk.lines[0].includes(
 run('M.flags.complete=true;mansionRoruTalk()');assert(run('M.talk.lines[0].includes("お帰り")'));run('mansionTalkClose();M.map=false');
 run('mansionEnter("bedroom",231,208);mansionUse()');assert(run('M.map&&M.menuTab==="area"&&!M.talk'));run('M.map=false');
 // Render all chambers and map. Storage failure does not stop play.
-for(const id of ['bedroom','gallery','hall','archive','cellar','garden'])run(`mansionEnter('${id}',64,${id==='hall'?368:208});setState('mansion');render();M.map=true;render();M.map=false`);
+for(const id of Object.keys(run('MR')))run(`mansionEnter('${id}',64,${id==='hall'?368:208});setState('mansion');render();M.map=true;render();M.map=false`);
 run('localStorage.setItem=()=>{throw Error("quota")};mansionSave()');assert(run('M.saveError'));
 console.log('PASS: room transitions, low passage collision, safe stand-up, wall fall/kick/climb, seal gates + shortcut, checkpoint/death/resume, paused map, guardian and clear, every chamber render, storage failure');
