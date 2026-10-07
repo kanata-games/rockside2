@@ -1,0 +1,19 @@
+{
+  "frameWidth": 192,
+  "frameHeight": 160,
+  "columns": 2,
+  "anchor": [
+    96,
+    148
+  ],
+  "drawSize": [
+    96,
+    80
+  ],
+  "frames": [
+    "idle0",
+    "idle1",
+    "scythe",
+    "calm"
+  ]
+}

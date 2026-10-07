@@ -56,12 +56,12 @@ clearKeys();run('M.map=false;mansionEnter("hall",145,368);M.enemies=[];keys.righ
 for(let i=0;i<650&&run('M.x')<420;i++){run('if(M.ground || (M.wall && M.kickLock===0))inp.jumpPressed=true');ticks(1);}
 clearKeys();ticks(70);assert(run('M.x>410 && M.y===176'),'upper balcony must be reachable through normal inputs');
 // Sliding ducks the guardian projectile that hits a standing player.
-run('mansionEnter("garden",290,208);M.enemies=[];M.hp=16;M.hurt=0;M.enemyShots=[{x:290,y:184,vx:0,vy:0}]');ticks(1);assert.equal(run('M.hp'),14);
+run('mansionEnter("garden",290,208);M.enemies=[];M.sparState="active";M.hp=16;M.hurt=0;M.enemyShots=[{x:290,y:184,vx:0,vy:0}]');ticks(1);assert.equal(run('M.hp'),14);
 run('M.hp=16;M.hurt=0;M.h=MC.slideH;M.slideT=10;M.enemyShots=[{x:M.x,y:184,vx:0,vy:0}]');ticks(1);assert.equal(run('M.hp'),16);
 
 // Readable guardian projectile can be ducked by sliding; shots defeat guardian.
-clearKeys();run('M.map=false;mansionEnter("garden",310,208);M.hurt=999;keys.shoot=true;');ticks(220);assert(run('M.flags.boss'));assert(run('mansionRead().flags.boss'));
-clearKeys();run('M.x=477;mansionUse();render()');assert.equal(run('state'),'mansionClear');assert(run('M.flags.complete'));
+clearKeys();run('M.map=false;mansionEnter("garden",310,208);mansionSparStart();M.hurt=999;keys.shoot=true;');ticks(220);assert(run('M.flags.boss'));assert(run('mansionRead().flags.boss'));
+clearKeys();run('mansionTalkClose();M.map=false;M.x=477;mansionUse();render()');assert.equal(run('state'),'mansionClear');assert(run('M.flags.complete'));
 // Menu reflects live status, pauses all encounter timers, and preserves progression.
 clearKeys();run('mansionStart(false);M.hp=9;mansionMenuToggle()');
 assert(run("M.map&&M.menuTab==='status'"));assert(run("mansionStatusHTML().includes('HP 9 / 16')"));
@@ -135,3 +135,24 @@ for(const id of Object.keys(run('MANSION_PORTALS')).filter(id=>id!=='bedroom')){
 run('M.flags.seal=false;mansionUse();mansionWarpTo("cellar")');assert.equal(run('M.x'),115);assert(run('mansionSolids().some(b=>b[0]===224&&b[2]===16)'));
 run('M.map=false;localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{seal:true},visited:["bedroom","archive"],checkpoint:{room:"bedroom",x:110,y:208}}));mansionStart(true)');assert(run('M.flags.seal'));assert.equal(run('M.portals.length'),2);assert.equal(run('M.x'),110);
 console.log('PASS portals: discovery, persistence, all destinations, ordinary connections, blocked misuse and seal integrity.');
+
+// Astarte introduces a friendly spar, never attacks during dialogue, and stops before lethal damage.
+sandbox.localStorage.setItem=(k,v)=>storage.set(k,v);
+clearKeys();run('mansionStart(false);mansionEnter("garden",290,208);M.hurt=0');ticks(1);assert(run('M.talk.speaker==="アスターテ"&&M.sparState==="ready"'));const sparTime=run('M.enemies[0].t');ticks(50);assert.equal(run('M.enemies[0].t'),sparTime);
+run('mansionTalkClose();M.map=false');assert.equal(run('M.sparState'),'waiting');ticks(1);assert(run('M.talk'));
+run('for(let i=0;i<4;i++)mansionTalkNext()');assert.equal(run('M.sparState'),'active');assert.equal(run('M.map'),false);
+run('M.hp=1;M.hurt=0;mansionDamage(2)');assert.equal(run('M.dead'),0);assert.equal(run('M.hp'),16);assert.equal(run('M.flags.boss'),false);assert(run('M.talk&&M.talk.after==="sparStart"'));
+run('mansionTalkNext();mansionTalkNext()');assert.equal(run('M.sparState'),'active');assert.equal(run('M.enemies[0].hp'),16);
+run('M.enemies[0].t=39;M.hurt=999');ticks(1);assert(run('M.enemyShots.some(s=>s.y===198)'));
+run('M.enemyShots=[];M.enemies[0].t=129');ticks(1);assert(run('M.enemyShots.some(s=>s.y===184)'));
+run('M.enemyShots=[];M.enemies[0].t=219;M.x=330;M.y=208;M.hurt=0');ticks(1);assert.equal(run('M.hp'),14);
+run('M.enemyShots=[];M.enemies[0].t=219;M.x=330;M.y=170;M.vy=0;M.hurt=0');ticks(1);assert.equal(run('M.hp'),14);
+// Victory grants guide role and survives resume, without killing the friend.
+run('M.enemies[0].hp=1;M.shots=[{x:374.2,y:191,vx:4.8}];M.hurt=999');ticks(1);assert(run('M.flags.boss&&M.sparState==="done"&&M.talk.speaker==="アスターテ"'));assert.equal(run('M.hp'),16);assert.equal(run('M.enemyShots.length'),0);assert(run('mansionRead().flags.boss'));
+run('mansionTalkClose();M.map=false;mansionEnter("garden",379,208);mansionUse()');assert(run('M.talk.speaker==="アスターテ"'));assert.equal(run('M.enemies.length'),0);
+run('mansionTalkClose();M.map=false;mansionEnter("bedroom",612,208);mansionUse()');assert(run('M.talk.lines[0].includes("ワープ")'));
+run('mansionTalkClose();M.map=false;M.flags.seal=false;mansionEnter("cellar",267,208);mansionUse()');assert(run('M.talk.lines[0].includes("紋章がない")'));
+run('mansionTalkClose();M.map=false;mansionEnter("bedroom",390,208);mansionUse()');assert.equal(run('M.talk.speaker'),'ダイスロール');
+for(const key of ['astarte-sequel.png','astarte-sequel-face.png']){const img=images.find(i=>i.src==='assets/'+key);assert(img);img.onload();}
+run('mansionTalkClose();M.map=false;mansionEnter("garden",310,208);renderMansion();mansionAstarteGuide();mansionUI()');
+console.log('PASS Astarte: introduction, pause/cancel, safe retry, telegraphed attacks, spar victory and later guides.');
