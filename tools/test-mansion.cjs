@@ -3,9 +3,9 @@ const storage=new Map();const win={innerWidth:390,innerHeight:844,devicePixelRat
 function ticks(n){run(`for(let i=0;i<${n};i++)update()`)}
 function clearKeys(){run('releaseAll();mansionInput.slide=mansionInput.use=mansionInput.map=false;')}
 run('mansionStart(false)');ticks(30);assert.equal(run('M.y'),208);assert(run('M.ground'));assert(run('mansionRead().checkpoint.room==="bedroom"'));
-run('M.x=231;mansionInput.use=true;');ticks(1);assert.equal(run('M.room'),'bedroom');assert(run("M.map&&M.menuTab==='area'"));run("document.getElementById('mAreaGo').handlers.click({preventDefault(){},stopPropagation(){}})");assert.equal(run('M.room'),'gallery');
+run('M.x=231;mansionInput.use=true;');ticks(1);assert.equal(run('M.room'),'bedroom');assert(run("M.map&&M.menuTab==='area'"));run("document.getElementById('mWarp-gallery').handlers.click({preventDefault(){},stopPropagation(){}})");assert.equal(run('M.room'),'gallery');
 // Walking traverses every pose by distance, freezes in menus, and restarts after stopping.
-clearKeys();run('mansionEnter("bedroom",130,208);M.enemies=[];');ticks(2);
+clearKeys();run('mansionEnter("bedroom",130,208);M.enemies=[];M.hurt=0;');ticks(2);
 run('keys.right=true');const walkPoses=new Set();for(let i=0;i<25;i++){ticks(1);walkPoses.add(run('sequelWalkFrame(M.walkDistance)'));}assert.equal(walkPoses.size,4);
 const walkDistance=run('M.walkDistance');run('M.map=true');ticks(30);assert.equal(run('M.walkDistance'),walkDistance);
 run('M.map=false');clearKeys();ticks(8);assert.equal(run('M.walkDistance'),0);
@@ -115,3 +115,23 @@ run('mansionEnter("gallery",80,208)');assert.equal(run('M.props[0].hp'),2);asser
 run('M.props[0].hp=0;M.pickups=[{kind:"water",x:100,y:180,vy:0,age:0}];mansionEnter("bedroom",430,208)');assert.equal(run('M.props.length'),0);assert.equal(run('M.pickups.length'),0);
 const propImage=images.find(i=>i.src==='assets/mansion-props.png');assert(propImage);propImage.onload();run('renderMansion()');
 console.log('PASS mansion props: break, heal, pause, pass-through, reentry and generated furniture.');
+
+// Ordinary doors remain connected; only discovered portals permit fast travel.
+
+
+// Restore storage after the quota-failure check so portal migration can be verified.
+sandbox.localStorage.setItem=(k,v)=>storage.set(k,v);
+clearKeys();run('mansionStart(false);M.x=180;mansionUse()');assert.equal(run('M.room'),'gallery');assert.equal(run('M.map'),false);
+clearKeys();run('mansionEnter("bedroom",231,208);M.hp=7;mansionUse()');assert(run('M.map&&M.menuTab==="area"'));const cpBefore=run('JSON.stringify(M.checkpoint)');
+assert.equal(run('mansionWarpTo("archive")'),false);assert.equal(run('M.room'),'bedroom');
+assert.equal(run('mansionWarpTo("bedroom")'),false);
+assert.equal(run('mansionWarpTo("gallery")'),true);assert.equal(run('M.x'),76);assert.equal(run('M.hp'),7);assert.equal(run('JSON.stringify(M.checkpoint)'),cpBefore);
+run('M.transition=0;mansionUse()');assert.equal(run('mansionWarpTo("bedroom")'),true);
+run('M.x=300;M.map=true;M.menuTab="area"');assert.equal(run('mansionWarpTo("gallery")'),false);assert(run('mansionWarpHTML().includes("disabled")'));
+// Discover each portal near it, persist discovery, and safely land at each destination.
+for(const id of Object.keys(run('MANSION_PORTALS'))){clearKeys();run(`M.map=false;const wp_${id}=MANSION_PORTALS.${id};mansionEnter('${id}',wp_${id}.x,wp_${id}.y);M.enemies=[];`);ticks(1);assert(run(`M.portals.includes('${id}')`));assert(run('mansionFits(M.x,M.y)'),'unsafe portal '+id);}
+assert.equal(run('mansionRead().portals.length'),7);run('mansionStart(true)');assert.equal(run('M.portals.length'),7);
+for(const id of Object.keys(run('MANSION_PORTALS')).filter(id=>id!=='bedroom')){run('M.map=false;mansionEnter("bedroom",231,208);mansionUse()');assert.equal(run(`mansionWarpTo('${id}')`),true);assert.equal(run('M.room'),id);run('M.enemies=[];mansionUse()');assert.equal(run('mansionWarpTo("bedroom")'),true);}
+run('M.flags.seal=false;mansionUse();mansionWarpTo("cellar")');assert.equal(run('M.x'),115);assert(run('mansionSolids().some(b=>b[0]===224&&b[2]===16)'));
+run('M.map=false;localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{seal:true},visited:["bedroom","archive"],checkpoint:{room:"bedroom",x:110,y:208}}));mansionStart(true)');assert(run('M.flags.seal'));assert.equal(run('M.portals.length'),2);assert.equal(run('M.x'),110);
+console.log('PASS portals: discovery, persistence, all destinations, ordinary connections, blocked misuse and seal integrity.');
