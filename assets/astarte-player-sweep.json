@@ -1,0 +1,322 @@
+{
+  "image": "astarte-player-sweep.png",
+  "canvas": [
+    1374,
+    1145
+  ],
+  "reference": "astarte-sequel.png: top-left PLAYER stance",
+  "frameScale": 0.175,
+  "bodyHeightApproxGamePx": 35,
+  "frames": [
+    {
+      "name": "idle",
+      "rect": [
+        0,
+        0,
+        350,
+        306
+      ],
+      "anchor": [
+        201,
+        298
+      ],
+      "scale": 0.175,
+      "edge": [
+        73,
+        210
+      ]
+    },
+    {
+      "name": "walk1",
+      "rect": [
+        350,
+        0,
+        380,
+        306
+      ],
+      "anchor": [
+        208,
+        299
+      ],
+      "scale": 0.175,
+      "edge": [
+        68,
+        215
+      ]
+    },
+    {
+      "name": "walk2",
+      "rect": [
+        730,
+        0,
+        375,
+        306
+      ],
+      "anchor": [
+        199,
+        302
+      ],
+      "scale": 0.175,
+      "edge": [
+        70,
+        228
+      ]
+    },
+    {
+      "name": "walk3",
+      "rect": [
+        1105,
+        0,
+        269,
+        306
+      ],
+      "anchor": [
+        175,
+        302
+      ],
+      "scale": 0.175,
+      "edge": [
+        53,
+        222
+      ]
+    },
+    {
+      "name": "windup",
+      "rect": [
+        0,
+        306,
+        365,
+        305
+      ],
+      "anchor": [
+        209,
+        280
+      ],
+      "scale": 0.175,
+      "edge": [
+        40,
+        215
+      ]
+    },
+    {
+      "name": "backswing",
+      "rect": [
+        365,
+        306,
+        360,
+        305
+      ],
+      "anchor": [
+        193,
+        286
+      ],
+      "scale": 0.175,
+      "edge": [
+        57,
+        114
+      ]
+    },
+    {
+      "name": "overhead",
+      "rect": [
+        725,
+        306,
+        325,
+        305
+      ],
+      "anchor": [
+        182,
+        287
+      ],
+      "scale": 0.175,
+      "edge": [
+        47,
+        153
+      ]
+    },
+    {
+      "name": "downswing",
+      "rect": [
+        1050,
+        306,
+        324,
+        303
+      ],
+      "anchor": [
+        118,
+        287
+      ],
+      "scale": 0.175,
+      "edge": [
+        305,
+        211
+      ]
+    },
+    {
+      "name": "sweep",
+      "rect": [
+        0,
+        611,
+        395,
+        252
+      ],
+      "anchor": [
+        131,
+        239
+      ],
+      "scale": 0.175,
+      "edge": [
+        276,
+        100
+      ]
+    },
+    {
+      "name": "follow",
+      "rect": [
+        395,
+        611,
+        340,
+        263
+      ],
+      "anchor": [
+        109,
+        242
+      ],
+      "scale": 0.175,
+      "edge": [
+        319,
+        173
+      ]
+    },
+    {
+      "name": "lowfinish",
+      "rect": [
+        735,
+        611,
+        370,
+        263
+      ],
+      "anchor": [
+        116,
+        249
+      ],
+      "scale": 0.175,
+      "edge": [
+        351,
+        175
+      ]
+    },
+    {
+      "name": "recover",
+      "rect": [
+        1105,
+        611,
+        269,
+        263
+      ],
+      "anchor": [
+        141,
+        243
+      ],
+      "scale": 0.175,
+      "edge": [
+        17,
+        176
+      ]
+    },
+    {
+      "name": "unusedRearGuard",
+      "rect": [
+        0,
+        874,
+        370,
+        271
+      ],
+      "anchor": [
+        232,
+        256
+      ],
+      "scale": 0.175,
+      "edge": [
+        105,
+        160
+      ]
+    },
+    {
+      "name": "jump",
+      "rect": [
+        370,
+        874,
+        355,
+        271
+      ],
+      "anchor": [
+        139,
+        205
+      ],
+      "scale": 0.175,
+      "edge": [
+        215,
+        25
+      ]
+    },
+    {
+      "name": "fall",
+      "rect": [
+        725,
+        874,
+        355,
+        271
+      ],
+      "anchor": [
+        153,
+        233
+      ],
+      "scale": 0.175,
+      "edge": [
+        216,
+        48
+      ]
+    },
+    {
+      "name": "frontGuardCast",
+      "rect": [
+        1080,
+        874,
+        294,
+        271
+      ],
+      "anchor": [
+        125,
+        256
+      ],
+      "scale": 0.175,
+      "edge": [
+        267,
+        126
+      ]
+    }
+  ],
+  "firstSwing": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "secondSwing": [
+    10,
+    9,
+    8,
+    7,
+    6,
+    5,
+    4,
+    0
+  ],
+  "guardFrame": 15,
+  "note": "Whole body, hands and scythe share one transform. Frame 12 is not used for guarding: its blade is behind the player."
+}

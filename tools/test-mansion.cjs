@@ -222,7 +222,7 @@ run('M.flags.boss=true;M.hp=7;M.x=130;M.y=208;M.vx=1.2;M.vy=-1;M.hurt=50');
 assert.equal(run('mansionSwap()'),true);assert.equal(run('M.actor'),'astarte');assert.equal(run('M.hp'),7);assert.equal(run('M.x'),130);assert.equal(run('M.vx'),1.2);assert.equal(run('M.hurt'),50);assert.equal(run('mansionSwap()'),false);
 run('M.swapCool=0;M.map=true');assert.equal(run('mansionSwap()'),false);run('M.map=false;M.slideT=1');assert.equal(run('mansionSwap()'),false);run('M.slideT=0;M.poseT=1');assert.equal(run('mansionSwap()'),false);
 for(const face of [-1,1]){
-clearKeys();run(`M.poseT=0;mansionEnter("bedroom",130,208);M.actor='astarte';M.transition=0;M.face=${face};M.hurt=0;M.enemies=[{kind:'walk',x:130+${face}*30,y:208,min:0,max:600,dir:1,hp:3,t:0,flash:0},{kind:'walk',x:130-(${face})*30,y:208,min:0,max:600,dir:1,hp:3,t:0,flash:0}];M.props=[];keys.shoot=true;`);ticks(1);clearKeys();ticks(12);
+clearKeys();run(`M.poseT=0;mansionEnter("bedroom",130,208);M.actor='astarte';M.transition=0;M.face=${face};M.hurt=0;M.enemies=[{kind:'walk',x:130+${face}*30,y:208,min:0,max:600,dir:1,hp:3,t:0,flash:0},{kind:'walk',x:130-(${face})*30,y:208,min:0,max:600,dir:1,hp:3,t:0,flash:0}];M.props=[];keys.shoot=true;`);ticks(1);clearKeys();ticks(20);
 assert.equal(run('M.enemies[0].hp'),1);assert.equal(run('M.enemies[1].hp'),3);assert.equal(run('M.shots.length'),0);ticks(4);assert.equal(run('M.enemies[0].hp'),1);
 run('M.map=true');const pose=run('M.poseT');ticks(5);assert.equal(run('M.poseT'),pose);run('M.map=false');
 for(const image of images.filter(i=>i.src==='assets/astarte-sequel-face.png'))image.onload();run('renderMansion()');
@@ -235,10 +235,10 @@ console.log('PASS buddy: unlock, shared HP/momentum, cooldown/action/menu locks,
 
 // Two-stage combo buffers taps and hold; each stage hits once with its own range and damage.
 for(const face of [-1,1]){
-clearKeys();run(`mansionStart(false);M.flags.boss=true;mansionEnter('bedroom',200,208);M.actor='astarte';M.transition=0;M.hurt=0;M.face=${face};M.props=[];M.enemies=[{kind:'fly',x:200+(${face})*32,y:208,baseY:208,min:0,max:600,dir:${face},hp:20,t:0,flash:0}];keys.shoot=true;`);ticks(1);clearKeys();ticks(12);assert.equal(run('M.enemies[0].hp'),18);assert.equal(run('M.scytheStage'),1);
-run('inp.shootPressed=true');ticks(1);ticks(13);assert.equal(run('M.scytheStage'),2);assert.equal(run('M.poseT'),34);assert.equal(run('M.enemies[0].hp'),18);ticks(15);assert.equal(run('M.enemies[0].hp'),18,'extension must not deal damage before the inward pull');ticks(1);assert.equal(run('M.enemies[0].hp'),16);ticks(6);assert.equal(run('M.enemies[0].hp'),16);run('renderMansion()');ticks(20);assert.equal(run('M.scytheStage'),2);assert.equal(run('M.poseT'),0);
+clearKeys();run(`mansionStart(false);M.flags.boss=true;mansionEnter('bedroom',200,208);M.actor='astarte';M.transition=0;M.hurt=0;M.face=${face};M.props=[];M.enemies=[{kind:'fly',x:200+(${face})*32,y:208,baseY:208,min:0,max:600,dir:${face},hp:20,t:0,flash:0}];keys.shoot=true;`);ticks(1);clearKeys();ticks(20);assert.equal(run('M.enemies[0].hp'),18);assert.equal(run('M.scytheStage'),1);
+run('inp.shootPressed=true');ticks(1);ticks(15);assert.equal(run('M.scytheStage'),2);assert.equal(run('M.poseT'),40);assert.equal(run('M.enemies[0].hp'),18);ticks(11);assert.equal(run('M.enemies[0].hp'),18,'the return swing must not hit before its main cutting pose');ticks(1);assert.equal(run('M.enemies[0].hp'),16);ticks(6);assert.equal(run('M.enemies[0].hp'),16);run('renderMansion()');ticks(22);assert.equal(run('M.scytheStage'),2);assert.equal(run('M.poseT'),0);
 }
-clearKeys();run("mansionEnter('bedroom',200,208);M.actor='astarte';M.face=1;M.enemies=[];M.props=[];keys.shoot=true");ticks(27);assert.equal(run('M.scytheStage'),2);clearKeys();ticks(40);assert.equal(run('M.poseT'),0);
+clearKeys();run("mansionEnter('bedroom',200,208);M.actor='astarte';M.face=1;M.enemies=[];M.props=[];keys.shoot=true");ticks(37);assert.equal(run('M.scytheStage'),2);clearKeys();ticks(40);assert.equal(run('M.poseT'),0);
 run("mansionScythe();M.poseT=14;M.scytheQueued=true;M.hurt=0;mansionDamage(1)");assert.equal(run('M.poseT'),0);ticks(25);assert.equal(run('M.scytheStage'),1);
 run("mansionEnter('bedroom',200,208);M.actor='astarte';M.face=1;M.enemies=[{kind:'fly',x:259,y:208,hp:10,flash:0}];M.props=[];mansionScythe(1);mansionScytheHit()");assert.equal(run('M.enemies[0].hp'),10);run('mansionScythe(2);mansionScytheHit();mansionScytheHit()');assert.equal(run('M.enemies[0].hp'),8);
 assert.equal(run('ASTARTE_PLAYER_SIZE'),80);run('M.map=true');const remaining=run('M.poseT');ticks(10);assert.equal(run('M.poseT'),remaining);
@@ -340,11 +340,22 @@ console.log('PASS dedicated guard: generated asset load, two directions, stable 
 const attackArt=images.find(i=>i.src==='assets/astarte-attack-combo.png');assert(attackArt);
 attackArt.onload();assert(run('!!mansionAstarteAttackArt'));assert.equal(run('ASTARTE_ATTACK_FRAMES.length'),8);
 for(const stage of [1,2]){
- const poses=run(`M.scytheStage=${stage};(()=>{const out=[];for(let t=34;t>0;t--){M.poseT=t;const p=mansionScythePose();if(out.at(-1)!==p)out.push(p);}return out;})()`);
- assert.equal(JSON.stringify(poses),JSON.stringify(stage===1?[17,18,19,20]:[21,22,23,24]));
+ const poses=run(`M.scytheStage=${stage};(()=>{const out=[];for(let t=40;t>0;t--){M.poseT=t;const p=mansionScythePose();if(out.at(-1)!==p)out.push(p);}return out;})()`);
+ assert.equal(JSON.stringify(poses),JSON.stringify(stage===1?[17,18,19,20,21,22,23,24]:[25,26,27,28,29,30,31,32]));
 }
 for(const face of [-1,1])for(let pose=17;pose<=24;pose++)run(`drawMansionAstarte(200,208,0,${face},${pose},80)`);
 const attackAtlas=JSON.parse(fs.readFileSync(require('path').resolve(__dirname,'../assets/astarte-attack-combo.json'),'utf8'));
 assert.equal(JSON.stringify(run('ASTARTE_ATTACK_FRAMES')),JSON.stringify(attackAtlas.frames));
 for(const f of attackAtlas.frames){assert(f.rect[0]>=0&&f.rect[1]>=0&&f.rect[0]+f.rect[2]<=attackAtlas.canvas[0]&&f.rect[1]+f.rect[3]<=attackAtlas.canvas[1]);assert(f.anchor[0]>=0&&f.anchor[1]>=0&&f.anchor[0]<f.rect[2]&&f.anchor[1]<f.rect[3]);}
 console.log('PASS attack atlas: eight ordered sweep/extension/pull poses, frame metadata, bounds, asset loading and both facing directions.');
+
+// Player body, grip and blade always use the same atlas and common scale.
+const playerArt=images.find(i=>i.src==='assets/astarte-player-sweep.png');assert(playerArt);playerArt.onload();
+const playerAtlas=JSON.parse(fs.readFileSync(require('path').resolve(__dirname,'../assets/astarte-player-sweep.json'),'utf8'));
+assert.equal(JSON.stringify(run('ASTARTE_PLAYER_FRAMES')),JSON.stringify(playerAtlas.frames));
+for(const f of playerAtlas.frames){assert.equal(f.scale,.175);assert(f.rect[0]>=0&&f.rect[1]>=0&&f.rect[0]+f.rect[2]<=playerAtlas.canvas[0]&&f.rect[1]+f.rect[3]<=playerAtlas.canvas[1]);assert(f.anchor[0]>=0&&f.anchor[1]>=0&&f.anchor[0]<f.rect[2]&&f.anchor[1]<f.rect[3]);}
+assert.equal(run('mansionAstartePlayerFrame(16)'),playerAtlas.guardFrame);
+for(const [start,seq]of [[17,playerAtlas.firstSwing],[25,playerAtlas.secondSwing]])assert.equal(JSON.stringify(run(`Array.from({length:8},(_,i)=>mansionAstartePlayerFrame(${start}+i))`)),JSON.stringify(seq));
+const playerSnapshot=run('JSON.stringify(M)');for(const face of [-1,1])for(const pose of [-1,4,5,6,7,13,14,15,16,...Array.from({length:16},(_,i)=>17+i)])run(`drawMansionAstartePlayer(180,208,0,${face},${pose},80)`);assert.equal(run('JSON.stringify(M)'),playerSnapshot);
+run('drawMansionAstarte(200,208,0,1,8,96)');
+console.log('PASS player sweep: whole-body atlas, shared scale, 16 cells, eight poses per swing, front guard, both directions, read-only renderer and boss preserved.');

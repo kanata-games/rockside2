@@ -1,14 +1,15 @@
 # 海音ちゃんの冒険２ — 屋敷探索テスト
 
-ROCKSIDE II / 2.0.0-test.30。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
+ROCKSIDE II / 2.0.0-test.32。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
 
 ## 現在の公開版（2026-10-08）
 
-公開URL：https://kanata-games.github.io/rockside2/ （2.0.0-test.30）
+公開URL：https://kanata-games.github.io/rockside2/ （2.0.0-test.32）
 
 - チュートリアル後、操作パネルの交代ボタン／Cキーで海音・アスターテを切替。控えは画面外、HP共通。
 - アスターテ：SHOTで鎌２段（各２ダメージ）、固有行動／Rで星弾、GUARD／Shift長押しで正面のダメージと吹き飛ばしを軽減。
-- test.28〜30を公開版へ反映。交代ボタンを操作パネルへ移動。鎌は各段34Fの８コマ、２段目は伸ばして引き戻す刈取りで命中。ガード専用の前方鎌構えと成功時の金属音を追加。
+- test.32を公開版へ反映。プレイヤーの通常姿と攻撃を同じ16コマシートに統一。鎌は各段40F・８コマの振り払い、各２ダメージ。前方鎌ガードと成功時の金属音、操作パネルの交代を継承。
+- モーション確認：https://kanata-games.github.io/rockside2/astarte-motion.html （コマ送り・半速・左右反転。ゲーム進行に影響しない）。
 - 海音：水弾１ダメージ。壁キック・壁滑り・スライドは海音専用。水脈の紋章取得で固有行動の水足場が解放される。
 - 任意の本番戦・一度だけの永続HP強化・旧セーブ対応を継承。アスターテとの手合わせは海音、ダイスロールとの練習は操作中のキャラで行う。
 - test.25〜27のダイスロール練習戦を公開版へ反映。談話室で「調べる」→「ダイスロールと練習する」。専用の遊戯室、現在のロルモデル、HP40、頭上のサイコロの出目による攻撃強化。
@@ -245,3 +246,36 @@ Use case: precise-object-edit. Edit this 8-frame sprite sheet ONLY to correct it
 ## 公開反映記録（2026-10-08 / test.30）
 
 ユーザー確認後、test.28〜30の交代パネル・鎌の速度／８コマ／刈取り軌跡／命中タイミング・前方鎌ガード・成功音をGitHub公開版へ反映。新規の透過PNG２点と規格JSONをassetsへ追加し、preview.htmlをsrcから再ビルド。固定入口index.htmlと前作rocksideは維持。セーブキーrockside2_mansion_v1と形式version:1を継承し、保存内容の消去・移行は実施しない。既存進行／ワープ／永続強化／旧セーブ読込を含む自動検証は通過。公開版とSitesテスト版の記録は別オリジンなので共有されない。次は公開版で実機の振り／刈取りとガードの感触を確認する。
+
+## test.31（不採用・test.32で解除。GitHub公開版はtest.30）
+
+アスターテの描画モデルを統一。待機・歩行４段・攻撃・ガード・ジャンプ／落下・星弾で同じBODYシートと１本の鎌を使用し、拠点NPCとボスにも同じモデルを適用。BODYは12コマ、鎌は独立した透過PNG。全動作で同じ鎌の刃／柄の形と倍率を維持し、手元の位置と角度で動かす。１段目は横への振り払い、２段目は左向きの内刃を前方に伸ばしてから手元へ引き抜いて刈る。エフェクトは実際の内刃の座標を追跡。ガードは鎌を前方に立て、柄が床下へ出ない構え。BODYの共通倍率と足元アンカー、鎌の柄基準と刃追跡点はassets/astarte-unified.jsonに記録。各段34F・各２ダメージ・射程・命中フレーム・進行・セーブは継承。新素材が読み込めるまではtest.30のモデルで代替し、旧素材は削除しない。画像は内蔵image_genで作成、元PNGのアルファを保持して保存。
+
+検証：既存戦闘／探索／保存／報酬／バディ／ガード／ダイスロールの自動検証、共通鎌の左右反転、引き戻し時の刃の移動、前方ガード、描画による状態変更がないことを通過。実際のゲームCanvasで待機・歩行・ガード・星弾・左右２段攻撃を描画確認。ブラウザ実機の操作感と手元の細かな見え方は今後確認する。GitHub公開版はユーザー確認後に更新する。
+
+BODY生成プロンプト（内蔵画像生成）:
+Use case: stylized-concept. Asset: game pixel sprite BODY ONLY atlas, EXACT 4 columns x 3 rows, 12 equal cells with wide transparent gutters. Reference supplies character identity, costume, body proportions and pixel art style. Same gentle white-haired blue-eyed cat witch Astarte, navy hood white cat ears, navy white gold star robe, white fluffy tail. Draw NO SCYTHE, NO WEAPON, NO staff, NO effects: game renders the weapon separately. Hands grip an imaginary staff, believable hands. ALL face right, same head/body size, centered hips and feet at common baseline within cell. Full body every cell, 20% margin. Crisp SMALL game pixel-art readability, simplify tiny gold detail. Row1: idle relaxed hands together in front; walk left leg forward; walk passing legs; walk right leg forward. Row2: attack windup hands at upper chest reaching back; swing transition hands in front of chest; full forward extension BOTH arms toward right at chest height; pulling back hooked weapon BOTH hands close to waist. Row3: guard both hands grip invisible vertical pole immediately in front of torso; jumping upward; falling; spellcasting forward free hand. Maintain EXACT same body size/costume/face across poses. Transparent alpha background, no text, no weapon silhouettes.
+
+鎌生成プロンプト（内蔵画像生成）:
+Use case: stylized-concept. Asset type: one separate transparent game pixel-art weapon sprite, scythe only. Reference weapon identity: ornate navy and antique gold crescent scythe used by the cat witch. Draw ONE scythe horizontally, shaft to LEFT, entire crescent blade at RIGHT. Straight slender gold/dark-navy shaft from far left to a large ornate navy-and-gold head near far right. The LARGE bright SILVER crescent cutting EDGE is on the LEFT-facing concave inner side of the head: it visibly hooks toward the wielder at left. Single crescent cutting blade, sharp pointed tips curve left. Clearly readable white silver cutting edge, navy outer spine, restrained gold celestial ornament, matching reference style. Entire weapon visible with ample transparent margin. No hands, no person, no background, no glows, no text. Pixel art with crisp simple silhouette suited to 60px long in game. Weapon must remain a single rigid consistent object, not multiple examples.
+
+
+## test.32（GitHub公開版へ反映）
+
+プレイヤー用アスターテの頭身を基準に、通常・歩行・攻撃・空中・前方構えを同じ16コマの透過シートに揃えた。手と柄と刃を身体と一体で描画し、test.31の独立した巨大な鎌とボス/NPCまで変える処理を解除。拠点NPC・ボスは従来モデルを保持。
+
+- １段目は振りかぶり→頭上→横への振り払い→低い振り終わり→戻し、８コマ40F。２段目は低い構えから逆順に返す振り払い、８コマ40F。引き抜きの刈取りは使わない。
+- 全コマ共通倍率0.175、足元アンカー固定。通常の身体はゲーム内で約35px高（旧プレイヤー立ち姿と同程度）。しゃがみ・腕上げで輪郭の高さは自然に変わる。
+- 両手と鎌に独立した拡縮・回転を加えない。エフェクトは刃先の小さな光で、鎌の形を隠さない。シート12番は後方構えなので防御に使わず、15番の前方構えを採用。
+- １振り２ダメージ、射程49/62pxを保持。命中は１段目の横振り20F残り、２段目の返し28F残りに合わせた。保存キー/書式・強化・進行度を保持。
+- `astarte-motion.html` は旧通常姿と新プレイヤーを並べ、再生・一時停止・コマ送り・半速・左右反転・歩き・ガードを確認できる。ゲームの記録には触れない。
+- 内蔵image_genで素材生成。元RGBAを加工せず保存。シート/メタデータ：`assets/astarte-player-sweep.png` / `.json`。最終生成指示：`assets/astarte-player-sweep-prompt.txt`。
+- 検証：屋敷回帰テスト全項目、２段の入力予約/各１回命中/中断/停止、全姿勢と両方向の実描画、メタデータ境界・共通倍率、セーブ互換を確認。ゲーム実描画と拡大したコマをCanvasで目視し、隣のコマの混入を避ける境界を調整。実機のタッチ操作とブラウザでの見え方は未確認。
+
+テストURL：https://umine-adventure-2-test.norogon323.chatgpt.site
+モーション確認：https://umine-adventure-2-test.norogon323.chatgpt.site/astarte-motion.html
+
+
+## 公開反映記録（2026-10-08 / test.32）
+
+ユーザーの「実装して」の指示により、Sitesで確認したtest.32をGitHubの普段遊べる版へ反映。プレイヤー用の16コマ全身シートと描画規格・生成指示、各段８コマ40Fの鎌の振り払い、前方ガード、コマ送り比較ページを追加。test.31の別体鎌とボス頭身への変更は採用しない。固定入口index.htmlは保持し、preview.htmlをsrcから再ビルドした。保存キーrockside2_mansion_v1 / version:1を変更せず、記録の消去は行わない。READMEと自動テストも更新。公開用ビルドの探索・戦闘・バディ・ガード・２段命中・保存互換を検証。ブラウザ実機のタッチ操作は未確認。前作kanata-games/rocksideには変更なし。
