@@ -1,13 +1,14 @@
 # 海音ちゃんの冒険２ — 屋敷探索テスト
 
-ROCKSIDE II / 2.0.0-test.27。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
+ROCKSIDE II / 2.0.0-test.30。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
 
 ## 現在の公開版（2026-10-08）
 
-公開URL：https://kanata-games.github.io/rockside2/ （2.0.0-test.27）
+公開URL：https://kanata-games.github.io/rockside2/ （2.0.0-test.30）
 
-- チュートリアル後、画面上の交代ボタン／Cキーで海音・アスターテを切替。控えは画面外、HP共通。
+- チュートリアル後、操作パネルの交代ボタン／Cキーで海音・アスターテを切替。控えは画面外、HP共通。
 - アスターテ：SHOTで鎌２段（各２ダメージ）、固有行動／Rで星弾、GUARD／Shift長押しで正面のダメージと吹き飛ばしを軽減。
+- test.28〜30を公開版へ反映。交代ボタンを操作パネルへ移動。鎌は各段34Fの８コマ、２段目は伸ばして引き戻す刈取りで命中。ガード専用の前方鎌構えと成功時の金属音を追加。
 - 海音：水弾１ダメージ。壁キック・壁滑り・スライドは海音専用。水脈の紋章取得で固有行動の水足場が解放される。
 - 任意の本番戦・一度だけの永続HP強化・旧セーブ対応を継承。アスターテとの手合わせは海音、ダイスロールとの練習は操作中のキャラで行う。
 - test.25〜27のダイスロール練習戦を公開版へ反映。談話室で「調べる」→「ダイスロールと練習する」。専用の遊戯室、現在のロルモデル、HP40、頭上のサイコロの出目による攻撃強化。
@@ -220,3 +221,27 @@ Sites 用は `python3 tools/build.py --out dist/index.html` で生成し、asset
 ## 公開反映記録（2026-10-08 / test.27）
 
 ユーザー確認後、test.25〜27を `kanata-games/rockside2` のsrc・テスト・preview.htmlへ反映。固定入口index.html、全既存素材、前作rocksideは維持。公開用preview.htmlを再ビルドし、探索／保存／ボス／バディ／鎌／能力／ガード／ダイス出目６種／練習の再挑戦・中断を検証。test.25〜27の「Sitesのみ」等は当時の履歴で、現在の公開状態は冒頭の節を優先する。次は実機で難易度・攻撃の見え方を確認し、ロルの追加攻撃コマと本番戦解放を検討する。
+
+## test.28（Sitesテスト版・GitHub公開版はtest.27）
+
+キャラ交代ボタンをHUDから操作パネルへ移動。縦画面は固有／SLIDE・GUARDの間、横画面は操作列の中央。112px幅・44px以上のタップ領域、交代先の名前を表示。PCのCキーと既存交代条件は継承。
+
+アスターテの鎌は各段34F、準備12F・振り14F・戻し8Fへ延長。次段受付と描画・軌跡も同期、各２ダメージと射程は維持。ガード成功時に専用の金属音＋短い火花音を再生。ガード入力だけ／背後被弾／無敵中の再接触では成功音なし、SOUND OFFを尊重。音声台詞は未追加。自動検証は既存戦闘・コンボ、ガード成功音とミュート、スマホ縦横４サイズの交代ボタン重なり確認を含む。実機で動きの見やすさと音量を確認する。
+
+## test.29（Sitesテスト版・GitHub公開版はtest.27）
+
+ガード用の専用立ちコマ `assets/astarte-guard.png` を追加。攻撃前の背中側の鎌を使う構えから、両手で柄を握り、身体の前方へ鎌を立てて受ける姿に変更。既存キャラクターシートを参照し内蔵画像生成で作成（透過、単一コマ、右向き、白髪・猫耳・紺の星月ローブ・同じ鎌、刃と柄を前方、背景・文字・エフェクトなし）。元画像をそのまま保存、ゲーム描画で共通倍率と足元アンカーを合わせる。左右は全身を鏡映。ガード成立時と受け止めた直後の短い閃光中に使用。読み込み前は前方横構えの既存コマで代替。防御弧と火花は前の刃・柄側へ合わせた。被弾軽減・音・攻撃コマ・ボスの構えは維持。素材の生成はbuilt-in image_gen、規格はJSON参照。
+
+## test.30（Sitesテスト版・GitHub公開版はtest.27）
+
+アスターテの攻撃専用８コマを追加。１段目４コマは構え・前方への振り・振り払い・戻し。２段目４コマは前へ伸ばす・伸ばした鎌を構える・引き抜いて刈る・戻す。各段34F、各２ダメージ、射程・コンボ受付は維持。２段目の命中と振り音を残り18Fの引き戻し開始へ移動（１段目は22F）。黄金の刃の軌跡も外へ伸びてから手元へ戻る形へ変更。専用シートは元の透過画像をそのまま保存し、各コマの切り出し範囲・足元アンカー・共通倍率をJSONと描画で管理。左右鏡映、読み込み前は既存攻撃コマ。ボスの攻撃コマとガード専用コマは継承。生成は内蔵image_gen、参照はastarte-actions.png、配置修正を１回実施。ゲームCanvas描画と既存戦闘の自動検証を実施。実機タッチでの視認性確認は引き続き必要。
+
+生成プロンプト（初回）:
+Use case: stylized-concept. Asset type: transparent pixel-art game sprite sheet, 8 animation frames in exactly 4 columns by 2 rows, no labels or grid lines. Reference image is identity and pixel style reference. Make the SAME white-haired blue-eyed cat-eared gentle witch Astarte, navy hood and star-pattern robe, white fluffy tail, ornate navy/gold crescent scythe. All 8 full-body sprites face RIGHT in side-view, same head size/body height, planted feet at identical baseline in each equally sized cell, hips centered at same local x. Leave ample margins, no overlap between cells, show entire scythe in every frame. Crisp pixel art matching reference, no effects or shadows. TOP ROW four sequential frames of FIRST horizontal scythe sweep: 1 windup with scythe behind shoulder; 2 midway moving long shaft forward across chest; 3 fully horizontal powerful outward sweep with blade far to right; 4 follow-through at lower front. BOTTOM ROW four sequential frames of SECOND harvesting attack: 1 reach scythe shaft diagonally forward with two hands; 2 full extension far right, crescent blade facing BACK toward her, ready to hook; 3 visibly pull the hooked crescent scythe back toward her waist using both hands, blade halfway back, leaning backward; 4 completed inward harvesting sweep with blade close in front, recovery. Distinct weapon orientations and arm poses for each frame. Keep costume, identity, proportions and weapon design invariant. Actual transparent alpha background. No text, no energy trails, no extra props. Landscape canvas.
+
+配置修正プロンプト:
+Use case: precise-object-edit. Edit this 8-frame sprite sheet ONLY to correct its game atlas layout. Preserve all eight poses, faces, costume and scythe designs. EXACT evenly divided 4-column by 2-row atlas. Every full sprite including its whole scythe MUST fit entirely within its own equal cell with 10% transparent gutter on all four sides. No weapon crosses a cell boundary and no two sprites overlap. Reduce sprite size uniformly to achieve this. All bodies same size, hips at 38% cell width and feet baseline at 85% cell height, weapon extends into empty right portion of each cell. Top row four outward sweep frames; bottom row four reach, full extension, pull-back, completed harvesting sweep frames. No labels, no lines, no shadows or effects. Actual alpha transparency.
+
+## 公開反映記録（2026-10-08 / test.30）
+
+ユーザー確認後、test.28〜30の交代パネル・鎌の速度／８コマ／刈取り軌跡／命中タイミング・前方鎌ガード・成功音をGitHub公開版へ反映。新規の透過PNG２点と規格JSONをassetsへ追加し、preview.htmlをsrcから再ビルド。固定入口index.htmlと前作rocksideは維持。セーブキーrockside2_mansion_v1と形式version:1を継承し、保存内容の消去・移行は実施しない。既存進行／ワープ／永続強化／旧セーブ読込を含む自動検証は通過。公開版とSitesテスト版の記録は別オリジンなので共有されない。次は公開版で実機の振り／刈取りとガードの感触を確認する。

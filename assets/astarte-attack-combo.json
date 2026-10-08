@@ -1,0 +1,135 @@
+{
+  "image": "astarte-attack-combo.png",
+  "canvas": [
+    1774,
+    887
+  ],
+  "poses": [
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+  ],
+  "facing": "right",
+  "frames": [
+    {
+      "rect": [
+        70,
+        110,
+        280,
+        345
+      ],
+      "anchor": [
+        168,
+        312
+      ],
+      "scale": 0.195
+    },
+    {
+      "rect": [
+        485,
+        110,
+        355,
+        345
+      ],
+      "anchor": [
+        189,
+        312
+      ],
+      "scale": 0.195
+    },
+    {
+      "rect": [
+        895,
+        110,
+        475,
+        345
+      ],
+      "anchor": [
+        135,
+        312
+      ],
+      "scale": 0.195
+    },
+    {
+      "rect": [
+        1400,
+        110,
+        345,
+        345
+      ],
+      "anchor": [
+        145,
+        312
+      ],
+      "scale": 0.195
+    },
+    {
+      "rect": [
+        60,
+        490,
+        390,
+        340
+      ],
+      "anchor": [
+        134,
+        325
+      ],
+      "scale": 0.195
+    },
+    {
+      "rect": [
+        455,
+        490,
+        485,
+        340
+      ],
+      "anchor": [
+        136,
+        325
+      ],
+      "scale": 0.195
+    },
+    {
+      "rect": [
+        945,
+        490,
+        375,
+        340
+      ],
+      "anchor": [
+        149,
+        325
+      ],
+      "scale": 0.195
+    },
+    {
+      "rect": [
+        1395,
+        490,
+        345,
+        340
+      ],
+      "anchor": [
+        141,
+        325
+      ],
+      "scale": 0.195
+    }
+  ],
+  "alpha": true,
+  "sequence": [
+    "windup",
+    "forward sweep",
+    "outward slash",
+    "follow through",
+    "reach",
+    "extended hook",
+    "inward harvest",
+    "recover"
+  ]
+}

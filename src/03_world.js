@@ -328,6 +328,7 @@ const Snd = {
       case 'fall': this.tone('triangle', 800, 90, 0.5, 0.2); break;
       case 'land': this.noise(0.18, 0.4, 500); break;
       case 'bhit': this.tone('square', 200, 110, 0.08, 0.16); this.noise(0.06, 0.2, 2500); break;
+      case 'guard': this.noise(0.055, 0.14, 4200); this.tone('triangle', 1650, 1150, 0.13, 0.23); this.tone('triangle', 2300, 1800, 0.08, 0.10, 0.025); break;
       case 'tink': this.tone('triangle', 1800, 1500, 0.04, 0.1); break;
       case 'door': for (let i = 0; i < 4; i++) this.tone('square', 110, 90, 0.05, 0.12, i * 0.07); break;
       case 'tick': this.tone('square', 900, 900, 0.03, 0.06); break;

@@ -222,7 +222,7 @@ run('M.flags.boss=true;M.hp=7;M.x=130;M.y=208;M.vx=1.2;M.vy=-1;M.hurt=50');
 assert.equal(run('mansionSwap()'),true);assert.equal(run('M.actor'),'astarte');assert.equal(run('M.hp'),7);assert.equal(run('M.x'),130);assert.equal(run('M.vx'),1.2);assert.equal(run('M.hurt'),50);assert.equal(run('mansionSwap()'),false);
 run('M.swapCool=0;M.map=true');assert.equal(run('mansionSwap()'),false);run('M.map=false;M.slideT=1');assert.equal(run('mansionSwap()'),false);run('M.slideT=0;M.poseT=1');assert.equal(run('mansionSwap()'),false);
 for(const face of [-1,1]){
-clearKeys();run(`M.poseT=0;mansionEnter("bedroom",130,208);M.actor='astarte';M.transition=0;M.face=${face};M.hurt=0;M.enemies=[{kind:'walk',x:130+${face}*30,y:208,min:0,max:600,dir:1,hp:3,t:0,flash:0},{kind:'walk',x:130-(${face})*30,y:208,min:0,max:600,dir:1,hp:3,t:0,flash:0}];M.props=[];keys.shoot=true;`);ticks(1);clearKeys();ticks(8);
+clearKeys();run(`M.poseT=0;mansionEnter("bedroom",130,208);M.actor='astarte';M.transition=0;M.face=${face};M.hurt=0;M.enemies=[{kind:'walk',x:130+${face}*30,y:208,min:0,max:600,dir:1,hp:3,t:0,flash:0},{kind:'walk',x:130-(${face})*30,y:208,min:0,max:600,dir:1,hp:3,t:0,flash:0}];M.props=[];keys.shoot=true;`);ticks(1);clearKeys();ticks(12);
 assert.equal(run('M.enemies[0].hp'),1);assert.equal(run('M.enemies[1].hp'),3);assert.equal(run('M.shots.length'),0);ticks(4);assert.equal(run('M.enemies[0].hp'),1);
 run('M.map=true');const pose=run('M.poseT');ticks(5);assert.equal(run('M.poseT'),pose);run('M.map=false');
 for(const image of images.filter(i=>i.src==='assets/astarte-sequel-face.png'))image.onload();run('renderMansion()');
@@ -235,10 +235,10 @@ console.log('PASS buddy: unlock, shared HP/momentum, cooldown/action/menu locks,
 
 // Two-stage combo buffers taps and hold; each stage hits once with its own range and damage.
 for(const face of [-1,1]){
-clearKeys();run(`mansionStart(false);M.flags.boss=true;mansionEnter('bedroom',200,208);M.actor='astarte';M.transition=0;M.hurt=0;M.face=${face};M.props=[];M.enemies=[{kind:'fly',x:200+(${face})*32,y:208,baseY:208,min:0,max:600,dir:1,hp:20,t:0,flash:0}];keys.shoot=true;`);ticks(1);clearKeys();ticks(8);assert.equal(run('M.enemies[0].hp'),18);assert.equal(run('M.scytheStage'),1);
-run('inp.shootPressed=true');ticks(1);ticks(8);assert.equal(run('M.scytheStage'),2);assert.equal(run('M.poseT'),22);assert.equal(run('M.enemies[0].hp'),18);ticks(8);assert.equal(run('M.enemies[0].hp'),16);ticks(6);assert.equal(run('M.enemies[0].hp'),16);run('renderMansion()');ticks(20);assert.equal(run('M.scytheStage'),2);assert.equal(run('M.poseT'),0);
+clearKeys();run(`mansionStart(false);M.flags.boss=true;mansionEnter('bedroom',200,208);M.actor='astarte';M.transition=0;M.hurt=0;M.face=${face};M.props=[];M.enemies=[{kind:'fly',x:200+(${face})*32,y:208,baseY:208,min:0,max:600,dir:${face},hp:20,t:0,flash:0}];keys.shoot=true;`);ticks(1);clearKeys();ticks(12);assert.equal(run('M.enemies[0].hp'),18);assert.equal(run('M.scytheStage'),1);
+run('inp.shootPressed=true');ticks(1);ticks(13);assert.equal(run('M.scytheStage'),2);assert.equal(run('M.poseT'),34);assert.equal(run('M.enemies[0].hp'),18);ticks(15);assert.equal(run('M.enemies[0].hp'),18,'extension must not deal damage before the inward pull');ticks(1);assert.equal(run('M.enemies[0].hp'),16);ticks(6);assert.equal(run('M.enemies[0].hp'),16);run('renderMansion()');ticks(20);assert.equal(run('M.scytheStage'),2);assert.equal(run('M.poseT'),0);
 }
-clearKeys();run("mansionEnter('bedroom',200,208);M.actor='astarte';M.face=1;M.enemies=[];M.props=[];keys.shoot=true");ticks(26);assert.equal(run('M.scytheStage'),2);clearKeys();ticks(40);assert.equal(run('M.poseT'),0);
+clearKeys();run("mansionEnter('bedroom',200,208);M.actor='astarte';M.face=1;M.enemies=[];M.props=[];keys.shoot=true");ticks(27);assert.equal(run('M.scytheStage'),2);clearKeys();ticks(40);assert.equal(run('M.poseT'),0);
 run("mansionScythe();M.poseT=14;M.scytheQueued=true;M.hurt=0;mansionDamage(1)");assert.equal(run('M.poseT'),0);ticks(25);assert.equal(run('M.scytheStage'),1);
 run("mansionEnter('bedroom',200,208);M.actor='astarte';M.face=1;M.enemies=[{kind:'fly',x:259,y:208,hp:10,flash:0}];M.props=[];mansionScythe(1);mansionScytheHit()");assert.equal(run('M.enemies[0].hp'),10);run('mansionScythe(2);mansionScytheHit();mansionScytheHit()');assert.equal(run('M.enemies[0].hp'),8);
 assert.equal(run('ASTARTE_PLAYER_SIZE'),80);run('M.map=true');const remaining=run('M.poseT');ticks(10);assert.equal(run('M.poseT'),remaining);
@@ -246,7 +246,7 @@ console.log('PASS combo: buffered tap, hold, two-stage only, single damage per s
 
 // Visual effects are finite, freeze in the menu, and rendering is read-only.
 clearKeys();run('mansionStart(false);M.actor="astarte";M.scytheFace=-1;M.fx=[];mansionScytheImpact(170,190,true);M.map=true');ticks(10);assert.equal(run('M.fx[0].life'),12);const beforeFx=run('JSON.stringify(M.fx)');run('for(let i=0;i<20;i++)renderMansion()');assert.equal(run('JSON.stringify(M.fx)'),beforeFx);run('M.map=false');ticks(6);assert.equal(run('M.fx[0].x'),170);assert.equal(run('M.fx[0].y'),190);ticks(6);assert.equal(run('M.fx.length'),0);
-for(const face of [-1,1])for(const stage of [1,2])for(const remaining of [22,18,14,10,6,3])run(`M.actor='astarte';M.scytheStage=${stage};M.scytheFace=${face};M.poseT=${remaining};renderMansion()`);
+for(const face of [-1,1])for(const stage of [1,2])for(const remaining of [34,28,22,16,8,3])run(`M.actor='astarte';M.scytheStage=${stage};M.scytheFace=${face};M.poseT=${remaining};renderMansion()`);
 console.log('PASS scythe effects: finite lifetime, stable impact position, pause, read-only rendering and every swing stage in both directions.');
 
 // Exclusive movement and progression-gated actions keep the two heroes distinct.
@@ -315,3 +315,36 @@ run('M.enemies=[mansionNewDice()];M.enemies[0].t=40;mansionDiceAI(M.enemies[0])'
 run('M.map=false;M.enemies[0].t=76;mansionDiceAI(M.enemies[0])');assert(run('M.enemies[0].roll>=1&&M.enemies[0].roll<=6'));assert(run('M.message.includes("出目")'));
 run('M.enemies[0].roll=6;M.enemies[0].t=90;renderMansion()');const heldRoll=run('M.enemies[0].roll');run('renderMansion()');assert.equal(run('M.enemies[0].roll'),heldRoll);
 console.log('PASS Dice roll: six distinct intensities, rolling/reveal lead time, fixed attack sequence, targeted jackpot rain, pause and read-only face rendering.');
+
+// Guard has a distinct success cue; ordinary hits and invulnerable repeats do not play it.
+clearKeys();run('mansionStart(false);M.actor="astarte";M.ground=true;M.face=1;M.hurt=0;M.enemies=[];M.props=[];mansionGuardKeys.add("ShiftLeft");const guardSoundLog=[];const originalPlay=Snd.play;Snd.play=n=>guardSoundLog.push(n);mansionDamage(2,-1);mansionDamage(2,-1)');assert.equal(run('guardSoundLog.filter(n=>n==="guard").length'),1);
+run('M.hurt=0;mansionDamage(2,1)');assert.equal(run('guardSoundLog.filter(n=>n==="guard").length'),1);assert.equal(run('guardSoundLog.at(-1)'),'hurt');run('Snd.play=originalPlay;mansionGuardRelease()');
+// A successful guard cue is audible through the synthesizer and respects mute.
+run('const oldTone=Snd.tone,oldNoise=Snd.noise;const guardSynth=[];Snd.ctx={};Snd.muted=false;Snd.tone=(...a)=>guardSynth.push(a);Snd.noise=(...a)=>guardSynth.push(a);Snd.play("guard")');assert.equal(run('guardSynth.length'),3);run('Snd.muted=true;Snd.play("guard")');assert.equal(run('guardSynth.length'),3);run('Snd.ctx=null;Snd.muted=false;Snd.tone=oldTone;Snd.noise=oldNoise');
+// The panel swap target replaces the HUD target; all touch controls stay separated.
+for(const[w,h]of [[320,568],[390,844],[750,1274],[844,390]]){
+ run(`window.innerWidth=${w};window.innerHeight=${h};doLayout();state="mansion";M.flags.boss=true;mansionLayout()`);const rects=JSON.parse(run('JSON.stringify(mansionControlRects)'));assert(rects.swap[2]>=44&&rects.swap[3]>=44);
+ if(h>w)assert(rects.swap[1]>=run('layout.gameY+layout.gameH'));
+ for(const id of ['left','right','shoot','jump','slide','ability']){const a=rects.swap,b=rects[id];assert(!(a[0]<b[0]+b[2]&&a[0]+a[2]>b[0]&&a[1]<b[1]+b[3]&&a[1]+a[3]>b[1]),'swap overlaps '+id);}
+}
+console.log('PASS panel swap: portrait/landscape placement; slower combo timing; guard success-only sound and mute.');
+
+// The dedicated guard sprite stays anchored, mirrored and confined to player defense.
+const guardArt=images.find(i=>i.src==='assets/astarte-guard.png');assert(guardArt);guardArt.width=1254;guardArt.height=1254;guardArt.onload();assert(run('!!mansionAstarteGuardArt'));
+clearKeys();run('mansionStart(false);M.flags.boss=true;M.actor="astarte";M.ground=true;M.hurt=0;mansionGuardKeys.add("ShiftLeft")');
+for(const face of [-1,1]){run(`M.face=${face};renderMansion();drawMansionAstarte(130,208,0,${face},16,80)`);assert.equal(run('M.y'),208);}
+run('M.face=1;mansionDamage(2,-1);mansionGuardRelease();renderMansion()');assert(run('M.guardFlash>0&&M.ground'));run('M.poseT=34;renderMansion()');assert(!run('mansionGuarding()'));run('drawMansionAstarte(200,208,0,-1,8,96)');
+console.log('PASS dedicated guard: generated asset load, two directions, stable foot anchor, success flash, action restrictions and boss pose preservation.');
+
+// The two attacks have distinct, ordered poses; the new atlas also works mirrored without moving the player.
+const attackArt=images.find(i=>i.src==='assets/astarte-attack-combo.png');assert(attackArt);
+attackArt.onload();assert(run('!!mansionAstarteAttackArt'));assert.equal(run('ASTARTE_ATTACK_FRAMES.length'),8);
+for(const stage of [1,2]){
+ const poses=run(`M.scytheStage=${stage};(()=>{const out=[];for(let t=34;t>0;t--){M.poseT=t;const p=mansionScythePose();if(out.at(-1)!==p)out.push(p);}return out;})()`);
+ assert.equal(JSON.stringify(poses),JSON.stringify(stage===1?[17,18,19,20]:[21,22,23,24]));
+}
+for(const face of [-1,1])for(let pose=17;pose<=24;pose++)run(`drawMansionAstarte(200,208,0,${face},${pose},80)`);
+const attackAtlas=JSON.parse(fs.readFileSync(require('path').resolve(__dirname,'../assets/astarte-attack-combo.json'),'utf8'));
+assert.equal(JSON.stringify(run('ASTARTE_ATTACK_FRAMES')),JSON.stringify(attackAtlas.frames));
+for(const f of attackAtlas.frames){assert(f.rect[0]>=0&&f.rect[1]>=0&&f.rect[0]+f.rect[2]<=attackAtlas.canvas[0]&&f.rect[1]+f.rect[3]<=attackAtlas.canvas[1]);assert(f.anchor[0]>=0&&f.anchor[1]>=0&&f.anchor[0]<f.rect[2]&&f.anchor[1]<f.rect[3]);}
+console.log('PASS attack atlas: eight ordered sweep/extension/pull poses, frame metadata, bounds, asset loading and both facing directions.');
