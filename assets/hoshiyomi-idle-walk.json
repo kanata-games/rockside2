@@ -1,0 +1,120 @@
+{
+  "image": "hoshiyomi-idle-walk.png",
+  "canvas": [
+    1536,
+    1024
+  ],
+  "nativeCell": [
+    64,
+    64
+  ],
+  "displayScale": 0.075,
+  "frames": [
+    {
+      "name": "idle",
+      "rect": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "anchor": [
+        335,
+        501
+      ],
+      "scale": 0.075
+    },
+    {
+      "name": "wink",
+      "rect": [
+        512,
+        0,
+        512,
+        512
+      ],
+      "anchor": [
+        288,
+        501
+      ],
+      "scale": 0.075
+    },
+    {
+      "name": "walkContactA",
+      "rect": [
+        1024,
+        0,
+        512,
+        512
+      ],
+      "anchor": [
+        210,
+        503
+      ],
+      "scale": 0.075
+    },
+    {
+      "name": "walkPassA",
+      "rect": [
+        0,
+        512,
+        512,
+        512
+      ],
+      "anchor": [
+        326,
+        485
+      ],
+      "scale": 0.075
+    },
+    {
+      "name": "walkContactB",
+      "rect": [
+        512,
+        512,
+        512,
+        512
+      ],
+      "anchor": [
+        303,
+        485
+      ],
+      "scale": 0.075
+    },
+    {
+      "name": "walkPassB",
+      "rect": [
+        1024,
+        512,
+        512,
+        512
+      ],
+      "anchor": [
+        244,
+        485
+      ],
+      "scale": 0.075
+    }
+  ],
+  "idle": [
+    0,
+    1
+  ],
+  "walk": [
+    2,
+    3,
+    4,
+    5
+  ],
+  "confirmedCharacterFacts": [
+    "名前：星詠みちゃん",
+    "友達の新キャラ",
+    "ギャル"
+  ],
+  "unconfirmed": [
+    "星を読む能力",
+    "物語上の役職",
+    "戦闘能力"
+  ],
+  "status": "NPC model candidate, not placed in game yet",
+  "note": "Original RGBA preserved. Crop/scale occurs only when drawn. Actual game body height approximately36px; no exact native64x64 raster export has been made."
+}

@@ -130,7 +130,7 @@ run('M.map=false;M.flags.seal=true;mansionEnter("cellar",438,208);M.enemies=[]')
 run('M.transition=0;mansionUse()');assert.equal(run('mansionWarpTo("cellar")'),true);assert.equal(run('M.x'),438);assert(run('mansionFits(M.x,M.y)'));
 run('M.map=false;M.flags.seal=false;mansionEnter("bedroom",231,208);mansionUse()');assert.equal(run('mansionWarpTo("cellar")'),false);assert.equal(run('M.room'),'bedroom');
 run('M.x=300;M.map=true;M.menuTab="area"');assert.equal(run('mansionWarpTo("cellar")'),false);assert(run('mansionWarpHTML().includes("disabled")'));
-assert.equal(Object.keys(run('MANSION_PORTALS')).length,2);
+assert.equal(Object.keys(run('MANSION_PORTALS')).length,3);
 run('localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{seal:true},visited:["bedroom","archive"],checkpoint:{room:"bedroom",x:110,y:208}}));mansionStart(true)');assert(run('M.flags.seal'));assert.equal(run('M.portals.length'),1);assert.equal(run('M.x'),110);
 run('localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{seal:true,boss:true},visited:["bedroom","garden"],portals:["bedroom","gallery","hall","garden","cellar"],checkpoint:{room:"garden",x:64,y:208}}));mansionStart(true)');assert.equal(run('M.portals.length'),2);assert.equal(run('M.y'),256);assert(run('M.flags.boss'));
 console.log('PASS portals: discovery, persistence, all destinations, ordinary connections, blocked misuse and seal integrity.');
@@ -312,7 +312,7 @@ for(let face=1;face<=6;face++){
  run('M.enemies[0].t=280;mansionDiceAI(M.enemies[0]);renderMansion();M.enemies[0].t=300;mansionDiceAI(M.enemies[0]);renderMansion()');assert.equal(run('M.enemyShots.filter(b=>b.kind==="chip").length'),face===6?5:0);
 }
 run('M.enemies=[mansionNewDice()];M.enemies[0].t=40;mansionDiceAI(M.enemies[0])');assert.equal(run('M.enemies[0].roll'),0);run('M.map=true');const rollTimer=run('M.enemies[0].t');ticks(20);assert.equal(run('M.enemies[0].t'),rollTimer);
-run('M.map=false;M.enemies[0].t=76;mansionDiceAI(M.enemies[0])');assert(run('M.enemies[0].roll>=1&&M.enemies[0].roll<=6'));assert(run('M.message.includes("出目")'));
+run('M.map=false;M.messageT=0;M.enemies[0].t=76;mansionDiceAI(M.enemies[0])');assert(run('M.enemies[0].roll>=1&&M.enemies[0].roll<=6'));assert.equal(run('M.messageT'),0,'die face conveys the roll without an attack instruction');
 run('M.enemies[0].roll=6;M.enemies[0].t=90;renderMansion()');const heldRoll=run('M.enemies[0].roll');run('renderMansion()');assert.equal(run('M.enemies[0].roll'),heldRoll);
 console.log('PASS Dice roll: six distinct intensities, rolling/reveal lead time, fixed attack sequence, targeted jackpot rain, pause and read-only face rendering.');
 
@@ -359,3 +359,197 @@ for(const [start,seq]of [[17,playerAtlas.firstSwing],[25,playerAtlas.secondSwing
 const playerSnapshot=run('JSON.stringify(M)');for(const face of [-1,1])for(const pose of [-1,4,5,6,7,13,14,15,16,...Array.from({length:16},(_,i)=>17+i)])run(`drawMansionAstartePlayer(180,208,0,${face},${pose},80)`);assert.equal(run('JSON.stringify(M)'),playerSnapshot);
 run('drawMansionAstarte(200,208,0,1,8,96)');
 console.log('PASS player sweep: whole-body atlas, shared scale, 16 cells, eight poses per swing, front guard, both directions, read-only renderer and boss preserved.');
+
+// Enlarged corridor is traversable in both directions with either hero, using only ordinary jumps.
+for(const actor of ['umine','astarte'])for(const direction of [1,-1]){
+ clearKeys();run(`M.map=false;mansionEnter('gallery',${direction===1?32:1480},208);M.actor='${actor}';M.flags.boss=true;M.enemies=[];M.hurt=0;keys.${direction===1?'right':'left'}=true;keys.jump=true;`);
+ for(let i=0;i<1800;i++){run('if(M.ground)inp.jumpPressed=true');ticks(1);if(run(direction===1?'M.x>1475':'M.x<40'))break;}
+ assert(run(direction===1?'M.x>1475':'M.x<40'),actor+' corridor route '+direction+' stuck at '+run('JSON.stringify([M.x,M.y])'));
+}
+clearKeys();run('mansionEnter("gallery",1509,208);mansionUse()');assert.equal(run('M.room'),'hall');
+run('M.x=24;M.y=368;mansionUse()');assert.equal(run('M.room'),'gallery');assert.equal(run('M.x'),1480);
+run('M.x=1500;M.y=368;M.galleryWide=true;mansionCamera(true)');assert.equal(run('mansionView().w'),320);assert.equal(run('mansionView().h'),300);assert.equal(run('M.camX'),1216);assert.equal(run('M.camY'),100);
+const saveBefore=storage.get('rockside2_mansion_v1');run('M.map=true;mansionGalleryViewToggle()');assert.equal(run('mansionView().zoom'),1);assert.equal(storage.get('rockside2_mansion_v1'),saveBefore);assert(run('mansionStatusHTML().includes("mGalleryView")'));
+run('mansionGalleryViewToggle()');assert.equal(run('mansionView().zoom'),.8);run('M.map=false;mansionEnter("hall",76,368)');assert.equal(run('mansionView().zoom'),1);
+// Existing gallery checkpoint survives the room's expansion.
+run('localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{seal:true,boss:true},visited:["gallery"],checkpoint:{room:"gallery",x:450,y:112}}));mansionStart(true)');ticks(3);assert.equal(run('M.room'),'gallery');assert.equal(run('M.y'),112);assert(run('M.flags.boss&&M.flags.seal'));
+assert.equal(run('Object.keys(MANSION_PORTALS).length'),3);
+console.log('PASS expanded corridor: ordinary jumps for both heroes, bidirectional doors, wide camera bounds, menu comparison, old checkpoint and unchanged warp count.');
+
+// The archive elevator carries both heroes, pauses in menus, can be summoned and safely jumped off.
+for(const actor of ['umine','astarte']){
+ clearKeys();run(`M.map=false;mansionEnter('archive',752,208);M.actor='${actor}';M.enemies=[];`);ticks(3);
+ assert(run('mansionLiftRiding()'));run('mansionUse()');assert.equal(run('M.lift.target'),448);ticks(80);assert(run('M.y>290&&M.y<320'));assert(run('Math.abs(M.y-M.lift.y)<.001'));
+ const pausedLift=run('M.lift.y');run('M.map=true');ticks(40);assert.equal(run('M.lift.y'),pausedLift);run('M.map=false');ticks(125);assert.equal(run('M.lift.y'),448);assert.equal(run('M.y'),448);
+ run('mansionUse()');ticks(202);assert.equal(run('M.lift.y'),208);assert.equal(run('M.y'),208);
+ run('mansionUse();keys.jump=true;inp.jumpPressed=true');ticks(1);assert(run('M.vy<0&&!M.ground'));assert(run('M.y<M.lift.y'));clearKeys();
+}
+clearKeys();run('mansionEnter("archive",808,448);M.enemies=[];');ticks(3);run('mansionUse()');assert.equal(run('M.lift.target'),448);ticks(202);assert.equal(run('M.lift.y'),448);assert.equal(run('M.y'),448);
+run('M.x=752');ticks(3);assert(run('mansionLiftRiding()'));run('mansionUse()');ticks(202);assert.equal(run('M.y'),208);
+// No crush while a hero obstructs a descending platform.
+run('M.x=752;M.y=448;M.ground=true;M.lift.y=420;M.lift.target=448;');const crushHP=run('M.hp');ticks(20);assert.equal(run('M.hp'),crushHP);assert(run('M.lift.y<=422'));
+run('mansionEnter("hall",76,368)');assert.equal(run('M.lift'),null);
+// Friendly Seiten has her own name, repeatable affectionate dialogue and no combat/progression mutation.
+clearKeys();run('mansionEnter("archive",860,208);M.enemies=[];M.x=880;');ticks(3);const beforeNPC=run('JSON.stringify(M.flags)');run('mansionUse()');assert.equal(run('M.talk.speaker'),'青天');assert(run('M.talk.lines.some(l=>l.includes("隣"))'));assert(run('M.talk.lines.some(l=>l.includes("昇降機"))'));assert.equal(run('JSON.stringify(M.flags)'),beforeNPC);const npcLift=run('M.lift.y');ticks(50);assert.equal(run('M.lift.y'),npcLift);run('mansionTalkClose();M.map=false');
+run('M.x=918;M.y=208;mansionUse()');assert(!run('M.message.includes("奥の部屋")'));
+run('M.x=918;M.y=448;mansionUse()');assert.equal(run('M.room'),'archiveInner');run('mansionEnter("archive",592,448)');
+run('M.x=592;M.y=448;M.hp=3;mansionUse()');assert.equal(run('M.checkpoint.room'),'archive');assert.equal(run('M.checkpoint.y'),448);run('mansionStart(true)');assert.equal(run('M.y'),448);assert(run('mansionFits(M.x,M.y)'));
+const savedNPC=run('JSON.stringify(M)');for(const face of [-1,1])run(`drawMansionSeiten(880,208,30,${face})`);assert.equal(run('JSON.stringify(M)'),savedNPC);
+console.log('PASS library: both-hero elevator round trip, remote call, menu pause, jump-off, no crush, room reset, friendly Seiten, vertical locked door and lower-floor resume.');
+
+const seitenAtlas=JSON.parse(fs.readFileSync(require('path').resolve(__dirname,'../assets/seiten-sequel-idle.json'),'utf8'));assert.equal(JSON.stringify(run('SEITEN_NPC_FRAMES')),JSON.stringify(seitenAtlas.frames));assert.equal(seitenAtlas.frames.length,4);
+const seitenImage=images.find(i=>i.src==='assets/seiten-sequel-idle.png');assert(seitenImage);seitenImage.onload();const seitenFace=images.find(i=>i.src==='assets/seiten-sequel-reference.png');assert(seitenFace);seitenFace.onload();
+for(const f of seitenAtlas.frames){assert.equal(f.scale,.082);assert.deepEqual(f.rect.slice(2),[627,627]);assert(f.anchor[0]>0&&f.anchor[0]<627&&f.anchor[1]>0&&f.anchor[1]<627);}
+const seitenSnapshot=run('JSON.stringify(M)');for(const face of [-1,1])for(const t of [0,45,90])run(`drawMansionSeiten(880,208,${t},${face})`);assert.equal(run('JSON.stringify(M)'),seitenSnapshot);run('mansionSeitenTalk();mansionTalkPortrait();render()');
+console.log('PASS Seiten atlas: four contained equal cells, shared scale, stable foot anchors, both facing directions, own portrait and read-only rendering.');
+
+// Seiten leaves only after the reserved inner door really opens and is crossed; old saves retain her.
+clearKeys();run('mansionStart(false);mansionEnter("archive",918,448);M.enemies=[];MR.archive.extensionDoor.need="testInnerLock";mansionUse()');assert.equal(run('M.room'),'archive');assert.equal(run('M.flags.seitenLeftArchive'),false);assert(run('M.message.includes("鍵")'));
+run('mansionEnter("archive",24,208);mansionUse()');assert.equal(run('M.room'),'hall');assert.equal(run('M.flags.seitenLeftArchive'),false);
+run('M.flags.seal=true;mansionEnter("archive",483,208);mansionUse()');assert.equal(run('M.room'),'bedroom');assert.equal(run('M.flags.seitenLeftArchive'),false);
+// The inner stage now exists; a temporary lock verifies that the departure happens only after valid entry.
+run('delete MR.archive.extensionDoor.need;mansionEnter("archive",918,448);mansionUse()');assert.equal(run('M.room'),'archiveInner');assert.equal(run('M.flags.seitenLeftArchive'),true);assert.equal(run('mansionRead().flags.seitenLeftArchive'),true);
+run('mansionEnter("archive",880,208);M.enemies=[]');assert.equal(run('mansionNearbyNPC()'),undefined);
+const drawCount=run('(()=>{const n=HUB_NPCS.find(n=>n.id==="seiten"),old=n.draw;let count=0;n.draw=()=>count++;render();n.draw=old;return count;})()');assert.equal(drawCount,0);
+run('M.x=592;M.y=448;mansionUse();mansionStart(true)');assert.equal(run('M.room'),'archive');assert.equal(run('M.flags.seitenLeftArchive'),true);run('M.x=880;M.y=208');assert.equal(run('mansionNearbyNPC()'),undefined);
+run('localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{seal:true,boss:true},visited:["archive"],checkpoint:{room:"archive",x:592,y:448}}));mansionStart(true);M.x=880;M.y=208');assert.equal(run('M.flags.seitenLeftArchive'),false);assert.equal(run('mansionNearbyNPC().id'),'seiten');assert(run('M.flags.seal&&M.flags.boss'));
+run('M.flags.seitenLeftArchive=true;mansionStart(false)');assert.equal(run('M.flags.seitenLeftArchive'),false);
+console.log('PASS Seiten departure: locked-door and other-exit safety, actual inner entry, no render/interaction afterward, reentry/resume persistence, old-save compatibility and new-game reset.');
+// Four connected stages: both heroes reach the levers, ride all three clock floors and traverse the water route.
+for(const actor of ['umine','astarte']){
+ clearKeys();run(`mansionStart(false);M.flags.boss=true;mansionEnter('archive',918,448);mansionUse();M.actor='${actor}';M.enemies=[];`);assert.equal(run('M.room'),'archiveInner');assert(run('M.flags.seitenLeftArchive'));
+ run('M.x=812;M.y=368;keys.right=true');ticks(30);assert(run('M.x<=825.01'),'closed gate blocks the main corridor');clearKeys();
+ run('mansionEnter("archiveInner",200,368);M.enemies=[];keys.right=true;keys.jump=true');
+ for(let i=0;i<700&&run('M.x')<680;i++){run('if(M.ground)inp.jumpPressed=true');ticks(1);}clearKeys();ticks(40);assert(run('M.x>670&&M.y===208'),'lever balcony is reachable by normal jumps: '+run('JSON.stringify({actor:M.actor,x:M.x,y:M.y,ground:M.ground})'));
+ run('mansionUse()');assert(run('M.flags.archiveLatch'));assert(run('mansionRead().flags.archiveLatch'));
+ run('keys.right=true;keys.jump=true');for(let i=0;i<350&&run('M.x')<915;i++){run('if(M.ground)inp.jumpPressed=true');ticks(1);}clearKeys();ticks(60);assert(run('M.x>900&&M.y===368'));
+ run('M.x=931;mansionUse()');assert.equal(run('M.room'),'clockTower');run('M.enemies=[];keys.right=true');for(let i=0;i<150&&run('M.x')<304;i++)ticks(1);clearKeys();ticks(3);assert(run('mansionLiftRiding()'));
+ run('mansionUse()');ticks(190);assert.equal(run('M.y'),352);run('mansionUse()');ticks(190);assert.equal(run('M.y'),128);
+ run('keys.right=true');for(let i=0;i<190&&run('M.x')<600;i++)ticks(1);clearKeys();ticks(3);run('M.x=607;mansionUse()');assert.equal(run('M.room'),'moonReservoir');
+ run('M.enemies=[];keys.right=true;keys.jump=true');for(let i=0;i<700&&run('M.x')<978;i++){run('if(M.ground)inp.jumpPressed=true');ticks(1);}clearKeys();ticks(60);assert(run('M.x>966&&M.y===368&&M.hp>0'),'water chamber traversable with real health');
+ run('M.x=993;mansionUse()');assert.equal(run('M.room'),'starPassage');run('M.enemies=[];keys.right=true;keys.jump=true');for(let i=0;i<500&&run('M.x')<470;i++){run('if(M.ground)inp.jumpPressed=true');ticks(1);}clearKeys();ticks(35);assert(run('M.x>460&&M.y===128'),'shortcut switch reachable by ordinary jumps');
+ run('mansionUse()');assert(run('M.flags.starShortcut'));run('M.x=540;mansionUse()');assert.equal(run('M.room'),'archive');assert.equal(run('mansionNearbyNPC()'),undefined);
+ run('M.x=936;mansionUse()');assert.equal(run('M.room'),'starPassage');assert.equal(run('M.y'),128);
+}
+// Geysers have a quiet phase and a warning before a bounded burst; elevated platforms are safe.
+clearKeys();run('M.map=false;mansionEnter("moonReservoir",288,368);M.enemies=[];M.hp=16;M.hurt=0;M.t=20;mansionVentUpdate()');assert.equal(run('M.hp'),16);run('M.t=100;mansionVentUpdate()');assert.equal(run('M.hp'),16);run('M.t=125;mansionVentUpdate()');assert.equal(run('M.hp'),14);
+run('M.hurt=0;M.hp=16;M.y=320;mansionVentUpdate()');assert.equal(run('M.hp'),16);run('M.y=368;M.map=true');const ventT=run('M.t');ticks(40);assert.equal(run('M.t'),ventT);
+run('M.map=false;mansionEnter("starPassage",1000,368);M.enemies=[];mansionUse()');assert(run('M.portals.includes("starPassage")'));assert(run('M.map&&M.menuTab==="area"'));run('mansionWarpTo("bedroom")');assert.equal(run('M.room'),'bedroom');run('M.x=231;mansionUse();mansionWarpTo("starPassage")');assert.equal(run('M.room'),'starPassage');
+run('M.x=1118;M.y=368;M.map=false;mansionUse()');assert.equal(run('M.room'),'forbiddenArchive');run('M.x=24;mansionUse()');assert.equal(run('M.room'),'starPassage');
+run('M.x=940;mansionUse();mansionStart(true)');assert.equal(run('M.room'),'starPassage');assert(run('M.flags.archiveLatch&&M.flags.starShortcut&&M.flags.seitenLeftArchive'));assert(run('M.portals.includes("starPassage")'));
+run('M.visited=Object.keys(MR);M.menuTab="map";M.map=true;render()');assert(run('mansionMapHTML().includes("時計塔")&&mansionMapHTML().includes("貯水室")'));assert.equal(run('mansionMapBounds().minY'),-1);for(const id of Object.keys(run('MR'))){const p=run(`mansionMapPosition('${id}')`);assert(p[0]>=10&&p[0]+36<=246&&p[1]>=40&&p[1]+18<=197);}
+console.log('PASS four stages: both-hero continuous route, gate switch, three-level elevator, readable geysers, permanent shortcut, departure event, single added warp, saved progress and expanded map.');
+
+// The warp-adjacent door leads through the new archive to a separate boss chamber; no extra warp.
+for(const actor of ['umine','astarte']){
+ clearKeys();run(`mansionStart(false);M.flags.boss=true;M.flags.seitenLeftArchive=true;M.actor='${actor}';mansionEnter('starPassage',1118,368);mansionUse();M.enemies=[];keys.right=true;keys.jump=true`);assert.equal(run('M.room'),'forbiddenArchive');
+ for(let i=0;i<750&&run('M.x')<984;i++){run('if(M.ground)inp.jumpPressed=true');ticks(1);}clearKeys();ticks(70);assert(run('M.x>974&&M.y===368'),'both heroes can reach the boss door with normal jumps');
+ run('M.x=914;mansionUse()');assert.equal(run('M.checkpoint.room'),'forbiddenArchive');run('M.x=993;mansionUse()');assert.equal(run('M.room'),'seitenArena');assert.equal(run('M.actor'),actor);assert.equal(run('M.seitenState'),'waiting');
+ run('M.x=120');ticks(1);assert(run('M.map&&M.talk.speaker==="青天"&&M.talk.after==="seitenStart"'));run('mansionTalkClose();M.map=false');assert.equal(run('M.x'),70);ticks(1);assert.equal(run('M.map'),false);
+ run('M.x=24;mansionUse()');assert.equal(run('M.room'),'forbiddenArchive');assert.equal(run('M.y'),368);
+}
+assert.equal(run('Object.keys(MANSION_PORTALS).length'),3);
+// Do not hurt the waiting cat. Combat damage is 1 for water, 2 for scythe, with a short boss hit cooldown.
+clearKeys();run('mansionEnter("seitenArena",100,256);M.shots=[{x:365,y:238,vx:0}];M.hurt=0');ticks(1);assert.equal(run('M.enemies[0].hp'),64);
+run('mansionSeitenStart();M.hurt=0;M.enemies[0].x=150;M.shots=[{x:145,y:238,vx:0},{x:146,y:238,vx:0}]');ticks(1);assert.equal(run('M.enemies[0].hp'),63);
+run('M.enemies[0].guard=0;M.actor="astarte";M.scytheStage=1;M.scytheFace=1;M.scytheHit=false;mansionScytheHit()');assert.equal(run('M.enemies[0].hp'),61);
+run('M.map=true;M.menuTab="status"');const catPaused=run('JSON.stringify([M.t,M.enemies,M.enemyShots,M.hp])');ticks(50);assert.equal(run('JSON.stringify([M.t,M.enemies,M.enemyShots,M.hp])'),catPaused);run('M.map=false;M.poseT=M.castT=0;M.swapCool=0;M.transition=0');assert(run('mansionSwap()'),'buddy can swap during Seiten battle');
+run('M.x=24;mansionUse()');assert.equal(run('M.room'),'seitenArena');run('M.map=true;mansionUI()');assert(elements.get('mBattleLeave').textContent.includes('禁書庫'));run('mansionSeitenLeave()');assert.equal(run('M.room'),'forbiddenArchive');assert.equal(run('M.seitenState'),'waiting');assert.equal(run('M.enemyShots.length'),0);assert.equal(run('M.checkpoint.room'),'forbiddenArchive');
+// Normal two pounces, rage three; each target is fixed during its warning, followed by the song pattern.
+for(const rage of [false,true]){
+ run(`mansionEnter('seitenArena',120,256);mansionSeitenStart();M.hurt=9999;M.x=250;M.enemies[0].hp=${rage?32:64}`);
+ let leaps=0,waves=0,notes=0,previous='idle';for(let i=0;i<700;i++){
+  run('mansionSeitenAI(M.enemies[0])');const mode=run('M.enemies[0].mode');if(mode==='leap'&&previous==='crouch')leaps++;
+  if(mode==='crouch'&&previous!=='crouch'){const locked=run('M.enemies[0].targetX');run('M.x=M.x===250?310:250;mansionSeitenAI(M.enemies[0])');assert.equal(run('M.enemies[0].targetX'),locked);}
+  for(const b of run('M.enemyShots')){if(b.kind==='songWave')waves++;if(b.kind==='songNote')notes++;}run('M.enemyShots=[]');if(mode==='idle'&&previous==='sing')break;previous=mode;
+ }
+ assert.equal(leaps,rage?3:2);assert.equal(waves,rage?3:2);assert.equal(notes,rage?3:0);
+}
+// Actual note / wave hitboxes: standing clears the high note, jumping clears the low wave, guard reduces a front hit.
+clearKeys();run('mansionSeitenStart();M.enemies[0].x=420;M.x=200;M.hurt=0;M.hp=16;M.enemyShots=[{kind:"songNote",x:200,y:214,baseY:214,vx:-.1,vy:0,age:0,damage:2}]');ticks(1);assert.equal(run('M.hp'),16);
+run('M.hurt=0;M.enemyShots=[{kind:"songWave",x:200,y:246,vx:-.1,vy:0,damage:2}]');ticks(1);assert.equal(run('M.hp'),14);
+run('M.hurt=0;M.x=200;M.y=220;M.vx=M.vy=0;M.kickLock=0;M.enemyShots=[{kind:"songWave",x:200,y:246,vx:-.1,vy:0,damage:2}]');ticks(1);assert.equal(run('M.hp'),14);
+run('M.hurt=0;M.actor="astarte";M.x=200;M.y=256;M.vx=M.vy=0;M.kickLock=0;M.ground=true;M.face=1;M.poseT=0;mansionGuardKeys.add("ShiftLeft");M.enemyShots=[{kind:"songWave",x:200,y:246,vx:-.1,vy:0,damage:2}]');ticks(1);assert.equal(run('M.hp'),13);assert(run('M.guardFlash>0'));clearKeys();
+// Standing fire is pressured into a safe retry, while ordinary movement and timing win at normal maximum HP.
+run('mansionStart(false);M.flags.boss=true;mansionEnter("seitenArena",40,256);mansionSeitenStart();keys.shoot=true');for(let i=0;i<2500&&run('M.seitenState')==='active';i++)ticks(1);assert.equal(run('M.seitenState'),'ready');assert.equal(run('M.flags.seitenDefeated'),false);assert(run('M.map&&M.dead===0'));assert.equal(run('M.hp'),16);clearKeys();
+for(const actor of ['umine','astarte']){
+ run(`var catEvade=1,catCross=1,catCrossUntil=0;mansionStart(false);M.flags.boss=true;M.flags.archiveLatch=true;M.flags.starShortcut=true;M.flags.seitenLeftArchive=true;mansionEnter('forbiddenArchive',914,368);mansionUse();mansionEnter('seitenArena',40,256);mansionSeitenStart();M.actor='${actor}'`);
+ let steps=0,minHP=16,seenSong=false,seenRage=false;
+ for(;steps<6500&&run('M.seitenState')==='active';steps++){
+  run(`(()=>{const e=M.enemies[0],d=e.x-M.x;mansionGuardKeys.clear();keys.shoot=true;keys.jump=true;keys.left=keys.right=false;if(!M.hurt)M.face=d<0?-1:1;if(M.actor==='astarte'&&!M.abilityCool)mansionAbility();
+   const evade=e.mode==='crouch'||e.mode==='leap';
+   if(evade){if(e.mode==='crouch'&&e.modeT<=1){catEvade=M.x<e.fromX?-1:1;if(M.x<120)catEvade=1;if(M.x>392)catEvade=-1;}const safe=M.actor==='umine'&&Math.abs(M.x-e.targetX)>75&&Math.abs(d)>65;keys.left=!safe&&catEvade<0;keys.right=!safe&&catEvade>0;}
+   else if(['rushWind','rush','clawWind','claw'].includes(e.mode)){
+    if(M.actor==='astarte'){if(Math.abs(d)<90){keys.left=d>0&&M.x>60;keys.right=d<0&&M.x<452;}if(M.ground&&((e.mode==='rush'&&Math.abs(d)<90)||(e.mode==='clawWind'&&e.modeT>=7&&Math.abs(d)<90)))inp.jumpPressed=true;}
+    else {if(e.mode==='rushWind'&&e.modeT<=1)catCross=d<0?-1:1;
+    if(M.t<catCrossUntil){keys.left=catCross<0;keys.right=catCross>0;}
+    else{if(Math.abs(d)<90){keys.left=d>0&&M.x>60;keys.right=d<0&&M.x<452;}if(M.ground&&((e.mode==='rush'&&Math.abs(d)<80)||(e.mode==='clawWind'&&e.modeT>=7&&Math.abs(d)<90))){inp.jumpPressed=true;catCross=d<0?-1:1;catCrossUntil=M.t+38;keys.left=catCross<0;keys.right=catCross>0;}}}
+   }
+   else if(M.actor==='astarte'?Math.abs(d)>40:Math.abs(d)<100){if(M.actor==='astarte'){keys.right=d>0;keys.left=d<0;}else{keys.left=d>0&&M.x>65;keys.right=d<0&&M.x<447;}}
+   const wave=M.enemyShots.find(b=>b.kind==='songWave'&&(b.x-M.x)*b.vx<0&&Math.abs(b.x-M.x)<(M.actor==='astarte'?50:36));if(M.ground&&wave)inp.jumpPressed=true;if(M.actor==='umine'&&e.mode==='sing'&&M.y<232)keys.jump=false;})()`);
+  if(run('M.enemies[0]?.mode')==='sing')seenSong=true;if(run('M.enemies[0]?.hp')<=32)seenRage=true;ticks(1);minHP=Math.min(minHP,run('M.hp'));
+ }
+ clearKeys();assert.equal(run('M.seitenState'),'done',actor+' completes normal-HP battle without immunity');assert(seenSong&&seenRage);assert(minHP>0&&minHP<16);assert.equal(run('mansionRead().flags.seitenDefeated'),true);assert.equal(run('mansionRead().checkpoint.room'),'forbiddenArchive');
+ run('mansionTalkClose(true);M.map=false;M.x=24;M.y=256;mansionUse();mansionStart(true)');assert.equal(run('M.room'),'forbiddenArchive');assert(run('M.flags.boss&&M.flags.starShortcut&&M.flags.archiveLatch&&M.flags.seitenLeftArchive&&M.flags.seitenDefeated'));
+ run('mansionEnter("seitenArena",355,256)');assert.equal(run('M.enemies.length'),0);assert.equal(run('mansionNearbyNPC().id'),'seitenAfter');run('mansionUse()');assert.equal(run('M.talk.speaker'),'青天');run('mansionTalkClose(true);M.map=false;mansionEnter("archive",880,208)');assert.equal(run('mansionNearbyNPC()'),undefined);
+ console.log('PASS Seiten normal-HP movement battle:',actor,steps,'frames, lowest HP',minHP);
+}
+const catAtlas=JSON.parse(fs.readFileSync(require('path').resolve(__dirname,'../assets/seiten-sequel-combat.json'),'utf8'));assert.equal(JSON.stringify(run('SEITEN_COMBAT_FRAMES')),JSON.stringify(catAtlas.frames));assert.equal(catAtlas.frames.length,8);const combatImage=images.find(i=>i.src==='assets/seiten-sequel-combat.png');assert(combatImage);combatImage.onload();
+for(const f of catAtlas.frames){assert.deepEqual(f.rect.slice(2),[450,400]);assert.equal(f.scale,.125);assert(f.alphaBounds[0]>=0&&f.alphaBounds[2]<=450&&f.alphaBounds[1]>=0&&f.alphaBounds[3]<=400);assert(f.anchor[0]>0&&f.anchor[0]<450&&f.anchor[1]>0&&f.anchor[1]<400);}
+run('mansionEnter("seitenArena",100,256);mansionSeitenStart()');for(const face of [-1,1])for(let pose=0;pose<8;pose++){const before=run('JSON.stringify(M)');run(`mansionSeitenBossDraw({...M.enemies[0],dir:${face},pose:${pose}})`);assert.equal(run('JSON.stringify(M)'),before);}run('M.visited=Object.keys(MR);M.map=true;M.menuTab="map";render()');assert(run('mansionMapHTML().includes("禁書庫")'));for(const id of Object.keys(run('MR'))){const p=run(`mansionMapPosition('${id}')`);assert(p[0]+36<=246&&p[1]+18<=197);}
+run('localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{boss:true,starShortcut:true},visited:["starPassage"],checkpoint:{room:"starPassage",x:940,y:368}}));mansionStart(true)');assert.equal(run('M.flags.seitenDefeated'),false);assert(run('M.flags.boss&&M.flags.starShortcut'));assert.equal(run('M.room'),'starPassage');
+console.log('PASS forbidden archive / Seiten: connected approach, checkpoint, intro cancel, active damage, hit cooldown, two / three locked pounces, timed low waves / high notes, guard, pause, safe retry / retreat, both-hero fair wins, persistent victory / friendly NPC, equal-scale eight-pose atlas, larger map and old saves.');
+// EX story is a continuation of the archive conversation; bosses no longer coach the player's dodges.
+clearKeys();run('mansionStart(false);mansionEnter("seitenArena",120,256);mansionSeitenIntro()');assert(run('M.talk.lines.join(" ").includes("隣にいてね")'));assert(run('M.talk.lines.join(" ").includes("一緒にいてくれなかった")'));
+for(const fn of ['mansionSeitenIntro','mansionSeitenRetry','mansionAstarteIntro','mansionSparRetry']){run(`${fn}()`);assert(!/ジャンプ|滑って|距離を取|星の高さ|着地する場所|跳んで/.test(run('M.talk.lines.join(" ")')),fn+' contains story rather than dodge instructions');}
+run('mansionTalkClose(true);M.map=false;mansionEnter("bedroom",390,208);mansionRoruTalk();mansionDiceChallenge()');assert(!/跳んで|滑って|ガードもお試し/.test(run('M.talk.lines.join(" ")')));run('mansionDiceRetry()');assert(!/間合い|投げる合図/.test(run('M.talk.lines.join(" ")')));
+// Both rush directions lock their endpoint before release; rage uses a shorter warning and quicker movement.
+for(const rage of [false,true])for(const dir of [-1,1]){
+ clearKeys();run(`mansionStart(false);mansionEnter('seitenArena',40,256);mansionSeitenStart();M.hurt=9999;M.x=${dir<0?80:430};M.enemies[0].x=256;M.enemies[0].hp=${rage?32:64};mansionSeitenMode(M.enemies[0],'rushWind')`);
+ const target=run('M.enemies[0].targetX');assert.equal(run('M.enemies[0].dir'),dir);run(`M.x=${dir<0?430:80};for(let i=0;i<${rage?21:27};i++)mansionSeitenAI(M.enemies[0])`);assert.equal(run('M.enemies[0].mode'),'rushWind');assert.equal(run('M.enemies[0].targetX'),target);
+ run('mansionSeitenAI(M.enemies[0])');assert.equal(run('M.enemies[0].mode'),'rush');let last=256,travel=0;
+ while(run('M.enemies[0].mode')==='rush'&&travel<50){run('mansionSeitenAI(M.enemies[0])');const x=run('M.enemies[0].x');assert((x-last)*dir>=0);assert(x>=54&&x<=458);last=x;travel++;}assert.equal(run('M.enemies[0].mode'),'clawWind');assert.equal(last,target);assert(run('M.enemies[0].trail.length>0'));
+ const before=run('JSON.stringify(M)');run('mansionSeitenBossDraw(M.enemies[0])');assert.equal(run('JSON.stringify(M)'),before);run('M.map=true');const paused=run('JSON.stringify([M.enemies,M.fx,M.t])');ticks(30);assert.equal(run('JSON.stringify([M.enemies,M.fx,M.t])'),paused);run('M.map=false');
+ run('for(let i=0;i<13;i++)mansionSeitenAI(M.enemies[0])');assert.equal(run('M.enemies[0].mode'),'clawWind');run('mansionSeitenAI(M.enemies[0])');assert.equal(run('M.enemies[0].mode'),'claw');assert.equal(run('M.enemies[0].dir'),dir);
+ // The visible forward claw is the hazardous region; its tell and recovery are safe at that distance.
+ run(`M.x=M.enemies[0].x+${dir}*45;M.y=256;M.hp=16;M.hurt=0;M.vx=M.vy=0;for(let i=0;i<4;i++)mansionSeitenAI(M.enemies[0])`);assert.equal(run('M.hp'),16);run('mansionSeitenAI(M.enemies[0])');assert.equal(run('M.hp'),13);
+ run('M.hp=16;M.hurt=0;M.y=226;mansionSeitenAI(M.enemies[0])');assert.equal(run('M.hp'),16,'a timed jump clears the claw');
+ run(`M.y=256;M.ground=true;M.actor='astarte';M.poseT=0;M.face=${-dir};mansionGuardKeys.add('ShiftLeft');M.hurt=0;mansionSeitenAI(M.enemies[0])`);assert.equal(run('M.hp'),15);clearKeys();run('M.hurt=9999;for(let i=0;i<11;i++)mansionSeitenAI(M.enemies[0])');assert.equal(run('M.enemies[0].mode'),'recover');run('M.hp=16;M.hurt=0;mansionSeitenAI(M.enemies[0])');assert.equal(run('M.hp'),16);
+}
+// A recorded EX clear is replayable without clearing exploration / reward flags or adding an NPC during combat.
+clearKeys();run('mansionStart(false);M.flags.boss=true;M.flags.complete=true;M.flags.astarteReward=true;M.flags.archiveLatch=true;M.flags.starShortcut=true;M.flags.seitenDefeated=true;M.flags.seitenLeftArchive=true;mansionEnter("forbiddenArchive",914,368);mansionUse();mansionEnter("seitenArena",355,256);mansionUse()');assert(run('M.talk.offerSeiten'));assert.equal(elements.get('mTalkSeiten').style.display,'block');const snapshotExFlags=()=>JSON.parse(run('JSON.stringify(Object.fromEntries(Object.keys(mansionRead().flags).map(k=>[k,M.flags[k]===true])))'));const exFlags=snapshotExFlags(),exCheckpoint=run('JSON.stringify(M.checkpoint)');
+run('document.getElementById("mTalkSeiten").handlers.click({preventDefault(){},stopPropagation(){}})');assert.equal(run('M.seitenState'),'ready');assert.equal(run('mansionNearbyNPC()'),undefined);run('mansionTalkClose();M.map=false');assert.equal(run('M.seitenState'),'done');assert.equal(run('M.enemies.length'),0);ticks(20);assert(!run('M.map'));
+run('M.x=355;M.y=256;mansionUse();mansionSeitenChallenge();mansionTalkNext()');assert.equal(run('M.seitenState'),'active');assert.equal(run('M.enemies[0].hp'),64);assert.equal(run('mansionNearbyNPC()'),undefined);assert.deepStrictEqual(snapshotExFlags(),exFlags);run('mansionSeitenRetry();mansionTalkClose();M.map=false;M.x=355;M.y=256;mansionUse();mansionSeitenChallenge();mansionTalkNext();mansionSeitenLeave();mansionStart(true)');assert.deepStrictEqual(snapshotExFlags(),exFlags);assert.equal(run('JSON.stringify(M.checkpoint)'),exCheckpoint);assert.equal(run('M.room'),'forbiddenArchive');
+run('mansionEnter("seitenArena",355,256);mansionUse();mansionSeitenChallenge();mansionTalkNext();mansionSeitenWin()');assert.deepStrictEqual(snapshotExFlags(),exFlags);assert.equal(run('JSON.stringify(M.checkpoint)'),exCheckpoint);assert(run('M.talk.lines.join(" ").includes("また帰ってきて")'));assert(!run('mansionStatusHTML().includes("EX：")'));assert.equal(run('mansionMaxHP()'),20);
+run('mansionStart(false);mansionEnter("seitenArena",40,256);mansionSeitenStart();mansionSeitenWin()');assert.equal(run('M.flags.boss'),false);assert.equal(run('M.flags.complete'),false,'EX victory does not advance the main story');
+console.log('PASS EX38: story-only boss dialogue, abandonment/reconciliation, stronger HP64 fight, locked ground rush / readable timed claw / jump and guard in both directions, rage tempo, paused trails, repeatable saved EX with no duplicate NPC, preserved main progress and checkpoint.');
+
+// Each boss gifts its own amulet once; existing clears can receive it by talking, without redoing the fight.
+clearKeys();run('mansionStart(false);M.flags.boss=true;M.flags.starShortcut=true;mansionEnter("forbiddenArchive",914,368);mansionUse();mansionEnter("seitenArena",40,256);mansionSeitenStart();mansionSeitenWin()');assert.equal(run('mansionMaxHP()'),18);assert.equal(run('M.hp'),18);assert(run('M.talk.lines.includes(SEITEN_AMULET_LINE)'));assert(run('mansionRead().flags.seitenReward'));assert.equal(run('M.flags.astarteFull'),undefined);assert.equal(run('M.checkpoint.room'),'forbiddenArchive');
+run('mansionTalkClose(true);M.map=false;mansionStart(true)');assert.equal(run('mansionMaxHP()'),18);assert(run('M.flags.starShortcut&&M.flags.boss&&M.flags.seitenDefeated'));run('mansionEnter("seitenArena",355,256);mansionUse()');assert(!run('M.talk.lines.includes(SEITEN_AMULET_LINE)'));
+run('mansionSeitenChallenge();mansionTalkNext();mansionSeitenWin()');assert.equal(run('mansionMaxHP()'),18);assert(!run('M.talk.lines.includes(SEITEN_AMULET_LINE)'));assert(!/EX|再戦/.test(run('M.talk.lines.join(" ")+mansionStatusHTML()')));assert(html.includes('>一緒に遊ぶ</button>'));assert(!html.includes('（EX再戦）'));
+run('mansionStart(false);M.flags.seitenDefeated=true;M.flags.seitenLeftArchive=true;mansionEnter("seitenArena",355,256);mansionSave();mansionStart(true);mansionEnter("seitenArena",355,256);mansionUse()');assert.equal(run('mansionMaxHP()'),18);assert(run('M.talk.lines.includes(SEITEN_AMULET_LINE)'));assert(run('mansionRead().flags.seitenReward'));assert.equal(run('M.flags.boss'),false);assert.equal(run('M.flags.complete'),false);
+run('mansionTalkClose(true);M.map=false;M.hp=10;mansionUse()');assert.equal(run('M.hp'),10,'repeat conversations do not heal or grant another amulet');assert(!run('M.talk.lines.includes(SEITEN_AMULET_LINE)'));
+run('mansionStart(false);M.flags.boss=true;M.flags.astarteReward=true;mansionEnter("seitenArena",40,256);mansionSeitenStart();mansionSeitenWin()');assert.equal(run('mansionMaxHP()'),20);assert(run('M.talk.lines.includes(SEITEN_AMULET_LINE)'),'each boss grants a separate amulet');
+run('mansionTalkClose(true);M.map=false;mansionEnter("bedroom",612,208);mansionUse();mansionFullBattle();mansionSparWin()');assert.equal(run('mansionMaxHP()'),20);assert(run('M.flags.astarteFull'),'full Astarte victory remains recorded independently');
+console.log('PASS reward40: independently stacking permanent amulets, first-win gift / heal / save / resume, reward for an existing clear, no repeat healing or duplicate reward, both boss orders and natural conversation labels.');
+
+// Legacy shared flags migrate by recorded boss clears, and resaving is idempotent.
+for(const [flags,hp,a,b] of [[{astarteFull:true,astarteReward:true},18,true,false],[{seitenDefeated:true,astarteReward:true},18,false,true],[{seitenDefeated:true,astarteFull:true,astarteReward:true},20,true,true],[{seitenDefeated:true},18,false,true]]){
+ run(`localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:${JSON.stringify(flags)},visited:['bedroom'],checkpoint:{room:'bedroom',x:110,y:208}}));mansionStart(true)`);
+ assert.equal(run('mansionMaxHP()'),hp);assert.equal(run('M.flags.astarteReward'),a);assert.equal(run('M.flags.seitenReward'),b);
+ run('mansionSave();mansionStart(true)');assert.equal(run('mansionMaxHP()'),hp);
+}
+clearKeys();run("mansionStart(false);M.flags.boss=true;M.flags.seitenDefeated=true;mansionEnter('bedroom',130,208);M.transition=0;M.swapCool=0");
+assert(run('mansionSwap()'));assert.equal(run('M.actor'),'astarte');run('M.swapCool=0');assert(run('mansionSwap()'));assert.equal(run('M.actor'),'seiten');assert(run('mansionStatusHTML().includes("青天")'));assert(!run('mansionIsUmine()'));
+run('M.swapCool=0;M.map=true');assert(!run('mansionSwap()'));run('M.map=false;mansionEnter("hall",230,368);M.enemies=[];M.transition=0;M.hurt=0');assert.equal(run('M.actor'),'seiten');ticks(25);
+// One hit per swing, two distinct swings; no Umine water shot while holding attack.
+run("M.face=1;M.enemies=[{kind:'walk',x:M.x+25,y:M.y,hp:10}];mansionSeitenClaw();mansionSeitenClawHit();mansionSeitenClawHit()");assert.equal(run('M.enemies[0].hp'),8);run('mansionSeitenClaw(2);mansionSeitenClawHit()');assert.equal(run('M.enemies[0].hp'),6);
+run('M.enemies=[];M.poseT=M.cool=0;keys.shoot=true');ticks(48);assert.equal(run('M.clawStage'),2);assert.equal(run('M.shots.length'),0);clearKeys();ticks(35);
+// Song has a real windup and freezes with the menu; hurt cancels a pending note.
+run('M.abilityCool=0;M.poseT=0');assert(run('mansionAbility()'));ticks(11);assert.equal(run('M.shots.length'),0);run('M.map=true');ticks(20);assert.equal(run('M.castT'),19);run('M.map=false');ticks(1);assert.equal(run('M.shots[0].kind'),'song');assert.equal(run('M.shots[0].damage'),2);
+run('M.shots=[];M.castT=0;M.abilityCool=0;mansionAbility();M.hurt=0;mansionDamage(1,1)');ticks(15);assert.equal(run('M.shots.length'),0);
+run('M.hurt=0;M.kickLock=0;M.poseT=M.castT=0;M.y=368;M.ground=true;M.face=1;M.stepCool=0;mansionInput.slide=true');const beforeStep=run('M.x');ticks(1);assert(run('M.stepT>0'));assert(run('M.x')<beforeStep);assert.equal(run('M.hurt'),0);assert(!run('mansionSwap()'));run('M.map=true');const stepTimer=run('M.stepT');ticks(15);assert.equal(run('M.stepT'),stepTimer);
+run('M.map=false;mansionDiceStart()');assert.equal(run('M.actor'),'seiten');assert.equal(run('M.stepT'),0);run('M.poseT=12;M.stepT=8;mansionDiceRetry()');assert.equal(run('M.stepT'),0);
+run('mansionTalkClose(true);M.map=false;mansionEnter("seitenArena",110,256);mansionSeitenStart()');assert.equal(run('M.actor'),'umine');assert(!run('mansionActors().includes("seiten")'));
+console.log('PASS buddy40: legacy reward migration / idempotent save, three-way swap and locks, shared status / room continuity, 2+2 claws, no water shot, delayed song / pause / interruption, backstep / pause / retry, no self-boss.');
