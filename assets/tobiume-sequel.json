@@ -1,0 +1,365 @@
+{
+ "image": "tobiume-sequel.png",
+ "frameWidth": 512,
+ "frameHeight": 512,
+ "scale": 0.1227,
+ "displayHeight": "立ち姿 頭頂〜足 440px（ネイティブ）× 0.1227 ≈ 54px",
+ "facing": "right",
+ "anchorNote": "anchor＝足元（立ち姿は足裏の中心）。全フレーム anchor.y=500、各フレームの下端を y≈500 にそろえてある（浮遊キャラ：絵の下端＝足先。ゲーム側で浮かせて表示）。座標はすべてネイティブのセル内座標（左向きは x → 511-x）",
+ "character": "飛梅（正気・通常の姿）。白い上衣に赤い袴風スカート、黒タイツ、茶髪ポニーテール。緑の魔法。浮遊して移動する",
+ "frames": [
+  {
+   "name": "idle0",
+   "rect": [
+    0,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    169,
+    61,
+    342,
+    500
+   ],
+   "hitbox": [
+    176,
+    61,
+    161,
+    439
+   ]
+  },
+  {
+   "name": "idle1",
+   "rect": [
+    512,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    164,
+    78,
+    352,
+    500
+   ],
+   "hitbox": [
+    176,
+    78,
+    161,
+    422
+   ]
+  },
+  {
+   "name": "move0",
+   "rect": [
+    1024,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    67,
+    90,
+    407,
+    500
+   ],
+   "hitbox": [
+    176,
+    90,
+    161,
+    410
+   ]
+  },
+  {
+   "name": "move1",
+   "rect": [
+    1536,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    50,
+    165,
+    438,
+    500
+   ],
+   "hitbox": [
+    176,
+    168,
+    161,
+    332
+   ]
+  },
+  {
+   "name": "telegraph",
+   "rect": [
+    2048,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    85,
+    102,
+    396,
+    500
+   ],
+   "hitbox": [
+    176,
+    102,
+    161,
+    398
+   ]
+  },
+  {
+   "name": "attackA",
+   "rect": [
+    0,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    63,
+    97,
+    505,
+    500
+   ],
+   "hitbox": [
+    176,
+    97,
+    161,
+    403
+   ]
+  },
+  {
+   "name": "attackB",
+   "rect": [
+    512,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    6,
+    119,
+    481,
+    500
+   ],
+   "hitbox": [
+    176,
+    119,
+    161,
+    381
+   ]
+  },
+  {
+   "name": "hurt",
+   "rect": [
+    1024,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    97,
+    92,
+    406,
+    500
+   ],
+   "hitbox": [
+    176,
+    92,
+    161,
+    408
+   ]
+  },
+  {
+   "name": "defeat",
+   "rect": [
+    1536,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    94,
+    172,
+    446,
+    500
+   ],
+   "hitbox": [
+    176,
+    172,
+    161,
+    328
+   ]
+  }
+ ],
+ "animations": {
+  "idle": {
+   "frames": [
+    0,
+    1
+   ],
+   "ms": [
+    420,
+    420
+   ],
+   "loop": true
+  },
+  "move": {
+   "frames": [
+    2,
+    3
+   ],
+   "ms": [
+    200,
+    200
+   ],
+   "loop": true
+  },
+  "telegraph": {
+   "frames": [
+    4
+   ],
+   "ms": [
+    450
+   ],
+   "loop": false,
+   "note": "予兆（攻撃前の溜め）"
+  },
+  "attackA": {
+   "frames": [
+    5
+   ],
+   "ms": [
+    300
+   ],
+   "loop": false,
+   "active": [
+    5
+   ],
+   "note": "魔法弾（緑）を手から撃つ。弾はゲーム側で発生させる。スプライトの光跡は発射エフェクト"
+  },
+  "attackB": {
+   "frames": [
+    6
+   ],
+   "ms": [
+    400
+   ],
+   "loop": false,
+   "active": [
+    6
+   ],
+   "note": "急降下キック。緑の光の筋は残像"
+  },
+  "hurt": {
+   "frames": [
+    7
+   ],
+   "ms": [
+    320
+   ],
+   "loop": false
+  },
+  "defeat": {
+   "frames": [
+    8
+   ],
+   "ms": [
+    1200
+   ],
+   "loop": false,
+   "note": "座り込む（腕試し終了）"
+  }
+ },
+ "spawn": {
+  "magicBolt": {
+   "frame": 5,
+   "x": 408,
+   "y": 218,
+   "note": "attackA 魔法弾の発生点（突き出した手。緑の輪の中心）"
+  },
+  "chargeOrb": {
+   "frame": 4,
+   "x": 356,
+   "y": 255,
+   "note": "telegraph 手元の緑の魔力球（チャージ演出）"
+  }
+ },
+ "hitboxes": {
+  "body": "各フレームの hitbox [x,y,w,h]（ネイティブ。胴体まわり。エフェクト・髪先は含まない）",
+  "attackB": {
+   "frame": 6,
+   "rect": [
+    297,
+    131,
+    185,
+    370
+   ],
+   "note": "キック/攻撃の接触判定（体の前方）"
+  }
+ },
+ "warped_frames": [
+  {
+   "frame": 5,
+   "name": "attackA",
+   "note": "セルに収めるため、体より外のエフェクト部分（または全体の高さ）を縮めた"
+  },
+  {
+   "frame": 6,
+   "name": "attackB",
+   "note": "セルに収めるため、体より外のエフェクト部分（または全体の高さ）を縮めた"
+  }
+ ],
+ "source": "work/wander/raw/tobiume-sequel.jpg（3×3、読み順で0-8）→ work/wander/build_bosses.py, write_json.py"
+}

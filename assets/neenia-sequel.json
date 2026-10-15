@@ -1,0 +1,360 @@
+{
+ "image": "neenia-sequel.png",
+ "frameWidth": 512,
+ "frameHeight": 512,
+ "scale": 0.1227,
+ "displayHeight": "立ち姿 頭頂〜足 440px（ネイティブ）× 0.1227 ≈ 54px",
+ "facing": "right",
+ "anchorNote": "anchor＝足元（立ち姿は足裏の中心）。全フレーム anchor.y=500、各フレームの下端を y≈500 にそろえてある。座標はすべてネイティブのセル内座標（左向きは x → 511-x）",
+ "character": "ネーニア（正気・通常の姿）。緑のフード付きマント、茶色の革鎧、茶髪ポニーテール、長弓。緑に光る矢",
+ "frames": [
+  {
+   "name": "idle0",
+   "rect": [
+    0,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    118,
+    61,
+    446,
+    500
+   ],
+   "hitbox": [
+    176,
+    61,
+    161,
+    439
+   ]
+  },
+  {
+   "name": "idle1",
+   "rect": [
+    512,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    120,
+    61,
+    450,
+    500
+   ],
+   "hitbox": [
+    176,
+    61,
+    161,
+    439
+   ]
+  },
+  {
+   "name": "move0",
+   "rect": [
+    1024,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    107,
+    61,
+    475,
+    500
+   ],
+   "hitbox": [
+    176,
+    61,
+    161,
+    439
+   ]
+  },
+  {
+   "name": "move1",
+   "rect": [
+    1536,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    101,
+    38,
+    462,
+    500
+   ],
+   "hitbox": [
+    176,
+    38,
+    161,
+    462
+   ]
+  },
+  {
+   "name": "telegraph",
+   "rect": [
+    2048,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    76,
+    86,
+    505,
+    500
+   ],
+   "hitbox": [
+    176,
+    101,
+    161,
+    399
+   ]
+  },
+  {
+   "name": "attackA",
+   "rect": [
+    0,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    76,
+    86,
+    505,
+    500
+   ],
+   "hitbox": [
+    176,
+    96,
+    161,
+    404
+   ]
+  },
+  {
+   "name": "attackB",
+   "rect": [
+    512,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    93,
+    46,
+    505,
+    500
+   ],
+   "hitbox": [
+    176,
+    46,
+    161,
+    454
+   ]
+  },
+  {
+   "name": "hurt",
+   "rect": [
+    1024,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    86,
+    67,
+    498,
+    500
+   ],
+   "hitbox": [
+    176,
+    67,
+    161,
+    433
+   ]
+  },
+  {
+   "name": "defeat",
+   "rect": [
+    1536,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    59,
+    166,
+    498,
+    500
+   ],
+   "hitbox": [
+    176,
+    166,
+    161,
+    334
+   ]
+  }
+ ],
+ "animations": {
+  "idle": {
+   "frames": [
+    0,
+    1
+   ],
+   "ms": [
+    420,
+    420
+   ],
+   "loop": true
+  },
+  "move": {
+   "frames": [
+    2,
+    3
+   ],
+   "ms": [
+    200,
+    200
+   ],
+   "loop": true
+  },
+  "telegraph": {
+   "frames": [
+    4
+   ],
+   "ms": [
+    450
+   ],
+   "loop": false,
+   "note": "予兆（攻撃前の溜め）"
+  },
+  "attackA": {
+   "frames": [
+    5
+   ],
+   "ms": [
+    300
+   ],
+   "loop": false,
+   "active": [
+    5
+   ],
+   "note": "正面へ矢を放つ"
+  },
+  "attackB": {
+   "frames": [
+    6
+   ],
+   "ms": [
+    400
+   ],
+   "loop": false,
+   "active": [
+    6
+   ],
+   "note": "上方向へ矢を放つ（曲射・矢の雨の起点に）"
+  },
+  "hurt": {
+   "frames": [
+    7
+   ],
+   "ms": [
+    320
+   ],
+   "loop": false
+  },
+  "defeat": {
+   "frames": [
+    8
+   ],
+   "ms": [
+    1200
+   ],
+   "loop": false,
+   "note": "座り込む（腕試し終了）"
+  }
+ },
+ "spawn": {
+  "arrowForward": {
+   "frame": 5,
+   "x": 505,
+   "y": 248,
+   "note": "attackA 正面に放つ矢の先端（セル右端に寄せて矢を縮めてある）"
+  },
+  "arrowUp": {
+   "frame": 6,
+   "x": 505,
+   "y": 107,
+   "note": "attackB 斜め上に放つ矢の先端"
+  }
+ },
+ "hitboxes": {
+  "body": "各フレームの hitbox [x,y,w,h]（ネイティブ。胴体まわり。エフェクト・髪先は含まない）"
+ },
+ "warped_frames": [
+  {
+   "frame": 4,
+   "name": "telegraph",
+   "note": "セルに収めるため、体より外のエフェクト部分（または全体の高さ）を縮めた"
+  },
+  {
+   "frame": 5,
+   "name": "attackA",
+   "note": "セルに収めるため、体より外のエフェクト部分（または全体の高さ）を縮めた"
+  },
+  {
+   "frame": 6,
+   "name": "attackB",
+   "note": "セルに収めるため、体より外のエフェクト部分（または全体の高さ）を縮めた"
+  }
+ ],
+ "source": "work/wander/raw/neenia-sequel.jpg（3×3、読み順で0-8）→ work/wander/build_bosses.py, write_json.py"
+}

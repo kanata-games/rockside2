@@ -92,6 +92,7 @@ Slide tunnel (1 free row)     Wall-kick shaft (2-3 wide)    Slide-jump gap (6 em
    python3 tools/build.py --out preview.html
    node tools/test-mansion.cjs    # every line PASS, exit 0
    node tools/test-hoshiyomi.cjs  # vertical exits, shards, upgrades, boss bot
+   node tools/test-keiko.cjs      # sparring bots for 飛梅/ネーニア/リリィ/スターさん
    ```
 
 ## 5. reach.js が見るもの / What `tools/reach.js` checks
@@ -290,3 +291,27 @@ The current art uses the art maker's format, specified in `assets/enemies/README
   3. 仮の絵（コードで描く）/ placeholder art drawn in code
 - 顔：`<name>-sequel-face.png` → `<name>_face.png`。/ Faces: `<name>-sequel-face.png`, then `<name>_face.png`.
 - 動きの名前：idle, move, shootWindup, shootStar, starRainCast, dash, hurt, defeat（拠点は idle, peace）。足りない名前は idle などで代わりにする。/ Pose names: idle, move, shootWindup, shootStar, starRainCast, dash, hurt, defeat (the hub uses idle and peace). Missing poses fall back to idle and similar.
+
+
+## 11. 月下の稽古庭・腕試し / The sparring garden (test.45)
+- 部屋：`kGate kTobi kShaft kSave kNeen kBridge kLily kDis`（area `keiko`）。入口は中庭（garden）の扉 `1`。/ Rooms: `kGate kTobi kShaft kSave kNeen kBridge kLily kDis` (area `keiko`), entered through garden door `1`.
+- 相手の設定は `src/04m_keiko.js` の `KEIKO_BOSSES` にまとめてある。/ Partners are configured in `KEIKO_BOSSES` in `src/04m_keiko.js`:
+  - `room`：戦う部屋 / the arena room
+  - `hp`、`flag`：HPと、勝ったときに立つフラグ / HP and the win flag
+  - `seq` / `rageSeq`：攻撃の順番（`rageSeq` は第2形態）/ attack order (`rageSeq` is phase 2)
+  - 攻撃ごとの値 / per-attack parameters
+  - `pre` / `again` / `post`：戦う前・負けたとき・勝った後のせりふ / lines before the fight, after a loss and after a win
+- 攻撃の部品（どれも予告が先に出る）：/ Attack parts (each telegraphs first):
+  - `volley` `bow` `sword`：弾。高い弾はくぐり、低い弾は跳ぶ。撃つ前に高さの印が出る / shots: slide under high ones, jump low ones; height markers come first
+  - `wave`：床を走る波（跳ぶ）/ a floor wave (jump)
+  - `swoop`：低空の突進（くぐる）。水色の線で予告 / a low-flying charge (slide); cyan line
+  - `spear`：地上の突進（跳ぶ）。桃色の線で予告 / a ground charge (jump); pink line
+  - `shock` `axe`：落ちる場所に印 → 叩きつけ → 左右に衝撃（跳ぶ）/ landing mark, slam, then shocks both ways (jump)
+  - `scythe`：行って戻ってくる（くぐる）/ out and back (slide)
+  - `rain`：安全なすき間を予告。第2形態ではすき間が途中で動き、動く先は黄色で予告 / safe gaps shown first; in phase 2 they move, with the new spots in yellow
+  - `snare`：印 → 茨が残る / marks, then lingering thorns
+- 戦闘中は部屋の両端が閉じる。勝った後は部屋の中央に相手が残り、話しかけると再戦できる。/ The arena seals during a fight. Afterwards the partner stays at the centre for rematches.
+- `tools/test-keiko.cjs` の自動操作は、予告だけを見てよけ、8以下のダメージで勝たなければならない。攻撃を変えたら、これが通ることを確認する。/ The bot in `tools/test-keiko.cjs` must win from the telegraphs alone, taking at most 8 damage. Keep it passing when you change attacks.
+- 絵：`assets/<art>-sequel.json`（コマの名前は idle, move, telegraph, attackA, attackB, hurt, defeat）→ 前作の普通の絵（`tobiume.png`、`neenia.png`、`lily.png`、`star.png`。54pxくらいになるよう拡大）→ 仮の絵。顔は `<normal>_face.png`。/ Art: `assets/<art>-sequel.json` (frame names idle, move, telegraph, attackA, attackB, hurt, defeat), then the first game's normal sheets scaled to about 54 px, then placeholder art. Faces use `<normal>_face.png`.
+- 背景：エリア設定に `open:true` があると、奥の壁にアーチの開口部をあける（`artOpenArches`）。far `moonGarden` は `assets/bg/wander_far.png` と `wander_mid.png` を使い、なければコードで描く。/ Backgrounds: `open:true` cuts arches in the back wall (`artOpenArches`). The far layer `moonGarden` uses `assets/bg/wander_far.png` and `wander_mid.png`, or draws them in code.
+- 地図：部屋の短い名前は `MANSION_MAP_NAMES` に足す。名前はセルに収まる大きさまで縮む。/ Map: add short room names to `MANSION_MAP_NAMES`; labels shrink to fit their cell.

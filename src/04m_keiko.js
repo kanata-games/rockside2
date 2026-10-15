@@ -9,28 +9,28 @@
 // =====================================================================
 const KEIKO_FLOOR=224,KEIKO_L=40,KEIKO_R=472;
 const KEIKO_BOSSES={
- tobiume:{room:'kTobi',name:'飛梅',hp:80,col:'#ff8cc0',sub:'#ffd6ea',art:'tobiume',normal:'tobiume',flag:'keikoTobiume',
+ tobiume:{room:'kTobi',name:'飛梅',hp:130,col:'#ff8cc0',sub:'#ffd6ea',art:'tobiume',normal:'tobiume',flag:'keikoTobiume',
   seq:['volley','swoop','volley','shock'],rageSeq:['volley','shock','swoop','volley','swoop'],
   volley:{n:2,rn:3,pat:'alt',speed:2.4,kind:'heart'},swoop:{speed:5.4},shock:{},
   pose:{volley:'attack',swoop:'fly',shock:'kick',walk:'fly',idle:'idle'},
   pre:['海音ちゃーん！ 待ってたよ！ 腕がなまってるって聞いたから、飛梅ちゃんが稽古つけてあげる！','ハートは高いのと低いのがあるからね。高いのはスライディング、低いのはジャンプ！','急降下の前には光る線が出るよ。見てから動けば大丈夫。いっくよー！'],
   again:['ありゃ、休憩しよっか。……よし、もう一回いっくよー！'],
   post:['すごいすごい！ 海音ちゃん、動きがどんどん戻ってきてる！','急降下キックのあとは、地面に衝撃が走るでしょ？ あれはジャンプでぴょん！ 忘れないでね。','はい、星詠みの欠片！ 3つあげる。これで、いつでも一緒に戦えるね！']},
- neenia:{room:'kNeen',name:'ネーニア',hp:90,col:'#8fb0ff',sub:'#e4ecff',art:'neenia',normal:'neenia',flag:'keikoNeenia',
+ neenia:{room:'kNeen',name:'ネーニア',hp:140,col:'#8fb0ff',sub:'#e4ecff',art:'neenia',normal:'neenia',flag:'keikoNeenia',
   seq:['volley','rain','volley','snare'],rageSeq:['volley','snare','rain','volley','rain'],
   volley:{n:2,rn:3,pat:'mix',speed:3.0,kind:'arrow'},rain:{w:52,rw:46},snare:{n:2,rn:3},
   pose:{volley:'attack',rain:'attack',snare:'attack',walk:'walk',idle:'idle'},
   pre:['来たわね、海音。弓の稽古相手、引き受けたわ。','高い矢はくぐって、低い矢は跳ぶ。地面の印には、しばらく茨が残るから立たないこと。','……手加減はしないわよ。構えなさい。'],
   again:['焦りすぎよ。息を整えて。……もう一度。'],
   post:['……いい目をしてる。前より、ずっと落ち着いているわ。','矢の雨は、落ちてくる前に隙間が見える。焦らず、立つ場所を選びなさい。','これ、持っていきなさい。……背中は、私が守るわ。']},
- lily:{room:'kLily',name:'リリィ',hp:90,col:'#ffd2ef',sub:'#fff4fb',art:'lily',normal:'lily',flag:'keikoLily',
+ lily:{room:'kLily',name:'リリィ',hp:140,col:'#ffd2ef',sub:'#fff4fb',art:'lily',normal:'lily',flag:'keikoLily',
   seq:['wave','volley','rain','wave'],rageSeq:['wave','volley','rain','wave','volley'],
   wave:{n:1,rn:2,speed:2.6},volley:{n:2,rn:3,pat:'high',speed:2.6,kind:'note'},rain:{w:56,rw:48},
   pose:{wave:'attack',volley:'attack',rain:'attack',walk:'walk',idle:'idle'},
   pre:['海音ちゃん、いらっしゃーい♪ 今日はリリィとウミミのスペシャルレッスンだよっ！','歌の波はジャンプ、音符はスライディング！ スターライトレインは、光ってる隙間に入ってね♪','それじゃあ、ライブスタート！'],
   again:['だいじょうぶ？ ウミミが心配してるよ。……アンコール、いける？♪'],
   post:['すごーい！ 海音ちゃん、ステップばっちりだったよ♪','リズムがわかれば、怖くないでしょ？ 次の相手にも、その調子でね！','ウミミも拍手してる！ 欠片はファンサービス、3つどうぞっ♪']},
- disaster:{room:'kDis',name:'スターさん',hp:110,col:'#71d9ff',sub:'#d8f6ff',art:'disaster',normal:'star',flag:'keikoStar',
+ disaster:{room:'kDis',name:'スターさん',hp:170,col:'#71d9ff',sub:'#d8f6ff',art:'disaster',normal:'star',flag:'keikoStar',
   seq:['sword','spear','axe','scythe','bow'],rageSeq:['sword','scythe','spear','axe','bow','scythe'],
   sword:{n:1,rn:2,speed:3.0},spear:{speed:6},axe:{},scythe:{},bow:{n:2,rn:3,pat:'alt',speed:3.2,kind:'arrow'},
   pose:{sword:'sword',spear:'spear',axe:'axe',scythe:'scythe',bow:'bow',walk:'idle',idle:'idle'},
@@ -47,8 +47,8 @@ function keikoArtLoad(id){const B=KEIKO_BOSSES[id];if(typeof fetch!=='function')
  fetch('assets/'+B.art+'-sequel.json').then(r=>{if(!r.ok)throw 0;return r.json();}).then(meta=>{const img=new Image();img.onload=()=>{HOSHI_ART[key]={mode:'sequel',img,meta};};img.onerror=grid;img.src='assets/'+(meta.image||B.art+'-sequel.png');}).catch(grid);
  const f=new Image();f.onload=()=>{HOSHI_ART[key+'Face']={mode:'face',img:f};};f.src='assets/'+B.normal+'_face.png';}
 for(const id of Object.keys(KEIKO_BOSSES))keikoArtLoad(id);
-const KEIKO_ALIAS={attack:['attack','shoot','shootStar','sing','idle'],kick:['kick','special_dive_kick','attack','fly','idle'],fly:['fly','walk','move','idle'],walk:['walk','move','fly','idle'],
- sword:['sword','attack','idle'],spear:['spear','attack','idle'],axe:['axe','attack','idle'],scythe:['scythe','attack','idle'],bow:['bow','attack','idle'],transform:['transform','attack','idle']};
+const KEIKO_ALIAS={attack:['attackA','attack','shoot','idle'],kick:['attackB','kick','special_dive_kick','attack','fly','idle'],fly:['move','fly','walk','idle'],walk:['move','walk','fly','idle'],telegraph:['telegraph','transform','attack','idle'],
+ sword:['attackA','sword','attack','idle'],spear:['attackB','spear','attack','idle'],axe:['attackB','axe','attack','idle'],scythe:['attackA','scythe','attack','idle'],bow:['attackA','bow','attack','idle'],transform:['telegraph','transform','attack','idle'],hurt:['hurt','idle']};
 function keikoDraw(id,e,pose){const key='k_'+id,save=HOSHI_POSE_ALIAS[pose];if(KEIKO_ALIAS[pose])HOSHI_POSE_ALIAS[pose]=KEIKO_ALIAS[pose];const ok=hoshiDrawArt(key,e.x,e.y-(e.lift||0),pose,e.t,e.face,e.flash>0&&(e.flash&2)?.55:1);if(save)HOSHI_POSE_ALIAS[pose]=save;else delete HOSHI_POSE_ALIAS[pose];if(ok)return;keikoPlaceholder(id,e.x,e.y-(e.lift||0),pose,e.t,e.face);}
 function keikoPlaceholder(id,x,y,pose,t,dir){const B=KEIKO_BOSSES[id],f=dir<0?-1:1,R=(a,b,w,h,c)=>mrect(f>0?x+a:x-a-w,y+b,w,h,c),bob=(t>>5)&1;
  const hair={tobiume:'#ff8cc0',neenia:'#e8ecf4',lily:'#ffe6a8',disaster:'#2a3a6a'}[id],dress={tobiume:'#c8406a',neenia:'#2a3a7a',lily:'#ff9ad8',disaster:'#1c2a4a'}[id];
@@ -75,7 +75,7 @@ function mansionKeikoAI(e){const k=M.keiko;if(!k||k.state!=='active'){e.mode='id
  const m=e.mode;
  if(m==='walk'){e.face=Math.sign(dx)||e.face;const d=Math.abs(dx);if(d>180)e.x+=e.face*(rage?1.3:1);else if(d<140)e.x-=e.face*1.2;
   if(t>(rage?40:64)){const seq=rage?B.rageSeq:B.seq;mansionKeikoMode(e,seq[e.cycle%seq.length]);e.cycle++;e.fromX=e.x;}}
- else if(m==='volley'||m==='bow'||m==='sword'){const P=B[m],WIND=m==='volley'?36:44,GAP=rage?32:36,n=rage?P.rn:P.n;if(t<WIND)e.face=Math.sign(dx)||e.face;
+ else if(m==='volley'||m==='bow'||m==='sword'){const P=B[m],WIND=m==='volley'?36:44,GAP=rage?42:46,n=rage?P.rn:P.n;if(t<WIND)e.face=Math.sign(dx)||e.face;
   if(t===1)e.pattern=Array.from({length:n},(_,i)=>m==='sword'?true:P.pat==='high'?false:P.pat==='low'?true:P.pat==='alt'?(i%2===1):((artH(e.cycle,i)&1)===1));
   if(t>=WIND&&(t-WIND)%GAP===0&&(t-WIND)/GAP<n){const low=e.pattern[(t-WIND)/GAP];keikoShot(e,{low,speed:P.speed+(rage?.3:0),shape:m==='sword'?'wave':P.kind});}
   if(t>WIND+GAP*n+20)mansionKeikoMode(e,'walk');}
@@ -98,7 +98,7 @@ function mansionKeikoAI(e){const k=M.keiko;if(!k||k.state!=='active'){e.mode='id
   if(t>WIND&&!M.enemyShots.some(b=>b.shape==='scythe'))mansionKeikoMode(e,'walk');if(t>WIND+400)mansionKeikoMode(e,'walk');}
  else if(m==='rain'){const RISE=20,TELE=60,RAIN=rage?120:84,P=B.rain,W=rage?P.rw:P.w;
   if(t===1){e.seed=(e.seed||0)+5;e.gaps=mansionKeikoGaps(e,2,W);e.nextGaps=null;e.shiftAt=rage?RISE+TELE+50:null;}
-  e.lift=t<RISE?t*2:t>RISE+TELE+RAIN+30?Math.max(0,40-(t-RISE-TELE-RAIN-30)*2):40;
+  e.lift=e.id==='neenia'?0:t<RISE?t*2:t>RISE+TELE+RAIN+30?Math.max(0,40-(t-RISE-TELE-RAIN-30)*2):40;
   if(e.shiftAt&&t===e.shiftAt-40){e.nextGaps=mansionKeikoGaps({cycle:e.cycle+5,seed:e.seed+9},2,W);}
   if(e.shiftAt&&t===e.shiftAt){e.gaps=e.nextGaps;e.nextGaps=null;}
   if(t>RISE+TELE&&t<RISE+TELE+RAIN&&t%4===0){const safe=[...e.gaps,...(e.nextGaps||[])];let x=null;for(let q=0;q<8&&x==null;q++){const c=KEIKO_L-20+artH(t,q+e.cycle)%(KEIKO_R-KEIKO_L+40);if(!safe.some(([a,b])=>c>a-8&&c<b+8))x=c;}if(x!=null)M.enemyShots.push({kind:'kRain',x,y:14,vx:0,vy:3.4,damage:2,col:B.col,shape:e.id==='lily'?'star':'arrowDown'});}
@@ -112,7 +112,7 @@ function mansionKeikoAI(e){const k=M.keiko;if(!k||k.state!=='active'){e.mode='id
  if(mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,box))mansionDamage(2,M.x<e.x?-1:1);}
 function mansionKeikoBulletUpdate(){if(!M.keiko)return;const e=mansionKeikoBoss();for(const b of M.enemyShots){if(b.kind==='kRain'&&b.y>KEIKO_FLOOR-4){b.dead=true;mansionBurst(b.x,KEIKO_FLOOR-4,b.col,3);}
  if(b.shape==='scythe'){b.age=(b.age||0)+1;if(b.boom&&(b.x<KEIKO_L-8||b.x>KEIKO_R+8)){b.vx=-b.vx;b.boom=0;b.back=true;}if(b.back&&e&&Math.abs(b.x-e.x)<10)b.dead=true;}}}
-function mansionKeikoPose(e){const B=KEIKO_BOSSES[e.id];if(e.flash>0)return'hurt';if(e.id==='disaster'&&KEIKO_MORPH_ICON[e.mode]&&e.mt<18)return'transform';return B.pose[e.mode]||'idle';}
+function mansionKeikoPose(e){const B=KEIKO_BOSSES[e.id];if(e.flash>0)return'hurt';if(e.id==='disaster'&&KEIKO_MORPH_ICON[e.mode]&&e.mt<18)return'transform';const wind={volley:36,bow:44,sword:44,wave:40,scythe:44,snare:30,shock:40,axe:40,swoop:e.hp<=e.maxHp/2?30:40,spear:e.hp<=e.maxHp/2?30:40,rain:60}[e.mode];if(wind&&e.mt<wind)return'telegraph';if(e.mode==='rain')return'kick';return B.pose[e.mode]||'idle';}
 function mansionKeikoDraw(e){const B=KEIKO_BOSSES[e.id],rage=e.hp<=e.maxHp/2;
  if(e.mode==='rain'){for(const[a,b]of e.gaps||[]){g.globalAlpha=.28+.12*Math.sin(M.t*.2);mrect(a,20,b-a,KEIKO_FLOOR-20,'#9fe8ff');g.globalAlpha=1;mrect(a,KEIKO_FLOOR-3,b-a,3,'#c9fbff');mansionDiamond((a+b)/2,KEIKO_FLOOR-12,4,'#ffffff');}
   for(const[a,b]of e.nextGaps||[]){if((M.t>>3)&1){mrect(a,KEIKO_FLOOR-3,b-a,3,'#ffe27a');mansionDiamond((a+b)/2,KEIKO_FLOOR-14,4,'#ffe27a');}}}

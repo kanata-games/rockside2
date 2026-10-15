@@ -1,6 +1,6 @@
 # 海音ちゃんの冒険２ — 屋敷探索テスト
 
-ROCKSIDE II / 2.0.0-test.44（GitHub公開版）。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
+ROCKSIDE II / 2.0.0-test.45（GitHub公開版）。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
 
 ## ステージの作り方 / How to build stages
 
@@ -8,10 +8,39 @@ ROCKSIDE II / 2.0.0-test.44（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 **Read [docs/STAGE_GUIDE.md](docs/STAGE_GUIDE.md) before adding or editing rooms** (Japanese + English).
 
 - 部屋は `src/03b_rooms.js` のASCIIタイル（1文字=16px、1画面=16×15マス）で作る。/ Rooms are ASCII tiles in `src/03b_rooms.js` (1 char = 16 px; 1 screen = 16×15 tiles).
-- 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs` and `node tools/test-hoshiyomi.cjs`.
+- 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs` `node tools/test-hoshiyomi.cjs` and `node tools/test-keiko.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
-## 現在の公開版（2026-10-15 / test.44）
+## 現在の公開版（2026-10-15 / test.45）
+
+- 新エリア「月下の稽古庭」：崩れかけた月夜の庭と回廊、8部屋。/ New area 月下の稽古庭: a crumbling moonlit garden and cloister, 8 rooms.
+  - 入口は中庭の新しい扉。/ Entered through a new door in the garden.
+  - 部屋の順番：崩れ門 → 梅香の回廊（飛梅）→ 月見の井戸塔 → 休み処（セーブ・ワープ）→ 弓張りの中庭（ネーニア）→ 崩れた渡り廊 → 月光の舞台（リリィ）→ 星剣の広間（スターさん）。/ Room order: 崩れ門, 梅香の回廊 (飛梅), 月見の井戸塔, 休み処 (save + warp), 弓張りの中庭 (ネーニア), 崩れた渡り廊, 月光の舞台 (リリィ), 星剣の広間 (スターさん).
+  - 進むには3つの技を使う。/ Three moves gate the way:
+    - 崩れ門の低いすき間：スライディング / slide under the low gap in 崩れ門
+    - 井戸塔：壁キックで登る / wall-kick up the 井戸塔
+    - 渡り廊の6マスの穴：スライディングジャンプ / slide-jump the 6-tile hole in 渡り廊
+- 腕試し：前作の仲間4人（もう元に戻っている）が、海音の戦いの勘を取り戻すために手合わせしてくれる。/ Sparring (腕試し): the four allies from the first game, already back to normal, spar with Umine to help her regain her battle sense.
+  - 戦う前に一声かけてくれて、勝つとほめてくれる。その後、助言をくれて、星詠みの欠片を3つくれる。/ Each greets her before the fight. Win, and they praise her, give advice and hand over 3 star shards.
+  - 勝った後もその部屋に残っていて、話しかけるとまた手合わせできる。負けたら全回復してやり直し。/ They stay in their arena afterwards; talk to them for a rematch. Losing restores HP and restarts.
+  - 攻撃は前作のものを、続編の動きに合わせて作り直した。高いものはスライディングでくぐり、低いものはジャンプで越える。降ってくるものは、先に安全なすき間が見える。/ Attacks are the first game's, rebuilt for the sequel: slide under high ones, jump over low ones, and falling attacks show their safe gaps first.
+  - 飛梅：ハート弾（高・低）、低空の急降下（くぐる）、急降下キックの後に地面の衝撃（跳ぶ）。/ 飛梅: high/low heart shots, a low-flying swoop (slide under), a dive kick that sends floor shocks (jump them).
+  - ネーニア：高い矢・低い矢、矢の雨（安全なすき間が出る）、茨の矢（落ちる場所に先に印が出て、しばらく茨が残る）。/ ネーニア: high and low arrows, arrow rain with safe gaps, snare arrows (landing spots marked first; thorns linger).
+  - リリィ：歌の波（跳ぶ。第2形態では左右両方へ）、音符（くぐる）、スターライトレイン（すき間が出る）。/ リリィ: song waves (jump; both ways in phase 2), notes (slide under), Starlight Rain with safe gaps.
+  - スターさん：錬金剣の形が変わる前に紫に光り、頭の上に次の武器が出る。/ スターさん: before each weapon change, his alchemy sword flashes purple and the next weapon shows above his head.
+    - 剣：波を飛ばす（跳ぶ）/ sword: a wave (jump)
+    - 槍：突進（跳ぶ）/ spear: a lunge (jump)
+    - 斧：跳んで叩きつけ、衝撃が走る（跳ぶ）/ axe: a leaping slam with shocks (jump)
+    - 大鎌：投げると戻ってくる（2回くぐる）/ scythe: a boomerang (slide under it twice)
+    - 弓：高い矢・低い矢 / bow: high and low arrows
+  - HPが半分を切ると第2形態になる。/ Below half HP, each moves to phase 2.
+- 絵：仲間の絵は `assets/<tobiume|neenia|lily|disaster>-sequel.png/.json` を使う。なければ前作の普通の絵を拡大して使い、それもなければ仮の絵を描く。背景は `assets/bg/wander_far.png` と `wander_mid.png`。/ Art: allies use the hi-res `-sequel` sheets, falling back to the first game's normal sheets scaled up, then to placeholder art. Backgrounds: `assets/bg/wander_far.png` and `wander_mid.png`.
+- 直したところ：/ Fixes:
+  - 地図の部屋の名前を短い名前にして、セルに収まる大きさにした（天文書庫のあたりで重なっていた）。/ Map labels now use short names and shrink to fit their cell (they overlapped around the observatory).
+  - 天文書庫と稽古庭の奥の壁に、空の見えるアーチの開口部をあけた。これで背景の星空や月夜の庭が見える。/ The observatory and the sparring garden now have open arches in the back wall, so the starry sky and the moonlit garden show through.
+- テスト：`tools/test-keiko.cjs` を追加した。4人それぞれについて、自動操作が予告だけを見てよけて勝つ（受けたダメージは0〜4）。ほかに、やり直し、戦闘中に部屋の出口が閉じること、欠片、再戦、セーブ、中庭の扉、絵の読み込み順を確かめる。/ Tests: added `tools/test-keiko.cjs`. For each of the four, a bot dodges from the telegraphs alone and wins, taking 0–4 damage. It also covers retry, the arena sealing during a fight, shards, rematch, save, the garden door and art-loader order.
+
+## 前の公開版（2026-10-15 / test.44）
 
 - 新エリア「書庫の奥」（星詠みの天文書庫）を追加した。6部屋：星詠みの螺旋書架 → 星図の書架 → 望遠鏡の回廊 → 星灯りの控え室（セーブ・ワープ）→ 天球儀のドーム（ボス）。/ New area 書庫の奥 (starry observatory-library), 6 rooms ending in the boss dome, with a save and warp room just before the boss.
   - 入口は書庫の内側（archiveInner）の上。倒れた書棚の塔を壁キックで登り、天井の穴から上の部屋へ。/ The entrance is above archiveInner: wall-kick up the toppled shelf tower and through the ceiling gap.
