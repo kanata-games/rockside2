@@ -8222,7 +8222,12 @@ function mansionUse(){if(mansionHatchUse())return;if(M.sparMode==='full'||M.dice
 function mansionBossZoomed(z){return M.bossZoom&&M.bossZoom<z?M.bossZoom:z;}
 function mansionView(){const zoom=mansionBossZoomed((M.room==='gallery'&&M.galleryWide!==false)||['archiveInner','clockTower','moonReservoir','starPassage','forbiddenArchive','seitenArena'].includes(M.room)?.8:1);return{zoom,w:VW/zoom,h:VH/zoom};}
 function mansionGalleryViewToggle(){if(M.room!=='gallery'||!M.map)return;M.galleryWide=M.galleryWide===false;mansionCamera(true);mansionUI();}
-function mansionCamera(snap=false){const bf=typeof mansionBossFocus==='function'?mansionBossFocus():null,R0=MR[M.room];{const want=bf?(bf.sq==='dJackpot'||bf.sq==='sLullaby'?VW/R0.w:Math.max(VW/R0.w,Math.min(1,VW/(Math.abs(bf.x-M.x)+150)))):0;M.bossZoom=!want?0:snap||!M.bossZoom?want:M.bossZoom+(want-M.bossZoom)*.08;}const bossMid=bf?(M.x+bf.x)/2:null;const r=R0,v=mansionView(),diceFocus=(M.diceState==='active'||M.seitenState==='active')?M.x+Math.max(-90,Math.min(90,((M.enemies.find(e=>e.kind===(M.seitenState==='active'?'seitenBoss':'diceBoss'))?.x||M.x)-M.x)*.5)):null,focus=bossMid??diceFocus??(M.room==='garden'&&M.sparState==='active'?(M.x*.65+(M.enemies.find(e=>e.kind==='boss')?.x||M.x)*.35):M.x),tx=Math.max(0,Math.min(r.w-v.w,focus-v.w*(diceFocus==null&&bossMid==null?.43:.5))),ty=v.h>r.h?(r.h-v.h)*.62:Math.max(0,Math.min(r.h-v.h,M.y-158/v.zoom));M.camX=snap?tx:M.camX+(tx-M.camX)*.17;M.camY=snap?ty:M.camY+(ty-M.camY)*.14;}
+function mansionCamera(snap=false){const bf=typeof mansionBossFocus==='function'?mansionBossFocus():null,R0=MR[M.room];
+ // test.55: boss fights use ONE fixed zoom + locked Y, chosen at fight start (whole arena width, min .5); X fixed if it fits, else slow horizontal follow
+ if(bf){if(!M.bossCam||M.bossCam.e!==bf||M.bossCam.room!==M.room){M.bossZoom=Math.max(.5,Math.min(1,VW/R0.w));const v=mansionView();M.bossCam={e:bf,room:M.room,zoom:M.bossZoom,ty:v.h>R0.h?(R0.h-v.h)*.5:Math.max(0,Math.min(R0.h-v.h,M.y-158/v.zoom)),fit:v.w>=R0.w-1};snap=true;}
+  const C=M.bossCam;M.bossZoom=C.zoom;const v=mansionView();const tx=C.fit?(R0.w-v.w)/2:Math.max(0,Math.min(R0.w-v.w,(M.x+bf.x)/2-v.w/2));M.camX=snap||C.fit?tx:M.camX+(tx-M.camX)*.06;M.camY=C.ty;return;}
+ M.bossCam=null;M.bossZoom=0;
+ {const r=R0,v=mansionView(),focus=M.x,tx=Math.max(0,Math.min(r.w-v.w,focus-v.w*.43)),ty=v.h>r.h?(r.h-v.h)*.62:Math.max(0,Math.min(r.h-v.h,M.y-158/v.zoom));M.camX=snap?tx:M.camX+(tx-M.camX)*.17;M.camY=snap?ty:M.camY+(ty-M.camY)*.14;}}
 
 function updateMansion(){
  mansionUI();
@@ -9397,7 +9402,7 @@ const CUT_LEN=44,CUT_IN=4,CUT_OUT=8,CUT_Y=18,CUT_H=30,CUT_W=150;
 function juiceCut(name,col,sub){const e=M.enemies&&M.enemies.find(e=>e.id&&e.hp>0);KJ.cut={name,col,sub:sub||'',t:0,id:e&&e.id,img:(SHADE_FX[e&&e.id]||{}).cutin?.img||null};juiceStop(2);sfx('warn');}
 function juiceCutBox(c){const _=0;const t=c.t,k=t<CUT_IN?1-t/CUT_IN:t>CUT_LEN-CUT_OUT?(t-(CUT_LEN-CUT_OUT))/CUT_OUT:0,ease=k*k;return{x0:VW-CUT_W-12+Math.round(ease*(CUT_W+24)),y0:CUT_Y,w:CUT_W,h:CUT_H};}
 function mansionJuiceStop(){if(KJ.shakeT>0)KJ.shakeT--;if(KJ.flashT>0)KJ.flashT--;if(KJ.cut&&++KJ.cut.t>CUT_LEN)KJ.cut=null;if(KJ.stop>0){KJ.stop--;return true;}return false;}
-function mansionJuiceShakeApply(){if(KJ.shakeT>0){const a=KJ.shakeA*Math.min(1,KJ.shakeT/8);g.translate(Math.round((artH(M.t,1)%100/50-1)*a),Math.round((artH(M.t,2)%100/50-1)*a));}}
+function mansionJuiceShakeApply(){if(KJ.shakeT>0){const a=Math.min(2,KJ.shakeA)*Math.min(1,KJ.shakeT/8);g.translate(Math.round((artH(M.t,1)%100/50-1)*a),Math.round((artH(M.t,2)%100/50-1)*a));}}
 function mansionJuiceDraw(){g.save();g.setTransform(1,0,0,1,0,0);
  if(KJ.flashT>0){g.globalAlpha=.55*KJ.flashT/KJ.flashMax;g.fillStyle=KJ.flashC;g.fillRect(0,0,VW,VH);g.globalAlpha=1;}
  g.restore();}

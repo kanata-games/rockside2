@@ -425,3 +425,6 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 - 04q_dicegirl.js。`M.flags.darkStyleUnlocked` が立つと、`mansionRoruTalk` の誘いが本気の勝負（`M.diceReal`）になる。敵は kind 'diceBoss' に girl:true、id 'diceGirl'。勝つと `diceGirlDefeated` / `diceGirlReward`（MANSION_PERMANENT_ITEMS.moonCandy、HP+2）。
 - 紳士は「練習」で手加減している、という設定を台詞で守る。素顔の彼女は本気。どちらも攻略のヒントは話さない（§14）。中身は大人の女性（お姉さん）で、ヘビースモーカー（ヤニカス）。煙草・煙・灰・火の粉のモチーフでよい（test.55で飴の置き換えをやめた）。紳士のカットインの煙草もそのまま。
 - 会話の表情は `M.talk.faces[行番号]`（neutral / sigh / smirk / annoyed）。
+
+## 22. ボス戦カメラ (test.55)
+- `mansionCamera`：ボス戦は開始時に `M.bossCam` を一度だけ作る（zoom＝max(.5, VW/部屋の幅)、Yは固定）。戦闘中にズームを変えたり、縦に動かしたりしないこと。画面揺れは2pxまで。

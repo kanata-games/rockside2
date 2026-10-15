@@ -77,3 +77,13 @@ console.log('PASS boss move sets (test.49): impostors mimic their dark originals
  assert(run('M.flags.diceGirlDefeated&&M.flags.diceGirlReward'));assert.equal(run('mansionPermanentCount("moonCandy")'),1);
  run('M.talk=null;M.map=false;mansionDiceReturn()');
  console.log('PASS ダイスロール本気 (test.54): gentleman = practice until the four shades, then the woman inside (heavy smoker) fights for real (6 new moves + super ラスト・ワンプカー); reward 月影のシガーケース (+2 max HP).');}
+// ===== test.55: boss camera — one fixed zoom + locked Y for the whole fight (supers included) =====
+{const res=[];const fights={eclipse:'M.keiko=null;M.flags.shadeStar=false;mansionEnter("sStar",60,224);M.transition=0;M.talk=null;M.map=false;mansionKeikoStart();mansionKeikoMode(mansionKeikoBoss(),"eTotal")',
+  diceGirl:'M.flags.darkStyleUnlocked=true;M.diceReal=true;mansionEnter("diceArena",160,256);mansionDiceStart();M.talk=null;M.map=false;girlMode(M.enemies[0],"gSugarRain")',
+  dice:'M.diceReal=false;mansionEnter("diceArena",160,256);M.enemies=[mansionNewDice()];mansionDiceStart();M.talk=null;M.map=false;M.enemies[0].id="dice";sqStart(M.enemies[0],"dJackpot")',
+  seiten:'M.flags.boss=true;mansionEnter("seitenArena",40,256);mansionSeitenStart();M.talk=null;M.map=false;M.enemies[0].id="seiten";sqStart(M.enemies[0],"sSkyPounce")'};
+ for(const [id,s] of Object.entries(fights)){run(s);ticks(1);const zs=new Set(),ys=new Set();let xs=[];
+  for(let i=0;i<400;i++){run('releaseAll();M.hurt=999;M.hp=mansionMaxHP();keys.right=(M.t>>6)&1;keys.left=!keys.right;if(M.ground&&!(M.t%50))inp.jumpPressed=true');ticks(1);zs.add(run('M.bossZoom.toFixed(4)'));ys.add(run('M.camY.toFixed(3)'));xs.push(run('M.camX'));}
+  assert.equal(zs.size,1,id+' zoom constant: '+[...zs]);assert.equal(ys.size,1,id+' camera Y locked: '+[...ys]);let jump=0;for(let i=1;i<xs.length;i++)jump=Math.max(jump,Math.abs(xs[i]-xs[i-1]));assert(jump<3,id+' camera X smooth: '+jump);res.push(id+' zoom '+[...zs][0]);}
+ run('M.keiko&&(M.keiko.state="done");M.enemyShots=[];M.diceReal=false');
+ console.log('PASS boss camera (test.55): fixed zoom + locked Y + smooth/fixed X during fights and supers ('+res.join(', ')+').');}

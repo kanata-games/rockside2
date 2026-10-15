@@ -20,7 +20,7 @@ const CUT_LEN=44,CUT_IN=4,CUT_OUT=8,CUT_Y=18,CUT_H=30,CUT_W=150;
 function juiceCut(name,col,sub){const e=M.enemies&&M.enemies.find(e=>e.id&&e.hp>0);KJ.cut={name,col,sub:sub||'',t:0,id:e&&e.id,img:(SHADE_FX[e&&e.id]||{}).cutin?.img||null};juiceStop(2);sfx('warn');}
 function juiceCutBox(c){const _=0;const t=c.t,k=t<CUT_IN?1-t/CUT_IN:t>CUT_LEN-CUT_OUT?(t-(CUT_LEN-CUT_OUT))/CUT_OUT:0,ease=k*k;return{x0:VW-CUT_W-12+Math.round(ease*(CUT_W+24)),y0:CUT_Y,w:CUT_W,h:CUT_H};}
 function mansionJuiceStop(){if(KJ.shakeT>0)KJ.shakeT--;if(KJ.flashT>0)KJ.flashT--;if(KJ.cut&&++KJ.cut.t>CUT_LEN)KJ.cut=null;if(KJ.stop>0){KJ.stop--;return true;}return false;}
-function mansionJuiceShakeApply(){if(KJ.shakeT>0){const a=KJ.shakeA*Math.min(1,KJ.shakeT/8);g.translate(Math.round((artH(M.t,1)%100/50-1)*a),Math.round((artH(M.t,2)%100/50-1)*a));}}
+function mansionJuiceShakeApply(){if(KJ.shakeT>0){const a=Math.min(2,KJ.shakeA)*Math.min(1,KJ.shakeT/8);g.translate(Math.round((artH(M.t,1)%100/50-1)*a),Math.round((artH(M.t,2)%100/50-1)*a));}}
 function mansionJuiceDraw(){g.save();g.setTransform(1,0,0,1,0,0);
  if(KJ.flashT>0){g.globalAlpha=.55*KJ.flashT/KJ.flashMax;g.fillStyle=KJ.flashC;g.fillRect(0,0,VW,VH);g.globalAlpha=1;}
  g.restore();}
