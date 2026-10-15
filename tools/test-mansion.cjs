@@ -130,7 +130,7 @@ run('M.map=false;M.flags.seal=true;mansionEnter("cellar",440,208);M.enemies=[]')
 run('M.transition=0;mansionUse()');assert.equal(run('mansionWarpTo("cellar")'),true);assert.equal(run('M.x'),run('MANSION_PORTALS.cellar.x'));assert(run('mansionFits(M.x,M.y)'));
 run('M.map=false;M.flags.seal=false;mansionEnter("bedroom",231,208);mansionUse()');assert.equal(run('mansionWarpTo("cellar")'),false);assert.equal(run('M.room'),'bedroom');
 run('M.x=300;M.map=true;M.menuTab="area"');assert.equal(run('mansionWarpTo("cellar")'),false);assert(run('mansionWarpHTML().includes("disabled")'));
-assert.equal(Object.keys(run('MANSION_PORTALS')).length,4);
+assert.equal(Object.keys(run('MANSION_PORTALS')).length,5);
 run('localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{seal:true},visited:["bedroom","archive"],checkpoint:{room:"bedroom",x:110,y:208}}));mansionStart(true)');assert(run('M.flags.seal'));assert.equal(run('M.portals.length'),1);assert.equal(run('M.x'),110);
 run('localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{seal:true,boss:true},visited:["bedroom","garden"],portals:["bedroom","gallery","hall","garden","cellar"],checkpoint:{room:"garden",x:64,y:208}}));mansionStart(true)');assert.equal(run('M.portals.length'),2);assert.equal(run('M.y'),256);assert(run('M.flags.boss'));
 console.log('PASS portals: discovery, persistence, all destinations, ordinary connections, blocked misuse and seal integrity.');
@@ -373,7 +373,7 @@ const saveBefore=storage.get('rockside2_mansion_v1');run('M.map=true;mansionGall
 run('mansionGalleryViewToggle()');assert.equal(run('mansionView().zoom'),.8);run('M.map=false;mansionEnter("hall",76,368)');assert.equal(run('mansionView().zoom'),1);
 // Existing gallery checkpoint survives the room's expansion.
 run('localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{seal:true,boss:true},visited:["gallery"],checkpoint:{room:"gallery",x:450,y:112}}));mansionStart(true)');ticks(3);assert.equal(run('M.room'),'gallery');assert.equal(run('M.y'),112);assert(run('M.flags.boss&&M.flags.seal'));
-assert.equal(run('Object.keys(MANSION_PORTALS).length'),4);
+assert.equal(run('Object.keys(MANSION_PORTALS).length'),5);
 console.log('PASS expanded corridor: ordinary jumps for both heroes, bidirectional doors, wide camera bounds, menu comparison, old checkpoint and unchanged warp count.');
 
 // The archive elevator carries both heroes, pauses in menus, can be summoned and safely jumped off.
@@ -448,7 +448,7 @@ for(const actor of ['umine','astarte']){
  run('M.x=120');ticks(1);assert(run('M.map&&M.talk.speaker==="青天"&&M.talk.after==="seitenStart"'));run('mansionTalkClose();M.map=false');assert.equal(run('M.x'),70);ticks(1);assert.equal(run('M.map'),false);
  run('M.x=24;mansionUse()');assert.equal(run('M.room'),'forbiddenArchive');assert.equal(run('M.y'),368);
 }
-assert.equal(run('Object.keys(MANSION_PORTALS).length'),4);
+assert.equal(run('Object.keys(MANSION_PORTALS).length'),5);
 // Do not hurt the waiting cat. Combat damage is 1 for water, 2 for scythe, with a short boss hit cooldown.
 clearKeys();run('mansionEnter("seitenArena",100,256);M.shots=[{x:365,y:238,vx:0}];M.hurt=0');ticks(1);assert.equal(run('M.enemies[0].hp'),64);
 run('mansionSeitenStart();M.hurt=0;M.enemies[0].x=150;M.shots=[{x:145,y:238,vx:0},{x:146,y:238,vx:0}]');ticks(1);assert.equal(run('M.enemies[0].hp'),63);

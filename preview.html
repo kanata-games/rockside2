@@ -3175,7 +3175,7 @@ const ROOM_DEFS=[
   '################################',
   '################################',
   '################################']},
- {id:'garden',openTop:true,name:'月影の中庭・星詠みの広場',area:'garden',cx:13,cy:1,tone:'#202e4b',rows:[
+ {id:'garden',openTop:true,links:{1:'kGate:1'},name:'月影の中庭・星詠みの広場',area:'garden',cx:13,cy:1,tone:'#202e4b',rows:[
   '#.......................................########',
   '#.......................................########',
   '#.......................................########',
@@ -3191,7 +3191,7 @@ const ROOM_DEFS=[
   '#.......................................########',
   '#..................................===..########',
   '#.......===.............................########',
-  '#D..S......c...................B......G.########',
+  '#D..S......c........1..........B......G.########',
   '################################################',
   '################################################',
   '################################################',
@@ -3323,6 +3323,149 @@ const ROOM_DEFS=[
   '#..............................#',
   '#..............................#',
   '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#D.............................#',
+  '################################']},
+ {id:'kGate',name:'稽古庭の崩れ門',area:'keiko',cx:13,cy:3,tone:'#26304a',links:{1:'garden:1'},scenes:[['fallen',20,1,8,12]],foes:[['slime',12,13],['bats',36,3,{n:3}]],rows:[
+  '################################################',
+  '#...................########...................#',
+  '#...................########...................#',
+  '#...................########...................#',
+  '#.....O.......O.....########....O.......O......#',
+  '#...................########...................#',
+  '#...................########...................#',
+  '#...................########...................#',
+  '#...................########...................#',
+  '#...................########...................#',
+  '#...................########......====.........#',
+  '#...................########...................#',
+  '#...................########...................#',
+  '#.1......c....................v..*............D#',
+  '################################################']},
+ {id:'kTobi',name:'梅香の回廊',area:'keiko',cx:16,cy:3,tone:'#26304a',rows:[
+  '################################',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#......O........O.......O......#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#D............................D#',
+  '################################']},
+ {id:'kShaft',name:'月見の井戸塔',area:'keiko',cx:18,cy:2,tone:'#26304a',scenes:[['shaft',7,14,3,14]],rows:[
+  '################',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#....O.........#',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#.............D#',
+  '#.........######',
+  '#.........######',
+  '#.........######',
+  '#.........######',
+  '#.........######',
+  '#.........######',
+  '#.........######',
+  '#.........######',
+  '#.........######',
+  '#.........######',
+  '#.........######',
+  '#.........######',
+  '#.........######',
+  '#.........######',
+  '#D..c.....######',
+  '################']},
+ {id:'kSave',name:'稽古庭の休み処',area:'keiko',cx:19,cy:2,tone:'#26304a',warpOrder:5,rows:[
+  '################',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#.......O......#',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#D....S...W...D#',
+  '################']},
+ {id:'kNeen',name:'弓張りの中庭',area:'keiko',cx:20,cy:2,tone:'#26304a',rows:[
+  '################################',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#......O........O.......O......#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#D............................D#',
+  '################################']},
+ {id:'kBridge',name:'崩れた渡り廊',area:'keiko',cx:22,cy:2,tone:'#26304a',scenes:[['bridge',16,13,6,1]],foes:[['crawler',30,12],['turret',44,8,{alt:0}]],rows:[
+  '################################################',
+  '#..............................................#',
+  '#..............................................#',
+  '#..............................................#',
+  '#....O......................O...........O......#',
+  '#..............................................#',
+  '#..............................................#',
+  '#..............................................#',
+  '#..............................................#',
+  '#..............................................#',
+  '#..............................................#',
+  '#..............................................#',
+  '#D......c.........................*.....v.....D#',
+  '################......##########################',
+  '################......##########################']},
+ {id:'kLily',name:'月光の舞台',area:'keiko',cx:25,cy:2,tone:'#26304a',rows:[
+  '################################',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#......O........O.......O......#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#D............................D#',
+  '################################']},
+ {id:'kDis',name:'星剣の広間',area:'keiko',cx:27,cy:2,tone:'#26304a',rows:[
+  '################################',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#......O........O.......O......#',
   '#..............................#',
   '#..............................#',
   '#..............................#',
@@ -7842,7 +7985,7 @@ const ASTARTE_PLAYER_SIZE=80; // Compare the body, not the weapon-inclusive cell
 function mansionScythePose(){const t=M.poseT,k=t>34?0:t>28?1:t>24?2:t>20?3:t>14?4:t>8?5:t>4?6:7;return(M.scytheStage===2?25:17)+k;}
 function mansionScythe(stage=1){M.scytheStage=stage;M.scytheQueued=false;M.cool=stage===2?48:46;M.poseT=40;M.scytheFace=M.face;M.scytheHit=false;sfx('shot');}
 function mansionScytheHit(){if(M.scytheHit)return;M.scytheHit=true;const face=M.scytheFace,second=M.scytheStage===2,reach=second?62:49,height=second?44:38,box=[face>0?M.x-5:M.x-reach,M.y-(M.slideT?18:height),reach+5,height];
-for(const e of M.enemies){if(e.hp<=0||e.kind==='boss'||(e.kind==='seitenBoss'&&M.seitenState!=='active')||(e.kind==='diceBoss'&&M.diceState!=='active')||(e.kind==='hoshiBoss'&&M.hoshiState!=='active'))continue;if(e.kind==='seitenBoss'&&e.guard>0)continue;if(mansionOverlap(e.x-(e.kind==='diceBoss'||e.kind==='seitenBoss'?14:10),e.y-(e.kind==='diceBoss'||e.kind==='seitenBoss'?38:24),e.kind==='diceBoss'||e.kind==='seitenBoss'?28:20,e.kind==='diceBoss'||e.kind==='seitenBoss'?38:24,box)){if(mansionFoeBlock(e,Math.sign(M.x-e.x)||1))continue;e.hp=Math.max(0,e.hp-2);e.flash=8;if(e.kind==='seitenBoss')e.guard=18;mansionScytheImpact(e.x,e.y-15,second);sfx('hit');if(e.kind==='seitenBoss'&&e.hp===0){mansionSeitenWin();return;}if(e.kind==='diceBoss'&&e.hp===0){mansionDiceWin();return;}if(e.kind==='hoshiBoss'&&e.hp===0){mansionHoshiWin();return;}if(e.hp===0)mansionFoeDropShard(e);if(e.hp===0&&M.hp<mansionMaxHP())M.hp++;}}
+for(const e of M.enemies){if(e.hp<=0||e.kind==='boss'||(e.kind==='seitenBoss'&&M.seitenState!=='active')||(e.kind==='diceBoss'&&M.diceState!=='active')||(e.kind==='hoshiBoss'&&M.hoshiState!=='active')||(e.kind==='keikoBoss'&&!mansionKeikoActive()))continue;if(e.kind==='seitenBoss'&&e.guard>0)continue;if(mansionOverlap(e.x-(e.kind==='diceBoss'||e.kind==='seitenBoss'?14:10),e.y-(e.kind==='diceBoss'||e.kind==='seitenBoss'?38:24),e.kind==='diceBoss'||e.kind==='seitenBoss'?28:20,e.kind==='diceBoss'||e.kind==='seitenBoss'?38:24,box)){if(mansionFoeBlock(e,Math.sign(M.x-e.x)||1))continue;e.hp=Math.max(0,e.hp-2);e.flash=8;if(e.kind==='seitenBoss')e.guard=18;mansionScytheImpact(e.x,e.y-15,second);sfx('hit');if(e.kind==='seitenBoss'&&e.hp===0){mansionSeitenWin();return;}if(e.kind==='diceBoss'&&e.hp===0){mansionDiceWin();return;}if(e.kind==='hoshiBoss'&&e.hp===0){mansionHoshiWin();return;}if(e.kind==='keikoBoss'&&e.hp===0){mansionKeikoWin();return;}if(e.hp===0)mansionFoeDropShard(e);if(e.hp===0&&M.hp<mansionMaxHP())M.hp++;}}
 for(const p of M.props){if(p.hp<=0||!mansionOverlap(p.x-11,p.y-(p.kind==='candle'?36:22),22,p.kind==='candle'?36:22,box))continue;const shot={x:p.x,y:p.y-12};mansionPropsHit(shot);mansionScytheImpact(p.x,p.y-12,second);}
 }
 // Pixel-shaped light; deterministic render geometry never mutates combat state.
@@ -7968,7 +8111,7 @@ function mansionAstarteAI(e){if(M.sparState!=='active')return;const phase=e.t%36
  if(rage&&phase===330&&Number.isFinite(e.rainX)){for(const dx of [-24,-12,0,12,24])M.enemyShots.push({kind:'star',x:e.rainX+dx,y:105,vx:0,vy:2.7});e.rainX=null;}
  if((phase>195&&phase<=215)||(phase>250&&phase<=295)){if(mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,[e.x-13,e.y-34,26,34]))mansionDamage(2,M.x<e.x?-1:1);}
 }
-function mansionTalkPortrait(){const c=document.getElementById('mTalkPortrait'),p=c.getContext('2d');p.clearRect(0,0,96,96);if(mansionHoshiPortrait(p,c))return;const asta=M.talk?.speaker==='アスターテ',seiten=M.talk?.speaker==='青天';c.setAttribute('aria-label',seiten?'青天':asta?'アスターテ':'被り物姿のダイスロール');p.imageSmoothingEnabled=true;if(seiten){if(mansionSeitenPortrait)p.drawImage(mansionSeitenPortrait,275,230,655,655,0,0,96,96);else{const f=sheetFrame('seiten','idle',0);if(f)p.drawImage(pick(f,1,false),0,0,96,96);}}else if(asta){if(mansionAstarteFace)p.drawImage(mansionAstarteFace,0,0,96,96);else{const f=sheetFrame('astarte','idle',0);if(f)p.drawImage(pick(f,1,false),0,0,96,96);}}else if(RORU_ART.image)p.drawImage(RORU_ART.image,305,0,380,440,0,0,96,96);}
+function mansionTalkPortrait(){const c=document.getElementById('mTalkPortrait'),p=c.getContext('2d');p.clearRect(0,0,96,96);if(mansionHoshiPortrait(p,c)||mansionKeikoPortrait(p,c))return;const asta=M.talk?.speaker==='アスターテ',seiten=M.talk?.speaker==='青天';c.setAttribute('aria-label',seiten?'青天':asta?'アスターテ':'被り物姿のダイスロール');p.imageSmoothingEnabled=true;if(seiten){if(mansionSeitenPortrait)p.drawImage(mansionSeitenPortrait,275,230,655,655,0,0,96,96);else{const f=sheetFrame('seiten','idle',0);if(f)p.drawImage(pick(f,1,false),0,0,96,96);}}else if(asta){if(mansionAstarteFace)p.drawImage(mansionAstarteFace,0,0,96,96);else{const f=sheetFrame('astarte','idle',0);if(f)p.drawImage(pick(f,1,false),0,0,96,96);}}else if(RORU_ART.image)p.drawImage(RORU_ART.image,305,0,380,440,0,0,96,96);}
 
 let mansionAstarteFace=null;{const img=new Image();img.onload=()=>mansionAstarteFace=img;img.src='assets/astarte-sequel-face.png';}
 const mansionGuardKeys=new Set();
@@ -7978,16 +8121,16 @@ for(const [name,url] of [['actions','assets/umine-mansion-actions.png'],['backgr
 function mansionSpotOK(room,x,y){const r=MR[room];if(!r||!r.grid||y%16)return false;const c=Math.floor(x/16),row=y/16,G=(cc,rr)=>rr<0||rr>=r.grid.length||cc<0||cc>=r.grid[0].length?'#':r.grid[rr][cc];const solid=ch=>'#=gk'.includes(ch);const cols=[Math.floor((x-7)/16),Math.floor((x+6)/16)];return cols.some(cc=>solid(G(cc,row)))&&cols.every(cc=>!solid(G(cc,row-1))&&!solid(G(cc,row-2)));}
 function mansionFitsIn(room,x,y){return mansionSpotOK(room,x,y);}
 function mansionSnapCheckpoint(cp){if(mansionSpotOK(cp.room,cp.x,cp.y))return cp;const r=MR[cp.room],p=r.cp||r.doors[0]?.at||[64,r.h-32];return{room:cp.room,x:p[0],y:p[1]};}
-function mansionRead(){try{const s=JSON.parse(localStorage.getItem(MANSION_KEY));if(!s||s.version!==1||!MR[s.checkpoint?.room]||!Number.isFinite(s.checkpoint.x)||!Number.isFinite(s.checkpoint.y))return null;const r=MR[s.checkpoint.room];if(s.checkpoint.x<8||s.checkpoint.x>r.w-8||s.checkpoint.y<0||s.checkpoint.y>r.h)return null;return{flags:{seal:s.flags?.seal===true,boss:s.flags?.boss===true,complete:s.flags?.complete===true,astarteFull:s.flags?.astarteFull===true,...mansionRewardFlags(s),seitenLeftArchive:s.flags?.seitenLeftArchive===true,archiveLatch:s.flags?.archiveLatch===true,starShortcut:s.flags?.starShortcut===true,seitenDefeated:s.flags?.seitenDefeated===true,hoshiyomiDefeated:s.flags?.hoshiyomiDefeated===true,hoshiyomiHub:s.flags?.hoshiyomiHub===true},shards:Math.max(0,Math.min(999,s.shards|0)),shardsTaken:Array.isArray(s.shardsTaken)?s.shardsTaken.filter(x=>typeof x==='string'):[],upg:Object.fromEntries(MANSION_UPGRADES.map(u=>[u.id,Math.max(0,Math.min(u.cost.length,(s.upg?.[u.id])|0))])),visited:Array.isArray(s.visited)?s.visited.filter(x=>MR[x]):['bedroom'],checkpoint:mansionSnapCheckpoint(s.checkpoint.room==='garden'&&s.checkpoint.y===208?{...s.checkpoint,y:256}:s.checkpoint),portals:Array.isArray(s.portals)?[...new Set([...MANSION_WARP_START,...s.portals.filter(id=>MANSION_PORTALS[id])])]:[...MANSION_WARP_START]};}catch{return null;}}
+function mansionRead(){try{const s=JSON.parse(localStorage.getItem(MANSION_KEY));if(!s||s.version!==1||!MR[s.checkpoint?.room]||!Number.isFinite(s.checkpoint.x)||!Number.isFinite(s.checkpoint.y))return null;const r=MR[s.checkpoint.room];if(s.checkpoint.x<8||s.checkpoint.x>r.w-8||s.checkpoint.y<0||s.checkpoint.y>r.h)return null;return{flags:{seal:s.flags?.seal===true,boss:s.flags?.boss===true,complete:s.flags?.complete===true,astarteFull:s.flags?.astarteFull===true,...mansionRewardFlags(s),seitenLeftArchive:s.flags?.seitenLeftArchive===true,archiveLatch:s.flags?.archiveLatch===true,starShortcut:s.flags?.starShortcut===true,seitenDefeated:s.flags?.seitenDefeated===true,hoshiyomiDefeated:s.flags?.hoshiyomiDefeated===true,hoshiyomiHub:s.flags?.hoshiyomiHub===true,...Object.fromEntries(['keikoTobiume','keikoNeenia','keikoLily','keikoStar'].map(f=>[f,s.flags?.[f]===true]))},shards:Math.max(0,Math.min(999,s.shards|0)),shardsTaken:Array.isArray(s.shardsTaken)?s.shardsTaken.filter(x=>typeof x==='string'):[],upg:Object.fromEntries(MANSION_UPGRADES.map(u=>[u.id,Math.max(0,Math.min(u.cost.length,(s.upg?.[u.id])|0))])),visited:Array.isArray(s.visited)?s.visited.filter(x=>MR[x]):['bedroom'],checkpoint:mansionSnapCheckpoint(s.checkpoint.room==='garden'&&s.checkpoint.y===208?{...s.checkpoint,y:256}:s.checkpoint),portals:Array.isArray(s.portals)?[...new Set([...MANSION_WARP_START,...s.portals.filter(id=>MANSION_PORTALS[id])])]:[...MANSION_WARP_START]};}catch{return null;}}
 function mansionSave(){try{localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,rewardVersion:2,flags:M.flags,visited:M.visited,portals:M.portals,checkpoint:M.checkpoint,shards:M.shards||0,shardsTaken:M.shardsTaken||[],upg:M.upg||{}}));M.saved=true;M.saveError=false;}catch{M.saveError=true;}}
 function mansionSay(text,time=220){M.message=text;M.messageT=time;}
 function mansionStart(resume=false){mansionGuardRelease();M.guardFlash=0;const saved=resume?mansionRead():null;M.actor='umine';M.swapCool=0;M.abilityCool=0;M.castT=0;Object.assign(M,{hp:16,hurt:0,dead:0,t:0,flags:saved?.flags||{seal:false,boss:false,complete:false,seitenLeftArchive:false,archiveLatch:false,starShortcut:false,seitenDefeated:false,hoshiyomiDefeated:false},shards:saved?.shards||0,shardsTaken:saved?.shardsTaken||[],upg:saved?.upg||{},dropCount:0,hoshiTries:0,visited:saved?.visited||['bedroom'],portals:saved?.portals||[...MANSION_WARP_START],checkpoint:saved?.checkpoint||{room:'bedroom',x:110,y:208},map:false,talk:null,menuTab:'status',saved:!!saved,saveError:false});M.hp=mansionMaxHP();mansionEnter(M.checkpoint.room,M.checkpoint.x,M.checkpoint.y);setState('mansion');mansionSay(resume?'また、ここから探してみよう。':'紫の扉はワープ。普通の扉からも回廊へ進めるよ。');mansionUI();}
-function mansionEnter(room,x,y){mansionGuardRelease();M.guardFlash=0;Object.assign(M,{room,x,y,waterPlatform:null,slideJump:false,castT:0,sparState:'waiting',sparMode:'tutorial',sparReturn:null,diceReturn:null,diceState:'waiting',seitenState:M.flags.seitenDefeated?'done':'waiting',stepT:0,stepCool:0,clawQueued:false,walkDistance:0,vx:0,vy:0,h:MC.h,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,shots:[],enemyShots:[],fx:[],transition:16,near:null,prompt:''});mansionLiftEnter(room);mansionPropsEnter(room);M.enemies=MR[room].enemies.flatMap((e,i)=>mansionFoeSpawn(e,i));if(room==='seitenArena'&&!M.flags.seitenDefeated)M.enemies.push(mansionNewSeiten());mansionHoshiEnter(room);if(MR[room].boss&&!M.flags.boss)M.enemies.push(mansionNewAstarte());if(!M.visited.includes(room))M.visited.push(room);mansionCamera(true);mansionSave();}
-function mansionSolids(){const r=MR[M.room];return [...r.floor,...r.blocks,...(M.waterPlatform?[M.waterPlatform.box]:[]),...(M.lift?[mansionLiftBox()]:[]),...(r.switchGate&&!M.flags[r.lever.flag]?[r.switchGate]:[]),...(r.topCaps||[[0,-16,r.w,16]]),...mansionHatchSolids(),[-16,0,16,r.h],[r.w,0,16,r.h],...(r.gate&&!M.flags.seal?[r.gate]:[]),...(M.room==='seitenArena'&&M.seitenState==='active'?[[0,0,40,256],[472,0,40,256]]:[]),...(M.room==='garden'&&M.sparState==='active'?[[208,0,12,288]]:[])];}
+function mansionEnter(room,x,y){mansionGuardRelease();M.guardFlash=0;Object.assign(M,{room,x,y,waterPlatform:null,slideJump:false,castT:0,sparState:'waiting',sparMode:'tutorial',sparReturn:null,diceReturn:null,diceState:'waiting',seitenState:M.flags.seitenDefeated?'done':'waiting',stepT:0,stepCool:0,clawQueued:false,walkDistance:0,vx:0,vy:0,h:MC.h,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,shots:[],enemyShots:[],fx:[],transition:16,near:null,prompt:''});mansionLiftEnter(room);mansionPropsEnter(room);M.enemies=MR[room].enemies.flatMap((e,i)=>mansionFoeSpawn(e,i));if(room==='seitenArena'&&!M.flags.seitenDefeated)M.enemies.push(mansionNewSeiten());mansionHoshiEnter(room);mansionKeikoEnter(room);if(MR[room].boss&&!M.flags.boss)M.enemies.push(mansionNewAstarte());if(!M.visited.includes(room))M.visited.push(room);mansionCamera(true);mansionSave();}
+function mansionSolids(){const r=MR[M.room];return [...r.floor,...r.blocks,...(M.waterPlatform?[M.waterPlatform.box]:[]),...(M.lift?[mansionLiftBox()]:[]),...(r.switchGate&&!M.flags[r.lever.flag]?[r.switchGate]:[]),...(r.topCaps||[[0,-16,r.w,16]]),...mansionHatchSolids(),[-16,0,16,r.h],[r.w,0,16,r.h],...(r.gate&&!M.flags.seal?[r.gate]:[]),...(M.room==='seitenArena'&&M.seitenState==='active'?[[0,0,40,256],[472,0,40,256]]:[]),...mansionKeikoArenaSolids(),...(M.room==='garden'&&M.sparState==='active'?[[208,0,12,288]]:[])];}
 function mansionOverlap(x,y,w,h,b){return x<b[0]+b[2]&&x+w>b[0]&&y<b[1]+b[3]&&y+h>b[1];}
 function mansionFits(x,y,h=MC.h){return !mansionSolids().some(b=>mansionOverlap(x-MC.w/2,y-h,MC.w,h,b));}
 function mansionBurst(x,y,color='#8beeff',n=9){for(let i=0;i<n;i++)M.fx.push({x,y,vx:Math.cos(i/n*6.28)*(1+i%3),vy:Math.sin(i/n*6.28)*(1+i%3),life:20+i%7,color});}
-function mansionDamage(n,dir=0){if(M.hurt||M.dead)return;const blocked=mansionGuarding()&&dir===-M.face;if(blocked){n=Math.max(1,Math.floor(n/2));M.guardFlash=10;mansionBurst(M.x+M.face*20,M.y-22,'#ffe6ab',8);}if(M.seitenState==='active'&&M.hp-n<=0){mansionSeitenRetry();return;}if(M.diceState==='active'&&M.hp-n<=0){mansionDiceRetry();return;}if(M.hoshiState==='active'&&M.hp-n<=0){mansionHoshiRetry();return;}if(M.room==='garden'&&M.sparState==='active'&&M.hp-n<=0){mansionSparRetry();return;}M.hp=Math.max(0,M.hp-n);if(!mansionIsUmine())M.poseT=M.castT=M.stepT=0;M.stepT=0;M.hurt=blocked?36:75;M.vx=dir*(blocked?.8:2.8);M.vy=blocked?0:-3;M.kickLock=blocked?4:10;M.slideT=0;mansionBurst(M.x,M.y-14,'#ff9abb');sfx(blocked?'guard':'hurt');if(!M.hp){M.dead=65;mansionSay('……もう一度、あの灯りのところから。',100);}}
+function mansionDamage(n,dir=0){if(M.hurt||M.dead)return;const blocked=mansionGuarding()&&dir===-M.face;if(blocked){n=Math.max(1,Math.floor(n/2));M.guardFlash=10;mansionBurst(M.x+M.face*20,M.y-22,'#ffe6ab',8);}if(M.seitenState==='active'&&M.hp-n<=0){mansionSeitenRetry();return;}if(M.diceState==='active'&&M.hp-n<=0){mansionDiceRetry();return;}if(M.hoshiState==='active'&&M.hp-n<=0){mansionHoshiRetry();return;}if(mansionKeikoActive()&&M.hp-n<=0){mansionKeikoRetry();return;}if(M.room==='garden'&&M.sparState==='active'&&M.hp-n<=0){mansionSparRetry();return;}M.hp=Math.max(0,M.hp-n);if(!mansionIsUmine())M.poseT=M.castT=M.stepT=0;M.stepT=0;M.hurt=blocked?36:75;M.vx=dir*(blocked?.8:2.8);M.vy=blocked?0:-3;M.kickLock=blocked?4:10;M.slideT=0;mansionBurst(M.x,M.y-14,'#ff9abb');sfx(blocked?'guard':'hurt');if(!M.hp){M.dead=65;mansionSay('……もう一度、あの灯りのところから。',100);}}
 // Door events run only after a valid destination is entered.
 function mansionDoorAvailable(d){return !!d&&!!MR[d.to]&&Array.isArray(d.at)&&d.at.length===2&&d.at.every(Number.isFinite)&&(!d.need||M.flags[d.need]);}
 function mansionEnterDoor(d){if(!mansionDoorAvailable(d))return false;mansionEnter(d.to,...d.at);if(d.onEnterFlag==='seitenLeftArchive'){M.flags.seitenLeftArchive=true;mansionSave();}return true;}
@@ -8050,14 +8193,15 @@ function updateMansion(){
  if(inp.shoot&&M.cool===0&&M.actor==='astarte'&&!mansionGuarding()){mansionScythe();}
  if(inp.shoot&&M.cool===0&&mansionIsUmine()&&M.shots.length<3){M.shots.push({x:M.x+M.face*13,y:M.y-(M.slideT?7:17),vx:M.face*4.8,damage:1+mansionUpg('shot')});M.cool=10;M.poseT=14;sfx('shot');}
  if(M.actor==='seiten'){mansionSeitenPlayerUpdate();if(M.map)return;}
- for(const shot of M.shots){shot.x+=shot.vx;if(solids.some(b=>mansionOverlap(shot.x-2,shot.y-2,4,4,b))){shot.dead=true;mansionBurst(shot.x,shot.y,'#96eaff',3);}mansionPropsHit(shot);for(const e of M.enemies){if(!shot.dead&&e.hp>0&&(e.kind!=='boss'||M.sparState==='active')&&(e.kind!=='diceBoss'||M.diceState==='active')&&(e.kind!=='seitenBoss'||M.seitenState==='active')&&(e.kind!=='hoshiBoss'||M.hoshiState==='active')&&(MANSION_FOES[e.kind]?mansionFoeHit(e,shot.x-2,shot.y-2,4,4):(Math.abs(shot.x-e.x)<(e.kind==='boss'||e.kind==='diceBoss'||e.kind==='seitenBoss'||e.kind==='hoshiBoss'?19:12)&&shot.y>e.y-(e.kind==='boss'||e.kind==='diceBoss'||e.kind==='seitenBoss'||e.kind==='hoshiBoss'?42:24)&&shot.y<e.y+2))){shot.dead=true;if(mansionFoeBlock(e,shot.vx>0?-1:1)){sfx('hit');continue;}if((e.kind==='boss'||e.kind==='seitenBoss')&&e.guard>0){mansionBurst(shot.x,shot.y,'#baa5ed',2);continue;}e.hp-=shot.damage||1;e.flash=6;if(e.kind==='boss'||e.kind==='seitenBoss')e.guard=18;mansionBurst(shot.x,shot.y,'#b1f8ff',4);sfx('hit');if(e.kind==='seitenBoss'&&e.hp<=0){mansionSeitenWin();return;}if(e.kind==='diceBoss'&&e.hp<=0){mansionDiceWin();return;}if(e.kind==='hoshiBoss'){if(e.hp<=0){mansionHoshiWin();return;}continue;}if(e.kind==='boss'&&e.hp<=(M.sparMode==='full'?0:e.maxHp/2)){mansionBurst(e.x,e.y-12,'#ffdca1',14);mansionSparWin();}else if(e.hp<=0){mansionBurst(e.x,e.y-12,'#ffdca1',14);mansionFoeDropShard(e);if(M.hp<mansionMaxHP())M.hp++;}}}}
+ for(const shot of M.shots){shot.x+=shot.vx;if(solids.some(b=>mansionOverlap(shot.x-2,shot.y-2,4,4,b))){shot.dead=true;mansionBurst(shot.x,shot.y,'#96eaff',3);}mansionPropsHit(shot);for(const e of M.enemies){if(!shot.dead&&e.hp>0&&(e.kind!=='boss'||M.sparState==='active')&&(e.kind!=='diceBoss'||M.diceState==='active')&&(e.kind!=='seitenBoss'||M.seitenState==='active')&&(e.kind!=='hoshiBoss'||M.hoshiState==='active')&&(e.kind!=='keikoBoss'||mansionKeikoActive())&&(MANSION_FOES[e.kind]?mansionFoeHit(e,shot.x-2,shot.y-2,4,4):(Math.abs(shot.x-e.x)<(e.kind==='boss'||e.kind==='diceBoss'||e.kind==='seitenBoss'||e.kind==='hoshiBoss'||e.kind==='keikoBoss'?19:12)&&shot.y>e.y-(e.kind==='boss'||e.kind==='diceBoss'||e.kind==='seitenBoss'||e.kind==='hoshiBoss'||e.kind==='keikoBoss'?42+(e.lift||0):24)&&shot.y<e.y+2))){shot.dead=true;if(mansionFoeBlock(e,shot.vx>0?-1:1)){sfx('hit');continue;}if((e.kind==='boss'||e.kind==='seitenBoss')&&e.guard>0){mansionBurst(shot.x,shot.y,'#baa5ed',2);continue;}e.hp-=shot.damage||1;e.flash=6;if(e.kind==='boss'||e.kind==='seitenBoss')e.guard=18;mansionBurst(shot.x,shot.y,'#b1f8ff',4);sfx('hit');if(e.kind==='seitenBoss'&&e.hp<=0){mansionSeitenWin();return;}if(e.kind==='diceBoss'&&e.hp<=0){mansionDiceWin();return;}if(e.kind==='hoshiBoss'){if(e.hp<=0){mansionHoshiWin();return;}continue;}if(e.kind==='keikoBoss'){if(e.hp<=0){mansionKeikoWin();return;}continue;}if(e.kind==='boss'&&e.hp<=(M.sparMode==='full'?0:e.maxHp/2)){mansionBurst(e.x,e.y-12,'#ffdca1',14);mansionSparWin();}else if(e.hp<=0){mansionBurst(e.x,e.y-12,'#ffdca1',14);mansionFoeDropShard(e);if(M.hp<mansionMaxHP())M.hp++;}}}}
  M.shots=M.shots.filter(s=>!s.dead&&Math.abs(s.x-M.x)<300);
  if(M.map)return;
- mansionPickupsUpdate();mansionShardsUpdate();mansionHoshiTrigger();if(M.map)return;mansionHoshiBulletUpdate();
+ mansionPickupsUpdate();mansionShardsUpdate();mansionHoshiTrigger();mansionKeikoTrigger();if(M.map)return;mansionHoshiBulletUpdate();mansionKeikoBulletUpdate();
  for(const e of M.enemies){if(e.hp<=0)continue;e.t++;if(e.flash)e.flash--;if(e.guard)e.guard--;if(MANSION_FOES[e.kind]){mansionFoeUpdate(e,solids);if(M.map)return;continue;}
   if(e.kind==='walk'){e.x+=e.dir*.55;if(e.x<e.min||e.x>e.max)e.dir*=-1;}
   if(e.kind==='fly'){e.x+=e.dir*.55;if(e.x<e.min||e.x>e.max)e.dir*=-1;e.y=e.baseY+Math.sin(e.t*.055)*14;}
   if(e.kind==='hoshiBoss'){mansionHoshiAI(e);if(M.map)return;continue;}
+  if(e.kind==='keikoBoss'){mansionKeikoAI(e);if(M.map)return;continue;}
   if(e.kind==='seitenBoss'){mansionSeitenAI(e);if(M.map)return;continue;}
   if(e.kind==='boss')mansionAstarteAI(e);
   if(e.kind==='diceBoss'){mansionDiceAI(e);if(M.diceState==='active'&&mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,[e.x-13,e.y-36,26,36]))mansionDamage(2,M.x<e.x?-1:1);if(M.map)return;continue;}
@@ -8135,7 +8279,7 @@ function mansionMechanismsDraw(){const r=MR[M.room],l=r.lever;if(l){const open=M
 }
 
 // ---- Tile renderer: collision tiles are drawn exactly where they collide, styled per area ----
-const MANSION_AREA_STYLE={observatory:['#140f2c','#3a2f66','#d7b8ff','#6a5aa0'],hub:['#1d1a28','#3d3448','#c5a88a','#6e5a6a'],mansion:['#111d32','#39475e','#98bcc8','#55657b'],library:['#1c1424','#463650','#c9a77c','#76607a'],tower:['#18182a','#3e3f55','#c7ae78','#6b6b82'],water:['#0e2230','#24495a','#7fd3df','#3f7486'],star:['#121a33','#2d3d66','#b4c4f0','#4f5f8f'],garden:['#18202e','#3c4a5e','#a8c69a','#5d6d80'],play:['#200f22','#4a2b45','#e3c991','#7b4a63']};
+const MANSION_AREA_STYLE={keiko:['#161c2c','#384260','#dfe6f4','#5c6a88'],observatory:['#140f2c','#3a2f66','#d7b8ff','#6a5aa0'],hub:['#1d1a28','#3d3448','#c5a88a','#6e5a6a'],mansion:['#111d32','#39475e','#98bcc8','#55657b'],library:['#1c1424','#463650','#c9a77c','#76607a'],tower:['#18182a','#3e3f55','#c7ae78','#6b6b82'],water:['#0e2230','#24495a','#7fd3df','#3f7486'],star:['#121a33','#2d3d66','#b4c4f0','#4f5f8f'],garden:['#18202e','#3c4a5e','#a8c69a','#5d6d80'],play:['#200f22','#4a2b45','#e3c991','#7b4a63']};
 function mansionSolidAt(r,c,row){const ch=row<0||row>=r.grid.length||c<0||c>=r.grid[0].length?'#':r.grid[row][c];return ch==='#';}
 function mansionTilesDraw(r,cx,cy,view){const P=MANSION_AREA_STYLE[r.area]||MANSION_AREA_STYLE.mansion,c0=Math.max(0,Math.floor(cx/16)),c1=Math.min(r.grid[0].length-1,Math.floor((cx+view.w)/16)),r0=Math.max(0,Math.floor(cy/16)),r1=Math.min(r.grid.length-1,Math.floor((cy+view.h)/16));
  for(let row=r0;row<=r1;row++){const line=r.grid[row];for(let c=c0;c<=c1;c++){const ch=line[c],x=c*16,y=row*16;
@@ -8178,7 +8322,7 @@ function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.roun
  mansionPropsDraw();mansionShardsDraw();mansionHatchDraw();mansionHatchDraw();
  for(const n of HUB_NPCS)if(n.room===M.room&&(!n.enabled||n.enabled()))n.draw(n.x,n.y,M.t,M.x<n.x?-1:1);
  if(r.goal){const[x,y]=r.goal;mrect(x-17,y-75,34,75,'#0b142a');for(let z=-14;z<=14;z+=7)if(!M.flags.boss)mrect(x+z,y-72,3,72,'#c6b37c');mrect(x-19,y-77,38,4,'#f0dbaa');}
- for(const e of M.enemies){if(e.hp<=0){if(MANSION_FOES[e.kind])mansionFoeDeathDraw(e);continue;}if(MANSION_FOES[e.kind]){mansionFoeDraw(e);continue;}if(e.kind==='seitenBoss'){mansionSeitenBossDraw(e);continue;}if(e.kind==='diceBoss'){mansionDiceDraw(e);continue;}if(e.kind==='hoshiBoss'){mansionHoshiDraw(e);continue;}if(e.kind==='boss'){const wind=M.sparState==='active'&&(e.pose===8||e.striking);g.globalAlpha=e.guard>0&&(e.guard&2)?0.6:1;drawMansionAstarte(e.x,e.y,M.t,e.dir,e.pose??-1);g.globalAlpha=1;if(M.sparState==='active'){mrect(e.x-26,e.y-64,52,4,'#182039');mrect(e.x-25,e.y-63,50*e.hp/e.maxHp,2,'#c7a2f6');if(e.striking){g.beginPath();g.arc(e.x+e.dir*24,e.y-20,30,e.dir>0?-1.3:1.8,e.dir>0?1.3:4.5);g.strokeStyle='#170b34';g.lineWidth=6;g.stroke();g.strokeStyle='#cf63ff';g.lineWidth=4;g.stroke();g.strokeStyle='#fff4ae';g.lineWidth=1;g.stroke();}else if(wind){mansionDiamond(e.x+e.dir*35,e.y-35,4,'#f4d6ff');}}continue;}const sz=24;g.drawImage(pick(e.kind==='fly'?SPR.flyer[(frame>>3)&1]:SPR.walker[(frame>>3)&1],e.dir,e.flash>0),Math.round(e.x-12),Math.round(e.y-24),sz,sz);}
+ for(const e of M.enemies){if(e.hp<=0){if(MANSION_FOES[e.kind])mansionFoeDeathDraw(e);continue;}if(MANSION_FOES[e.kind]){mansionFoeDraw(e);continue;}if(e.kind==='seitenBoss'){mansionSeitenBossDraw(e);continue;}if(e.kind==='diceBoss'){mansionDiceDraw(e);continue;}if(e.kind==='hoshiBoss'){mansionHoshiDraw(e);continue;}if(e.kind==='keikoBoss'){mansionKeikoDraw(e);continue;}if(e.kind==='boss'){const wind=M.sparState==='active'&&(e.pose===8||e.striking);g.globalAlpha=e.guard>0&&(e.guard&2)?0.6:1;drawMansionAstarte(e.x,e.y,M.t,e.dir,e.pose??-1);g.globalAlpha=1;if(M.sparState==='active'){mrect(e.x-26,e.y-64,52,4,'#182039');mrect(e.x-25,e.y-63,50*e.hp/e.maxHp,2,'#c7a2f6');if(e.striking){g.beginPath();g.arc(e.x+e.dir*24,e.y-20,30,e.dir>0?-1.3:1.8,e.dir>0?1.3:4.5);g.strokeStyle='#170b34';g.lineWidth=6;g.stroke();g.strokeStyle='#cf63ff';g.lineWidth=4;g.stroke();g.strokeStyle='#fff4ae';g.lineWidth=1;g.stroke();}else if(wind){mansionDiamond(e.x+e.dir*35,e.y-35,4,'#f4d6ff');}}continue;}const sz=24;g.drawImage(pick(e.kind==='fly'?SPR.flyer[(frame>>3)&1]:SPR.walker[(frame>>3)&1],e.dir,e.flash>0),Math.round(e.x-12),Math.round(e.y-24),sz,sz);}
  if(!M.dead||M.dead%8<4){if(!M.hurt||M.hurt%6<3){
  if(M.actor==='astarte'){g.save();if(M.slideT){g.translate(M.x,M.y);g.scale(1,.65);g.translate(-M.x,-M.y);}drawMansionAstartePlayer(M.x,M.y,M.t,M.poseT?M.scytheFace:M.face,(mansionGuarding()||M.guardFlash&&M.ground&&!M.poseT&&!M.castT)?16:M.castT?15:M.poseT?mansionScythePose():!M.ground?(M.vy<0?13:14):Math.abs(M.vx)>.1&&!M.hurt?4+Math.floor(M.walkDistance/8)%4:-1,ASTARTE_PLAYER_SIZE);g.restore();mansionScytheDraw();mansionGuardDraw();}else if(M.actor==='seiten'){mansionSeitenPlayerDraw();}else{
  const action=M.slideT?'slide':(!M.ground&&(M.wall||M.kickLock))?'wall':null;
@@ -8190,7 +8334,7 @@ function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.roun
 
  mansionWaterPlatformDraw();
  for(const s of M.shots){if(s.kind==='song'){mansionSeitenBulletDraw(s);continue;}if(s.kind==='star'){mansionScytheStar(s.x-s.vx*2,s.y,4,'#826438');mansionScytheStar(s.x,s.y,6,'#271d39');mansionScytheStar(s.x,s.y,5,'#ffd05b');mansionScytheStar(s.x,s.y,2,'#fffdf2');continue;}mrect(s.x-4,s.y-2,8,4,'#5ec9f1');mrect(s.x-2,s.y-1,4,2,'#e2ffff');}
- for(const s of M.enemyShots){if(s.kind==='hStar'||s.kind==='hStarRain'){hoshiBulletDraw(s);continue;}if(s.kind==='tbullet'&&mansionFoeBulletDraw(s))continue;if(s.kind==='songWave'||s.kind==='songNote'){mansionSeitenBulletDraw(s);continue;}if(s.kind==='dice'||s.kind==='card'||s.kind==='chip'){mansionDiceBulletDraw(s);continue;}if(s.kind==='crescent'){g.beginPath();g.arc(s.x,s.y,5,-1.2,1.2);g.strokeStyle='#170b34';g.lineWidth=5;g.stroke();g.strokeStyle='#b54dff';g.lineWidth=3;g.stroke();g.strokeStyle='#fff4ae';g.lineWidth=1;g.stroke();}else{mansionDiamond(s.x,s.y,6,'#170b34');mansionDiamond(s.x,s.y,5,'#ffb52e');mansionDiamond(s.x,s.y,3,'#ffe55d');mansionDiamond(s.x,s.y,1,'#ffffff');}}
+ for(const s of M.enemyShots){if(s.kind==='hStar'||s.kind==='hStarRain'){hoshiBulletDraw(s);continue;}if(s.kind==='kShot'||s.kind==='kRain'){keikoBulletDraw(s);continue;}if(s.kind==='tbullet'&&mansionFoeBulletDraw(s))continue;if(s.kind==='songWave'||s.kind==='songNote'){mansionSeitenBulletDraw(s);continue;}if(s.kind==='dice'||s.kind==='card'||s.kind==='chip'){mansionDiceBulletDraw(s);continue;}if(s.kind==='crescent'){g.beginPath();g.arc(s.x,s.y,5,-1.2,1.2);g.strokeStyle='#170b34';g.lineWidth=5;g.stroke();g.strokeStyle='#b54dff';g.lineWidth=3;g.stroke();g.strokeStyle='#fff4ae';g.lineWidth=1;g.stroke();}else{mansionDiamond(s.x,s.y,6,'#170b34');mansionDiamond(s.x,s.y,5,'#ffb52e');mansionDiamond(s.x,s.y,3,'#ffe55d');mansionDiamond(s.x,s.y,1,'#ffffff');}}
  for(const f of M.fx){if(f.kind==='scytheImpact'){mansionScytheImpactDraw(f);continue;}g.globalAlpha=Math.min(1,f.life/12);mrect(f.x,f.y,2,2,f.color);}g.globalAlpha=1;artLighting(r,cx,cy,view);g.restore();
  g.restore();
  // Dark edge vignette uses stepped pixel bars; all solid surfaces keep bright top edges.
@@ -8198,7 +8342,7 @@ function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.roun
  drawText(M.flags.seal?'SEAL':'----',VW-8,17,M.flags.seal?'y':'b',1,'r');if(M.shards||M.flags.hoshiyomiDefeated){mansionShardIcon(VW-44,32,.7);drawText(String(M.shards||0),VW-8,28,'w',1,'r');}
  // Notices are outlined text below the HUD; no foot-level black strip.
 }
-const MANSION_MAP_NAMES={bedroom:'拠点',hubCellar:'拠点地下',gallery:'回廊',hall:'大広間',archive:'書庫',cellar:'地下',garden:'中庭',diceArena:'遊戯室',archiveInner:'封書',clockTower:'時計塔',moonReservoir:'貯水室',starPassage:'星灯り',forbiddenArchive:'禁書庫',seitenArena:'歌声の間'};
+const MANSION_MAP_NAMES={bedroom:'拠点',hubCellar:'拠点地下',gallery:'回廊',hall:'大広間',archive:'書庫',cellar:'地下',garden:'中庭',diceArena:'遊戯室',archiveInner:'封書',clockTower:'時計塔',moonReservoir:'貯水室',starPassage:'星灯り',forbiddenArchive:'禁書庫',seitenArena:'歌声の間',hubLoft:'屋根裏',obsStair:'螺旋',obsShelves:'星図',obsLens:'望遠鏡',obsSave:'控室',obsDome:'ドーム',kGate:'崩れ門',kTobi:'梅香',kShaft:'井戸塔',kSave:'休み処',kNeen:'弓張り',kBridge:'渡り廊',kLily:'舞台',kDis:'星剣'};
 function mansionMapBounds(){const c=Object.values(MR).map(r=>r.cell);return{minX:Math.min(...c.map(p=>p[0])),minY:Math.min(...c.map(p=>p[1])),maxX:Math.max(...c.map(p=>p[0]+p[2]-1)),maxY:Math.max(...c.map(p=>p[1]+p[3]-1))};}
 function mansionRoomDoors(r){return[...r.doors,...(r.extensionDoor&&MR[r.extensionDoor.to]?[r.extensionDoor]:[])];}
 function mansionMapScale(html){const b=mansionMapBounds(),nx=b.maxX-b.minX+1,ny=b.maxY-b.minY+1;return html?{s:28,t:21,ox:10,oy:10,b}:{s:Math.floor(Math.min(224/nx,120/ny)),t:Math.floor(Math.min(224/nx,120/ny)*.75),ox:16+Math.floor((224-nx*Math.floor(Math.min(224/nx,120/ny)))/2),oy:66,b};}
@@ -8256,7 +8400,7 @@ function mansionStatusHTML(){const memo=M.flags.seitenDefeated?'禁書庫の青�
 function mansionMapHTML(){const m=mansionMapScale(true),width=m.ox*2+(m.b.maxX-m.b.minX+1)*m.s,height=m.oy*2+(m.b.maxY-m.b.minY+1)*m.t;let paths='',rooms='';const links=new Set();
  for(const[id,r]of Object.entries(MR)){if(!M.visited.includes(id))continue;for(const d of mansionRoomDoors(r)){if(!MR[d.to])continue;const key=[id,d.to].sort().join(':')+d.x;if(links.has(key))continue;links.add(key);const a=mansionDoorCellPos(id,d.x,d.y-20,true),b=mansionDoorCellPos(d.to,d.at[0],d.at[1]-20,true);const locked=d.need&&!M.flags[d.need],near=Math.hypot(a[0]-b[0],a[1]-b[1])<m.s*.8;paths+=near?`<rect x="${(a[0]+b[0])/2-3}" y="${(a[1]+b[1])/2-3}" width="6" height="6" fill="${locked?'#685269':'#e7cf86'}"/>`:`<path d="M ${a[0]} ${a[1]} L ${b[0]} ${b[1]}" fill="none" stroke="${locked?'#685269':'#6b8b9b'}" stroke-width="2" stroke-dasharray="4 3"/>`;}}
  for(const[id,r]of Object.entries(MR)){const[x,y,w,h]=mansionMapPosition(id,true),seen=M.visited.includes(id);let grid='';for(let i=1;i<r.cell[2];i++)grid+=`<path d="M ${x+i*m.s} ${y} v ${h}" stroke="#1d3243" stroke-width="1"/>`;for(let i=1;i<r.cell[3];i++)grid+=`<path d="M ${x} ${y+i*m.t} h ${w}" stroke="#1d3243" stroke-width="1"/>`;
-  rooms+=`<rect x="${x+1}" y="${y+1}" width="${w-2}" height="${h-2}" fill="${seen?'#264c63':'#182337'}" stroke="${id===M.room?'#ffe89e':'#667b92'}" stroke-width="${id===M.room?3:1}"/>${seen?grid:''}<text x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" fill="${id===M.room?'#fff0bb':'#d0e5ed'}" font-size="10">${seen?MANSION_MAP_NAMES[id]||r.name:'？'}</text>`;
+  rooms+=`<rect x="${x+1}" y="${y+1}" width="${w-2}" height="${h-2}" fill="${seen?'#264c63':'#182337'}" stroke="${id===M.room?'#ffe89e':'#667b92'}" stroke-width="${id===M.room?3:1}"/>${seen?grid:''}<text x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" fill="${id===M.room?'#fff0bb':'#d0e5ed'}" font-size="${Math.max(5,Math.min(10,(w-4)/Math.max(1,(seen?MANSION_MAP_NAMES[id]||r.name:'？').length)))}">${seen?MANSION_MAP_NAMES[id]||r.name:'？'}</text>`;
   if(M.portals.includes(id)){const p=MANSION_PORTALS[id],q=mansionDoorCellPos(id,p.x,p.y-20,true);rooms+=`<path d="M ${q[0]} ${q[1]-5} l 5 5 -5 5 -5 -5 Z" fill="#c39afa"/>`;}
   if(seen&&r.cp){const q=mansionDoorCellPos(id,r.cp[0],r.cp[1]-20,true);rooms+=`<circle cx="${q[0]}" cy="${q[1]}" r="3" fill="#95f3ff"/>`;}}
  const me=mansionDoorCellPos(M.room,M.x,M.y-12,true);rooms+=`<circle cx="${me[0]}" cy="${me[1]}" r="4" fill="#ffe89e" stroke="#0b1528"/>`;
@@ -8368,7 +8512,7 @@ function mansionForbiddenDecor(){const r=MR[M.room],arena=true;mrect(0,0,r.w,r.h
 
 function mansionSeitenClaw(stage=1){M.clawStage=stage;M.clawFace=M.face;M.clawHit=false;M.clawQueued=false;M.poseT=28;M.cool=32;sfx('swoosh');}
 function mansionSeitenClawHit(){if(M.clawHit)return;M.clawHit=true;const reach=M.clawStage===2?42:35,box=[M.clawFace>0?M.x-4:M.x-reach,M.y-32,reach+4,32];
- for(const e of M.enemies){if(e.hp<=0||e.kind==='boss'||(e.kind==='seitenBoss'&&(M.seitenState!=='active'||e.guard>0))||(e.kind==='diceBoss'&&M.diceState!=='active')||(e.kind==='hoshiBoss'&&M.hoshiState!=='active'))continue;if(!mansionOverlap(e.x-13,e.y-34,26,34,box))continue;if(mansionFoeBlock(e,Math.sign(M.x-e.x)||1))continue;e.hp=Math.max(0,e.hp-2);e.flash=8;if(e.kind==='seitenBoss')e.guard=18;mansionBurst(e.x,e.y-18,'#ffb4cf',6);sfx('hit');if(e.hp===0){if(e.kind==='diceBoss'){mansionDiceWin();return;}if(e.kind==='seitenBoss'){mansionSeitenWin();return;}if(e.kind==='hoshiBoss'){mansionHoshiWin();return;}mansionFoeDropShard(e);if(M.hp<mansionMaxHP())M.hp++;}}
+ for(const e of M.enemies){if(e.hp<=0||e.kind==='boss'||(e.kind==='seitenBoss'&&(M.seitenState!=='active'||e.guard>0))||(e.kind==='diceBoss'&&M.diceState!=='active')||(e.kind==='hoshiBoss'&&M.hoshiState!=='active')||(e.kind==='keikoBoss'&&!mansionKeikoActive()))continue;if(!mansionOverlap(e.x-13,e.y-34,26,34,box))continue;if(mansionFoeBlock(e,Math.sign(M.x-e.x)||1))continue;e.hp=Math.max(0,e.hp-2);e.flash=8;if(e.kind==='seitenBoss')e.guard=18;mansionBurst(e.x,e.y-18,'#ffb4cf',6);sfx('hit');if(e.hp===0){if(e.kind==='diceBoss'){mansionDiceWin();return;}if(e.kind==='seitenBoss'){mansionSeitenWin();return;}if(e.kind==='hoshiBoss'){mansionHoshiWin();return;}if(e.kind==='keikoBoss'){mansionKeikoWin();return;}mansionFoeDropShard(e);if(M.hp<mansionMaxHP())M.hp++;}}
  for(const p of M.props){if(p.hp>0&&mansionOverlap(p.x-11,p.y-(p.kind==='candle'?36:22),22,p.kind==='candle'?36:22,box))mansionPropsHit({x:p.x,y:p.y-12});}
 }
 function mansionSeitenPlayerUpdate(){if(M.stepT)return;if(M.castT===18){M.shots.push({kind:'song',x:M.x+M.songFace*17,y:M.y-20,vx:M.songFace*3.8,damage:2});mansionBurst(M.x+M.songFace*17,M.y-20,'#ffe2a0',5);sfx('song');}
@@ -8393,7 +8537,8 @@ const ART={
  library:{wall:['#241a2c','#2e2236','#3a2c43','#18111e','#7a5a3e','#cfa271'],stone:['#8a6342','#d4a46e','#4e3424','#3e2f47','#4f3d5a','#2c2135','#1a1320','#120d17'],dark:.42,far:'stacks',win:'slit',glow:'#ffb969'},
  tower:{wall:['#1f1f30','#29293d','#34344b','#151522','#8a7348','#e2c27c'],stone:['#a88f5c','#f0d79a','#5d4c30','#3a3a52','#4a4a66','#26263a','#17172a','#10101d'],dark:.38,far:'gears',win:'round',glow:'#ffc978'},
  water:{wall:['#102633','#15303f','#1d3d4e','#0a1a24','#3f7c7a','#9fe6dc'],stone:['#4f9a86','#a8f0d4','#28584f','#24485a','#2f5a6e','#173342','#0d212c','#08161e'],dark:.46,far:'cavern',win:'arch',glow:'#8ff2ff'},
- observatory:{wall:['#120f2a','#1a1638','#272250','#0b0920','#7a6ac8','#e6dcff'],stone:['#8a7ad0','#f2ecff','#4a3e8a','#2e2766','#3c3482','#1f1a4a','#141036','#0a0822'],dark:.32,far:'cosmos',win:'round',glow:'#d7b8ff'},
+ keiko:{wall:['#1c2232','#252c40','#323b54','#141826','#8a94b0','#e6ecf8'],stone:['#8c96aa','#eef2f8','#4c556c','#30384c','#3c465c','#20263a','#151a2a','#0c1020'],dark:.22,far:'moonGarden',win:'arch',glow:'#e8f0ff',open:true},
+ observatory:{wall:['#120f2a','#1a1638','#272250','#0b0920','#7a6ac8','#e6dcff'],stone:['#8a7ad0','#f2ecff','#4a3e8a','#2e2766','#3c3482','#1f1a4a','#141036','#0a0822'],dark:.26,far:'cosmos',win:'round',glow:'#d7b8ff',open:true},
  star:{wall:['#141a35','#1b2344','#252f57','#0e1228','#6c74b8','#d8dcff'],stone:['#7d87c9','#eef0ff','#414a86','#2c3563','#3a4579','#1e2447','#121733','#0b0f24'],dark:.3,far:'stars',win:'tall',glow:'#bfd0ff'},
  garden:{wall:null,stone:['#5f9a5a','#b8e39a','#35603a','#3c4a5e','#4b5c72','#2a3546','#1a2230','#121823'],dark:.18,far:null,win:null,glow:'#ffe7a8'},
  play:{wall:null,stone:['#b07a8e','#f4c9d4','#6a4258','#4a2b45','#5d3858','#321d30','#1e1020','#150a17'],dark:0,far:null,win:null,glow:'#ffd0e0'},
@@ -8405,7 +8550,8 @@ function artFree(r,c0,r0,c1,r1){for(let y=r0;y<=r1;y++)for(let x=c0;x<=c1;x++){i
 function artInScene(r,c,row,type){return(r.scenes||[]).some(s=>(!type||s[0]===type)&&c>=s[1]&&c<s[1]+s[3]&&row>=s[2]&&row<s[2]+s[4]);}
 
 // ---------------------------------------------------------------- back wall
-function artBackWall(c,r,A){const W=r.w,H=r.h,[base,blk,hi,mor,trim,trimHi]=A.wall;
+function artBackWall(c,r,A){artBackWall0(c,r,A);if(A.open)artOpenArches(c,r,A);}
+function artBackWall0(c,r,A){const W=r.w,H=r.h,[base,blk,hi,mor,trim,trimHi]=A.wall;
  artR(c,0,0,W,H,base);
  if(r.area==='library'){ // dark panelled wood with vertical grain
   for(let x=0;x<W;x+=32){artR(c,x,0,31,H,blk);artR(c,x+31,0,1,H,mor);for(let y=0;y<H;y+=4)if(artH(x,y)%5===0)artR(c,x+4+artH(y,x)%22,y,2,1,hi);}
@@ -8584,6 +8730,14 @@ function artBuild(id){const r=MR[id];if(ART_CACHE[id])return ART_CACHE[id];const
  for(const d of r.doors)lights.push({x:d.x,y:d.y-40,r:34,warm:1});
  return ART_CACHE[id]={back,front,lights,shafts,A,motes:Array.from({length:Math.ceil(r.w*r.h/9000)},(_,i)=>[artH(i,1)%r.w,artH(i,2)%r.h,(artH(i,3)%100)/100])};}
 
+// open-sky arches: cut tall arched openings out of the cached back wall so the far layer shows (observatory / keiko)
+function artOpenArches(c,r,A){const W=r.w,H=r.h,[,,hi,mor,trim,trimHi]=A.wall;c.save();
+ for(let y0=0;y0<H;y0+=240)for(let x0=24;x0<W-40;x0+=128){const w=Math.min(88,W-x0-24),top=y0+40,bot=Math.min(H,y0+176);if(w<40)continue;const rr=w/2;
+  c.globalCompositeOperation='destination-out';c.beginPath();c.moveTo(x0,bot);c.lineTo(x0,top+rr);c.arc(x0+rr,top+rr,rr,Math.PI,0);c.lineTo(x0+w,bot);c.closePath();c.fill();
+  c.globalCompositeOperation='source-over';c.strokeStyle=trim;c.lineWidth=4;c.stroke();c.strokeStyle=trimHi+'88';c.lineWidth=1;c.stroke();
+  if(r.area==='keiko'&&artH(x0,y0)%3===0){c.fillStyle=mor;for(let k=0;k<6;k++)c.fillRect(x0+artH(k,x0)%w,top+rr*.6+artH(x0,k)%40,6+artH(k,y0)%10,5);} // crumbled stones
+  c.fillStyle=hi;c.fillRect(x0-4,bot-6,w+8,6);}
+ c.restore();}
 // ---------------------------------------------------------------- per-frame layers
 function artFar(r,cx,cy,view){const A=ART[r.area]||ART.mansion,W=view.w,H=view.h,t=M.t;
  if(!A.far)return false;
@@ -8593,6 +8747,12 @@ function artFar(r,cx,cy,view){const A=ART[r.area]||ART.mansion,W=view.w,H=view.h
   g.fillStyle='#e8e4c8';g.beginPath();g.arc(W*.72-cx*.02,48-cy*.02,18,0,7);g.fill();g.fillStyle='rgba(232,228,200,.15)';g.beginPath();g.arc(W*.72-cx*.02,48-cy*.02,30,0,7);g.fill();
   if(mansionBackdrop&&A.far==='night'){g.globalAlpha=.55;const bw=320,off=-Math.round(cx*.18)%bw;for(let i=-1;i<2;i++)g.drawImage(mansionBackdrop,off+i*bw,-Math.round(cy*.12),bw,240);g.globalAlpha=1;}
   else{g.fillStyle='#10142e';for(let i=0;i<12;i++){const x=((i*70-cx*.2)%(W+70)+W+70)%(W+70)-35,h=60+artH(i,4)%70;g.fillRect(x,H-h-cy*.06+40,26,h+80);g.beginPath();g.moveTo(x-4,H-h-cy*.06+40);g.lineTo(x+13,H-h-cy*.06+12);g.lineTo(x+30,H-h-cy*.06+40);g.fill();}}
+ }else if(A.far==='moonGarden'){const far=artBgImg('wander_far'),mid=artBgImg('wander_mid');
+  if(far){const iw=far.width*(H/far.height),off=-((cx*.06)%iw);for(let x=off;x<W;x+=iw)g.drawImage(far,x,-cy*.02,iw,H);}
+  else{const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#0a1028');gr.addColorStop(1,'#2a3456');g.fillStyle=gr;g.fillRect(0,0,W,H);for(let i=0;i<60;i++){const x=(((artH(i,31)%997)-cx*.04)%W+W)%W;mrect(x,artH(i,32)%(H*.7),1,1,i%3?'#c8d4f0':'#fff2c8');}
+   g.fillStyle='#f4f0d8';g.beginPath();g.arc(W*.7-cx*.02,52,22,0,7);g.fill();g.fillStyle='rgba(244,240,216,.12)';g.beginPath();g.arc(W*.7-cx*.02,52,40,0,7);g.fill();}
+  if(mid){const ih=mid.height*(W/mid.width)*.9,iw=mid.width*(ih/mid.height),off=-((cx*.2)%iw);for(let x=off;x<W;x+=iw)g.drawImage(mid,x,H-ih-cy*.05+30,iw,ih);}
+  else{for(let i=-1;i<8;i++){const x=((i*90-cx*.2)%90+90)%90+i*90-90,y=H-110-cy*.06;g.fillStyle='#161c34';g.fillRect(x,y,12,160);g.fillRect(x+50,y+20,12,140);g.beginPath();g.arc(x+31,y+6,31,Math.PI,0);g.lineTo(x+62,y+10);g.lineTo(x,y+10);g.fill();g.fillStyle='#1d2a3e';for(let k=0;k<5;k++){g.beginPath();g.arc(x+artH(i,k)%80,H-40-cy*.06+artH(k,i)%20,14+artH(i,k+3)%10,0,7);g.fill();}g.fillStyle='#e8a8c8';for(let k=0;k<4;k++)mrect(x+artH(k,i+2)%80,H-56-cy*.06+artH(i,k+5)%24,2,2,'#f0b8d0');}}
  }else if(A.far==='cosmos'){const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#070620');gr.addColorStop(.6,'#1a1246');gr.addColorStop(1,'#2a1a52');g.fillStyle=gr;g.fillRect(0,0,W,H);
   for(let i=0;i<90;i++){const x=(((artH(i,21)%997)-cx*.05)%W+W)%W,y=(artH(i,22)%(H*.9))-cy*.03;const tw=(t+i*13)%100<7;mrect(x,y,tw?2:1,tw?2:1,i%4?'#b8b0ff':'#fff0c0');}
   const ox=W*.5-cx*.08,oy=H*.42-cy*.05;g.strokeStyle='rgba(190,160,255,.22)';g.lineWidth=1;for(let k=1;k<4;k++){g.beginPath();g.ellipse(ox,oy,46*k,18*k,-.25,0,7);g.stroke();}
@@ -8632,6 +8792,7 @@ function artLighting(r,cx,cy,view){const art=artBuild(M.room),A=art.A,W=Math.cei
    for(let i=0;i<5;i++){const x=cx+((i*83+t*(.15+i*.05))%(W+120))-60;g.fillStyle='rgba('+col+',.06)';g.beginPath();g.ellipse(x,fy+6+Math.sin(t*.01+i)*4,50,9,0,0,7);g.fill();}}}
 }
 // entry points called by mansionRoomDraw
+const ART_BG={};function artBgImg(n){if(ART_BG[n]===undefined){ART_BG[n]=null;if(typeof Image==='function'){const im=new Image();im.onload=()=>{ART_BG[n]=im;};im.src='assets/bg/'+n+'.png';}}return ART_BG[n];}
 function artDrawFar(r,cx,cy,view){return artFar(r,cx,cy,view);}
 function artDrawBack(r,cx,cy,view){const a=artBuild(M.room),w=Math.min(Math.ceil(view.w)+1,r.w-Math.max(0,cx)),h=Math.min(Math.ceil(view.h)+1,r.h-Math.max(0,cy));if(w>0&&h>0)g.drawImage(a.back,Math.max(0,cx),Math.max(0,cy),w,h,Math.max(0,cx),Math.max(0,cy),w,h);}
 function artDrawFront(r,cx,cy,view){const a=artBuild(M.room),w=Math.min(Math.ceil(view.w)+1,r.w-Math.max(0,cx)),h=Math.min(Math.ceil(view.h)+1,r.h-Math.max(0,cy));if(w>0&&h>0)g.drawImage(a.front,Math.max(0,cx),Math.max(0,cy),w,h,Math.max(0,cx),Math.max(0,cy),w,h);}
@@ -8797,7 +8958,7 @@ function hoshiFrame(art,pose,t){const m=art.meta,names=HOSHI_POSE_ALIAS[pose]||[
 // draws at feet (x,y); returns false when no art is loaded
 function hoshiDrawArt(key,x,y,pose,t,dir,alpha=1){const art=HOSHI_ART[key];if(!art)return false;const f=hoshiFrame(art,pose,t);g.save();g.globalAlpha=alpha;g.translate(Math.round(x),Math.round(y));if(dir<0)g.scale(-1,1);
  if(art.mode==='sequel'){if(!f){g.restore();return false;}const sc=f.scale||art.meta.scale||.105,[rx,ry,rw,rh]=f.rect;let[ax,ay]=f.anchor||[rw/2,rh];if(ax>=rw||ay>=rh){ax-=rx;ay-=ry;}g.imageSmoothingEnabled=true;g.drawImage(art.img,rx,ry,rw,rh,-ax*sc,-ay*sc,rw*sc,rh*sc);}
- else{const m=art.meta,fw=+m.frameWidth||48,fh=+m.frameHeight||48,cx=+m.cx||fw/2;g.drawImage(art.img,f*fw,0,fw,fh,-cx,-fh,fw,fh);}
+ else{const m=art.meta,fw=+m.frameWidth||48,fh=+m.frameHeight||48,cx=+m.cx||fw/2,k=+m.drawScale||1;g.drawImage(art.img,f*fw,0,fw,fh,-cx*k,-fh*k,fw*k,fh*k);}
  g.restore();return true;}
 // sequel anchors are absolute in the sheet; relative anchors (<= rect size) are also accepted
 function hoshiDrawPlaceholder(x,y,pose,t,dir,dark){const f=dir<0?-1:1,R=(a,b,w,h,c)=>mrect(f>0?x+a:x-a-w,y+b,w,h,c),bob=pose==='idle'?((t>>5)&1):0,dash=pose==='dash';
@@ -8899,6 +9060,149 @@ function mansionHatchNear(){const h=MANSION_HATCHES[M.room];return !!h&&M.ground
 function mansionHatchSolids(){const h=MANSION_HATCHES[M.room];if(!h)return[];if(M.hatchT>0&&M.hatchRoom===M.room)return[];return M.y<=h[1]+1?[h]:[];}
 function mansionHatchUse(){if(!mansionHatchNear())return false;M.hatchT=40;M.hatchRoom=M.room;M.x=Math.max(MANSION_HATCHES[M.room][0]+8,Math.min(MANSION_HATCHES[M.room][0]+MANSION_HATCHES[M.room][2]-8,M.x));M.ground=false;sfx('tink');return true;}
 function mansionHatchDraw(){const h=MANSION_HATCHES[M.room];if(!h)return;if(M.hatchT>0){M.hatchT--;mrect(h[0],h[1],4,h[3],'#4a3420');return;}mrect(h[0],h[1],h[2],h[3],'#6a4a2c');mrect(h[0],h[1],h[2],2,'#9a744a');for(let x=h[0]+15;x<h[0]+h[2];x+=16)mrect(x,h[1]+2,1,h[3]-2,'#3a2614');mrect(h[0]+h[2]/2-4,h[1]+3,8,2,'#d9b56a');}
+
+// =====================================================================
+//  月下の稽古庭 (test.45): friendly sparring (腕試し) with the first game's allies
+//  飛梅 / ネーニア / リリィ / スターさん — all back to normal. Each sparring partner reuses
+//  attack ideas from the first game (04_game.js aiTobiume/aiNeenia/aiLily, 04b_disaster.js)
+//  rebuilt on the sequel's verbs: HIGH things are slid under, LOW things are jumped over,
+//  falling things show their safe gaps first. Every attack telegraphs before it can hurt.
+//  Art per partner: assets/<name>-sequel.png/.json (hi-res 512 cells) → old normal sheet → placeholder.
+// =====================================================================
+const KEIKO_FLOOR=224,KEIKO_L=40,KEIKO_R=472;
+const KEIKO_BOSSES={
+ tobiume:{room:'kTobi',name:'飛梅',hp:80,col:'#ff8cc0',sub:'#ffd6ea',art:'tobiume',normal:'tobiume',flag:'keikoTobiume',
+  seq:['volley','swoop','volley','shock'],rageSeq:['volley','shock','swoop','volley','swoop'],
+  volley:{n:2,rn:3,pat:'alt',speed:2.4,kind:'heart'},swoop:{speed:5.4},shock:{},
+  pose:{volley:'attack',swoop:'fly',shock:'kick',walk:'fly',idle:'idle'},
+  pre:['海音ちゃーん！ 待ってたよ！ 腕がなまってるって聞いたから、飛梅ちゃんが稽古つけてあげる！','ハートは高いのと低いのがあるからね。高いのはスライディング、低いのはジャンプ！','急降下の前には光る線が出るよ。見てから動けば大丈夫。いっくよー！'],
+  again:['ありゃ、休憩しよっか。……よし、もう一回いっくよー！'],
+  post:['すごいすごい！ 海音ちゃん、動きがどんどん戻ってきてる！','急降下キックのあとは、地面に衝撃が走るでしょ？ あれはジャンプでぴょん！ 忘れないでね。','はい、星詠みの欠片！ 3つあげる。これで、いつでも一緒に戦えるね！']},
+ neenia:{room:'kNeen',name:'ネーニア',hp:90,col:'#8fb0ff',sub:'#e4ecff',art:'neenia',normal:'neenia',flag:'keikoNeenia',
+  seq:['volley','rain','volley','snare'],rageSeq:['volley','snare','rain','volley','rain'],
+  volley:{n:2,rn:3,pat:'mix',speed:3.0,kind:'arrow'},rain:{w:52,rw:46},snare:{n:2,rn:3},
+  pose:{volley:'attack',rain:'attack',snare:'attack',walk:'walk',idle:'idle'},
+  pre:['来たわね、海音。弓の稽古相手、引き受けたわ。','高い矢はくぐって、低い矢は跳ぶ。地面の印には、しばらく茨が残るから立たないこと。','……手加減はしないわよ。構えなさい。'],
+  again:['焦りすぎよ。息を整えて。……もう一度。'],
+  post:['……いい目をしてる。前より、ずっと落ち着いているわ。','矢の雨は、落ちてくる前に隙間が見える。焦らず、立つ場所を選びなさい。','これ、持っていきなさい。……背中は、私が守るわ。']},
+ lily:{room:'kLily',name:'リリィ',hp:90,col:'#ffd2ef',sub:'#fff4fb',art:'lily',normal:'lily',flag:'keikoLily',
+  seq:['wave','volley','rain','wave'],rageSeq:['wave','volley','rain','wave','volley'],
+  wave:{n:1,rn:2,speed:2.6},volley:{n:2,rn:3,pat:'high',speed:2.6,kind:'note'},rain:{w:56,rw:48},
+  pose:{wave:'attack',volley:'attack',rain:'attack',walk:'walk',idle:'idle'},
+  pre:['海音ちゃん、いらっしゃーい♪ 今日はリリィとウミミのスペシャルレッスンだよっ！','歌の波はジャンプ、音符はスライディング！ スターライトレインは、光ってる隙間に入ってね♪','それじゃあ、ライブスタート！'],
+  again:['だいじょうぶ？ ウミミが心配してるよ。……アンコール、いける？♪'],
+  post:['すごーい！ 海音ちゃん、ステップばっちりだったよ♪','リズムがわかれば、怖くないでしょ？ 次の相手にも、その調子でね！','ウミミも拍手してる！ 欠片はファンサービス、3つどうぞっ♪']},
+ disaster:{room:'kDis',name:'スターさん',hp:110,col:'#71d9ff',sub:'#d8f6ff',art:'disaster',normal:'star',flag:'keikoStar',
+  seq:['sword','spear','axe','scythe','bow'],rageSeq:['sword','scythe','spear','axe','bow','scythe'],
+  sword:{n:1,rn:2,speed:3.0},spear:{speed:6},axe:{},scythe:{},bow:{n:2,rn:3,pat:'alt',speed:3.2,kind:'arrow'},
+  pose:{sword:'sword',spear:'spear',axe:'axe',scythe:'scythe',bow:'bow',walk:'idle',idle:'idle'},
+  pre:['よう、海音。オレの錬金剣、また好きに形を変えられるようになったんだ。','試し斬りの相手、頼むぜ。武器が変わる前には紫に光って、頭の上に次の武器が出る。よく見とけよ！','剣の波と斧の衝撃はジャンプ、大鎌と弓はスライディングだ。いくぜ！'],
+  again:['悪い、ちょっと張り切りすぎた。……もう一本、いけるか？'],
+  post:['……ははっ、まいった！ 海音、すっかり勘が戻ったな。','武器が変わる瞬間を見る。前の旅で、オマエが一番うまかったところだ。','欠片、持ってけ。これで背中は任せられるぜ。……みんなで、この館の謎を解こうな。']},
+};
+const KEIKO_BY_ROOM=Object.fromEntries(Object.entries(KEIKO_BOSSES).map(([id,b])=>[b.room,id]));
+const KEIKO_MORPH_ICON={sword:'剣',spear:'槍',axe:'斧',scythe:'鎌',bow:'弓'};
+// ---- art: <art>-sequel → <normal> grid sheet (old 32px normal art, scaled) → placeholder
+const KEIKO_GRID_META={neenia:{frameWidth:32,frameHeight:32,cx:11,animations:{idle:{frames:[0,1],ms:400}}},lily:{frameWidth:32,frameHeight:32,cx:16,animations:{idle:{frames:[0,1],ms:400}}}};
+function keikoArtLoad(id){const B=KEIKO_BOSSES[id];if(typeof fetch!=='function')return;const key='k_'+id;
+ const grid=()=>fetch('assets/'+B.normal+'.json').then(r=>{if(!r.ok)throw 0;return r.json();}).catch(()=>KEIKO_GRID_META[B.normal]||{frameWidth:32,frameHeight:32,animations:{idle:{frames:[0],ms:400}}}).then(meta=>{const img=new Image();img.onload=()=>{if(HOSHI_ART[key]?.mode==='sequel')return;const fh=+meta.frameHeight||32;HOSHI_ART[key]={mode:'grid',img,meta:{...meta,drawScale:meta.drawScale||Math.max(1,Math.round(54/fh*2)/2)}};};img.src='assets/'+(meta.image||B.normal+'.png');});
+ fetch('assets/'+B.art+'-sequel.json').then(r=>{if(!r.ok)throw 0;return r.json();}).then(meta=>{const img=new Image();img.onload=()=>{HOSHI_ART[key]={mode:'sequel',img,meta};};img.onerror=grid;img.src='assets/'+(meta.image||B.art+'-sequel.png');}).catch(grid);
+ const f=new Image();f.onload=()=>{HOSHI_ART[key+'Face']={mode:'face',img:f};};f.src='assets/'+B.normal+'_face.png';}
+for(const id of Object.keys(KEIKO_BOSSES))keikoArtLoad(id);
+const KEIKO_ALIAS={attack:['attack','shoot','shootStar','sing','idle'],kick:['kick','special_dive_kick','attack','fly','idle'],fly:['fly','walk','move','idle'],walk:['walk','move','fly','idle'],
+ sword:['sword','attack','idle'],spear:['spear','attack','idle'],axe:['axe','attack','idle'],scythe:['scythe','attack','idle'],bow:['bow','attack','idle'],transform:['transform','attack','idle']};
+function keikoDraw(id,e,pose){const key='k_'+id,save=HOSHI_POSE_ALIAS[pose];if(KEIKO_ALIAS[pose])HOSHI_POSE_ALIAS[pose]=KEIKO_ALIAS[pose];const ok=hoshiDrawArt(key,e.x,e.y-(e.lift||0),pose,e.t,e.face,e.flash>0&&(e.flash&2)?.55:1);if(save)HOSHI_POSE_ALIAS[pose]=save;else delete HOSHI_POSE_ALIAS[pose];if(ok)return;keikoPlaceholder(id,e.x,e.y-(e.lift||0),pose,e.t,e.face);}
+function keikoPlaceholder(id,x,y,pose,t,dir){const B=KEIKO_BOSSES[id],f=dir<0?-1:1,R=(a,b,w,h,c)=>mrect(f>0?x+a:x-a-w,y+b,w,h,c),bob=(t>>5)&1;
+ const hair={tobiume:'#ff8cc0',neenia:'#e8ecf4',lily:'#ffe6a8',disaster:'#2a3a6a'}[id],dress={tobiume:'#c8406a',neenia:'#2a3a7a',lily:'#ff9ad8',disaster:'#1c2a4a'}[id];
+ R(-5,-8,4,8,'#2a2030');R(2,-8,4,8,'#2a2030');R(-6,-26,13,18,dress);R(-6,-12,13,3,B.sub);R(-4,-37+bob,9,10,'#f4dcd0');R(-6,-40+bob,13,5,hair);R(-6,-38+bob,3,12,hair);R(4,-38+bob,3,9,hair);R(2,-33+bob,2,1,'#3a2a48');
+ if(id==='neenia'){R(8,-30,2,18,'#a07a4a');R(9,-29,1,16,'#e8e4c8');}if(id==='lily'){R(-3,-44+bob,7,3,'#ffe27a');}if(id==='tobiume'){R(-12,-28,6,10,'#ffd6ea');R(-14,-24,6,6,'#ffb0d0');}
+ if(id==='disaster'&&pose!=='idle'){R(8,-30,16,3,'#71d9ff');R(8,-30,3,8,'#c8f4ff');}}
+// ---- state
+function mansionKeikoNew(id){const B=KEIKO_BOSSES[id];return{kind:'keikoBoss',id,x:400,y:KEIKO_FLOOR,face:-1,hp:B.hp,maxHp:B.hp,t:0,flash:0,mode:'idle',mt:0,cycle:0,gaps:[],nextGaps:null,marks:[],lift:0};}
+function mansionKeikoEnter(room){M.keiko=null;const id=KEIKO_BY_ROOM[room];if(!id)return;const B=KEIKO_BOSSES[id];M.keiko={id,state:'waiting'};M.enemies.push(mansionKeikoNew(id));}
+function mansionKeikoBoss(){return M.enemies.find(e=>e.kind==='keikoBoss');}
+function mansionKeikoTrigger(){const k=M.keiko;if(!k||k.state!=='waiting'||M.map||M.x<70||M.x>MR[M.room].w-70)return;const B=KEIKO_BOSSES[k.id];
+ if(M.flags[B.flag]){k.state='idleDone';return;}k.state='ready';mansionTalkShow(B.name,B.pre,mansionKeikoStart);}
+function mansionKeikoStart(){const k=M.keiko;if(!k)return;k.state='active';const e=mansionKeikoBoss();Object.assign(e,mansionKeikoNew(k.id));e.x=M.x<256?400:112;e.mode='walk';M.enemyShots=[];M.map=false;}
+function mansionKeikoRematch(){const k=M.keiko;if(!k)return;M.flags[KEIKO_BOSSES[k.id].flag+'Rematch']=true;mansionKeikoStart();}
+function mansionKeikoActive(){return !!(M.keiko&&M.keiko.state==='active');}
+function mansionKeikoArenaSolids(){return mansionKeikoActive()?[[0,0,24,256],[MR[M.room].w-24,0,24,256]]:[];}
+function mansionKeikoMode(e,m){e.mode=m;e.mt=0;e.lift=0;}
+function mansionKeikoGaps(e,n,w){const out=[],span=KEIKO_R-KEIKO_L-w;for(let i=0;i<n;i++){let x=KEIKO_L+((artH(e.cycle*7+i,(e.seed||0)+i*3)%1000)/1000)*span;for(let k=0;k<6&&out.some(g=>Math.abs(g-x)<w*2.2);k++)x=KEIKO_L+((x-KEIKO_L+span*.37)%span);out.push(Math.round(x));}return out.map(x=>[x,x+w]);}
+function keikoShot(e,o){M.enemyShots.push({kind:'kShot',x:e.x+e.face*16,y:KEIKO_FLOOR-(o.low?6:20),vx:e.face*o.speed,vy:0,damage:2,low:!!o.low,col:KEIKO_BOSSES[e.id].col,shape:o.shape||'orb',...o.extra});sfx('shot');}
+// ---- AI
+function mansionKeikoAI(e){const k=M.keiko;if(!k||k.state!=='active'){e.mode='idle';return;}const B=KEIKO_BOSSES[e.id],rage=e.hp<=e.maxHp/2,t=++e.mt,dx=M.x-e.x;
+ if(rage&&!e.raged){e.raged=true;mansionSay('「'+B.name+'：まだまだ、ここからが本番！」',140);mansionBurst(e.x,e.y-30,B.col,16);}
+ for(const m of e.marks)m.t++;e.marks=e.marks.filter(m=>m.t<m.end);
+ const m=e.mode;
+ if(m==='walk'){e.face=Math.sign(dx)||e.face;const d=Math.abs(dx);if(d>180)e.x+=e.face*(rage?1.3:1);else if(d<140)e.x-=e.face*1.2;
+  if(t>(rage?40:64)){const seq=rage?B.rageSeq:B.seq;mansionKeikoMode(e,seq[e.cycle%seq.length]);e.cycle++;e.fromX=e.x;}}
+ else if(m==='volley'||m==='bow'||m==='sword'){const P=B[m],WIND=m==='volley'?36:44,GAP=rage?32:36,n=rage?P.rn:P.n;if(t<WIND)e.face=Math.sign(dx)||e.face;
+  if(t===1)e.pattern=Array.from({length:n},(_,i)=>m==='sword'?true:P.pat==='high'?false:P.pat==='low'?true:P.pat==='alt'?(i%2===1):((artH(e.cycle,i)&1)===1));
+  if(t>=WIND&&(t-WIND)%GAP===0&&(t-WIND)/GAP<n){const low=e.pattern[(t-WIND)/GAP];keikoShot(e,{low,speed:P.speed+(rage?.3:0),shape:m==='sword'?'wave':P.kind});}
+  if(t>WIND+GAP*n+20)mansionKeikoMode(e,'walk');}
+ else if(m==='wave'){const P=B.wave,WIND=40,GAP=44,n=rage?P.rn:P.n;if(t<WIND)e.face=Math.sign(dx)||e.face;
+  if(t>=WIND&&(t-WIND)%GAP===0&&(t-WIND)/GAP<n){for(const s of rage?[1,-1]:[e.face])M.enemyShots.push({kind:'kShot',x:e.x+s*14,y:KEIKO_FLOOR-6,vx:s*P.speed,vy:0,damage:2,low:true,col:B.col,shape:'wave'});sfx('tink');}
+  if(t>WIND+GAP*n+30)mansionKeikoMode(e,'walk');}
+ else if(m==='swoop'||m==='spear'){const air=m==='swoop',TELE=rage?30:40,sp=(B[m].speed||5.2)+(rage?.6:0);
+  if(t===1){e.dashes=rage?2:1;e.edge=e.x<M.x?KEIKO_L:KEIKO_R;}
+  if(t<=TELE){if(e.edge!=null){const d=e.edge-e.x;e.x+=Math.sign(d)*Math.min(Math.abs(d),6);if(Math.abs(d)<1)e.edge=null;}e.face=Math.sign(M.x-e.x)||e.face;e.lift=air?Math.min(22,t):0;}
+  else{e.lift=air?22:0;e.x+=e.face*sp;if(e.x<KEIKO_L||e.x>KEIKO_R){e.x=Math.max(KEIKO_L,Math.min(KEIKO_R,e.x));e.dashes--;if(e.dashes>0){e.face*=-1;e.mt=TELE-22;}else mansionKeikoMode(e,'walk');}}}
+ else if(m==='shock'||m==='axe'){const AIM=40,UP=24,DOWN=14;
+  if(t===1){e.fromX=e.x;e.toX=Math.max(KEIKO_L+20,Math.min(KEIKO_R-20,M.x));}
+  if(t<=AIM){e.toX+=(Math.max(KEIKO_L+20,Math.min(KEIKO_R-20,M.x))-e.toX)*(t<AIM-14?.08:0);e.lift=Math.min(10,t/2);}
+  else if(t<=AIM+UP){const q=(t-AIM)/UP;e.x=e.fromX+(e.toX-e.fromX)*q;e.lift=10+Math.sin(q*Math.PI/2)*80;}
+  else if(t<=AIM+UP+DOWN){e.lift=90*(1-(t-AIM-UP)/DOWN);}
+  if(t===AIM+UP+DOWN){e.lift=0;mansionBurst(e.x,KEIKO_FLOOR-4,B.col,12);sfx('hit');for(const s of[1,-1])M.enemyShots.push({kind:'kShot',x:e.x+s*12,y:KEIKO_FLOOR-6,vx:s*(rage?2.8:2.4),vy:0,damage:2,low:true,col:B.col,shape:'wave'});}
+  if(t>AIM+UP+DOWN+40)mansionKeikoMode(e,'walk');}
+ else if(m==='scythe'){const WIND=44;if(t<WIND)e.face=Math.sign(dx)||e.face;
+  if(t===WIND){M.enemyShots.push({kind:'kShot',x:e.x+e.face*16,y:KEIKO_FLOOR-20,vx:e.face*(rage?3.8:3.3),vy:0,damage:2,low:false,col:B.col,shape:'scythe',boom:e.face,home:e.x});sfx('shot');}
+  if(t>WIND&&!M.enemyShots.some(b=>b.shape==='scythe'))mansionKeikoMode(e,'walk');if(t>WIND+400)mansionKeikoMode(e,'walk');}
+ else if(m==='rain'){const RISE=20,TELE=60,RAIN=rage?120:84,P=B.rain,W=rage?P.rw:P.w;
+  if(t===1){e.seed=(e.seed||0)+5;e.gaps=mansionKeikoGaps(e,2,W);e.nextGaps=null;e.shiftAt=rage?RISE+TELE+50:null;}
+  e.lift=t<RISE?t*2:t>RISE+TELE+RAIN+30?Math.max(0,40-(t-RISE-TELE-RAIN-30)*2):40;
+  if(e.shiftAt&&t===e.shiftAt-40){e.nextGaps=mansionKeikoGaps({cycle:e.cycle+5,seed:e.seed+9},2,W);}
+  if(e.shiftAt&&t===e.shiftAt){e.gaps=e.nextGaps;e.nextGaps=null;}
+  if(t>RISE+TELE&&t<RISE+TELE+RAIN&&t%4===0){const safe=[...e.gaps,...(e.nextGaps||[])];let x=null;for(let q=0;q<8&&x==null;q++){const c=KEIKO_L-20+artH(t,q+e.cycle)%(KEIKO_R-KEIKO_L+40);if(!safe.some(([a,b])=>c>a-8&&c<b+8))x=c;}if(x!=null)M.enemyShots.push({kind:'kRain',x,y:14,vx:0,vy:3.4,damage:2,col:B.col,shape:e.id==='lily'?'star':'arrowDown'});}
+  if(t>RISE+TELE+RAIN+50){e.gaps=[];mansionKeikoMode(e,'walk');}}
+ else if(m==='snare'){const TELE=50,n=rage?B.snare.rn:B.snare.n;if(t===1){e.marks=[];const xs=[M.x];for(let i=1;i<n;i++)xs.push(M.x+(i%2?1:-1)*(60+i*20));for(const x of xs)e.marks.push({x:Math.max(KEIKO_L+10,Math.min(KEIKO_R-10,x)),w:28,t:0,arm:TELE,end:TELE+110});sfx('tink');}
+  if(t>TELE+40)mansionKeikoMode(e,'walk');}
+ for(const mk of e.marks)if(mk.t>=mk.arm&&M.ground&&Math.abs(M.x-mk.x)<mk.w/2+MC.w/2-2)mansionDamage(2,M.x<mk.x?-1:1);
+ e.x=Math.max(KEIKO_L-8,Math.min(KEIKO_R+8,e.x));
+ const box=e.mode==='spear'&&e.mt>(rage?30:40)?[e.x-9,e.y-34,18,27]:e.lift>0?[e.x-8,e.y-40-e.lift+(e.mode==='swoop'?0:0),16,22]:[e.x-8,e.y-40,16,40];
+ if(e.mode==='swoop'&&e.lift>=22){box[1]=e.y-46;box[3]=26;}
+ if(mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,box))mansionDamage(2,M.x<e.x?-1:1);}
+function mansionKeikoBulletUpdate(){if(!M.keiko)return;const e=mansionKeikoBoss();for(const b of M.enemyShots){if(b.kind==='kRain'&&b.y>KEIKO_FLOOR-4){b.dead=true;mansionBurst(b.x,KEIKO_FLOOR-4,b.col,3);}
+ if(b.shape==='scythe'){b.age=(b.age||0)+1;if(b.boom&&(b.x<KEIKO_L-8||b.x>KEIKO_R+8)){b.vx=-b.vx;b.boom=0;b.back=true;}if(b.back&&e&&Math.abs(b.x-e.x)<10)b.dead=true;}}}
+function mansionKeikoPose(e){const B=KEIKO_BOSSES[e.id];if(e.flash>0)return'hurt';if(e.id==='disaster'&&KEIKO_MORPH_ICON[e.mode]&&e.mt<18)return'transform';return B.pose[e.mode]||'idle';}
+function mansionKeikoDraw(e){const B=KEIKO_BOSSES[e.id],rage=e.hp<=e.maxHp/2;
+ if(e.mode==='rain'){for(const[a,b]of e.gaps||[]){g.globalAlpha=.28+.12*Math.sin(M.t*.2);mrect(a,20,b-a,KEIKO_FLOOR-20,'#9fe8ff');g.globalAlpha=1;mrect(a,KEIKO_FLOOR-3,b-a,3,'#c9fbff');mansionDiamond((a+b)/2,KEIKO_FLOOR-12,4,'#ffffff');}
+  for(const[a,b]of e.nextGaps||[]){if((M.t>>3)&1){mrect(a,KEIKO_FLOOR-3,b-a,3,'#ffe27a');mansionDiamond((a+b)/2,KEIKO_FLOOR-14,4,'#ffe27a');}}}
+ for(const mk of e.marks){const armed=mk.t>=mk.arm;if(armed){for(let x=mk.x-mk.w/2;x<mk.x+mk.w/2;x+=5)mrect(x,KEIKO_FLOOR-6-((x*7)&3),2,6+((x*7)&3),'#6ab070');}else if((M.t>>2)&1){mrect(mk.x-mk.w/2,KEIKO_FLOOR-2,mk.w,2,'#ff6a6a');mansionDiamond(mk.x,KEIKO_FLOOR-10,3,'#ff6a6a');}}
+ const dashTele=(e.mode==='swoop'||e.mode==='spear')&&e.mt<=(rage?30:40);
+ if(dashTele&&(M.t&4)){const x0=e.face>0?e.x:KEIKO_L-8,x1=e.face>0?KEIKO_R+8:e.x,h=e.mode==='swoop'?KEIKO_FLOOR-34:KEIKO_FLOOR-20;mrect(Math.min(x0,x1),h,Math.abs(x1-x0),2,e.mode==='swoop'?'#9fe8ff':'#ff6ab0');}
+ if((e.mode==='shock'||e.mode==='axe')&&e.mt<64&&(M.t&4)){mrect(e.toX-14,KEIKO_FLOOR-2,28,2,'#ff6ab0');mansionDiamond(e.toX,KEIKO_FLOOR-10,3,'#ff6ab0');}
+ if(e.pattern&&(e.mode==='volley'||e.mode==='bow'||e.mode==='sword')&&e.mt<(e.mode==='volley'?36:44))e.pattern.forEach((low,i)=>mansionDiamond(e.x+e.face*(22+i*9),KEIKO_FLOOR-(low?6:20),3,(M.t&4)?'#ffffff':low?'#ff8ad8':'#9fe8ff'));
+ if(e.mode==='wave'&&e.mt<40&&(M.t&4))mrect(e.x-30,KEIKO_FLOOR-2,60,2,'#ff8ad8');
+ if(e.mode==='scythe'&&e.mt<44&&(M.t&4))mrect(Math.min(e.x,e.face>0?KEIKO_R:KEIKO_L),KEIKO_FLOOR-21,Math.abs((e.face>0?KEIKO_R:KEIKO_L)-e.x),2,'#9fe8ff');
+ if(e.id==='disaster'&&KEIKO_MORPH_ICON[e.mode]&&e.mt<40){g.globalAlpha=.5;g.fillStyle='#b070ff';g.beginPath();g.ellipse(e.x,e.y-22,14,24,0,0,7);g.fill();g.globalAlpha=1;mrect(e.x-8,e.y-74,16,14,'#1a1030');drawText(KEIKO_MORPH_ICON[e.mode]==='剣'?'SW':KEIKO_MORPH_ICON[e.mode]==='槍'?'SP':KEIKO_MORPH_ICON[e.mode]==='斧'?'AX':KEIKO_MORPH_ICON[e.mode]==='鎌'?'SC':'BW',e.x,e.y-71,'w',1,'c');}
+ keikoDraw(e.id,e,mansionKeikoPose(e));
+ if(mansionKeikoActive()){mrect(e.x-28,e.y-66-e.lift,56,5,'#160e27');mrect(e.x-27,e.y-65-e.lift,54*Math.max(0,e.hp)/e.maxHp,3,rage?'#ff6ab0':B.col);}}
+function keikoBulletDraw(b){const c=b.col||'#fff';
+ if(b.shape==='wave'){mrect(b.x-5,b.y-4,10,10,'#1a1030');mrect(b.x-4,b.y-3,8,8,c);mrect(b.x-2,b.y-1,4,4,'#ffffff');return;}
+ if(b.shape==='arrow'||b.shape==='arrowDown'){if(b.shape==='arrow'){mrect(b.x-8,b.y-1,16,2,'#e8e4c8');mrect(b.vx>0?b.x+6:b.x-9,b.y-2,3,4,c);}else{mrect(b.x-1,b.y-8,2,16,'#e8e4c8');mrect(b.x-2,b.y+6,4,3,c);}return;}
+ if(b.shape==='scythe'){g.save();g.translate(b.x,b.y);g.rotate(M.t*.4);g.strokeStyle=c;g.lineWidth=3;g.beginPath();g.arc(0,0,7,0,4.2);g.stroke();g.restore();return;}
+ if(b.shape==='heart'){mansionDiamond(b.x,b.y,6,'#2a1030');mrect(b.x-4,b.y-3,3,3,c);mrect(b.x+1,b.y-3,3,3,c);mansionDiamond(b.x,b.y+1,3,c);return;}
+ if(b.shape==='note'){mrect(b.x-3,b.y,5,4,c);mrect(b.x+1,b.y-7,2,8,c);mrect(b.x+1,b.y-7,4,2,c);return;}
+ mansionDiamond(b.x,b.y,6,'#1a1030');mansionDiamond(b.x,b.y,4,c);mansionDiamond(b.x,b.y,2,'#fff6c8');}
+function mansionKeikoWin(){const k=M.keiko,B=KEIKO_BOSSES[k.id],first=!M.flags[B.flag];k.state='done';M.messageT=0;M.flags[B.flag]=true;M.enemyShots=[];M.shots=[];const e=mansionKeikoBoss();if(e){e.hp=e.maxHp;e.mode='idle';e.marks=[];e.lift=0;}M.hp=mansionMaxHP();if(first)mansionShardGain(3,true);mansionSave();
+ mansionTalkShow(B.name,first?B.post:['いい稽古だった！ またいつでも相手するよ。']);}
+function mansionKeikoRetry(){const k=M.keiko,B=KEIKO_BOSSES[k.id];k.state='ready';M.enemyShots=[];M.shots=[];M.hp=mansionMaxHP();M.hurt=60;M.poseT=M.castT=M.stepT=0;M.x=80;M.y=KEIKO_FLOOR;M.vx=M.vy=0;const e=mansionKeikoBoss();if(e)Object.assign(e,mansionKeikoNew(k.id));mansionTalkShow(B.name,B.again,mansionKeikoStart);}
+function mansionKeikoPortrait(p,c){const sp=M.talk?.speaker,id=Object.keys(KEIKO_BOSSES).find(id=>KEIKO_BOSSES[id].name===sp);if(!id)return false;c.setAttribute('aria-label',sp);const f=HOSHI_ART['k_'+id+'Face'];
+ if(f){p.imageSmoothingEnabled=f.img.width>64;p.drawImage(f.img,0,0,f.img.width,f.img.height,0,0,96,96);return true;}const B=KEIKO_BOSSES[id];p.fillStyle='#1a1030';p.fillRect(0,0,96,96);p.fillStyle=B.col;p.fillRect(20,14,56,40);p.fillStyle='#f4dcd0';p.fillRect(28,26,40,36);p.fillStyle=B.sub;p.fillRect(16,66,64,30);return true;}
+// after the fight, the partner stays in her/his arena: talk to rematch
+function mansionKeikoTalkNPC(){const k=M.keiko,B=KEIKO_BOSSES[k.id];mansionTalkShow(B.name,['もう一回、腕試ししてく？ じゃあ構えて！'],mansionKeikoStart);}
+for(const [id,B] of Object.entries(KEIKO_BOSSES))HUB_NPCS.push({id:'keiko_'+id,room:B.room,x:256,y:KEIKO_FLOOR,name:B.name,enabled:()=>!!M.flags[B.flag]&&M.keiko&&M.keiko.state!=='active'&&M.keiko.state!=='ready',draw:(x,y,t,dir)=>{const e=mansionKeikoBoss();if(e){e.x=x;e.y=y;e.face=dir;e.t=t;}},talk:mansionKeikoTalkNPC});
 
 // =====================================================================
 //  Rendering

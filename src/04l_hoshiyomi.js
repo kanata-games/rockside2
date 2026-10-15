@@ -31,7 +31,7 @@ function hoshiFrame(art,pose,t){const m=art.meta,names=HOSHI_POSE_ALIAS[pose]||[
 // draws at feet (x,y); returns false when no art is loaded
 function hoshiDrawArt(key,x,y,pose,t,dir,alpha=1){const art=HOSHI_ART[key];if(!art)return false;const f=hoshiFrame(art,pose,t);g.save();g.globalAlpha=alpha;g.translate(Math.round(x),Math.round(y));if(dir<0)g.scale(-1,1);
  if(art.mode==='sequel'){if(!f){g.restore();return false;}const sc=f.scale||art.meta.scale||.105,[rx,ry,rw,rh]=f.rect;let[ax,ay]=f.anchor||[rw/2,rh];if(ax>=rw||ay>=rh){ax-=rx;ay-=ry;}g.imageSmoothingEnabled=true;g.drawImage(art.img,rx,ry,rw,rh,-ax*sc,-ay*sc,rw*sc,rh*sc);}
- else{const m=art.meta,fw=+m.frameWidth||48,fh=+m.frameHeight||48,cx=+m.cx||fw/2;g.drawImage(art.img,f*fw,0,fw,fh,-cx,-fh,fw,fh);}
+ else{const m=art.meta,fw=+m.frameWidth||48,fh=+m.frameHeight||48,cx=+m.cx||fw/2,k=+m.drawScale||1;g.drawImage(art.img,f*fw,0,fw,fh,-cx*k,-fh*k,fw*k,fh*k);}
  g.restore();return true;}
 // sequel anchors are absolute in the sheet; relative anchors (<= rect size) are also accepted
 function hoshiDrawPlaceholder(x,y,pose,t,dir,dark){const f=dir<0?-1:1,R=(a,b,w,h,c)=>mrect(f>0?x+a:x-a-w,y+b,w,h,c),bob=pose==='idle'?((t>>5)&1):0,dash=pose==='dash';

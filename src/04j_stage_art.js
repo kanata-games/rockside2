@@ -12,7 +12,8 @@ const ART={
  library:{wall:['#241a2c','#2e2236','#3a2c43','#18111e','#7a5a3e','#cfa271'],stone:['#8a6342','#d4a46e','#4e3424','#3e2f47','#4f3d5a','#2c2135','#1a1320','#120d17'],dark:.42,far:'stacks',win:'slit',glow:'#ffb969'},
  tower:{wall:['#1f1f30','#29293d','#34344b','#151522','#8a7348','#e2c27c'],stone:['#a88f5c','#f0d79a','#5d4c30','#3a3a52','#4a4a66','#26263a','#17172a','#10101d'],dark:.38,far:'gears',win:'round',glow:'#ffc978'},
  water:{wall:['#102633','#15303f','#1d3d4e','#0a1a24','#3f7c7a','#9fe6dc'],stone:['#4f9a86','#a8f0d4','#28584f','#24485a','#2f5a6e','#173342','#0d212c','#08161e'],dark:.46,far:'cavern',win:'arch',glow:'#8ff2ff'},
- observatory:{wall:['#120f2a','#1a1638','#272250','#0b0920','#7a6ac8','#e6dcff'],stone:['#8a7ad0','#f2ecff','#4a3e8a','#2e2766','#3c3482','#1f1a4a','#141036','#0a0822'],dark:.32,far:'cosmos',win:'round',glow:'#d7b8ff'},
+ keiko:{wall:['#1c2232','#252c40','#323b54','#141826','#8a94b0','#e6ecf8'],stone:['#8c96aa','#eef2f8','#4c556c','#30384c','#3c465c','#20263a','#151a2a','#0c1020'],dark:.22,far:'moonGarden',win:'arch',glow:'#e8f0ff',open:true},
+ observatory:{wall:['#120f2a','#1a1638','#272250','#0b0920','#7a6ac8','#e6dcff'],stone:['#8a7ad0','#f2ecff','#4a3e8a','#2e2766','#3c3482','#1f1a4a','#141036','#0a0822'],dark:.26,far:'cosmos',win:'round',glow:'#d7b8ff',open:true},
  star:{wall:['#141a35','#1b2344','#252f57','#0e1228','#6c74b8','#d8dcff'],stone:['#7d87c9','#eef0ff','#414a86','#2c3563','#3a4579','#1e2447','#121733','#0b0f24'],dark:.3,far:'stars',win:'tall',glow:'#bfd0ff'},
  garden:{wall:null,stone:['#5f9a5a','#b8e39a','#35603a','#3c4a5e','#4b5c72','#2a3546','#1a2230','#121823'],dark:.18,far:null,win:null,glow:'#ffe7a8'},
  play:{wall:null,stone:['#b07a8e','#f4c9d4','#6a4258','#4a2b45','#5d3858','#321d30','#1e1020','#150a17'],dark:0,far:null,win:null,glow:'#ffd0e0'},
@@ -24,7 +25,8 @@ function artFree(r,c0,r0,c1,r1){for(let y=r0;y<=r1;y++)for(let x=c0;x<=c1;x++){i
 function artInScene(r,c,row,type){return(r.scenes||[]).some(s=>(!type||s[0]===type)&&c>=s[1]&&c<s[1]+s[3]&&row>=s[2]&&row<s[2]+s[4]);}
 
 // ---------------------------------------------------------------- back wall
-function artBackWall(c,r,A){const W=r.w,H=r.h,[base,blk,hi,mor,trim,trimHi]=A.wall;
+function artBackWall(c,r,A){artBackWall0(c,r,A);if(A.open)artOpenArches(c,r,A);}
+function artBackWall0(c,r,A){const W=r.w,H=r.h,[base,blk,hi,mor,trim,trimHi]=A.wall;
  artR(c,0,0,W,H,base);
  if(r.area==='library'){ // dark panelled wood with vertical grain
   for(let x=0;x<W;x+=32){artR(c,x,0,31,H,blk);artR(c,x+31,0,1,H,mor);for(let y=0;y<H;y+=4)if(artH(x,y)%5===0)artR(c,x+4+artH(y,x)%22,y,2,1,hi);}
@@ -203,6 +205,14 @@ function artBuild(id){const r=MR[id];if(ART_CACHE[id])return ART_CACHE[id];const
  for(const d of r.doors)lights.push({x:d.x,y:d.y-40,r:34,warm:1});
  return ART_CACHE[id]={back,front,lights,shafts,A,motes:Array.from({length:Math.ceil(r.w*r.h/9000)},(_,i)=>[artH(i,1)%r.w,artH(i,2)%r.h,(artH(i,3)%100)/100])};}
 
+// open-sky arches: cut tall arched openings out of the cached back wall so the far layer shows (observatory / keiko)
+function artOpenArches(c,r,A){const W=r.w,H=r.h,[,,hi,mor,trim,trimHi]=A.wall;c.save();
+ for(let y0=0;y0<H;y0+=240)for(let x0=24;x0<W-40;x0+=128){const w=Math.min(88,W-x0-24),top=y0+40,bot=Math.min(H,y0+176);if(w<40)continue;const rr=w/2;
+  c.globalCompositeOperation='destination-out';c.beginPath();c.moveTo(x0,bot);c.lineTo(x0,top+rr);c.arc(x0+rr,top+rr,rr,Math.PI,0);c.lineTo(x0+w,bot);c.closePath();c.fill();
+  c.globalCompositeOperation='source-over';c.strokeStyle=trim;c.lineWidth=4;c.stroke();c.strokeStyle=trimHi+'88';c.lineWidth=1;c.stroke();
+  if(r.area==='keiko'&&artH(x0,y0)%3===0){c.fillStyle=mor;for(let k=0;k<6;k++)c.fillRect(x0+artH(k,x0)%w,top+rr*.6+artH(x0,k)%40,6+artH(k,y0)%10,5);} // crumbled stones
+  c.fillStyle=hi;c.fillRect(x0-4,bot-6,w+8,6);}
+ c.restore();}
 // ---------------------------------------------------------------- per-frame layers
 function artFar(r,cx,cy,view){const A=ART[r.area]||ART.mansion,W=view.w,H=view.h,t=M.t;
  if(!A.far)return false;
@@ -212,6 +222,12 @@ function artFar(r,cx,cy,view){const A=ART[r.area]||ART.mansion,W=view.w,H=view.h
   g.fillStyle='#e8e4c8';g.beginPath();g.arc(W*.72-cx*.02,48-cy*.02,18,0,7);g.fill();g.fillStyle='rgba(232,228,200,.15)';g.beginPath();g.arc(W*.72-cx*.02,48-cy*.02,30,0,7);g.fill();
   if(mansionBackdrop&&A.far==='night'){g.globalAlpha=.55;const bw=320,off=-Math.round(cx*.18)%bw;for(let i=-1;i<2;i++)g.drawImage(mansionBackdrop,off+i*bw,-Math.round(cy*.12),bw,240);g.globalAlpha=1;}
   else{g.fillStyle='#10142e';for(let i=0;i<12;i++){const x=((i*70-cx*.2)%(W+70)+W+70)%(W+70)-35,h=60+artH(i,4)%70;g.fillRect(x,H-h-cy*.06+40,26,h+80);g.beginPath();g.moveTo(x-4,H-h-cy*.06+40);g.lineTo(x+13,H-h-cy*.06+12);g.lineTo(x+30,H-h-cy*.06+40);g.fill();}}
+ }else if(A.far==='moonGarden'){const far=artBgImg('wander_far'),mid=artBgImg('wander_mid');
+  if(far){const iw=far.width*(H/far.height),off=-((cx*.06)%iw);for(let x=off;x<W;x+=iw)g.drawImage(far,x,-cy*.02,iw,H);}
+  else{const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#0a1028');gr.addColorStop(1,'#2a3456');g.fillStyle=gr;g.fillRect(0,0,W,H);for(let i=0;i<60;i++){const x=(((artH(i,31)%997)-cx*.04)%W+W)%W;mrect(x,artH(i,32)%(H*.7),1,1,i%3?'#c8d4f0':'#fff2c8');}
+   g.fillStyle='#f4f0d8';g.beginPath();g.arc(W*.7-cx*.02,52,22,0,7);g.fill();g.fillStyle='rgba(244,240,216,.12)';g.beginPath();g.arc(W*.7-cx*.02,52,40,0,7);g.fill();}
+  if(mid){const ih=mid.height*(W/mid.width)*.9,iw=mid.width*(ih/mid.height),off=-((cx*.2)%iw);for(let x=off;x<W;x+=iw)g.drawImage(mid,x,H-ih-cy*.05+30,iw,ih);}
+  else{for(let i=-1;i<8;i++){const x=((i*90-cx*.2)%90+90)%90+i*90-90,y=H-110-cy*.06;g.fillStyle='#161c34';g.fillRect(x,y,12,160);g.fillRect(x+50,y+20,12,140);g.beginPath();g.arc(x+31,y+6,31,Math.PI,0);g.lineTo(x+62,y+10);g.lineTo(x,y+10);g.fill();g.fillStyle='#1d2a3e';for(let k=0;k<5;k++){g.beginPath();g.arc(x+artH(i,k)%80,H-40-cy*.06+artH(k,i)%20,14+artH(i,k+3)%10,0,7);g.fill();}g.fillStyle='#e8a8c8';for(let k=0;k<4;k++)mrect(x+artH(k,i+2)%80,H-56-cy*.06+artH(i,k+5)%24,2,2,'#f0b8d0');}}
  }else if(A.far==='cosmos'){const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#070620');gr.addColorStop(.6,'#1a1246');gr.addColorStop(1,'#2a1a52');g.fillStyle=gr;g.fillRect(0,0,W,H);
   for(let i=0;i<90;i++){const x=(((artH(i,21)%997)-cx*.05)%W+W)%W,y=(artH(i,22)%(H*.9))-cy*.03;const tw=(t+i*13)%100<7;mrect(x,y,tw?2:1,tw?2:1,i%4?'#b8b0ff':'#fff0c0');}
   const ox=W*.5-cx*.08,oy=H*.42-cy*.05;g.strokeStyle='rgba(190,160,255,.22)';g.lineWidth=1;for(let k=1;k<4;k++){g.beginPath();g.ellipse(ox,oy,46*k,18*k,-.25,0,7);g.stroke();}
@@ -251,6 +267,7 @@ function artLighting(r,cx,cy,view){const art=artBuild(M.room),A=art.A,W=Math.cei
    for(let i=0;i<5;i++){const x=cx+((i*83+t*(.15+i*.05))%(W+120))-60;g.fillStyle='rgba('+col+',.06)';g.beginPath();g.ellipse(x,fy+6+Math.sin(t*.01+i)*4,50,9,0,0,7);g.fill();}}}
 }
 // entry points called by mansionRoomDraw
+const ART_BG={};function artBgImg(n){if(ART_BG[n]===undefined){ART_BG[n]=null;if(typeof Image==='function'){const im=new Image();im.onload=()=>{ART_BG[n]=im;};im.src='assets/bg/'+n+'.png';}}return ART_BG[n];}
 function artDrawFar(r,cx,cy,view){return artFar(r,cx,cy,view);}
 function artDrawBack(r,cx,cy,view){const a=artBuild(M.room),w=Math.min(Math.ceil(view.w)+1,r.w-Math.max(0,cx)),h=Math.min(Math.ceil(view.h)+1,r.h-Math.max(0,cy));if(w>0&&h>0)g.drawImage(a.back,Math.max(0,cx),Math.max(0,cy),w,h,Math.max(0,cx),Math.max(0,cy),w,h);}
 function artDrawFront(r,cx,cy,view){const a=artBuild(M.room),w=Math.min(Math.ceil(view.w)+1,r.w-Math.max(0,cx)),h=Math.min(Math.ceil(view.h)+1,r.h-Math.max(0,cy));if(w>0&&h>0)g.drawImage(a.front,Math.max(0,cx),Math.max(0,cy),w,h,Math.max(0,cx),Math.max(0,cy),w,h);}
