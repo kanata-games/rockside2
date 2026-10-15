@@ -144,7 +144,8 @@
   ],
   "blend": "normal",
   "display": "必殺技の直前に、画面中央に横帯（高さ画面の約40%、幅いっぱい）で表示。drawScale≈0.5（画面幅384なら約256px幅）で右から左へ 120ms でスライドイン→700ms 静止→150ms でフェードアウト。帯の背景は画像に含まれる",
-  "source": "diceroll_dark.png 0コマ目（48pxドット絵をNEARESTで拡大）",
-  "note": "既存スプライトの上半身を切り出して拡大し、テーマ背景（集中線など）に重ねたもの"
+  "source": "diceroll-sequel.png 0コマ目（idle0、ユーザー参考シート由来の高解像度）上半身をLANCZOSで拡大",
+  "note": "既存スプライトの上半身を切り出して拡大し、テーマ背景（集中線など）に重ねたもの",
+  "oldFile": "diceroll_cutin_old.png（48pxドット絵版）"
  }
 }

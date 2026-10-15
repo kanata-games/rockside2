@@ -420,3 +420,8 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 
 ## 20. カットインのフォント (test.53)
 - Dela Gothic One（SIL OFL 1.1）のサブセット `assets/fonts/DelaGothicOne-cutin.woff2`。新しい必殺技名を足したら `tools/font-subset.py <DelaGothicOne-Regular.ttf>` で作り直す（juiceCut の文字列を自動で集める）。ライセンス文 `assets/fonts/DelaGothicOne-OFL.txt` を必ず一緒に置く。
+
+## 21. ダイスロールの本気 (test.54)
+- 04q_dicegirl.js。`M.flags.darkStyleUnlocked` が立つと、`mansionRoruTalk` の誘いが本気の勝負（`M.diceReal`）になる。敵は kind 'diceBoss' に girl:true、id 'diceGirl'。勝つと `diceGirlDefeated` / `diceGirlReward`（MANSION_PERMANENT_ITEMS.moonCandy、HP+2）。
+- 紳士は「練習」で手加減している、という設定を台詞で守る。素顔の彼女は本気。どちらも攻略のヒントは話さない（§14）。タバコは出さない（飴と赤い煙だけ）。
+- 会話の表情は `M.talk.faces[行番号]`（neutral / sigh / smirk / annoyed）。

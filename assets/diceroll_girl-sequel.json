@@ -1,0 +1,403 @@
+{
+ "image": "diceroll_girl-sequel.png",
+ "frameWidth": 512,
+ "frameHeight": 512,
+ "scale": 0.1227,
+ "displayHeight": "立ち姿 頭頂（王冠）〜足 440px（ネイティブ）× 0.1227 ≈ 54px（紳士形態と同じ）",
+ "facing": "right",
+ "anchorNote": "anchor＝足元。全フレーム anchor.y=500、各フレームの下端を y≈500 にそろえてある（jump も下端=500、ゲーム側で持ち上げる）。座標はネイティブのセル内座標（左向きは x → 511-x）",
+ "character": "ダイスロールの正体（中の少女）。銀髪、赤い目、小さな王冠、黒白ダイヤ柄のコート、赤いリボン。気だるいダウナー系。棒付きキャンディと赤い煙（タバコは描かない）",
+ "frames": [
+  {
+   "name": "idle0",
+   "rect": [
+    0,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    137,
+    65,
+    427,
+    497
+   ],
+   "hitbox": [
+    176,
+    65,
+    161,
+    435
+   ]
+  },
+  {
+   "name": "idle1",
+   "rect": [
+    512,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    124,
+    65,
+    352,
+    497
+   ],
+   "hitbox": [
+    176,
+    65,
+    161,
+    435
+   ]
+  },
+  {
+   "name": "move0",
+   "rect": [
+    1024,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    87,
+    61,
+    328,
+    497
+   ],
+   "hitbox": [
+    176,
+    61,
+    153,
+    439
+   ]
+  },
+  {
+   "name": "move1",
+   "rect": [
+    1536,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    78,
+    63,
+    337,
+    497
+   ],
+   "hitbox": [
+    176,
+    63,
+    161,
+    437
+   ]
+  },
+  {
+   "name": "jump",
+   "rect": [
+    2048,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    86,
+    144,
+    439,
+    497
+   ],
+   "hitbox": [
+    176,
+    147,
+    161,
+    353
+   ]
+  },
+  {
+   "name": "telegraph",
+   "rect": [
+    0,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    78,
+    40,
+    438,
+    497
+   ],
+   "hitbox": [
+    176,
+    58,
+    161,
+    442
+   ]
+  },
+  {
+   "name": "attackA",
+   "rect": [
+    512,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    25,
+    97,
+    368,
+    497
+   ],
+   "hitbox": [
+    176,
+    97,
+    161,
+    403
+   ]
+  },
+  {
+   "name": "attackB",
+   "rect": [
+    1024,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    7,
+    92,
+    374,
+    497
+   ],
+   "hitbox": [
+    176,
+    92,
+    161,
+    408
+   ]
+  },
+  {
+   "name": "hurt",
+   "rect": [
+    1536,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    67,
+    71,
+    327,
+    497
+   ],
+   "hitbox": [
+    176,
+    71,
+    152,
+    429
+   ]
+  },
+  {
+   "name": "defeat",
+   "rect": [
+    2048,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    82,
+    169,
+    376,
+    497
+   ],
+   "hitbox": [
+    176,
+    169,
+    161,
+    331
+   ]
+  }
+ ],
+ "animations": {
+  "idle": {
+   "frames": [
+    0,
+    1
+   ],
+   "ms": [
+    600,
+    600
+   ],
+   "loop": true
+  },
+  "move": {
+   "frames": [
+    2,
+    3
+   ],
+   "ms": [
+    220,
+    220
+   ],
+   "loop": true
+  },
+  "jump": {
+   "frames": [
+    4
+   ],
+   "ms": [
+    300
+   ],
+   "loop": false
+  },
+  "roulette_ruin": {
+   "frames": [
+    5
+   ],
+   "ms": [
+    800
+   ],
+   "loop": false,
+   "active": [
+    5
+   ],
+   "note": "予兆（telegraph）。ルーレットを回して次の攻撃を決める演出"
+  },
+  "crimson_dice_barrage": {
+   "frames": [
+    6
+   ],
+   "ms": [
+    320
+   ],
+   "loop": false,
+   "active": [
+    6
+   ],
+   "note": "攻撃A：踏み込みながら赤いサイコロを連投"
+  },
+  "smoke_card_spin": {
+   "frames": [
+    7
+   ],
+   "ms": [
+    450
+   ],
+   "loop": false,
+   "active": [
+    7
+   ],
+   "note": "攻撃B：赤い煙とカードをまとって回転"
+  },
+  "hurt": {
+   "frames": [
+    8
+   ],
+   "ms": [
+    320
+   ],
+   "loop": false
+  },
+  "defeat": {
+   "frames": [
+    9
+   ],
+   "ms": [
+    1400
+   ],
+   "loop": false,
+   "note": "座り込む"
+  }
+ },
+ "frameAliases": {
+  "telegraph": 5,
+  "attackA": 6,
+  "attackB": 7
+ },
+ "spawn": {
+  "roulette_ruin": {
+   "frame": 5,
+   "x": 368,
+   "y": 112,
+   "note": "予兆：頭上横のルーレットの中心（diceroll_girl_roulette を重ねる）"
+  },
+  "crimson_dice_barrage": {
+   "frame": 6,
+   "x": 340,
+   "y": 262,
+   "note": "攻撃A：赤いサイコロを投げる手（diceroll_girl_red_dice を連射）"
+  },
+  "smoke_card_spin": {
+   "frame": 7,
+   "x": 330,
+   "y": 240,
+   "note": "攻撃B：カードと赤い煙の発生点（伸ばした手の先）"
+  }
+ },
+ "hitboxes": {
+  "body": "各フレームの hitbox [x,y,w,h]（アンカー±80px の胴体帯）",
+  "smoke_card_spin": {
+   "frame": 7,
+   "rect": [
+    150,
+    90,
+    300,
+    410
+   ],
+   "note": "回転中の接触判定（煙・カード込み）"
+  }
+ },
+ "warped_frames": [],
+ "source": "work/diceroll_girl/raw/battle.jpg（5×2）→ work/diceroll_girl/build.py, json_c.py"
+}

@@ -1,0 +1,158 @@
+{
+ "image": "diceroll_girl_talk-sequel.png",
+ "frameWidth": 512,
+ "frameHeight": 512,
+ "scale": 0.1227,
+ "facing": "right",
+ "anchorNote": "anchor＝足元。全フレーム anchor.y=500、各フレームの下端を y≈500 にそろえてある（jump も下端=500、ゲーム側で持ち上げる）。座標はネイティブのセル内座標（左向きは x → 511-x）",
+ "character": "ダイスロールの正体（中の少女）。銀髪、赤い目、小さな王冠、黒白ダイヤ柄のコート、赤いリボン。気だるいダウナー系。棒付きキャンディと赤い煙（タバコは描かない）",
+ "frames": [
+  {
+   "name": "neutral",
+   "rect": [
+    0,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    152,
+    63,
+    362,
+    498
+   ],
+   "hitbox": [
+    176,
+    63,
+    161,
+    437
+   ]
+  },
+  {
+   "name": "sigh",
+   "rect": [
+    512,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    148,
+    57,
+    360,
+    498
+   ],
+   "hitbox": [
+    176,
+    57,
+    161,
+    443
+   ]
+  },
+  {
+   "name": "smirk",
+   "rect": [
+    1024,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    138,
+    66,
+    321,
+    498
+   ],
+   "hitbox": [
+    176,
+    66,
+    146,
+    434
+   ]
+  },
+  {
+   "name": "annoyed",
+   "rect": [
+    1536,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    138,
+    65,
+    323,
+    498
+   ],
+   "hitbox": [
+    176,
+    65,
+    148,
+    435
+   ]
+  }
+ ],
+ "animations": {
+  "neutral": {
+   "frames": [
+    0
+   ],
+   "ms": [
+    1000
+   ],
+   "loop": false,
+   "note": "キャンディを持った通常"
+  },
+  "sigh": {
+   "frames": [
+    1
+   ],
+   "ms": [
+    1000
+   ],
+   "loop": false,
+   "note": "退屈なため息（赤い煙）"
+  },
+  "smirk": {
+   "frames": [
+    2
+   ],
+   "ms": [
+    1000
+   ],
+   "loop": false,
+   "note": "にやり"
+  },
+  "annoyed": {
+   "frames": [
+    3
+   ],
+   "ms": [
+    1000
+   ],
+   "loop": false,
+   "note": "腕組みで不機嫌"
+  }
+ },
+ "source": "work/diceroll_girl/raw/talk.jpg（4×1）"
+}

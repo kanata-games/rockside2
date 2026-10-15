@@ -1,0 +1,144 @@
+{
+ "boss": "diceroll_girl",
+ "scaleNote": "エフェクトはゲーム画面ピクセルの4倍で描画。drawScale 0.25 で等倍表示",
+ "palette": "blood（赤黒）＋ルーレット・カードは実色",
+ "effects": {
+  "diceroll_girl_red_dice": {
+   "file": "diceroll_girl_red_dice.png",
+   "frameWidth": 128,
+   "frameHeight": 128,
+   "frames": 4,
+   "ms": [
+    60,
+    60,
+    60,
+    60
+   ],
+   "loop": true,
+   "anchor": [
+    64,
+    64
+   ],
+   "rotatesWithDirection": true,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "攻撃A crimson_dice_barrage の弾。転がりながら飛ぶ（ループ）。anchor＝サイコロ中心、尾は後方"
+  },
+  "diceroll_girl_roulette": {
+   "file": "diceroll_girl_roulette.png",
+   "frameWidth": 224,
+   "frameHeight": 224,
+   "frames": 4,
+   "ms": [
+    70,
+    70,
+    70,
+    70
+   ],
+   "loop": true,
+   "anchor": [
+    112,
+    112
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "予兆 roulette_ruin。spawn の位置で回転させる（ループ）"
+  },
+  "diceroll_girl_smoke": {
+   "file": "diceroll_girl_smoke.png",
+   "frameWidth": 256,
+   "frameHeight": 256,
+   "frames": 4,
+   "ms": [
+    60,
+    70,
+    90,
+    120
+   ],
+   "loop": false,
+   "anchor": [
+    128,
+    128
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "赤い煙の破裂。smoke_card_spin の開始時、または被弾・ため息の演出"
+  },
+  "diceroll_girl_card_storm": {
+   "file": "diceroll_girl_card_storm.png",
+   "frameWidth": 256,
+   "frameHeight": 256,
+   "frames": 4,
+   "ms": [
+    60,
+    60,
+    60,
+    60
+   ],
+   "loop": true,
+   "anchor": [
+    128,
+    128
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "攻撃B smoke_card_spin。体の中心に重ねてループ（カードが周回）"
+  },
+  "diceroll_girl_impact": {
+   "file": "diceroll_girl_impact.png",
+   "frameWidth": 256,
+   "frameHeight": 256,
+   "frames": 4,
+   "ms": [
+    40,
+    50,
+    70,
+    100
+   ],
+   "loop": false,
+   "anchor": [
+    128,
+    128
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "サイコロ・カードの命中点（重め）"
+  },
+  "diceroll_girl_aura": {
+   "file": "diceroll_girl_aura.png",
+   "frameWidth": 192,
+   "frameHeight": 256,
+   "frames": 4,
+   "ms": [
+    80,
+    80,
+    80,
+    80
+   ],
+   "loop": true,
+   "anchor": [
+    96,
+    246
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "本気モード・必殺の溜め中に足元中心でループ"
+  }
+ },
+ "cutin": {
+  "file": "diceroll_girl_cutin.png",
+  "size": [
+   512,
+   288
+  ],
+  "blend": "normal",
+  "display": "必殺技の直前に、画面中央に横帯（高さ画面の約40%、幅いっぱい）で表示。drawScale≈0.5（画面幅384なら約256px幅）で右から左へ 120ms でスライドイン→700ms 静止→150ms でフェードアウト。帯の背景は画像に含まれる",
+  "source": "diceroll_girl-sequel.png 0コマ目（idle0）の上半身をLANCZOSで拡大",
+  "note": "サイコロと集中線の赤い帯"
+ }
+}

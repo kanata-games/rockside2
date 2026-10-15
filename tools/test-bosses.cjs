@@ -49,3 +49,31 @@ console.log('PASS boss move sets (test.49): impostors mimic their dark originals
  assert(html.includes("assets/fonts/DelaGothicOne-cutin.woff2"),'FontFace loads the subset');
  run('KJ.cut=null;juiceCut("テスト","#ff7fae","青天")');for(let i=0;i<6;i++){run('mansionJuiceCutHi()');run('mansionJuiceStop()');}run('KJ.cut=null');
  console.log('PASS cut-in font (test.53): Dela Gothic One subset '+fsz+' bytes + OFL text; falls back to sans-serif until loaded.');}
+// ===== test.54: ダイスロール sequel sheet + the serious fight with the girl inside =====
+{run('mansionStart(false);M.flags.boss=true;M.flags.darkStyleUnlocked=false;mansionEnter("bedroom",365,208);M.transition=0;mansionRoruTalk()');
+ assert(/練習/.test(run('M.talk.lines.join("")')),'before the shades: practice offer, he holds back');run('for(let i=0;i<9&&M.talk&&M.talk.index<M.talk.lines.length-1;i++)M.talk.index++;mansionDiceChallenge()');
+ assert.equal(run('M.enemies[0].girl||false'),false,'early fights are the gentleman');run('M.talk=null;M.map=false;mansionDiceReturn()');
+ run('M.upg={hp:4,shot:2,slide:2,vial:2,dash:1};M.flags.darkStyleUnlocked=true;M.flags.diceGirlDefeated=false;mansionEnter("bedroom",365,208);M.transition=0;mansionRoruTalk()');
+ assert(/練習のふり/.test(run('M.talk.lines.join("")')),'after the shades he drops the act');run('mansionDiceChallenge()');
+ assert(run('M.enemies[0].girl'),'serious fight is the girl');assert.equal(run('M.talk.speaker'),'ダイスロール（素顔）');assert(!/避け|ジャンプして|スライディングで/.test(run('M.talk.lines.join("")')),'no dodge tips');
+ run('M.talk.index=M.talk.lines.length-1;mansionTalkNext()');assert.equal(run('M.diceState'),'active');assert(run('M.enemies[0].girl'));
+ const GBOT=`(()=>{const e=M.enemies[0];if(!e)return'gone';releaseAll();keys.shoot=true;M.face=e.x<M.x?-1:1;const fx=e.fx||[];
+  const go=x=>{if(Math.abs(M.x-x)>5){keys.left=M.x>x;keys.right=M.x<x;}};
+  const safe=fx.find(f=>f.type==='sqsafe');if(safe)go(safe.x);
+  else{const m=fx.find(f=>f.type==='sqmark');const ln=fx.find(f=>f.type==='line'&&f.y>=250&&e.mode==='gCandyRush');
+   if(m&&Math.abs(M.x-m.x)<40)go(m.x+(m.x>256?-70:70));else if(ln){const a=Math.min(ln.x0,ln.x1),b=Math.max(ln.x0,ln.x1);if(M.x>a-20&&M.x<b+20&&M.ground)inp.jumpPressed=true,keys.jump=true;}
+   else{const d=M.x-e.x;if(Math.abs(d)<90)go(M.x+Math.sign(d||1)*40);}}
+  const near=M.enemyShots.filter(b=>(b.x-M.x)*(b.vx||0)<0&&Math.abs(b.x-M.x)<42&&Math.abs(b.vy||0)<.5&&b.y>M.y-34&&b.y<M.y+4);
+  for(const b of near){if(b.y<M.y-18)mansionInput.slide=true;else if(M.ground){inp.jumpPressed=true;keys.jump=true;}}
+  const fall=M.enemyShots.find(b=>(b.vy||0)>.5&&Math.abs(b.x-M.x)<16&&b.y<M.y&&b.y>M.y-90);if(fall&&!safe){keys.left=b=>0;go(M.x+(fall.x>M.x?-30:30));}
+  if(e.mode==='gSmokeVeil'&&e.mt>=50&&e.mt<64&&M.ground){inp.jumpPressed=true;keys.jump=true;}
+  return e.mode;})()`;
+ const seen=new Set();let hurt=0,last=run('M.hp'),retries=0,f=0;
+ for(;f<12000&&run('M.diceState')!=='done';f++){if(run('!!M.talk')){if(run('M.diceState')==='ready')retries++;run('M.talk.index=M.talk.lines.length-1;mansionTalkNext()');last=run('M.hp');continue;}
+  seen.add(run(GBOT));ticks(1);const h=run('M.hp');if(h<last){hurt+=last-h;if(process.env.DBG)console.log('hit',run('JSON.stringify([M.enemies[0]?.mode,M.enemies[0]?.mt,Math.round(M.x),Math.round(M.y),Math.round(M.enemies[0]?.x)])'));}last=h;}
+ console.log('  girl bot: '+f+' frames, damage '+hurt+', retries '+retries+', modes '+[...seen].join('/'));
+ assert.equal(run('M.diceState'),'done','upgraded bot beats the serious ダイスロール');
+ for(const m of ['gCandyRush','gLoadedDice','gSmokeVeil','gLolliSpin','gSugarRain','gAllIn'])assert(seen.has(m),'girl shows '+m);
+ assert(run('M.flags.diceGirlDefeated&&M.flags.diceGirlReward'));assert.equal(run('mansionPermanentCount("moonCandy")'),1);
+ run('M.talk=null;M.map=false;mansionDiceReturn()');
+ console.log('PASS ダイスロール本気 (test.54): gentleman = practice until the four shades, then the girl inside fights for real (6 new moves + super スウィート・オールイン); reward 月影の飴玉 (+2 max HP).');}

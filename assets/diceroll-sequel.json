@@ -1,0 +1,405 @@
+{
+ "image": "diceroll-sequel.png",
+ "frameWidth": 512,
+ "frameHeight": 512,
+ "scale": 0.1227,
+ "displayHeight": "立ち姿 頭頂（王冠）〜足 約440px（ネイティブ）× 0.1227 ≈ 54px",
+ "facing": "right",
+ "anchorNote": "anchor＝足元。全フレーム anchor.y=500、各フレームの下端を y≈500 にそろえてある（jump も下端=500。空中の高さはゲーム側で持ち上げる）。座標はネイティブのセル内座標（左向きは x → 511-x）",
+ "character": "ダイスロール（紳士形態）。白いサイコロ頭に黒金の王冠、赤い目、黒白ダイヤ柄のコート、白手袋、金の装飾",
+ "frames": [
+  {
+   "name": "idle0",
+   "rect": [
+    0,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    7,
+    64,
+    419,
+    497
+   ],
+   "hitbox": [
+    166,
+    64,
+    181,
+    436
+   ]
+  },
+  {
+   "name": "idle1",
+   "rect": [
+    512,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    7,
+    68,
+    344,
+    498
+   ],
+   "hitbox": [
+    166,
+    68,
+    179,
+    432
+   ]
+  },
+  {
+   "name": "move0",
+   "rect": [
+    1024,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    72,
+    64,
+    326,
+    496
+   ],
+   "hitbox": [
+    166,
+    64,
+    161,
+    436
+   ]
+  },
+  {
+   "name": "move1",
+   "rect": [
+    1536,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    75,
+    62,
+    326,
+    497
+   ],
+   "hitbox": [
+    166,
+    62,
+    161,
+    438
+   ]
+  },
+  {
+   "name": "jump",
+   "rect": [
+    2048,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    152,
+    72,
+    472,
+    496
+   ],
+   "hitbox": [
+    166,
+    100,
+    181,
+    400
+   ]
+  },
+  {
+   "name": "telegraph",
+   "rect": [
+    0,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    152,
+    54,
+    467,
+    496
+   ],
+   "hitbox": [
+    166,
+    63,
+    181,
+    437
+   ]
+  },
+  {
+   "name": "attackA",
+   "rect": [
+    512,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    105,
+    136,
+    415,
+    497
+   ],
+   "hitbox": [
+    166,
+    136,
+    181,
+    364
+   ]
+  },
+  {
+   "name": "attackB",
+   "rect": [
+    1024,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    126,
+    100,
+    504,
+    496
+   ],
+   "hitbox": [
+    166,
+    100,
+    181,
+    400
+   ]
+  },
+  {
+   "name": "hurt",
+   "rect": [
+    1536,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    141,
+    91,
+    468,
+    497
+   ],
+   "hitbox": [
+    166,
+    91,
+    181,
+    409
+   ]
+  },
+  {
+   "name": "defeat",
+   "rect": [
+    2048,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    81,
+    176,
+    417,
+    497
+   ],
+   "hitbox": [
+    166,
+    178,
+    181,
+    322
+   ]
+  }
+ ],
+ "animations": {
+  "idle": {
+   "frames": [
+    0,
+    1
+   ],
+   "ms": [
+    500,
+    500
+   ],
+   "loop": true
+  },
+  "move": {
+   "frames": [
+    2,
+    3
+   ],
+   "ms": [
+    220,
+    220
+   ],
+   "loop": true
+  },
+  "jump": {
+   "frames": [
+    4
+   ],
+   "ms": [
+    300
+   ],
+   "loop": false
+  },
+  "jackpot_night": {
+   "frames": [
+    5
+   ],
+   "ms": [
+    700
+   ],
+   "loop": false,
+   "active": [
+    5
+   ],
+   "note": "予兆（telegraph）。サイコロを浮かべて溜め→ dice_roll_impact へ"
+  },
+  "dice_stamp": {
+   "frames": [
+    4,
+    6
+   ],
+   "ms": [
+    260,
+    320
+   ],
+   "loop": false,
+   "active": [
+    6
+   ],
+   "note": "攻撃A：跳んで踏みつけ着地。6コマ目で衝撃波"
+  },
+  "card_wall": {
+   "frames": [
+    7
+   ],
+   "ms": [
+    360
+   ],
+   "loop": false,
+   "active": [
+    7
+   ],
+   "note": "攻撃B：カードを投げて壁を作る"
+  },
+  "hurt": {
+   "frames": [
+    8
+   ],
+   "ms": [
+    320
+   ],
+   "loop": false
+  },
+  "defeat": {
+   "frames": [
+    9
+   ],
+   "ms": [
+    1200
+   ],
+   "loop": false,
+   "note": "ひざをつく"
+  }
+ },
+ "frameAliases": {
+  "telegraph": 5,
+  "attackA": 6,
+  "attackB": 7
+ },
+ "spawn": {
+  "jackpot_night": {
+   "frame": 5,
+   "x": 400,
+   "y": 110,
+   "note": "予兆：手の上に浮かぶサイコロ群の中心。Jackpot Night のサイコロを振る起点"
+  },
+  "dice_stamp": {
+   "frame": 6,
+   "x": 430,
+   "y": 496,
+   "note": "攻撃A：踏みつけ着地。前方の地面（衝撃波の発生点）"
+  },
+  "card_wall": {
+   "frame": 7,
+   "x": 418,
+   "y": 248,
+   "note": "攻撃B：カードを投げる手"
+  }
+ },
+ "hitboxes": {
+  "body": "各フレームの hitbox [x,y,w,h]（アンカー±90px の胴体帯）",
+  "dice_stamp": {
+   "frame": 6,
+   "rect": [
+    150,
+    380,
+    320,
+    120
+   ],
+   "note": "着地の接触判定（足元前方）"
+  }
+ },
+ "warped_frames": [],
+ "source": "idle0/1: work/diceroll/raw/ref_sheet.png（ユーザー参考、上段中央・右、元から透過）。2-9: raw/poses_green.jpg（4×2）→ work/diceroll/build.py, json_c.py"
+}

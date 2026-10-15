@@ -15,7 +15,7 @@ function juiceFlash(c,t){KJ.flashC=c;KJ.flashT=KJ.flashMax=t;}
 function juiceStop(n){KJ.stop=Math.max(KJ.stop,n);}
 // test.52: Persona-style 'カッ！' cut-in — a small slanted strip in the top-right corner (y 18..48, top 20% of the screen),
 // eyes crop of the delivered cut-in art + move name. Snaps in (4f), holds, slides out; 44 frames ≈ 0.73s. No freeze, no full-screen band.
-const CUT_FACE={vesper:[256,72],lavis:[232,62],nocturne:[256,70],eclipse:[256,76],hoshi:[400,92],seiten:[395,195],dice:[300,78]};
+const CUT_FACE={vesper:[256,72],lavis:[232,62],nocturne:[256,70],eclipse:[256,76],hoshi:[400,92],seiten:[395,195],dice:[385,170],diceGirl:[272,200]};
 const CUT_LEN=44,CUT_IN=4,CUT_OUT=8,CUT_Y=18,CUT_H=30,CUT_W=150;
 function juiceCut(name,col,sub){const e=M.enemies&&M.enemies.find(e=>e.id&&e.hp>0);KJ.cut={name,col,sub:sub||'',t:0,id:e&&e.id,img:(SHADE_FX[e&&e.id]||{}).cutin?.img||null};juiceStop(2);sfx('warn');}
 function juiceCutBox(c){const _=0;const t=c.t,k=t<CUT_IN?1-t/CUT_IN:t>CUT_LEN-CUT_OUT?(t-(CUT_LEN-CUT_OUT))/CUT_OUT:0,ease=k*k;return{x0:VW-CUT_W-12+Math.round(ease*(CUT_W+24)),y0:CUT_Y,w:CUT_W,h:CUT_H};}

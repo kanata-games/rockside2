@@ -11,6 +11,15 @@ ROCKSIDE II / 2.0.0-test.46（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 - 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs` `node tools/test-hoshiyomi.cjs` and `node tools/test-keiko.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
+### 2.0.0-test.54
+- ダイスロール（紳士）に続編の新しい絵（assets/diceroll-sequel：待機・移動・ジャンプ・予兆・攻撃A/B・被弾）。拠点と遊戯室の両方で表示。ダイス・スタンプ／カードの壁／ジャックポット・ナイトは絵の手や足の位置から弾を出す。カットイン画像を新しいものに差し替え。
+- 紳士との勝負は「練習」で、手加減していることを台詞でにおわせる（勝利時「本気の札は、また今度」）。
+- 新しいボス：**ダイスロール（素顔）**。影4体を倒す（ダーク海音ちゃん解放）と、拠点のダイスロールの誘いが本気の勝負に変わる（場所は月影の遊戯室）。中身の女の子（銀髪・赤い目・ダウナー、棒付きキャンディと赤い煙。タバコは描かない）が攻めてくる。HP 200。
+  - 技：キャンディ・ラッシュ（突進の線で予告→残像つきの突進＋はじける飴の爆弾）、スモーク・ヴェール（煙に消える→足元マークの位置に現れて蹴り上げ）、ロリポップ・スピン（飴6個を回しながら追う→外へはじく）、ローデッド・ダイス（ルーレットで出目→その数だけ赤いサイコロ）、シュガー・レイン（跳び上がって列ごとに降らせる、安全な列は1本）。怒り時の必殺 **スウィート・オールイン**（カットイン、出目3回：奇数＝左右からカードの壁、偶数＝床側に隙間のある煙の輪）。
+  - ご褒美：月影の飴玉（最大HP+2、一度だけ）。勝った後は、紳士の練習と本気の勝負を交互に受けられる。
+  - 納品された絵をすべて使用：diceroll_girl-sequel、会話用の表情4種（diceroll_girl_talk-sequel）、diceroll_girl_face、fx/diceroll_girl_*（red_dice / roulette / smoke / card_storm / impact / aura / cutin）。素材が無いときはコードで描いた絵になる。
+- カットイン用フォントのサブセットに「素顔（）」などの新しい文字を追加。
+
 ### 2.0.0-test.53
 - カットインの技名を Dela Gothic One で表示（斜体風の傾き、黒の太い縁取り＋ボス色の線、ボス色のずらし影、入りの瞬間に拡大→縮小の「カッ！」）。ボス名も同じフォント。フォントを読み込めない間は従来の sans-serif で表示。
 - フォントは技名・ボス名に使う文字とカタカナ・ASCIIだけに絞ったサブセット（assets/fonts/DelaGothicOne-cutin.woff2、約22KB）。作り直しは `tools/font-subset.py`。
