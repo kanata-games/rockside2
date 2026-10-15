@@ -13,15 +13,16 @@ const KJ={shakeT:0,shakeA:0,flashT:0,flashC:'#fff',flashMax:1,stop:0,cut:null};
 function juiceShake(a,t){KJ.shakeA=Math.max(KJ.shakeT>0?KJ.shakeA:0,a);KJ.shakeT=Math.max(KJ.shakeT,t);}
 function juiceFlash(c,t){KJ.flashC=c;KJ.flashT=KJ.flashMax=t;}
 function juiceStop(n){KJ.stop=Math.max(KJ.stop,n);}
-function juiceCut(name,col,sub){KJ.cut={name,col,sub:sub||'',t:0};juiceFlash('#ffffff',10);juiceStop(10);sfx('warn');}
+function juiceCut(name,col,sub){const e=M.enemies&&M.enemies.find(e=>e.kind==='keikoBoss'||e.kind==='hoshiBoss');KJ.cut={name,col,sub:sub||'',t:0,img:(SHADE_FX[e&&e.id]||{}).cutin?.img||null};juiceFlash('#ffffff',10);juiceStop(10);sfx('warn');}
 function mansionJuiceStop(){if(KJ.shakeT>0)KJ.shakeT--;if(KJ.flashT>0)KJ.flashT--;if(KJ.cut&&++KJ.cut.t>96)KJ.cut=null;if(KJ.stop>0){KJ.stop--;return true;}return false;}
 function mansionJuiceShakeApply(){if(KJ.shakeT>0){const a=KJ.shakeA*Math.min(1,KJ.shakeT/8);g.translate(Math.round((artH(M.t,1)%100/50-1)*a),Math.round((artH(M.t,2)%100/50-1)*a));}}
 function mansionJuiceDraw(){g.save();g.setTransform(1,0,0,1,0,0);
  if(KJ.flashT>0){g.globalAlpha=.55*KJ.flashT/KJ.flashMax;g.fillStyle=KJ.flashC;g.fillRect(0,0,VW,VH);g.globalAlpha=1;}
- const c=KJ.cut;if(c){g.setTransform(1,0,0,1,0,0);const t=c.t,inn=Math.min(1,t/10),out=t>80?(t-80)/16:0,x=Math.round((1-inn)*-VW+out*VW),y=150;
-  g.globalAlpha=.85;g.fillStyle='#08040f';g.fillRect(0,y-18,VW,40);g.fillStyle=c.col;g.fillRect(0,y-18,VW,2);g.fillRect(0,y+20,VW,2);
-  for(let i=0;i<6;i++){g.globalAlpha=.25;g.fillRect(((t*9+i*53)%(VW+60))-60,y-14+i*6,40,1);}g.globalAlpha=1;
-  g.textAlign='center';g.textBaseline='middle';g.font='bold 15px sans-serif';g.fillStyle=c.col;g.fillText(c.name,VW/2+x+1,y+1);g.fillStyle='#ffffff';g.fillText(c.name,VW/2+x,y);if(c.sub){g.font='9px sans-serif';g.fillStyle='#d8c8f0';g.fillText(c.sub,VW/2+x,y+14);}g.textAlign='left';g.textBaseline='alphabetic';}g.restore();}
+ const c=KJ.cut;if(c){const t=c.t,inn=Math.min(1,t/8),out=t>80?(t-80)/16:0,x=Math.round((1-inn)*VW-out*VW*.0),a=1-out,y=VH*.55,BH=c.img?96:40;
+  g.globalAlpha=.9*a;const gr=g.createLinearGradient(0,y-BH/2,0,y+BH/2);gr.addColorStop(0,'#05020c');gr.addColorStop(.5,'#2a1048');gr.addColorStop(1,'#05020c');g.fillStyle=gr;g.fillRect(0,y-BH/2,VW,BH);g.fillStyle=c.col;g.fillRect(0,y-BH/2,VW,2);g.fillRect(0,y+BH/2-2,VW,2);
+  for(let i=0;i<6;i++){g.globalAlpha=.25*a;g.fillRect(((t*9+i*53)%(VW+60))-60,y-BH/2+6+i*(BH-12)/6,40,1);}
+  if(c.img){const ih=BH-4,iw=ih*512/288;g.globalAlpha=a;g.drawImage(c.img,VW-iw+x,y-ih/2,iw,ih);}
+  g.globalAlpha=a;g.textAlign='center';g.textBaseline='middle';g.font='bold 15px sans-serif';const tx=(c.img?VW*.32:VW/2)+x;g.fillStyle=c.col;g.fillText(c.name,tx+1,y+1);g.fillStyle='#ffffff';g.fillText(c.name,tx,y);if(c.sub){g.font='9px sans-serif';g.fillStyle='#d8c8f0';g.fillText(c.sub,tx,y+15);}g.textAlign='left';g.textBaseline='alphabetic';g.globalAlpha=1;}g.restore();}
 function mansionJuiceHit(e,shot){if(e.kind!=='keikoBoss'&&e.kind!=='hoshiBoss')return;juiceStop(2);for(let i=0;i<5;i++)M.particles?.push?.({x:shot.x,y:shot.y,vx:(i-2)*.9,vy:-1-(i&1),life:14,col:'#ffffff'});mansionBurst(shot.x,shot.y,KEIKO_BOSSES[e.id]?.col||'#ffd',5);if(e.hp<=0){juiceStop(18);juiceShake(5,30);juiceFlash('#ffffff',16);}}
 function mansionJuicePlayerHurt(){if(mansionKeikoActive()||M.hoshiState==='active'){juiceStop(5);juiceShake(3,10);juiceFlash('#ff3050',6);}}
 // ---- helpers
@@ -194,16 +195,16 @@ const KEIKO_MOVE_POSE={hFan:t=>t<34?'telegraph':'attack',hDive:(t,e)=>e.lift>2&&
  vOrb:t=>t<48?'telegraph':'attack',vWarpKick:(t,e)=>e.lift>0?'kick':'idle',vMeteor:(t,e)=>e.lift>0?'kick':'telegraph',lvPierce:()=> 'attack',lvSky:()=> 'kick',lvMist:t=>t<20?'telegraph':'attack',lvHunt:()=> 'attack',
  nScreech:t=>t<30?'telegraph':'attack',nSpin:t=>t<36?'telegraph':'kick',nDive:(t,e)=>e.lift>0?'kick':'telegraph',nEncore:()=> 'kick',eLunge:(t,e)=>t<36?'telegraph':'attack',eCross:()=> 'attack',eTotal:(t)=>t<30?'telegraph':'kick'};
 // per-frame hazards: beams hurt while present; fx age; shot extras (gravity, wobble, split, burst, bounce, sway)
-function mansionKeikoMovesUpdate(e){if(e.fx){for(const f of e.fx)f.t++;e.fx=e.fx.filter(f=>f.t<f.end);}
+function mansionKeikoMovesUpdate(e){if(typeof mansionShadeFxTick==='function')mansionShadeFxTick(e);if(e.fx){for(const f of e.fx)f.t++;e.fx=e.fx.filter(f=>f.t<f.end);}
  for(const bm of e.beams||[])if(kPHit([bm.x0,bm.y,bm.x1-bm.x0,bm.h]))mansionDamage(2,M.x<e.x?-1:1);
  const add=[];for(const b of M.enemyShots){if(b.kind!=='kShot')continue;b.age=(b.age||0)+1;if(b.g)b.vy+=b.g;
   if(b.wob)b.y=b.base+Math.sin(b.age*.09+(b.ph||0))*b.wob;
   if(b.sway){b.x=b.bx+Math.sin(b.age*.07)*b.sway;}
   if(b.lob&&b.y>=KF-4){b.dead=true;mansionBurst(b.x,KF-4,'#ff6a6a',3);}
-  if(b.kRain&&b.y>=KF-4){b.dead=true;mansionBurst(b.x,KF-4,b.col,3);if(b.meteor)juiceShake(2,4);}
+  if(b.kRain&&b.y>=KF-4){b.dead=true;mansionBurst(b.x,KF-4,b.col,3);if(b.meteor){juiceShake(2,4);fxSpawn(e,'impact',b.x,KF-8);}}
   if(b.bnc!=null){if(b.y<=KTOP&&b.vy<0){b.vy=-b.vy;b.bnc--;}else if(b.y>=KF-3&&b.vy>0){b.vy=-b.vy;b.bnc--;}if(b.x<=KEIKO_L-8||b.x>=KEIKO_R+8){b.vx=-b.vx;b.bnc--;}if(b.bnc<0)b.dead=true;}
-  if(b.split&&b.age===b.splitAt){b.dead=true;juiceShake(2,6);mansionBurst(b.x,b.y,'#b070ff',10);for(let k=0;k<b.split;k++){const a=k*Math.PI*2/b.split+.3;add.push({...b,split:0,shape:'orb',r:3,vx:Math.cos(a)*2,vy:Math.sin(a)*2,age:0,dead:false});}}
-  if(b.burst&&b.y>=KF-6){b.dead=true;juiceShake(3,8);sfx('hit');mansionBurst(b.x,KF-4,'#b070ff',10);for(const s of[1,-1])add.push({kind:'kShot',x:b.x+s*10,y:KF-6,vx:s*2.6,vy:0,damage:2,low:true,col:b.col,shape:'wave'});}
+  if(b.split&&b.age===b.splitAt){b.dead=true;fxSpawn(e,'impact',b.x,b.y);juiceShake(2,6);mansionBurst(b.x,b.y,'#b070ff',10);for(let k=0;k<b.split;k++){const a=k*Math.PI*2/b.split+.3;add.push({...b,split:0,shape:'orb',r:3,vx:Math.cos(a)*2,vy:Math.sin(a)*2,age:0,dead:false});}}
+  if(b.burst&&b.y>=KF-6){b.dead=true;fxSpawn(e,'impact',b.x,KF-8);fxSpawn(e,'shockwave',b.x,KF);juiceShake(3,8);sfx('hit');mansionBurst(b.x,KF-4,'#b070ff',10);for(const s of[1,-1])add.push({kind:'kShot',x:b.x+s*10,y:KF-6,vx:s*2.6,vy:0,damage:2,low:true,col:b.col,shape:'wave'});}
   if(b.life&&b.age>b.life)b.dead=true;if(b.x<-40||b.x>MR[M.room].w+40||b.y<-60||b.y>300)b.dead=true;}
  M.enemyShots.push(...add);}
 function mansionKeikoMovesDraw(e){
@@ -215,9 +216,11 @@ function mansionKeikoMovesDraw(e){
   else if(f.type==='col'){g.globalAlpha=.22;mrect(f.x-f.w/2,KTOP,f.w,KF-KTOP,c);g.globalAlpha=.8;mrect(f.x-f.w/2,KF-3,f.w,3,c);g.globalAlpha=1;}
   else if(f.type==='safe'){g.globalAlpha=.25+.1*Math.sin(M.t*.2);mrect(f.x-f.w/2,KTOP,f.w,KF-KTOP,'#9fe8ff');g.globalAlpha=1;mrect(f.x-f.w/2,KF-3,f.w,3,'#c9fbff');mansionDiamond(f.x,KF-12,4,'#ffffff');}
   else if(f.type==='line'){if((M.t&4)||c==='#ffffff')mrect(Math.min(f.x0,f.x1),f.y,Math.abs(f.x1-f.x0),f.thick||1,c);}
+  else if(f.type==='seg'){g.strokeStyle=c;g.globalAlpha=c==='#ffffff'?.9:.5;g.setLineDash(c==='#ffffff'?[]:[2,3]);g.beginPath();g.moveTo(f.x0,f.y0);g.lineTo(f.x1,f.y1);g.stroke();g.setLineDash([]);g.globalAlpha=1;}
   else if(f.type==='mist'){g.globalAlpha=.35;g.fillStyle='#c8d8ff';g.beginPath();g.ellipse(f.x,KF-18,16,20,0,0,7);g.fill();g.globalAlpha=1;}}
  const L=e.diveLine||e.aimLine;if(L){g.strokeStyle=L.lock?'#ffffff':KEIKO_BOSSES[e.id].col;g.globalAlpha=L.lock?.95:.55;g.setLineDash(L.lock?[]:[3,3]);g.beginPath();g.moveTo(L.x0,L.y0);let x1=L.x1,y1=L.y1;if(L.long){const a=Math.atan2(y1-L.y0,x1-L.x0);x1=L.x0+Math.cos(a)*400;y1=L.y0+Math.sin(a)*400;}g.lineTo(x1,y1);g.stroke();g.setLineDash([]);g.globalAlpha=1;}
  if(e.rico){g.strokeStyle=e.rico.lock?'#ffffff':'#ff9ad0';g.setLineDash([2,3]);g.beginPath();e.rico.pts.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));g.stroke();g.setLineDash([]);}
+ if(typeof fxUpdateDraw==='function')fxUpdateDraw();
  for(const bm of e.beams||[]){g.globalAlpha=bm.soft?1:.85;mrect(bm.x0,bm.y,bm.x1-bm.x0,bm.h,bm.col);if(!bm.soft){g.globalAlpha=.6;mrect(bm.x0,bm.y+Math.floor(bm.h/2)-1,bm.x1-bm.x0,2,'#ffffff');}g.globalAlpha=1;}}
 // extra bullet looks
 const keikoBulletDrawBase=keikoBulletDraw;
@@ -230,3 +233,56 @@ keikoBulletDraw=function(b){const c=b.col||'#fff';
  keikoBulletDrawBase(b);};
 // boss-sized hit radius for big orbs
 function keikoShotBox(b){const r=b.r||3;return[b.x-r,b.y-r,r*2,r*2];}
+
+// =====================================================================
+//  test.50: shade FX sheets (assets/fx/shade_<n>_*.png, 4 frames in a row, drawScale .25) + cut-in portraits.
+//  fallback: the code-drawn effects above keep working when a sheet is missing.
+// =====================================================================
+const SHADE_FX_KEY={vesper:'tobi',lavis:'neen',nocturne:'lily',eclipse:'star'};const SHADE_FX={};
+if(typeof fetch==='function')for(const [id,n] of Object.entries(SHADE_FX_KEY))fetch('assets/fx/shade_'+n+'_fx.json').then(r=>r.ok?r.json():null).then(d=>{if(!d)return;const set={};SHADE_FX[id]=set;
+ for(const [k,ef] of Object.entries(d.effects||{})){const img=new Image();img.onload=()=>{set[k]={...ef,img};};img.src='assets/fx/'+ef.file;}
+ if(d.cutin){const img=new Image();img.onload=()=>{set.cutin={...d.cutin,img};};img.src='assets/fx/'+d.cutin.file;}}).catch(()=>{});
+let KFXL=[];
+function fxOf(e,name){const s=SHADE_FX[e&&e.id];return s&&s[name]||null;}
+function fxSpawn(e,name,x,y,o={}){const ef=fxOf(e,name);if(!ef)return false;KFXL.push({ef,x,y,t:0,flip:o.flip||1,rot:o.rot||0,sx:o.sx||1,follow:o.follow?e:null,loop:o.loop||0});if(KFXL.length>60)KFXL.shift();return true;}
+function fxFrame(ef,t,loop){const ms=t*16.7;let acc=0,total=ef.ms.reduce((a,b)=>a+b,0);let m=ef.loop||loop?ms%total:ms;if(m>=total)return -1;for(let i=0;i<ef.ms.length;i++){acc+=ef.ms[i];if(m<acc)return i;}return ef.frames-1;}
+function fxDrawOne(ef,x,y,fi,flip,rot,sx){const fw=ef.frameWidth,fh=ef.frameHeight,s=ef.drawScale||.25,[ax,ay]=ef.anchor||[fw/2,fh/2];g.save();if(ef.blend==='lighter')g.globalCompositeOperation='lighter';g.translate(x,y);if(rot)g.rotate(rot);if(flip<0)g.scale(-1,1);g.scale(sx||1,1);g.drawImage(ef.img,fi*fw,0,fw,fh,-ax*s,-ay*s,fw*s,fh*s);g.restore();}
+function fxUpdateDraw(){KFXL=KFXL.filter(f=>{f.t++;if(f.follow){f.x=f.follow.x;f.y=f.follow.y-(f.follow.lift||0);}const fi=fxFrame(f.ef,f.t,f.loop);if(fi<0||(f.loop&&f.t>f.loop))return false;fxDrawOne(f.ef,f.x,f.y,fi,f.flip,f.rot,f.sx);return true;});}
+// hook the FX into the shade moves: wrap kShock (landing shockwaves), kb bursts and beams
+const kShockBase=kShock;kShock=function(e,x,sp,col){kShockBase(e,x,sp,col);if(fxSpawn(e,'shockwave',x,KF)){}fxSpawn(e,'impact',x,KF-8);};
+function mansionShadeFxTick(e){if(!SHADE_FX[e.id])return;const m=e.mode,t=e.mt;
+ if(t===1&&(m===KEIKO_BOSSES[e.id].super||m==='vOrb'||m==='nSpin'||m==='dLance'))fxSpawn(e,'aura',e.x,e.y,{follow:true,loop:m===KEIKO_BOSSES[e.id].super?60:40});
+ for(const bm of e.beams||[])if(!bm.fx){bm.fx=1;const w=bm.x1-bm.x0;if(e.id==='eclipse'&&fxOf(e,'beam')){const ef=fxOf(e,'beam');KFXL.push({ef,x:bm.x0,y:bm.y+bm.h/2,t:0,flip:1,sx:w/(ef.frameWidth*.25),loop:10});}else fxSpawn(e,'slash',(bm.x0+bm.x1)/2,bm.y+bm.h/2,{flip:e.face,sx:Math.max(.6,Math.min(2.5,w/64))});}
+ if(e.id==='lavis'&&m==='lvSky'&&t===66&&fxOf(e,'arrowRain'))for(const x of e.cols||[])KFXL.push({ef:fxOf(e,'arrowRain'),x,y:KF,t:0,flip:1,loop:30});
+ for(const b of M.enemyShots){if(b.fxDone)continue;if(b.meteor&&e.id==='vesper'){b.fxDone=1;b.art='meteor';}if(b.shape==='ring'&&e.id==='nocturne'){b.fxDone=1;b.art='soundRings';}}}
+const keikoBulletDrawFx=keikoBulletDraw;
+keikoBulletDraw=function(b){const e=mansionKeikoBoss();if(b.art&&e){const ef=fxOf(e,b.art);if(ef){fxDrawOne(ef,b.x,b.y,fxFrame(ef,b.age||0,1),b.vx<0?-1:1,b.art==='meteor'?Math.PI/2:0,b.art==='soundRings'?.6:.5);return;}}keikoBulletDrawFx(b);};
+
+// =====================================================================
+//  test.50: ダーク星詠み — signature star-reader moves on the same move engine (B = KEIKO_BOSSES.hoshi, never placed in a room)
+// =====================================================================
+KEIKO_BOSSES.hoshi={name:'ダーク星詠み',col:'#c99aff',sub:'#ffe6ff',pose:{},seq:[],rageSeq:[]};
+Object.assign(KEIKO_MOVES,{
+ hsConstel(e,B,t,r){const n=r?6:5,LOCK=40,POP=56;kFaceP(e);
+  if(t===1){e.stars=[];for(let i=0;i<n;i++){const a=i/n*Math.PI*2+artH(e.cycle,i)%60/60;e.stars.push([kClampX(M.x+Math.cos(a)*(70+i%2*30)),Math.max(KTOP+30,Math.min(KF-34,M.y-40+Math.sin(a)*50))]);}sfx('tink');}
+  if(t<POP){const lk=t>=LOCK;for(let i=0;i<e.stars.length;i++){const[a,b]=e.stars[i],[c,d]=e.stars[(i+1)%e.stars.length];kFx(e,{type:'seg',x0:a,y0:b,x1:c,y1:d,end:2,col:lk?'#ffffff':'#c99aff'});kFx(e,{type:'glow',x:a,y:b,end:2,col:lk?'#ffffff':'#ffe27a',r:lk?4:3});}if(t===LOCK)sfx('tink');}
+  if(t===POP){juiceShake(2,8);sfx('shot');for(const[x,y]of e.stars)for(let k=0;k<4;k++){const a=k*Math.PI/2+.4;kb(e,{x,y,vx:Math.cos(a)*1.3,vy:Math.sin(a)*1.3,shape:'star',life:150});}}
+  if(t>POP+70)mansionKeikoMode(e,'walk');},
+ hsComet(e,B,t,r){KEIKO_MOVES.hDive(e,B,t,r);if(e.landed===t){juiceShake(4,10);for(let k=0;k<(r?6:4);k++)kb(e,{x:e.x,y:KF-20,vx:(k-(r?2.5:1.5))*.9,vy:-3.6-(k&1)*.6,g:.14,shape:'star',extra:{kRain:true}});}},
+ hsOrbit(e,B,t,r){const n=r?5:4,SUM=30,REL=50,EV=r?14:18;kFaceP(e);
+  if(t===1){e.orbs=[];for(let i=0;i<n;i++)e.orbs.push(kb(e,{x:e.x,y:e.y-24,shape:'bigorb',r:4,life:999,extra:{orbit:true}}));sfx('tink');}
+  const ang=t*.08;e.orbs.forEach((o,i)=>{if(o.orbit){const a=ang+i*Math.PI*2/n,rad=Math.min(28,t);o.x=e.x+Math.cos(a)*rad;o.y=e.y-(e.lift||0)-24+Math.sin(a)*rad*.7;o.vx=o.vy=0;}});
+  for(let i=0;i<n;i++){const at=REL+i*EV;const o=e.orbs[i];if(!o)continue;if(t>at-16&&t<at){e.aimLine={x0:o.x,y0:o.y,x1:M.x,y1:M.y-14,lock:t>=at-8};}
+   if(t===at){o.orbit=false;const a=Math.atan2(M.y-14-o.y,M.x-o.x);o.vx=Math.cos(a)*2.8;o.vy=Math.sin(a)*2.8;o.life=200;e.aimLine=null;sfx('shot');}}
+  if(t>REL+n*EV+30){for(const o of e.orbs)o.orbit=false;mansionKeikoMode(e,'walk');}},
+ hsNova(e,B,t,r){ // super: スターダスト・ノヴァ
+  if(t===1){juiceCut('スターダスト・ノヴァ',B.col,'ダーク星詠み');}
+  if(t<30){e.x+=(256-e.x)*.1;e.lift=Math.min(70,(e.lift||0)+3);return;}
+  const W0=70,WAVES=3,EV=36;if(t<W0)kFx(e,{type:'glow',x:e.x,y:e.y-e.lift-24,end:2,col:'#ffe27a',r:3+(t-30)/4});
+  for(let w=0;w<WAVES;w++){const at=W0+w*EV,gap=(w*5+artH(e.cycle,w)%16)%16;
+   if(t>at-26&&t<at){const ga=(gap+1)*Math.PI*2/16;kFx(e,{type:'seg',x0:e.x,y0:e.y-e.lift-24,x1:e.x+Math.cos(ga)*300,y1:e.y-e.lift-24+Math.sin(ga)*300,end:2,col:'#9fe8ff'});}
+   if(t===at){juiceShake(3,10);juiceFlash('#ffe27a',5);sfx('shot');for(let k=0;k<16;k++){if(k>=gap&&k<=gap+2)continue;const a=k*Math.PI*2/16;kb(e,{x:e.x,y:e.y-e.lift-24,vx:Math.cos(a)*1.7,vy:Math.sin(a)*1.7,shape:'star',life:260});}}}
+  if(t>W0+WAVES*EV+40){e.lift=Math.max(0,e.lift-4);if(!e.lift)kEnd(e);}},
+});
+Object.assign(KEIKO_MOVE_POSE,{hsConstel:t=>t<56?'telegraph':'attack',hsComet:(t,e)=>e.lift>2&&!e.diveLine?'kick':'telegraph',hsOrbit:t=>t<50?'telegraph':'attack',hsNova:t=>t<70?'telegraph':'attack'});
+const HOSHI_POSE_MAP={telegraph:'shootWindup',attack:'shootStar',kick:'dash',fly:'move',walk:'move',idle:'idle'};

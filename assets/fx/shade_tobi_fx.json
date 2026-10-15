@@ -1,0 +1,122 @@
+{
+ "boss": "shade_tobi",
+ "scaleNote": "エフェクトはゲーム画面ピクセルの4倍で描画。drawScale 0.25 で等倍表示（ボス本体 scale 0.1227 とは別。本体と同じ座標系で使う場合は 0.25 をそのまま画面ピクセルに）",
+ "palette": "violet",
+ "effects": {
+  "slash": {
+   "file": "shade_tobi_slash.png",
+   "frameWidth": 256,
+   "frameHeight": 256,
+   "frames": 4,
+   "ms": [
+    50,
+    50,
+    60,
+    80
+   ],
+   "loop": false,
+   "anchor": [
+    128,
+    140
+   ],
+   "rotatesWithDirection": true,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "攻撃B 急降下キックの軌跡。足先に重ね、向きで左右反転"
+  },
+  "shockwave": {
+   "file": "shade_tobi_shockwave.png",
+   "frameWidth": 256,
+   "frameHeight": 128,
+   "frames": 4,
+   "ms": [
+    60,
+    60,
+    70,
+    90
+   ],
+   "loop": false,
+   "anchor": [
+    128,
+    96
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "急降下キックの着地時、足元に置く"
+  },
+  "aura": {
+   "file": "shade_tobi_aura.png",
+   "frameWidth": 160,
+   "frameHeight": 224,
+   "frames": 4,
+   "ms": [
+    90,
+    90,
+    90,
+    90
+   ],
+   "loop": true,
+   "anchor": [
+    80,
+    214
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "必殺技の溜め（予兆）中に体の中心下に重ねてループ"
+  },
+  "impact": {
+   "file": "shade_tobi_impact.png",
+   "frameWidth": 192,
+   "frameHeight": 192,
+   "frames": 4,
+   "ms": [
+    50,
+    60,
+    70,
+    90
+   ],
+   "loop": false,
+   "anchor": [
+    96,
+    96
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "闇の球の着弾点・キック命中時"
+  },
+  "meteor": {
+   "file": "shade_tobi_meteor.png",
+   "frameWidth": 224,
+   "frameHeight": 224,
+   "frames": 4,
+   "ms": [
+    80,
+    80,
+    80,
+    80
+   ],
+   "loop": false,
+   "anchor": [
+    161,
+    161
+   ],
+   "rotatesWithDirection": true,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "必殺：闇の隕石。anchor＝球の中心。斜めに落としつつループ、着地で impact"
+  }
+ },
+ "cutin": {
+  "file": "shade_tobi_cutin.png",
+  "size": [
+   512,
+   288
+  ],
+  "blend": "normal",
+  "display": "必殺技の直前に、画面中央に横帯（高さ画面の約40%、幅いっぱい）で表示。帯の背景は黒〜紫のグラデーションを敷き、その上に drawScale≈0.5（画面幅384なら約256px幅）で右から左へ 120ms でスライドイン→700ms 静止→150ms でフェードアウト",
+  "note": "緑背景を抜いた闇落ち顔アップ。半透明の縁あり"
+ }
+}

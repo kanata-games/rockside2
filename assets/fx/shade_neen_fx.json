@@ -1,0 +1,122 @@
+{
+ "boss": "shade_neen",
+ "scaleNote": "エフェクトはゲーム画面ピクセルの4倍で描画。drawScale 0.25 で等倍表示（ボス本体 scale 0.1227 とは別。本体と同じ座標系で使う場合は 0.25 をそのまま画面ピクセルに）",
+ "palette": "violet",
+ "effects": {
+  "slash": {
+   "file": "shade_neen_slash.png",
+   "frameWidth": 256,
+   "frameHeight": 64,
+   "frames": 4,
+   "ms": [
+    40,
+    40,
+    50,
+    70
+   ],
+   "loop": false,
+   "anchor": [
+    240,
+    32
+   ],
+   "rotatesWithDirection": true,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "攻撃A 矢の軌跡。anchor＝矢先（発射方向に回転）"
+  },
+  "shockwave": {
+   "file": "shade_neen_shockwave.png",
+   "frameWidth": 256,
+   "frameHeight": 128,
+   "frames": 4,
+   "ms": [
+    60,
+    60,
+    70,
+    90
+   ],
+   "loop": false,
+   "anchor": [
+    128,
+    96
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "矢の雨が地面に刺さった所"
+  },
+  "aura": {
+   "file": "shade_neen_aura.png",
+   "frameWidth": 160,
+   "frameHeight": 224,
+   "frames": 4,
+   "ms": [
+    90,
+    90,
+    90,
+    90
+   ],
+   "loop": true,
+   "anchor": [
+    80,
+    214
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "必殺の溜め中のオーラ"
+  },
+  "impact": {
+   "file": "shade_neen_impact.png",
+   "frameWidth": 160,
+   "frameHeight": 160,
+   "frames": 4,
+   "ms": [
+    50,
+    60,
+    70,
+    90
+   ],
+   "loop": false,
+   "anchor": [
+    80,
+    80
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "矢の命中・着弾時"
+  },
+  "arrowRain": {
+   "file": "shade_neen_arrowRain.png",
+   "frameWidth": 192,
+   "frameHeight": 256,
+   "frames": 4,
+   "ms": [
+    70,
+    70,
+    70,
+    70
+   ],
+   "loop": true,
+   "anchor": [
+    96,
+    256
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "攻撃B のあと上から降る矢の雨の帯。anchor＝帯の下端中央、複数並べてループ"
+  }
+ },
+ "cutin": {
+  "file": "shade_neen_cutin.png",
+  "size": [
+   512,
+   288
+  ],
+  "blend": "normal",
+  "display": "必殺技の直前に、画面中央に横帯（高さ画面の約40%、幅いっぱい）で表示。帯の背景は黒〜紫のグラデーションを敷き、その上に drawScale≈0.5（画面幅384なら約256px幅）で右から左へ 120ms でスライドイン→700ms 静止→150ms でフェードアウト",
+  "note": "緑背景を抜いた闇落ち顔アップ。半透明の縁あり"
+ }
+}

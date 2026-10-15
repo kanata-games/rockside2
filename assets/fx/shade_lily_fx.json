@@ -1,0 +1,122 @@
+{
+ "boss": "shade_lily",
+ "scaleNote": "エフェクトはゲーム画面ピクセルの4倍で描画。drawScale 0.25 で等倍表示（ボス本体 scale 0.1227 とは別。本体と同じ座標系で使う場合は 0.25 をそのまま画面ピクセルに）",
+ "palette": "red",
+ "effects": {
+  "slash": {
+   "file": "shade_lily_slash.png",
+   "frameWidth": 256,
+   "frameHeight": 256,
+   "frames": 4,
+   "ms": [
+    50,
+    50,
+    60,
+    80
+   ],
+   "loop": false,
+   "anchor": [
+    128,
+    128
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "攻撃B 回転の軌跡（円）。体の中心に"
+  },
+  "shockwave": {
+   "file": "shade_lily_shockwave.png",
+   "frameWidth": 256,
+   "frameHeight": 128,
+   "frames": 4,
+   "ms": [
+    60,
+    60,
+    70,
+    90
+   ],
+   "loop": false,
+   "anchor": [
+    128,
+    96
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "シャウト時の足元の衝撃"
+  },
+  "aura": {
+   "file": "shade_lily_aura.png",
+   "frameWidth": 160,
+   "frameHeight": 224,
+   "frames": 4,
+   "ms": [
+    90,
+    90,
+    90,
+    90
+   ],
+   "loop": true,
+   "anchor": [
+    80,
+    214
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "必殺の溜め中のオーラ"
+  },
+  "impact": {
+   "file": "shade_lily_impact.png",
+   "frameWidth": 192,
+   "frameHeight": 192,
+   "frames": 4,
+   "ms": [
+    50,
+    60,
+    70,
+    90
+   ],
+   "loop": false,
+   "anchor": [
+    96,
+    96
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "音波の命中点。星が散る"
+  },
+  "soundRings": {
+   "file": "shade_lily_soundRings.png",
+   "frameWidth": 256,
+   "frameHeight": 160,
+   "frames": 4,
+   "ms": [
+    70,
+    70,
+    70,
+    70
+   ],
+   "loop": true,
+   "anchor": [
+    26,
+    80
+   ],
+   "rotatesWithDirection": true,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "攻撃A 赤い音波の連射。anchor＝マイク先（発生点）、向きで反転"
+  }
+ },
+ "cutin": {
+  "file": "shade_lily_cutin.png",
+  "size": [
+   512,
+   288
+  ],
+  "blend": "normal",
+  "display": "必殺技の直前に、画面中央に横帯（高さ画面の約40%、幅いっぱい）で表示。帯の背景は黒〜紫のグラデーションを敷き、その上に drawScale≈0.5（画面幅384なら約256px幅）で右から左へ 120ms でスライドイン→700ms 静止→150ms でフェードアウト",
+  "note": "緑背景を抜いた闇落ち顔アップ。半透明の縁あり"
+ }
+}

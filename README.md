@@ -11,6 +11,10 @@ ROCKSIDE II / 2.0.0-test.46（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 - 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs` `node tools/test-hoshiyomi.cjs` and `node tools/test-keiko.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
+### 2.0.0-test.50
+- シャドウ4体に納品FX素材を適用（slash / shockwave / impact / aura、固有：ヴェスパーの隕石・ラヴィスの矢の雨・ノクターンの音の輪・エクリプスのビーム）。必殺技のカットインに立ち絵画像。素材が無い場合はこれまでのコード描画に戻る。
+- ダーク星詠みを作り直し：新技 星座結び(hsConstel)・彗星落とし(hsComet)・周回星弾(hsOrbit)、怒り時の必殺 スターダスト・ノヴァ（隙間の方向を水色の線で予告）。HP 100→140、浮遊、怒り時のフラッシュ・揺れ。
+
 ## 現在の公開版（2026-10-15 / test.49）
 
 - **ニセモノの技を、前作の「闇」版に寄せて作り直した**（前作 rockside の aiTobiume / aiNeenia / aiLily / aiDisaster を参考にした）

@@ -73,7 +73,7 @@ function mansionUpgradeOpen(){M.map=true;M.menuTab='upgrade';M.talk=null;release
 
 // ---------------------------------------------------------------- boss ダーク星詠み
 const HOSHI_FLOOR=224,HOSHI_L=40,HOSHI_R=472;
-function mansionNewHoshi(){return{kind:'hoshiBoss',x:400,y:HOSHI_FLOOR,face:-1,dir:-1,hp:100,maxHp:100,t:0,st:0,flash:0,mode:'idle',mt:0,cycle:0,gaps:[],nextGaps:null};}
+function mansionNewHoshi(){return{kind:'hoshiBoss',id:'hoshi',x:400,y:HOSHI_FLOOR,face:-1,dir:-1,hp:140,maxHp:140,lift:0,t:0,st:0,flash:0,mode:'idle',mt:0,cycle:0,gaps:[],nextGaps:null};}
 function mansionHoshiEnter(room){if(room!=='obsDome')return;if(M.flags.hoshiyomiDefeated){M.hoshiState='done';return;}M.hoshiState='waiting';M.enemies=M.enemies.filter(e=>e.kind!=='hoshiBoss');M.enemies.push(mansionNewHoshi());}
 function mansionHoshiTrigger(){if(M.room!=='obsDome'||M.hoshiState!=='waiting'||M.map||M.x<70)return;M.hoshiState='ready';const again=M.hoshiTries>0;M.hoshiTries=(M.hoshiTries||0)+1;
  const lines=again?['……また来たんだ。しつこいじゃん。','いいよ、何回でも星降らせたげる。キャハッ☆']:['……あれ？ 誰か来たじゃん。うち、今ちょー星読んでんだけど。','ねえ、聞こえる？ 星がさ……「全部うちのもの」って言ってんの。マジで。','邪魔すんなら、星ごと降らせちゃうけど……いいよね？ キャハッ☆'];
@@ -82,9 +82,10 @@ function mansionHoshiStart(){if(M.hoshiState==='active')return;M.hoshiState='act
 function mansionHoshiMode(e,m){e.mode=m;e.mt=0;}
 function mansionHoshiGaps(e,n,w){const out=[],span=HOSHI_R-HOSHI_L-w;for(let i=0;i<n;i++){let x=HOSHI_L+((artH(e.cycle*7+i,M.t>>4)%1000)/1000)*span;for(let k=0;k<6&&out.some(g=>Math.abs(g-x)<w*2.2);k++)x=HOSHI_L+((x-HOSHI_L+span*.37)%span);out.push(Math.round(x));}return out.map(x=>[x,x+w]);}
 function mansionHoshiAI(e){if(M.hoshiState!=='active'){e.mode='idle';return;}const rage=e.hp<=e.maxHp/2,t=++e.mt,dx=M.x-e.x;e.st++;
- if(rage&&!e.raged){e.raged=true;mansionSay('「ちょ、マジ痛いんだけど！ 本気出すし！」',150);mansionBurst(e.x,e.y-30,'#c99aff',16);}
- if(e.mode==='walk'){e.face=Math.sign(dx)||e.face;const d=Math.abs(dx);if(d>180)e.x+=e.face*(rage?1.3:1);else if(d<140)e.x-=e.face*1.2;
-  if(t>(rage?40:64)){const seq=['shoot','dash','shoot','rain'];mansionHoshiMode(e,seq[e.cycle%4]);e.cycle++;if(e.mode==='rain'){e.fromX=e.x;e.fromY=e.y;}}}
+ if(rage&&!e.raged){e.raged=true;e.cycle=0;juiceFlash('#c99aff',8);juiceShake(3,12);mansionSay('「ちょ、マジ痛いんだけど！ 本気出すし！」',150);mansionBurst(e.x,e.y-30,'#c99aff',16);}
+ mansionKeikoMovesUpdate(e);if(KEIKO_MOVES[e.mode])KEIKO_MOVES[e.mode](e,KEIKO_BOSSES.hoshi,t,rage);
+ else if(e.mode==='walk'){e.face=Math.sign(dx)||e.face;if(rage&&!e.superDone&&t>20){e.superDone=true;mansionKeikoMode(e,'hsNova');return;}const d=Math.abs(dx);if(d>180)e.x+=e.face*(rage?1.3:1);else if(d<140)e.x-=e.face*1.2;
+  if(t>(rage?40:64)){const seq=rage?['hsComet','hsOrbit','hsConstel','shoot','dash','rain']:['shoot','hsConstel','dash','hsOrbit','rain','hsComet'];mansionHoshiMode(e,seq[e.cycle%seq.length]);e.cycle++;if(e.mode==='rain'){e.fromX=e.x;e.fromY=e.y;}}}
  else if(e.mode==='shoot'){const WIND=36,GAP=rage?32:36,n=rage?3:2;e.face=t<WIND?Math.sign(dx)||e.face:e.face;
   if(t===1)e.pattern=Array.from({length:n},(_,i)=>rage?(i%2===1):false);  // false = high (slide under), true = low (jump over)
   if(t>=WIND&&(t-WIND)%GAP===0&&(t-WIND)/GAP<n){const low=e.pattern[(t-WIND)/GAP];M.enemyShots.push({kind:'hStar',low,x:e.x+e.face*16,y:HOSHI_FLOOR-(low?6:20),vx:e.face*(rage?2.8:2.4),vy:0,damage:2});sfx('shot');}
@@ -100,16 +101,16 @@ function mansionHoshiAI(e){if(M.hoshiState!=='active'){e.mode='idle';return;}con
   if(t>RISE+TELE&&t<RISE+TELE+RAIN&&t%4===0){const safe=[...e.gaps,...(e.nextGaps||[])];let x=null;for(let k=0;k<8&&x==null;k++){const c=HOSHI_L-20+artH(t,k)%(HOSHI_R-HOSHI_L+40);if(!safe.some(([a,b])=>c>a-8&&c<b+8))x=c;}if(x!=null)M.enemyShots.push({kind:'hStarRain',x,y:14,vx:0,vy:3.4,damage:2});}
   if(t>RISE+TELE+RAIN+50){const k=Math.min(1,(t-RISE-TELE-RAIN-50)/20);e.y=HOSHI_FLOOR-80*(1-k);if(k>=1){e.y=HOSHI_FLOOR;e.gaps=[];mansionHoshiMode(e,'walk');}}}
  e.x=Math.max(HOSHI_L-8,Math.min(HOSHI_R+8,e.x));
- const box=e.mode==='dash'&&e.mt>(rage?30:40)?[e.x-9,e.y-34,18,27]:[e.x-8,e.y-40,16,40];
+ const ly=e.y-(e.lift||0),box=e.mode==='dash'&&e.mt>(rage?30:40)?[e.x-9,ly-34,18,27]:[e.x-8,ly-40,16,40];
  if(mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,box))mansionDamage(2,M.x<e.x?-1:1);}
-function mansionHoshiPose(e){if(e.flash>0)return'hurt';if(e.mode==='shoot')return e.mt<36?'shootWindup':'shootStar';if(e.mode==='rain')return'starRainCast';if(e.mode==='dash')return e.mt>(e.hp<=e.maxHp/2?30:40)?'dash':'shootWindup';if(e.mode==='walk')return'move';return'idle';}
-function mansionHoshiDraw(e){const pose=mansionHoshiPose(e);
+function mansionHoshiPose(e){if(e.flash>0)return'hurt';if(KEIKO_MOVE_POSE[e.mode])return HOSHI_POSE_MAP[KEIKO_MOVE_POSE[e.mode](e.mt,e)]||'idle';if(e.mode==='shoot')return e.mt<36?'shootWindup':'shootStar';if(e.mode==='rain')return'starRainCast';if(e.mode==='dash')return e.mt>(e.hp<=e.maxHp/2?30:40)?'dash':'shootWindup';if(e.mode==='walk')return'move';return'idle';}
+function mansionHoshiDraw(e){const pose=mansionHoshiPose(e);if(M.hoshiState==='active'){mansionKeikoMovesDraw(e);if(e.hidden)return;}
  // telegraphs first (under her)
  if(e.mode==='rain'){for(const[a,b]of e.gaps||[]){g.globalAlpha=.28+.12*Math.sin(M.t*.2);mrect(a,20,b-a,HOSHI_FLOOR-20,'#9fe8ff');g.globalAlpha=1;mrect(a,HOSHI_FLOOR-3,b-a,3,'#c9fbff');mansionDiamond((a+b)/2,HOSHI_FLOOR-12,4,'#ffffff');}
   for(const[a,b]of e.nextGaps||[]){if((M.t>>3)&1){mrect(a,HOSHI_FLOOR-3,b-a,3,'#ffe27a');mansionDiamond((a+b)/2,HOSHI_FLOOR-14,4,'#ffe27a');}}}
  if(e.mode==='dash'&&e.mt<=(e.hp<=e.maxHp/2?30:40)&&(M.t&4)){const x0=e.face>0?e.x:HOSHI_L-8,x1=e.face>0?HOSHI_R+8:e.x;mrect(Math.min(x0,x1),HOSHI_FLOOR-20,Math.abs(x1-x0),2,'#ff6ab0');}
  if(e.mode==='shoot'&&e.mt<36&&e.pattern){e.pattern.forEach((low,i)=>mansionDiamond(e.x+e.face*(22+i*9),HOSHI_FLOOR-(low?6:20),3,(M.t&4)?'#ffffff':low?'#ff8ad8':'#c99aff'));}
- drawHoshi('dark',e.x,e.y,pose,e.t,e.face,e.flash>0&&(e.flash&2)?.55:1);
+ drawHoshi('dark',e.x,e.y-(e.lift||0),pose,e.t,e.face,e.flash>0&&(e.flash&2)?.55:1);
  if(M.hoshiState==='active'){mrect(e.x-28,e.y-66,56,5,'#160e27');mrect(e.x-27,e.y-65,54*Math.max(0,e.hp)/e.maxHp,3,e.hp<=e.maxHp/2?'#ff6ab0':'#c99aff');}}
 function mansionHoshiWin(){M.hoshiState='done';M.messageT=0;M.flags.hoshiyomiDefeated=true;M.enemyShots=[];M.shots=[];M.enemies=M.enemies.filter(e=>e.kind!=='hoshiBoss');M.hp=mansionMaxHP();mansionShardGain(3,true);mansionSave();
  mansionTalkShow('星詠み',['……っ、いったぁ……。あれ、うち……何してたんだっけ？','え、マジ？ うちが襲ったの？ ……ごめん、ほんとごめんじゃん……。','なんか黒いもやもやに、星の声ジャックされてたっぽい。……助けてくれてありがと、マジ感謝！','これお礼の欠片、3つあげる☆ 拠点の客室で待ってるね。欠片集めたら、うちが強くしたげるから！']);}
