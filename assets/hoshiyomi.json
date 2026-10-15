@@ -1,0 +1,38 @@
+{
+ "image": "hoshiyomi.png",
+ "frameWidth": 32,
+ "frameHeight": 32,
+ "frameCount": 4,
+ "facing": "right",
+ "anchor": "bottom edge of each frame（足元は下端 y=31）",
+ "cx": 16,
+ "character": "星詠みちゃん（正気に戻った姿・広間の強化役）。黒髪に紫のメッシュ・赤い目・紫の花の髪飾り・黒いトップスとショートパンツ・白いジャケット・厚底ブーツ・星の飾り",
+ "alignment": "全4フレームで足元の中心が x=16、足元 y=31。頭頂〜足 約29px（diceroll と同じスケール）",
+ "animations": {
+  "idle": {
+   "frames": [
+    0,
+    1
+   ],
+   "fps": 3,
+   "loop": true
+  },
+  "peace": {
+   "frames": [
+    2,
+    3
+   ],
+   "fps": 3,
+   "loop": true,
+   "note": "2 顔の横でピース / 3 ピース＋ウインク＋キラッ（強化を渡すとき用）"
+  }
+ },
+ "hitbox": {
+  "body": {
+   "x": 12,
+   "y": 2,
+   "w": 9,
+   "h": 30
+  }
+ }
+}

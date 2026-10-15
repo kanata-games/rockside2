@@ -1,6 +1,6 @@
 # 海音ちゃんの冒険２ — 屋敷探索テスト
 
-ROCKSIDE II / 2.0.0-test.43（GitHub公開版）。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
+ROCKSIDE II / 2.0.0-test.44（GitHub公開版）。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
 
 ## ステージの作り方 / How to build stages
 
@@ -8,10 +8,33 @@ ROCKSIDE II / 2.0.0-test.43（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 **Read [docs/STAGE_GUIDE.md](docs/STAGE_GUIDE.md) before adding or editing rooms** (Japanese + English).
 
 - 部屋は `src/03b_rooms.js` のASCIIタイル（1文字=16px、1画面=16×15マス）で作る。/ Rooms are ASCII tiles in `src/03b_rooms.js` (1 char = 16 px; 1 screen = 16×15 tiles).
-- 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs`.
+- 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs` and `node tools/test-hoshiyomi.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
-## 現在の公開版（2026-10-15 / test.43）
+## 現在の公開版（2026-10-15 / test.44）
+
+- 新エリア「書庫の奥」（星詠みの天文書庫）を追加した。6部屋：星詠みの螺旋書架 → 星図の書架 → 望遠鏡の回廊 → 星灯りの控え室（セーブ・ワープ）→ 天球儀のドーム（ボス）。/ New area 書庫の奥 (starry observatory-library), 6 rooms ending in the boss dome, with a save and warp room just before the boss.
+  - 入口は書庫の内側（archiveInner）の上。倒れた書棚の塔を壁キックで登り、天井の穴から上の部屋へ。/ The entrance is above archiveInner: wall-kick up the toppled shelf tower and through the ceiling gap.
+  - 壁キックの竪穴と、スライディングでしか通れない低いすき間で進む。敵は既存の6種を使い回す。/ Gated by wall-kick shafts and slide-only gaps; reuses the existing 6 foes.
+  - 新しい背景 'cosmos'（星図の輪・星座・書架の影）。/ New 'cosmos' far layer (star-chart rings, constellations, shelf silhouettes).
+- 縦のつながり：部屋の天井・床のすき間が、上下の部屋につながるようにした。/ Vertical exits: a gap in a room's top or bottom row now leads to the room above or below.
+- ボス「ダーク星詠み」（闇に染まったギャルの星詠み）。/ Boss ダーク星詠み.
+  - 星弾：高い弾はスライディングでくぐり、低い弾はジャンプでかわす。撃つ前に弾の高さの印が出る。/ Star shots: slide under high ones, jump over low ones. Markers show their heights before she fires.
+  - 星の雨：安全なすき間が水色の柱で予告される。/ Star rain: the safe gaps are telegraphed as cyan columns.
+  - ダッシュ：壁際まで下がってから、床に線を出して突進する。/ Dash: she backs off to the wall, shows a line on the floor, then charges.
+  - HPが半分を切ると第2形態。弾が3発になり、雨のすき間が途中で移動し（移動先は黄色で予告）、ダッシュが往復になる。/ Below half HP, phase 2: 3 shots, rain gaps that move mid-attack (new spots flash yellow first), and a double dash.
+  - 戦う前と倒した後に会話がある。負けたら全回復してやり直し。/ Dialogue before and after the fight. Losing restores HP and restarts the fight.
+- 倒すと星詠みが拠点の客室に来て、強化屋になる。/ After her defeat, 星詠み moves to the hub bedroom and runs upgrades.
+  - 新しい素材「星詠みの欠片」：敵が2体に1つ落とし、各部屋にも置いてある。/ New material 星詠みの欠片: every other defeated foe drops one, and more are placed in rooms.
+  - 強化：最大HP（+2）、水弾の威力（+1）、スライディングの長さ。セーブに残る。/ Upgrades: max HP (+2), shot power (+1), slide length. Saved.
+  - `MANSION_UPGRADES` に1行足せば項目を増やせる。/ Add a row to `MANSION_UPGRADES` to add an upgrade.
+- 拠点を上下に広げた。/ The hub now extends vertically.
+  - 上：煙突の竪穴を壁キックで登ると「星見の屋根裏」。/ Up: wall-kick the chimney into 星見の屋根裏 (the loft).
+  - 下：床の跳ね上げ戸を「調べる」で開けて地下室へ。地下室の壁を壁キックすると戻れる。/ Down: use the floor hatch to drop into the cellar, and wall-kick back up.
+- 絵：ボスは `assets/hoshiyomi_dark-sequel.json/png`（512pxのコマ、hi-res）があればそれを使う。なければ48pxの `hoshiyomi_dark.png` を使い、それもなければ仮の絵を描く。拠点の星詠みも同じ順（`hoshiyomi-sequel` → `hoshiyomi`）。/ Art: the boss prefers the hi-res `-sequel` sheets, falls back to the 48px sheets, then to placeholder art. The hub 星詠み uses the same order.
+- テスト：`tools/test-hoshiyomi.cjs` を追加した。中身は縦の出入り、欠片、強化、絵の読み込み順、ボス戦の自動操作（予告を見てよけて勝つ）、負けたときのやり直し。/ Tests: added `tools/test-hoshiyomi.cjs`, covering vertical exits, shards, upgrades, art-loader order, a boss bot that reads the telegraphs, dodges and wins, and the retry after a loss.
+
+## 前の公開版（2026-10-15 / test.43）
 
 - 素材づくり担当の敵の絵6種（armor, crawler, turret, bat, book, slime と turret_bullet）を入れた。/ Added the art maker's 6 enemy sheets (armor, crawler, turret, bat, book, slime) plus turret_bullet.
 - 当たり判定は絵の json の body から取り、体の中心を基準にした（armor は槍の分だけ cx がずれているため）。左向きのときは x を反転する。/ Hitboxes come from each sheet's json body box and pivot on the body centre (armor's spear shifts its cx). Facing left mirrors x.

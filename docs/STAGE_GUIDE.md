@@ -91,6 +91,7 @@ Slide tunnel (1 free row)     Wall-kick shaft (2-3 wide)    Slide-jump gap (6 em
    python3 tools/mapview.py       # look at docs/world_map.png (red = unreachable)
    python3 tools/build.py --out preview.html
    node tools/test-mansion.cjs    # every line PASS, exit 0
+   node tools/test-hoshiyomi.cjs  # vertical exits, shards, upgrades, boss bot
    ```
 
 ## 5. reach.js が見るもの / What `tools/reach.js` checks
@@ -248,3 +249,44 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 
 - **ぶら下がり / Hanging:** 眠っているコウモリと天井のスライムは上下反転で描く。/ Sleeping bats and ceiling slimes are drawn upside down.
 - **turret:** `projectile_spawn.attack` の位置から `turret_bullet.png` を撃つ。/ Fires `turret_bullet.png` from `projectile_spawn.attack`.
+
+
+## 10. 書庫の奥・縦のつながり・欠片・強化 / Observatory, vertical exits, shards, upgrades (test.44)
+
+### 縦のつながり / Vertical exits
+- 一番上の行（または一番下の行）に `.` のすき間を空けると、ワールドで上（下）のセルにある部屋につながる。/ A `.` gap in a room's top or bottom row links to the room in the world cell above or below.
+- 移るとき、ワールド上のx座標と速度はそのまま引き継ぐ。上下の部屋のすき間は、同じワールド列にそろえる。/ World x and velocity carry over, so line up the gaps in the same world columns.
+- 下のすき間の先に部屋がなければ、落とし穴になる。/ A bottom gap with nothing below is a pit.
+- 空が開いている部屋（中庭）は `openTop:true` にする。/ Open-sky rooms (the garden) set `openTop:true`.
+- 上のすき間へは、壁キックの竪穴で届くようにする。壁は、すき間の横の列に置く。ジグザグの足場は reach の頭上の判定とぶつかるので使わない。/ Reach up-gaps with a wall-kick shaft whose wall sits in the column beside the gap. Avoid zig-zag ledges; they conflict with reach's headroom check.
+- 通り道の床にすき間を空けるときは `MANSION_HATCHES`（跳ね上げ戸）を置く。閉じている間は上からだけ乗れて、「調べる」で開く。/ A gap in a walkway floor gets a hatch from `MANSION_HATCHES`. It is solid from above while closed, and 調べる opens it.
+- reach.js は縦のつながりも一つの地図として調べる。/ reach.js stitches vertical exits into one search.
+
+### 欠片 `*` / Shards
+- `*` を置くと「星詠みの欠片」になる。1つずつに `部屋:番号` のidが付き、取ったかどうかはセーブに残る。/ `*` places a 星詠みの欠片. Each has a `room:index` id, and pickups are saved.
+- 敵は2体に1体の割合で欠片を落とす（数える方式なので、運に左右されない）。/ Every second defeated foe drops one. The rate is counter-based, not random.
+
+### 強化 / Upgrades
+- `MANSION_UPGRADES` の1行が1項目：`{id,name,desc,cost:[レベルごとの値段]}`。/ One row of `MANSION_UPGRADES` per upgrade: `{id,name,desc,cost:[per-level costs]}`.
+- 効き目は `mansionUpg(id)` で読む。今あるもの：/ Effects read `mansionUpg(id)`. Current upgrades:
+  - hp：1レベルにつき最大HP+2 / +2 max HP per level
+  - shot：1レベルにつき威力+1 / +1 damage per level
+  - slide：1レベルにつきスライディング+6フレーム / +6 slide frames per level
+- 強化メニューは、拠点の星詠みに話しかけると開く（メニューの 'upgrade' タブ）。/ Talking to 星詠み in the hub opens the menu's 'upgrade' tab.
+
+### ボス ダーク星詠み / Boss
+- `src/04l_hoshiyomi.js` の `mansionHoshiAI`。動きは walk → shoot → dash → shoot → rain の順で回る。/ The AI cycles walk, shoot, dash, shoot, rain.
+- どの攻撃にも予告がある。/ Every attack telegraphs:
+  - 星弾：36フレーム前に、弾の高さに印が出る / shots: height markers 36 frames ahead
+  - 雨：60フレーム前に、安全なすき間の柱が出る / rain: safe-gap columns 60 frames ahead
+  - ダッシュ：壁際まで下がり、床に線が出る / dash: she backs off and a floor line flashes
+- 第2形態はHP50%から。/ Phase 2 starts at 50% HP.
+- `tools/test-hoshiyomi.cjs` の自動操作が、予告だけを見てよけ、HPを8以下しか減らさずに勝てることを確かめている。攻撃を変えたら、これが通ることを確認する。/ The bot in `tools/test-hoshiyomi.cjs` dodges from the telegraphs alone and must win losing at most 8 HP. Keep it passing when you change attacks.
+
+### 絵の読み込み順 / Art loading
+- ボスと拠点の星詠みは、次の順に探す：/ The boss and the hub 星詠み look for art in this order:
+  1. `assets/<name>-sequel.json/png`：512pxのコマ。frames に `{name,rect,anchor,scale}`。動きは名前の一覧か、名前の前の部分で探す（例 `"dash":[3,4]`、`dash_0`）。/ 512 px cells; frames hold `{name,rect,anchor,scale}`, and anims are lists by name or found by name prefix (e.g. `"dash":[3,4]`, `dash_0`).
+  2. `assets/<name>.json/png`：48pxの横並びのシート。`animations` と `cx` を使う。/ The 48 px strip sheet, using `animations` and `cx`.
+  3. 仮の絵（コードで描く）/ placeholder art drawn in code
+- 顔：`<name>-sequel-face.png` → `<name>_face.png`。/ Faces: `<name>-sequel-face.png`, then `<name>_face.png`.
+- 動きの名前：idle, move, shootWindup, shootStar, starRainCast, dash, hurt, defeat（拠点は idle, peace）。足りない名前は idle などで代わりにする。/ Pose names: idle, move, shootWindup, shootStar, starRainCast, dash, hurt, defeat (the hub uses idle and peace). Missing poses fall back to idle and similar.

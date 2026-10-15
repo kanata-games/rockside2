@@ -1,0 +1,114 @@
+{
+ "image": "hoshiyomi-sequel.png",
+ "frameWidth": 512,
+ "frameHeight": 512,
+ "scale": 0.1227,
+ "facing": "right",
+ "anchorNote": "anchor＝足元。anchor.y=500、頭頂〜足 約440px（×scale ≈ 54px）",
+ "character": "星詠みちゃん（正気に戻った姿・広間の強化役）。白いジャケット",
+ "frames": [
+  {
+   "name": "idle",
+   "rect": [
+    0,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    160,
+    59,
+    324,
+    500
+   ],
+   "hitbox": [
+    195,
+    60,
+    110,
+    440
+   ]
+  },
+  {
+   "name": "idle2",
+   "rect": [
+    512,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    160,
+    59,
+    324,
+    501
+   ],
+   "hitbox": [
+    195,
+    62,
+    110,
+    438
+   ]
+  },
+  {
+   "name": "peace",
+   "rect": [
+    1024,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    127,
+    52,
+    340,
+    499
+   ],
+   "hitbox": [
+    182,
+    53,
+    133,
+    447
+   ]
+  }
+ ],
+ "animations": {
+  "idle": {
+   "frames": [
+    0,
+    1
+   ],
+   "ms": [
+    500,
+    500
+   ],
+   "loop": true,
+   "note": "1は0を縦に約3px縮めた呼吸の上下"
+  },
+  "peace": {
+   "frames": [
+    2
+   ],
+   "ms": [
+    900
+   ],
+   "loop": false,
+   "note": "ピース＋ウインク＋キラッ"
+  }
+ },
+ "source": "work/hoshiyomi/raw/B.jpg（列3・4）"
+}

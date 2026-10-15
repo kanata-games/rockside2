@@ -1,0 +1,6 @@
+import sys;exec(open('build.py').read())
+d=render_dark();n=render_norm()
+bg=Image.new('RGBA',(12*52*4,48*4+32*4+20),(60,60,80,255))
+for i,(nm,im) in enumerate(d):bg.paste(im.resize((192,192),0),(i*208,0),im.resize((192,192),0))
+for i,(nm,im) in enumerate(n):bg.paste(im.resize((128,128),0),(i*208,200),im.resize((128,128),0))
+bg.save(sys.argv[1])

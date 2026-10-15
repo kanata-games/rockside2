@@ -1,0 +1,156 @@
+{
+ "image": "hoshiyomi_dark.png",
+ "frameWidth": 48,
+ "frameHeight": 48,
+ "frameCount": 12,
+ "facing": "right",
+ "anchor": "bottom edge of each frame（歩行ボス：全フレーム足元が下端 y=47 に接地。撃破11はひざをついた姿勢）",
+ "cx": 24,
+ "character": "闇落ち星詠みちゃん（ボス）。黒髪に紫のメッシュ・赤く光る目・紫の花の髪飾り・黒いクロップトップとショートパンツ・肩を落とした白いジャケット（闇色で灰ラベンダーに）・厚底ブーツ（紫の紐）・腰の星の飾り・紫と黒のもや",
+ "alignment": "全12フレームで足元の中心が x=24、足元 y=47。共通スケール：頭頂〜足 約37px（diceroll_dark と同じ）。コードでピクセル描画（work/hoshiyomi/build.py）",
+ "animations": {
+  "idle": {
+   "frames": [
+    0,
+    1
+   ],
+   "fps": 3,
+   "loop": true,
+   "note": "1は1px沈み＋髪が揺れる"
+  },
+  "move": {
+   "frames": [
+    2,
+    3,
+    4
+   ],
+   "fps": 7,
+   "loop": true,
+   "note": "歩き（2,3,4 を 2-3-4-3 で回してもよい）"
+  },
+  "shootWindup": {
+   "frames": [
+    5
+   ],
+   "loop": false,
+   "ms": 300,
+   "note": "星を持った手を後ろへ振りかぶる（手の星 ≈(19,22)）"
+  },
+  "shootStar": {
+   "frames": [
+    6
+   ],
+   "loop": false,
+   "ms": 200,
+   "active": [
+    6
+   ],
+   "note": "腕を前へ突き出して星を放つ瞬間。弾は描いていない（spawn.star）"
+  },
+  "starRainCast": {
+   "frames": [
+    7,
+    8
+   ],
+   "fps": 5,
+   "loop": false,
+   "active": [
+    8
+   ],
+   "note": "7 両手を上げ始める / 8 両手を掲げ頭上に星（星の雨の開始、spawn.rain）。8 を保持して詠唱ループにしてよい"
+  },
+  "dash": {
+   "frames": [
+    9
+   ],
+   "loop": false,
+   "note": "前傾の突進。後ろに紫の残像線（スプライトに含む）"
+  },
+  "hurt": {
+   "frames": [
+    10
+   ],
+   "loop": false,
+   "ms": 300,
+   "note": "のけぞり・目を閉じる。白赤の点滅はゲーム側で"
+  },
+  "defeat": {
+   "frames": [
+    11
+   ],
+   "loop": false,
+   "note": "ひざをついてうなだれる。もやが薄くなる"
+  }
+ },
+ "ms": {
+  "idle": 333,
+  "move": 143,
+  "shootWindup": 300,
+  "shootStar": 200,
+  "starRainCast": 200,
+  "dash": 100,
+  "hurt": 300,
+  "defeat": 1000
+ },
+ "hitbox": {
+  "body": {
+   "x": 19,
+   "y": 11,
+   "w": 12,
+   "h": 36
+  },
+  "note": "既定の当たり判定（頭〜足、腕・もや・残像は含まない）。左向きでは x → 48-x-w",
+  "perFrame": {
+   "9": {
+    "x": 20,
+    "y": 13,
+    "w": 14,
+    "h": 33
+   },
+   "10": {
+    "x": 17,
+    "y": 11,
+    "w": 12,
+    "h": 36
+   },
+   "11": {
+    "x": 18,
+    "y": 22,
+    "w": 14,
+    "h": 25
+   }
+  }
+ },
+ "attackHitbox": {
+  "dash": {
+   "frame": 9,
+   "x": 26,
+   "y": 13,
+   "w": 10,
+   "h": 27,
+   "note": "突進中の接触ダメージ"
+  }
+ },
+ "spawn": {
+  "star": {
+   "frame": 6,
+   "x": 37,
+   "y": 22,
+   "note": "星弾（star_bullets.png の star_small_a/b）の発生点＝突き出した手の先。左向きでは x → 47-x"
+  },
+  "rain": {
+   "frame": 8,
+   "x": 24,
+   "y": 3,
+   "note": "星の雨の詠唱点（頭上）。star_big_fall は画面上端から降らせる想定"
+  },
+  "windupHand": {
+   "frame": 5,
+   "x": 19,
+   "y": 22,
+   "note": "振りかぶった手の星。チャージ演出用"
+  }
+ },
+ "eyes": "赤く光る目（各2x1）は顔の右寄り、y≈15付近。前側の目の右に光る1px",
+ "coordNote": "座標は右向きフレーム内のピクセル座標。左向きでは x → 47-x"
+}

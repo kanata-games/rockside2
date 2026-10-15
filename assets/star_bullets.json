@@ -1,0 +1,106 @@
+{
+ "image": "star_bullets.png",
+ "frameWidth": 24,
+ "frameHeight": 24,
+ "facing": "right",
+ "description": "星詠みちゃん（ボス）の弾。コードでピクセル描画、紫と金。各弾はセル中央 (12,12) が中心（star_big_fall は星の中心 (13,14)、尾は左上へ伸びる＝右下へ落ちる向き）",
+ "order": [
+  "star_small_a",
+  "star_small_b",
+  "star_big_fall",
+  "twinkle_a",
+  "twinkle_b",
+  "hit_sparkle_a",
+  "hit_sparkle_b"
+ ],
+ "frames": {
+  "star_small_a": {
+   "frame": 0,
+   "bboxInCell": [
+    6,
+    6,
+    19,
+    18
+   ]
+  },
+  "star_small_b": {
+   "frame": 1,
+   "bboxInCell": [
+    6,
+    7,
+    19,
+    19
+   ]
+  },
+  "star_big_fall": {
+   "frame": 2,
+   "bboxInCell": [
+    0,
+    0,
+    23,
+    22
+   ]
+  },
+  "twinkle_a": {
+   "frame": 3,
+   "bboxInCell": [
+    7,
+    7,
+    18,
+    18
+   ]
+  },
+  "twinkle_b": {
+   "frame": 4,
+   "bboxInCell": [
+    9,
+    9,
+    16,
+    16
+   ]
+  },
+  "hit_sparkle_a": {
+   "frame": 5,
+   "bboxInCell": [
+    6,
+    6,
+    19,
+    19
+   ]
+  },
+  "hit_sparkle_b": {
+   "frame": 6,
+   "bboxInCell": [
+    4,
+    4,
+    21,
+    21
+   ]
+  }
+ },
+ "hitboxSuggest": {
+  "star_small_a": {
+   "x": 8,
+   "y": 8,
+   "w": 8,
+   "h": 8
+  },
+  "star_small_b": {
+   "x": 8,
+   "y": 8,
+   "w": 8,
+   "h": 8
+  },
+  "star_big_fall": {
+   "x": 7,
+   "y": 8,
+   "w": 12,
+   "h": 12
+  }
+ },
+ "usage": {
+  "shootStar": "star_small_a/b を交互に表示して回転に見せる",
+  "starRain": "star_big_fall を上から落とし、点滅前に twinkle_a/b を予告として出す",
+  "hit": "hit_sparkle_a → b（各 80ms）"
+ }
+}
