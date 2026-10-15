@@ -216,3 +216,35 @@ Put `assets/enemies/<kind>.png` and `assets/enemies/<kind>.json` in place, and a
 | slime | 20×14 |
 
 - 絵は壁キックの竪穴などの「場所」と同じ色調にすると馴染む。エリアの色は `ART` を参照。/ Art blends in best when it matches the palette of the place, such as a wall-kick shaft. Each area's colours are in `ART` in `src/04j_stage_art.js`.
+
+### 実際の形式（test.43〜）/ The format in use (test.43 on)
+今の絵は素材づくり担当の形式で、仕様は `assets/enemies/README.md`。読み込むと `mansionFoeMeta` が上の形に直す。
+The current art uses the art maker's format, specified in `assets/enemies/README.md`. On load, `mansionFoeMeta` converts it to the shape above.
+
+| 項目 / Field | 内容 / Content |
+|---|---|
+| `frame` | `{w,h}` |
+| `anchor` | `{cx,feet_y}` |
+| `animations` | `frames`、`ms`、`loop`、`active` |
+| `hitbox` | `body` と `attack`。単位は1コマ内のpx / in frame px. |
+| 向き / facing | 全コマ右向き。左向きのときはコードが x を反転する。/ Every frame faces right; the code mirrors x for left-facing foes. |
+
+- **manifest:** `{"kinds":{"shield":"armor",...}}` は、ゲーム内の種類名と絵のファイル名の対応表。/ This maps each game kind to its sheet file name.
+- **基準点 / Pivot:** 基準点は `hitbox.body` の中心。槍などで絵が片側に出ても、体が e.x の中心に来る。/ The pivot is the centre of `hitbox.body`, so the body stays centred on e.x even when a spear sticks out to one side.
+- **AIの状態とアニメ / AI states → anims:**
+
+| AIの状態 / AI state | アニメ / anim |
+|---|---|
+| walk | move |
+| guard | guard |
+| turn | idle |
+| tele / charge | telegraph |
+| atk / fire | attack |
+| crawl / fly / hop | move |
+| sleep / hang / land / idle | idle |
+| fall | fall |
+| 被弾中 / while hurt | hurt |
+| 撃破後 / after defeat | death |
+
+- **ぶら下がり / Hanging:** 眠っているコウモリと天井のスライムは上下反転で描く。/ Sleeping bats and ceiling slimes are drawn upside down.
+- **turret:** `projectile_spawn.attack` の位置から `turret_bullet.png` を撃つ。/ Fires `turret_bullet.png` from `projectile_spawn.attack`.

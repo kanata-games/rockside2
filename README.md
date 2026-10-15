@@ -1,6 +1,6 @@
 # 海音ちゃんの冒険２ — 屋敷探索テスト
 
-ROCKSIDE II / 2.0.0-test.42（GitHub公開版）。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
+ROCKSIDE II / 2.0.0-test.43（GitHub公開版）。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
 
 ## ステージの作り方 / How to build stages
 
@@ -11,7 +11,23 @@ ROCKSIDE II / 2.0.0-test.42（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 - 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
-## 現在の公開版（2026-10-15 / test.42）
+## 現在の公開版（2026-10-15 / test.43）
+
+- 素材づくり担当の敵の絵6種（armor, crawler, turret, bat, book, slime と turret_bullet）を入れた。/ Added the art maker's 6 enemy sheets (armor, crawler, turret, bat, book, slime) plus turret_bullet.
+- 当たり判定は絵の json の body から取り、体の中心を基準にした（armor は槍の分だけ cx がずれているため）。左向きのときは x を反転する。/ Hitboxes come from each sheet's json body box and pivot on the body centre (armor's spear shifts its cx). Facing left mirrors x.
+- 盾持ちは、下にスライディングで通れる14pxのすき間を残した。/ The shield walker keeps a 14 px gap underneath that a slide passes through.
+- どの敵も予告（telegraph）を見せてから攻撃する。予告と攻撃の長さは絵の ms から決まる。/ Every foe shows a telegraph before attacking; telegraph and attack lengths follow the sheet's ms.
+  - armor：槍の突き / spear thrust
+  - crawler：かみつき / bite
+  - bat：急降下 / dive
+  - book：かみつき / bite
+  - slime：飛びかかり / lunge
+  - turret：projectile_spawn から弾を撃つ / fires from projectile_spawn
+- 攻撃が当たるのは、attack の active コマの間だけ。/ The attack box only hurts on the active frames.
+- crawler は wall_rotation で壁に沿って回る。/ The crawler rotates to follow the wall using wall_rotation.
+- ダメージで hurt、倒すと death のアニメ。/ Taking damage plays hurt; defeat plays death.
+
+## 前の公開版（2026-10-15 / test.42）
 
 - 見た目 / Visuals (`src/04j_stage_art.js`):
   - エリア別タイルセット：縁取り、ひび、欠け石、苔・真鍮・木の天板、深い壁の陰影。/ Per-area tilesets with caps, cracks, missing bricks, moss/brass/wood trims and depth shading.
@@ -44,7 +60,7 @@ ROCKSIDE II / 2.0.0-test.42（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
   - 絵は `assets/enemies/<kind>.png/.json` に置き、manifest に名前を足すと差し替わる。それまでは仮のドット絵。/ To swap in real art, drop `assets/enemies/<kind>.png/.json` in place and add the kind to the manifest. Until then a placeholder pixel sprite is drawn.
   - 仕様は STAGE_GUIDE §9。/ The spec is in STAGE_GUIDE §9.
 
-## 前の公開版（2026-10-15 / test.41）
+## さらに前の公開版（2026-10-15 / test.41）
 
 - ステージ作り直し第1段階 / Stage rebuild phase 1:
   - 14部屋をすべて16pxタイルの格子に作り直した。/ All 14 rooms rebuilt on the 16 px tile grid.

@@ -608,8 +608,22 @@ console.log('PASS buddy40: legacy reward migration / idempotent save, three-way 
  prep('archive',60,208);run('M.enemies=M.enemies.filter(e=>e.kind==="bookmimic");M.x=M.enemies[0].x+70;M.hurt=999');const bx=run('M.enemies[0].x');let hopped=false;for(let i=0;i<120;i++){ticks(1);if(run('M.enemies[0].state==="hop"'))hopped=true;}assert(hopped&&run('M.enemies[0].x')>bx,'book mimic hops toward Umine');
  // wall crawler rides the shaft wall
  prep('clockTower',560,576);run('M.enemies=M.enemies.filter(e=>e.kind==="crawler");M.hurt=999');const cy0=run('M.enemies[0].y');ticks(60);assert(run('M.enemies[0].side===1&&Math.abs(M.enemies[0].y-'+cy0+')>20&&M.enemies[0].x===39*16+9'),'crawler climbs along the east shaft wall');
- // sprite-sheet loader: json hitbox replaces the placeholder box, drawing uses the sheet
- run('mansionFoeArtLoad("bat",{width:64,height:16},{frame:[16,16],anchor:[8,16],facing:1,anims:{sleep:{frames:[0],fps:1},fly:{frames:[1,2,3],fps:10}},hitbox:[-6,-12,12,12],contact:[-5,-11,10,10]})');
- assert.equal(run('MANSION_FOES.bat.box.join()'),'12,12');assert(run('mansionFoeDrawSheet({kind:"bat",x:10,y:10,state:"fly",t:5,st:0,face:-1})'),'sheet draw path');
- console.log('PASS foes: 6 data-driven kinds spawn from room data; shield blocks front shots, hurts standing contact, slide passes under; bats wake, slime drops, turret fires, mimic hops, crawler climbs; sheet loader applies json hitbox.');
+ // sprite-sheet loader: the art team's sheets (frame{w,h}, anchor{cx,feet_y}, hitbox{body,attack}, facing right) map onto the behaviours
+ const ED=require('path').join(__dirname,'..','assets','enemies');const man=JSON.parse(fs.readFileSync(ED+'/manifest.json','utf8'));
+ for(const[kind,file]of Object.entries(man.kinds)){const raw=fs.readFileSync(ED+'/'+file+'.json','utf8');assert(fs.existsSync(ED+'/'+file+'.png'),file+'.png');run(`mansionFoeArtLoad(${JSON.stringify(kind)},{width:${require('zlib')&&0||1000}},${raw},{width:16})`);}
+ assert.equal(Object.keys(man.kinds).length,6);
+ for(const k of ['shield','crawler','turret','bat','bookmimic','slime'])for(const an of ['idle','move','telegraph','attack','hurt','death'])assert(run(`!!MANSION_FOE_ART.${k}.meta.anims.${an}`),k+' has '+an);
+ assert(run('!!MANSION_FOE_ART.shield.meta.anims.guard&&!!MANSION_FOE_ART.slime.meta.anims.fall'));
+ assert.equal(run('MANSION_FOES.shield.hb.join()'),'-9,-34,18,32','armor body is centred on the body, not the spear');
+ assert(run('MANSION_FOES.shield.contact[1]+MANSION_FOES.shield.contact[3]<=-15'),'armor contact keeps the slide gap');
+ assert.equal(run('JSON.stringify(mansionFoeBox({kind:"shield",x:100,y:200,face:-1}))'),'[91,166,18,32]','left-facing hitbox x is mirrored');
+ assert.equal(run('mansionFoeLen("shield","telegraph",0)'),22,'telegraph length follows the sheet ms');
+ assert(run('MANSION_FOE_ART.turret.meta.spawn[0]>0'),'turret projectile_spawn read');
+ assert(run('mansionFoeDrawSheet({kind:"bat",x:10,y:10,state:"fly",t:5,st:0,face:-1,flash:0})&&mansionFoeDrawSheet({kind:"crawler",x:10,y:10,state:"tele",t:5,st:3,face:1,side:1,flash:0})'),'sheet draw path');
+ // with the real boxes: armor still blocks from the front and can be slid under, and its telegraph precedes a spear thrust
+ prep('hall',260,368);run('M.enemies=M.enemies.filter(e=>e.kind==="shield");{const e=M.enemies[0];e.x=330;e.face=-1;e.min=200;e.max=420;}');run('M.shots.push({x:316,y:350,vx:4})');ticks(2);assert.equal(run('M.enemies[0].hp'),4,'armor blocks a frontal shot (sheet boxes)');
+ run('{const e=M.enemies[0];e.x=330;e.face=-1;e.turnT=0;e.cool=999;M.hp=mansionMaxHP();M.hurt=0;M.x=300;M.y=368;M.vx=0;M.vy=0;M.knock=0;M.ground=true;M.h=MC.h;M.face=1;}');ticks(1);run('mansionInput.slide=true');for(let i=0;i<30;i++){ticks(1);run('mansionInput.slide=false');}assert.equal(run('M.hp'),run('mansionMaxHP()'),'slide under armor (sheet boxes)');
+ run('{const e=M.enemies[0];e.x=330;e.face=-1;e.cool=0;e.turnT=0;e.state="guard";M.x=296;M.y=368;M.vx=0;M.ground=true;M.h=MC.h;M.hurt=999;}');const seen=[];for(let i=0;i<60;i++){ticks(1);run('M.x=296;M.vx=0');const st=run('M.enemies[0].state');if(seen.at(-1)!==st)seen.push(st);}assert(seen.indexOf('tele')>=0&&seen.indexOf('atk')>seen.indexOf('tele'),'armor telegraphs before the thrust: '+seen);
+ run('{const e=M.enemies[0];e.x=330;e.face=-1;e.state="atk";e.st=0;M.hurt=0;M.hp=mansionMaxHP();M.x=307;M.y=368;M.ground=true;M.h=MC.h;}');ticks(2);assert(run('M.hp<mansionMaxHP()'),'spear hitbox hurts during active frames');
+ console.log('PASS foes: 6 data-driven kinds spawn from room data; shield blocks front shots, hurts standing contact, slide passes under; bats wake, slime drops, turret fires, mimic hops, crawler climbs; sheet loader maps the art team sheets (mirrored hitboxes, telegraph timing, projectile spawn, armor slide gap).');
 }
