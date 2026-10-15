@@ -7,7 +7,7 @@
 //  falling things show their safe gaps first. Every attack telegraphs before it can hurt.
 //  Art per partner: assets/<name>-sequel.png/.json (hi-res 512 cells) → old normal sheet → placeholder.
 // =====================================================================
-const KEIKO_FLOOR=224,KEIKO_L=40,KEIKO_R=472;
+const KEIKO_FLOOR=224;let KEIKO_L=40,KEIKO_R=472; // test.56: set per fight to the one-screen window (arenaSet)
 const KEIKO_BOSSES={
  tobiume:{room:'kTobi',name:'ハネウメ',real:'飛梅',hp:220,col:'#ff8cc0',sub:'#ffd6ea',art:'tobiume',normal:'tobiume',flag:'keikoTobiume',
   seq:['hFan','hDive','hFan','hKick'],rageSeq:['hFan','hKick','hDive','hFan','hDive','hKick'],hover:56,
@@ -16,7 +16,7 @@ const KEIKO_BOSSES={
   fake:['あっ、海音ちゃーん！ 飛梅ちゃんだよ！ 迎えに来てくれたんだね！','……あれ？ 海音ちゃんって、こんなに背が低かったっけ？ まあいっか、梅干し食べる？'],pre:['……ぷぷっ、バレちゃった？ あたしは跳梅（ハネウメ）！ 本物の飛梅は、そこの檻の中だよ。','返してほしかったら、勝ってみな！ あたしの方が飛梅より、ずーっと高く跳べるんだから！'],
   again:['ぴょーん、あたしの勝ち！ ……でもまだやる？ いいよ、跳ね足りないし！'],vanish:['あいたたた……負けちゃった。あたし、月の光でできた影法師なんだ。','本物は返してあげる。……じゃあね、ぴょーん！'],rematch:['あのそっくりさん、月が出てればまた出てくるみたい。もう一回、腕試ししてく？'],
   post:['海音ちゃーん！ 出られたー！ ありがとう！ あのそっくりさん、あたしのマネばっかりするんだもん！','海音ちゃんがあたしのために怒ってくれたの、ちゃんと見てたよ。……へへ、ちょっと嬉しかった。腕試しなら、いつでも飛梅ちゃんが付き合うからね！','はい、星詠みの欠片3つ！ これからは一緒に戦おうね！']},
- neenia:{room:'kNeen',name:'ネムニア',real:'ネーニア',hp:250,col:'#8fb0ff',sub:'#e4ecff',art:'neenia',normal:'neenia',flag:'keikoNeenia',
+ neenia:{room:'kNeen',name:'ネムニア',real:'ネーニア',hp:300,col:'#8fb0ff',sub:'#e4ecff',art:'neenia',normal:'neenia',flag:'keikoNeenia',
   seq:['nAim','nLob','nBack','rain','nRico'],rageSeq:['snare','nAim','nBack','nLob','nRico','rain'],
   volley:{n:2,rn:3,pat:'mix',speed:3.0,kind:'arrow'},rain:{w:52,rw:46},snare:{n:2,rn:3},
   pose:{volley:'attack',rain:'attack',snare:'attack',walk:'walk',idle:'idle'},
@@ -50,13 +50,13 @@ const KEIKO_BOSSES={
   pose:{volley:'attack',rain:'attack',snare:'attack',walk:'walk',idle:'idle'},
   pre:['書架の裏は、霧の狩場。……わたしはラヴィス。','この霧の中で、あなたの足音だけがよく聞こえる。……狩りの時間よ。'],
   again:['霧はまだ晴れていない。……弓を引き直すわ。'],post:['……霧が、晴れていく。見事ね。','この矢羽を。影はあと少し。全部そろえば、あなたは影を纏える。']},
- nocturne:{shade:true,room:'sLily',name:'夜想ノクターン',hp:340,col:'#a03ab0',sub:'#ffc8f4',art:'shade_lily',normal:'lily_dark',flag:'shadeLily',wait:[44,30],
+ nocturne:{shade:true,room:'sLily',name:'夜想ノクターン',hp:260,col:'#a03ab0',sub:'#ffc8f4',art:'shade_lily',normal:'lily_dark',flag:'shadeLily',wait:[44,30],
   seq:['nScreech','nSpin','nDive','lSong','lStars'],rageSeq:['lHearts','nSpin','nScreech','nDive','nSpin','lStars'],super:'nEncore',
   wave:{n:2,rn:2,speed:3.0},volley:{n:3,rn:4,pat:'high',speed:3.0,kind:'note'},rain:{w:50,rw:44},
   pose:{wave:'attack',volley:'attack',rain:'attack',walk:'walk',idle:'idle'},
   pre:['ようこそ、水底の劇場へ。わたしはノクターン——真夜中だけの歌姫。','観客はあなた一人。拍手の代わりに、悲鳴を聞かせて？'],
   again:['カーテンコールには早いわ。……もう一曲。'],post:['……拍手、聞こえた。あなたの勝ち。','夜の旋律をあげる。影の衣は、すぐそこよ。']},
- eclipse:{shade:true,morph:true,room:'sStar',name:'蝕王エクリプス',hp:380,col:'#5a3aa0',sub:'#d8c0ff',art:'shade_star',normal:'disaster_dark',flag:'shadeStar',wait:[42,28],
+ eclipse:{shade:true,morph:true,room:'sStar',name:'蝕王エクリプス',hp:280,col:'#5a3aa0',sub:'#d8c0ff',art:'shade_star',normal:'disaster_dark',flag:'shadeStar',wait:[42,28],
   seq:['eLunge','dLance','eCross','sword','dSpear'],rageSeq:['dWhip','axe','eCross','eLunge','dLance','eCross'],super:'eTotal',
   sword:{n:2,rn:3,speed:3.4},spear:{speed:7},axe:{},scythe:{},bow:{n:3,rn:4,pat:'alt',speed:3.6,kind:'arrow'},
   pose:{sword:'sword',spear:'spear',axe:'axe',scythe:'scythe',bow:'bow',walk:'idle',idle:'idle'},
@@ -90,7 +90,7 @@ function mansionKeikoEnter(room){M.keiko=null;const id=KEIKO_BY_ROOM[room];if(!i
 function mansionKeikoBoss(){return M.enemies.find(e=>e.kind==='keikoBoss');}
 function mansionKeikoTrigger(){const k=M.keiko;if(!k||k.state!=='waiting'||M.map||M.x<64)return;const B=KEIKO_BOSSES[k.id];
  if(M.flags[B.flag]){k.state='idleDone';return;}k.state='ready';if(B.shade){mansionTalkShow(B.name,B.pre,mansionKeikoStart);return;}mansionTalkShow(B.real+'？',B.fake,()=>{mansionBurst(mansionKeikoBoss().x,KEIKO_FLOOR-24,'#c8b0ff',16);mansionTalkShow(B.name,B.pre,mansionKeikoStart);});}
-function mansionKeikoStart(){const k=M.keiko;if(!k)return;k.state='active';const e=mansionKeikoBoss();Object.assign(e,mansionKeikoNew(k.id));e.x=M.x<256?400:112;e.mode='walk';M.enemyShots=[];M.map=false;}
+function mansionKeikoStart(){const k=M.keiko;if(!k)return;k.state='active';const e=mansionKeikoBoss();Object.assign(e,mansionKeikoNew(k.id));e.x=M.x<(KEIKO_L+KEIKO_R)/2?KEIKO_R-24:KEIKO_L+24;e.mode='walk';M.enemyShots=[];M.map=false;}
 function mansionKeikoRematch(){const k=M.keiko;if(!k)return;M.flags[KEIKO_BOSSES[k.id].flag+'Rematch']=true;mansionKeikoStart();}
 function mansionKeikoActive(){return !!(M.keiko&&M.keiko.state==='active');}
 function mansionKeikoArenaSolids(){return mansionKeikoActive()?[[0,0,24,256],[MR[M.room].w-24,0,24,256]]:[];}

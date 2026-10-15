@@ -168,10 +168,10 @@ const KEIKO_MOVES={
   if(lt===DUR){e.beams=[];juiceFlash('#ff4a6a',8);}
   if(lt>DUR+60)kEnd(e);},
  // ===== 蝕王エクリプス (sword with purple trail / cannon orb) =====
- eLunge(e,B,t,r){const TELE=r?28:36;if(t===1){e.edge=e.x<M.x?KEIKO_L:KEIKO_R;e.trail=[];}
+ eLunge(e,B,t,r){const TELE=r?28:36;if(t===1){e.edge=e.x<M.x?KEIKO_L+20:KEIKO_R-20;e.trail=[];}
   if(t<=TELE){const d=e.edge-e.x;e.x+=Math.sign(d)*Math.min(Math.abs(d),7);kFaceP(e);if(t>TELE-20)kFx(e,{type:'line',x0:e.x,x1:e.face>0?KEIKO_R+8:KEIKO_L-8,y:KF-14,end:2,col:(t&4)?'#ffffff':'#b070ff'});}
-  else if(e.trail.length<200&&e.x>KEIKO_L-4&&e.x<KEIKO_R+4){e.x+=e.face*(r?8:7);if(t%2===0)e.trail.push(e.x);mansionBurst(e.x-e.face*10,KF-14,'#8a3aff',1);if(e.x<=KEIKO_L||e.x>=KEIKO_R){e.done=t;juiceShake(3,8);
-    e.pillars=[];const xs=e.trail.filter((x,i)=>i%3===0);for(let i=0;i<xs.length;i++)if(i%3!==1)e.pillars.push(xs[i]);}}
+  else if(e.trail.length<200&&e.x>KEIKO_L-4&&e.x<KEIKO_R+4){e.x+=e.face*(r?8:7);if(t%2===0)e.trail.push(e.x);mansionBurst(e.x-e.face*10,KF-14,'#8a3aff',1);if(e.x<=KEIKO_L+20&&e.face<0||e.x>=KEIKO_R-20&&e.face>0){e.done=t;juiceShake(3,8);
+    e.pillars=[];const xs=e.trail.filter((x,i)=>i%3===0&&x>KEIKO_L+30&&x<KEIKO_R-30);for(let i=0;i<xs.length;i++)if(i%2===0)e.pillars.push(xs[i]);}}
   if(e.done){const lt=t-e.done;if(lt<30)for(const x of e.pillars)kFx(e,{type:'col',x,w:20,end:2,col:lt>16?'#ffffff':'#8a3aff'});
    if(lt===30){juiceShake(4,10);sfx('hit');e.beams=e.pillars.map(x=>({x0:x-10,x1:x+10,y:KTOP+40,h:KF-KTOP-40,col:'#b070ff'}));}if(lt===44)e.beams=[];if(lt>64){e.done=0;e.trail=[];mansionKeikoMode(e,'walk');}}},
  eCross(e,B,t,r){const F=12,AP=22;if(t===F){kHide(e,true);e.wx=kClampX(M.x-(M.face||1)*60);}if(t>F&&t<F+AP)kFx(e,{type:'ring',x:e.wx,end:2,col:'#b070ff'});

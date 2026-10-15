@@ -489,14 +489,14 @@ for(const actor of ['umine','astarte']){
  for(;steps<6500&&run('M.seitenState')==='active';steps++){
   run(`(()=>{const e=M.enemies[0],d=e.x-M.x;mansionGuardKeys.clear();keys.shoot=true;keys.jump=true;keys.left=keys.right=false;if(!M.hurt)M.face=d<0?-1:1;if(M.actor==='astarte'&&!M.abilityCool)mansionAbility();
    const evade=e.mode==='crouch'||e.mode==='leap';
-   if(evade){if(e.mode==='crouch'&&e.modeT<=1){catEvade=M.x<e.fromX?-1:1;if(M.x<120)catEvade=1;if(M.x>392)catEvade=-1;}const safe=M.actor==='umine'&&Math.abs(M.x-e.targetX)>75&&Math.abs(d)>65;keys.left=!safe&&catEvade<0;keys.right=!safe&&catEvade>0;}
+   if(evade){if(e.mode==='crouch'&&e.modeT<=1){catEvade=M.x<e.fromX?-1:1;if(M.x<KEIKO_L+50)catEvade=1;if(M.x>KEIKO_R-50)catEvade=-1;}const safe=M.actor==='umine'&&Math.abs(M.x-e.targetX)>75&&Math.abs(d)>65;keys.left=!safe&&catEvade<0;keys.right=!safe&&catEvade>0;}
    else if(['rushWind','rush','clawWind','claw'].includes(e.mode)){
-    if(M.actor==='astarte'){if(Math.abs(d)<90){keys.left=d>0&&M.x>60;keys.right=d<0&&M.x<452;}if(M.ground&&((e.mode==='rush'&&Math.abs(d)<90)||(e.mode==='clawWind'&&e.modeT>=7&&Math.abs(d)<90)))inp.jumpPressed=true;}
+    if(M.actor==='astarte'){if(Math.abs(d)<90){keys.left=d>0&&M.x>KEIKO_L+6;keys.right=d<0&&M.x<KEIKO_R-6;}if(M.ground&&((e.mode==='rush'&&Math.abs(d)<90)||(e.mode==='clawWind'&&e.modeT>=7&&Math.abs(d)<90)))inp.jumpPressed=true;}
     else {if(e.mode==='rushWind'&&e.modeT<=1)catCross=d<0?-1:1;
     if(M.t<catCrossUntil){keys.left=catCross<0;keys.right=catCross>0;}
-    else{if(Math.abs(d)<90){keys.left=d>0&&M.x>60;keys.right=d<0&&M.x<452;}if(M.ground&&((e.mode==='rush'&&Math.abs(d)<80)||(e.mode==='clawWind'&&e.modeT>=7&&Math.abs(d)<90))){inp.jumpPressed=true;catCross=d<0?-1:1;catCrossUntil=M.t+38;keys.left=catCross<0;keys.right=catCross>0;}}}
+    else{if(Math.abs(d)<90){keys.left=d>0&&M.x>KEIKO_L+6;keys.right=d<0&&M.x<KEIKO_R-6;}if(M.ground&&((e.mode==='rush'&&Math.abs(d)<80)||(e.mode==='clawWind'&&e.modeT>=7&&Math.abs(d)<90))){inp.jumpPressed=true;catCross=d<0?-1:1;catCrossUntil=M.t+38;keys.left=catCross<0;keys.right=catCross>0;}}}
    }
-   else if(M.actor==='astarte'?Math.abs(d)>40:Math.abs(d)<100){if(M.actor==='astarte'){keys.right=d>0;keys.left=d<0;}else{keys.left=d>0&&M.x>65;keys.right=d<0&&M.x<447;}}
+   else if(M.actor==='astarte'?Math.abs(d)>40:Math.abs(d)<100){if(M.actor==='astarte'){keys.right=d>0;keys.left=d<0;}else{keys.left=d>0&&M.x>KEIKO_L+8;keys.right=d<0&&M.x<KEIKO_R-8;}}
    const wave=M.enemyShots.find(b=>b.kind==='songWave'&&(b.x-M.x)*b.vx<0&&Math.abs(b.x-M.x)<(M.actor==='astarte'?50:36));if(M.ground&&wave)inp.jumpPressed=true;if(M.actor==='umine'&&e.mode==='sing'&&M.y<232)keys.jump=false;})()`);run(SQBOT);
   if(run('M.enemies[0]?.mode')==='sing')seenSong=true;if(run('M.enemies[0]?.hp')<=32)seenRage=true;{const h0=run('M.hp');ticks(1);if(process.env.DBG&&run('M.hp')<h0)console.log('hit',actor,run('JSON.stringify([M.enemies[0]?.mode,M.enemies[0]?.sq,M.enemies[0]?.st,M.enemies[0]?.modeT,Math.round(M.x),Math.round(M.y),Math.round(M.enemies[0]?.x),M.enemies[0]?.hp,M.hp])'));}minHP=Math.min(minHP,run('M.hp'));
  }

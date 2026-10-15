@@ -12,13 +12,13 @@ function fight(id,upg){const B=run(`KEIKO_BOSSES.${id}`);
  assert(run('mansionKeikoActive()'),id+' fight starts '+run('JSON.stringify([M.keiko,M.talk&&M.talk.speaker,M.dead,M.hp])'));
  const seen=new Set();let hurt=0,last=run('M.hp'),losses=0,frames=0;
  while(frames<16000&&(run('M.keiko.state')==='active'||run('!!M.talk')&&run('M.keiko.state')!=='done')){if(run('!!M.talk')){losses++;if(losses>3)break;run('mansionTalkNext()');last=run('M.hp');continue;}
-  seen.add(bot());ticks(1);frames++;const hp=run('M.hp');if(hp<last)hurt+=last-hp;last=hp;}
+  seen.add(bot());ticks(1);frames++;const hp=run('M.hp');if(hp<last){hurt+=last-hp;if(process.env.DBG&&id==="eclipse")console.log("hit",run("(()=>{const e=M.enemies.find(e=>e.kind===\"keikoBoss\");return e.mode+\" \"+e.mt+\" ex\"+Math.round(e.x)+\" x\"+Math.round(M.x)+\" y\"+Math.round(M.y)})()"));}last=hp;}
  run('releaseAll()');return{B,seen,hurt,losses,frames,won:run('M.keiko.state')==='done'};}
 const res={};
 for(const id of ['vesper','lavis','nocturne','eclipse']){
  const r=fight(id,{hp:4,shot:2,slide:2});
  console.log(`  ${id}: ${r.frames} frames, damage ${r.hurt}, losses ${r.losses}, modes ${[...r.seen].join('/')}`);
- assert(r.won,id+' upgraded bot wins');assert.equal(r.losses,0,id+' fair with upgrades');
+ assert(r.won,id+' upgraded bot wins '+run('JSON.stringify([M.keiko&&M.keiko.state,M.x,M.y,M.hp,(M.enemies.find(e=>e.kind==="keikoBoss")||{}),KEIKO_L,KEIKO_R,M.talk&&M.talk.speaker])').slice(0,700));assert.equal(r.losses,0,id+' fair with upgrades');
  for(const m of new Set([...r.B.seq,...r.B.rageSeq]))assert(r.seen.has(m),id+' uses '+m);
  assert(r.B.hp>=220,'shade is beefy');
  assert(run(`M.flags.${r.B.flag}`),'flag set');assert.equal(run('M.shards'),3,'3 shards');

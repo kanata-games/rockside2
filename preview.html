@@ -103,7 +103,7 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 <script>
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.55';
+const GAME_VERSION = '2.0.0-test.56';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.
@@ -8171,22 +8171,22 @@ function mansionSparRetry(){M.sparState='ready';M.hp=mansionMaxHP();M.enemyShots
 function mansionAstarteGuide(){const lines=M.room==='cellar'?(M.flags.seal?['紋章をお持ちなら、封印の先へ進めますよ。\n水路の途切れには、気をつけてくださいね。']:['この先は、水脈の紋章がないと通れません。\n大広間の上階から、書庫を探してみましょう。']):M.room==='hall'?['上へ進むには、魔法の壁キックですね。\n壁へ向かって押しながら、跳んでみてください。']:M.room==='garden'?['お身体は、もう大丈夫そうですね。\nあの月のことは、私も少し調べておきます。']:['紫の扉の前で「調べる」と、行き先を選べますよ。\n拠点と、探索先の要所を繋ぐ扉です。','まだ通れない道は、覚えておくといいですね。\n新しい力を得たら、一緒に確かめましょう。'];if(M.room==='bedroom')lines.push(M.flags.astarteReward?'本番の手合わせも、いつでもどうぞ。\n護符の力が、海音ちゃんを支えてくれますよ。':'もっと確かめたいときは、本番の手合わせを。\n最後までできたら、護符をお贈りしますね。');if(M.room==='bedroom')lines.push('探索には、私もご一緒しますね。\n画面上の交代ボタンで、いつでも呼んでください。');mansionTalkShow('アスターテ',lines);if(M.room==='bedroom'){M.talk.offerFull=true;mansionUI();}}
 // Ground attack directions and rain targets are locked when telegraphed, never homing during strikes.
 function mansionAstarteAI(e){if(M.sparState!=='active')return;const phase=e.t%360,rage=e.hp<=e.maxHp/2,oldX=e.x;e.dir=M.x<e.x?-1:1;e.pose=-1;e.striking=false;
- if((phase<25||(phase>55&&phase<110)||(phase>145&&phase<165))&&Math.abs(M.x-e.x)>85){e.x=Math.max(250,Math.min(590,e.x+e.dir*(rage?1.65:1.25)));e.walkDistance=(e.walkDistance||0)+Math.abs(e.x-oldX);e.pose=4+(Math.floor(e.walkDistance/8)%4);}
+ if((phase<25||(phase>55&&phase<110)||(phase>145&&phase<165))&&Math.abs(M.x-e.x)>85){e.x=Math.max(KEIKO_L,Math.min(KEIKO_R,e.x+e.dir*(rage?1.65:1.25)));e.walkDistance=(e.walkDistance||0)+Math.abs(e.x-oldX);e.pose=4+(Math.floor(e.walkDistance/8)%4);}
  if((phase>=25&&phase<=44)||(phase>=115&&phase<=134))e.pose=15;
  if(phase===40||phase===130){const high=phase===130;M.enemyShots.push({kind:'crescent',x:e.x+e.dir*26,y:256-(high?24:10),vx:e.dir*(rage?2.7:2.2),vy:0});sfx('shot');}
  if(phase===175){e.slashDir=e.dir;sfx('warn');}
  if(phase>=175&&phase<=195){e.dir=e.slashDir||e.dir;e.pose=8;}
- if(phase>195&&phase<=215){e.dir=e.slashDir||e.dir;e.x=Math.max(250,Math.min(590,e.x+e.dir*(rage?4.6:4)));e.walkDistance=(e.walkDistance||0)+Math.abs(e.x-oldX);e.pose=4+(Math.floor(e.walkDistance/8)%4);}
+ if(phase>195&&phase<=215){e.dir=e.slashDir||e.dir;e.x=Math.max(KEIKO_L,Math.min(KEIKO_R,e.x+e.dir*(rage?4.6:4)));e.walkDistance=(e.walkDistance||0)+Math.abs(e.x-oldX);e.pose=4+(Math.floor(e.walkDistance/8)%4);}
  if(phase>=216&&phase<=225){e.dir=e.slashDir||e.dir;e.pose=9;e.striking=true;}
  if(phase===216){mansionBurst(e.x+e.dir*35,237,'#d1b3ff',12);sfx('shot');}
  if(phase>225&&phase<245){e.dir=e.slashDir||e.dir;e.pose=rage&&phase<235?8:11;}
- if(rage&&phase>=235&&phase<=242){e.dir=e.slashDir||e.dir;e.pose=10;e.striking=true;e.x=Math.max(250,Math.min(590,e.x+e.dir*1.5));}
+ if(rage&&phase>=235&&phase<=242){e.dir=e.slashDir||e.dir;e.pose=10;e.striking=true;e.x=Math.max(KEIKO_L,Math.min(KEIKO_R,e.x+e.dir*1.5));}
  if(e.striking){const front=(M.x-e.x)*e.dir;if(front>-10&&front<72&&M.y>230)mansionDamage(3,e.dir);}
  if(phase>=245&&phase<=250)e.pose=12;
- if(phase===250){e.leapFrom=e.x;e.leapTo=Math.max(260,Math.min(590,M.x+(e.x>M.x?-110:110)));sfx('warn');}
+ if(phase===250){e.leapFrom=e.x;e.leapTo=Math.max(KEIKO_L,Math.min(KEIKO_R,M.x+(e.x>M.x?-110:110)));sfx('warn');}
  if(phase>250&&phase<=295&&Number.isFinite(e.leapFrom)){const k=(phase-250)/45;e.x=e.leapFrom+(e.leapTo-e.leapFrom)*k;e.y=256-Math.sin(k*Math.PI)*72;e.pose=k<.5?13:14;}else e.y=256;
  if(phase>295&&phase<305)e.pose=12;
- if(rage&&phase===300){e.rainX=Math.max(248,Math.min(590,M.x));sfx('warn');}
+ if(rage&&phase===300){e.rainX=Math.max(KEIKO_L,Math.min(KEIKO_R,M.x));sfx('warn');}
  if(rage&&phase>305&&phase<=334)e.pose=15;
  if(rage&&phase===330&&Number.isFinite(e.rainX)){for(const dx of [-24,-12,0,12,24])M.enemyShots.push({kind:'star',x:e.rainX+dx,y:105,vx:0,vy:2.7});e.rainX=null;}
  if((phase>195&&phase<=215)||(phase>250&&phase<=295)){if(mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,[e.x-13,e.y-34,26,34]))mansionDamage(2,M.x<e.x?-1:1);}
@@ -8206,7 +8206,7 @@ function mansionSave(){try{localStorage.setItem(MANSION_KEY,JSON.stringify({vers
 function mansionSay(text,time=220){M.message=text;M.messageT=time;}
 function mansionStart(resume=false){mansionGuardRelease();M.guardFlash=0;const saved=resume?mansionRead():null;M.actor='umine';M.swapCool=0;M.abilityCool=0;M.castT=0;Object.assign(M,{hp:16,hurt:0,dead:0,t:0,flags:saved?.flags||{seal:false,boss:false,complete:false,seitenLeftArchive:false,archiveLatch:false,starShortcut:false,seitenDefeated:false,hoshiyomiDefeated:false},shards:saved?.shards||0,vialHP:saved?.vialHP||0,shardsTaken:saved?.shardsTaken||[],upg:saved?.upg||{},dropCount:0,hoshiTries:0,visited:saved?.visited||['bedroom'],portals:saved?.portals||[...MANSION_WARP_START],checkpoint:saved?.checkpoint||{room:'bedroom',x:110,y:208},map:false,talk:null,menuTab:'status',saved:!!saved,saveError:false});M.hp=mansionMaxHP();mansionEnter(M.checkpoint.room,M.checkpoint.x,M.checkpoint.y);setState('mansion');mansionSay(resume?'また、ここから探してみよう。':'紫の扉はワープ。普通の扉からも回廊へ進めるよ。');mansionUI();}
 function mansionEnter(room,x,y){mansionGuardRelease();M.guardFlash=0;Object.assign(M,{room,x,y,waterPlatform:null,slideJump:false,castT:0,sparState:'waiting',sparMode:'tutorial',sparReturn:null,diceReturn:null,diceState:'waiting',seitenState:M.flags.seitenDefeated?'done':'waiting',stepT:0,stepCool:0,clawQueued:false,walkDistance:0,vx:0,vy:0,h:MC.h,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,shots:[],enemyShots:[],fx:[],transition:16,near:null,prompt:''});mansionLiftEnter(room);mansionPropsEnter(room);M.enemies=MR[room].enemies.flatMap((e,i)=>mansionFoeSpawn(e,i));if(room==='seitenArena'&&!M.flags.seitenDefeated)M.enemies.push(mansionNewSeiten());mansionHoshiEnter(room);mansionKeikoEnter(room);if(MR[room].boss&&!M.flags.boss)M.enemies.push(mansionNewAstarte());if(!M.visited.includes(room))M.visited.push(room);mansionCamera(true);mansionSave();}
-function mansionSolids(){const r=MR[M.room];return [...r.floor,...r.blocks,...(M.waterPlatform?[M.waterPlatform.box]:[]),...(M.lift?[mansionLiftBox()]:[]),...(r.switchGate&&!M.flags[r.lever.flag]?[r.switchGate]:[]),...(r.topCaps||[[0,-16,r.w,16]]),...mansionHatchSolids(),[-16,0,16,r.h],[r.w,0,16,r.h],...(r.gate&&!M.flags.seal?[r.gate]:[]),...(M.room==='seitenArena'&&M.seitenState==='active'?[[0,0,40,256],[472,0,40,256]]:[]),...mansionKeikoArenaSolids(),...(M.room==='garden'&&M.sparState==='active'?[[208,0,12,288]]:[])];}
+function mansionSolids(){const r=MR[M.room];return [...r.floor,...r.blocks,...(M.waterPlatform?[M.waterPlatform.box]:[]),...(M.lift?[mansionLiftBox()]:[]),...(r.switchGate&&!M.flags[r.lever.flag]?[r.switchGate]:[]),...(r.topCaps||[[0,-16,r.w,16]]),...mansionHatchSolids(),[-16,0,16,r.h],[r.w,0,16,r.h],...(r.gate&&!M.flags.seal?[r.gate]:[]),...(M.room==='seitenArena'&&M.seitenState==='active'?[[0,0,40,256],[472,0,40,256]]:[]),...(typeof arenaWalls==='function'?arenaWalls():[]),...mansionKeikoArenaSolids(),...(M.room==='garden'&&M.sparState==='active'?[[208,0,12,288]]:[])];}
 function mansionOverlap(x,y,w,h,b){return x<b[0]+b[2]&&x+w>b[0]&&y<b[1]+b[3]&&y+h>b[1];}
 function mansionFits(x,y,h=MC.h){return !mansionSolids().some(b=>mansionOverlap(x-MC.w/2,y-h,MC.w,h,b));}
 function mansionBurst(x,y,color='#8beeff',n=9){for(let i=0;i<n;i++)M.fx.push({x,y,vx:Math.cos(i/n*6.28)*(1+i%3),vy:Math.sin(i/n*6.28)*(1+i%3),life:20+i%7,color});}
@@ -8222,10 +8222,17 @@ function mansionUse(){if(mansionHatchUse())return;if(M.sparMode==='full'||M.dice
 function mansionBossZoomed(z){return M.bossZoom&&M.bossZoom<z?M.bossZoom:z;}
 function mansionView(){const zoom=mansionBossZoomed((M.room==='gallery'&&M.galleryWide!==false)||['archiveInner','clockTower','moonReservoir','starPassage','forbiddenArchive','seitenArena'].includes(M.room)?.8:1);return{zoom,w:VW/zoom,h:VH/zoom};}
 function mansionGalleryViewToggle(){if(M.room!=='gallery'||!M.map)return;M.galleryWide=M.galleryWide===false;mansionCamera(true);mansionUI();}
+const ARENA_CENTER={garden:420},ARENA_TY=40;
+function arenaWindowX(room){const r=MR[room];return Math.max(0,Math.min(r.w-VW,(ARENA_CENTER[room]??r.w/2)-VW/2));}
+// boss bounds follow the window: bosses stay 20px inside it, the player is walled at its edges
+function arenaSet(x0){if(x0==null){KEIKO_L=40;KEIKO_R=472;HOSHI_L=40;HOSHI_R=472;return;}KEIKO_L=HOSHI_L=x0+16;KEIKO_R=HOSHI_R=x0+VW-16;}
+function arenaWalls(){const C=M.bossCam;if(!C)return[];const r=MR[M.room];return[[KEIKO_L-MC.w/2-16,0,16,r.h],[KEIKO_R+MC.w/2,0,16,r.h]];} // player centre stays within KEIKO_L..KEIKO_R
 function mansionCamera(snap=false){const bf=typeof mansionBossFocus==='function'?mansionBossFocus():null,R0=MR[M.room];
  // test.55: boss fights use ONE fixed zoom + locked Y, chosen at fight start (whole arena width, min .5); X fixed if it fits, else slow horizontal follow
- if(bf){if(!M.bossCam||M.bossCam.e!==bf||M.bossCam.room!==M.room){M.bossZoom=Math.max(.5,Math.min(1,VW/R0.w));const v=mansionView();M.bossCam={e:bf,room:M.room,zoom:M.bossZoom,ty:v.h>R0.h?(R0.h-v.h)*.5:Math.max(0,Math.min(R0.h-v.h,M.y-158/v.zoom)),fit:v.w>=R0.w-1};snap=true;}
-  const C=M.bossCam;M.bossZoom=C.zoom;const v=mansionView();const tx=C.fit?(R0.w-v.w)/2:Math.max(0,Math.min(R0.w-v.w,(M.x+bf.x)/2-v.w/2));M.camX=snap||C.fit?tx:M.camX+(tx-M.camX)*.06;M.camY=C.ty;return;}
+ // test.56: one-screen boss arenas — zoom 1, camera fully fixed on a 256px window; invisible walls keep the fight inside it
+ if(bf){if(!M.bossCam||M.bossCam.e!==bf||M.bossCam.room!==M.room){M.bossZoom=1;const x0=arenaWindowX(M.room);M.bossCam={e:bf,room:M.room,zoom:1,x0,ty:R0.h>VH?ARENA_TY:0};arenaSet(x0);M.x=Math.max(KEIKO_L,Math.min(KEIKO_R,M.x));bf.x=Math.max(KEIKO_L,Math.min(KEIKO_R,bf.x));if(bf.tx!=null)bf.tx=Math.max(KEIKO_L,Math.min(KEIKO_R,bf.tx));}
+  const C=M.bossCam;if(M.x<KEIKO_L-2||M.x>KEIKO_R+2)M.x=Math.max(KEIKO_L,Math.min(KEIKO_R,M.x));M.bossZoom=1;M.camX=C.x0;M.camY=C.ty;return;}
+ if(M.bossCam)arenaSet(null);
  M.bossCam=null;M.bossZoom=0;
  {const r=R0,v=mansionView(),focus=M.x,tx=Math.max(0,Math.min(r.w-v.w,focus-v.w*.43)),ty=v.h>r.h?(r.h-v.h)*.62:Math.max(0,Math.min(r.h-v.h,M.y-158/v.zoom));M.camX=snap?tx:M.camX+(tx-M.camX)*.17;M.camY=snap?ty:M.camY+(ty-M.camY)*.14;}}
 
@@ -8526,10 +8533,10 @@ function mansionDiceAI(e){
  else if(p<184){e.anim='throwDice';const count=e.roll>=3?3:e.roll===2?2:1,spacing=24;if(p>=112&&(p-112)%spacing===0&&(p-112)/spacing<count){M.enemyShots.push({kind:'dice',x:e.x+e.dir*25,y:e.y-22,vx:e.dir*(2.3+e.roll*.12+(rage?.25:0)),vy:-1.2,damage:e.roll>=5?3:2});sfx('shot');}}
  else if(p<225){if(p===184)e.dir=M.x<e.x?-1:1;e.anim='windup';}
  else if(p<270){e.anim='flickCards';const count=e.roll>=4?3:1;if((p-225)%18===0&&(p-225)/18<count){M.enemyShots.push({kind:'card',x:e.x+e.dir*25,y:233,vx:e.dir*(3.1+(rage?.3:0)),vy:0,damage:2});sfx('shot');}}
- else if(p<300){e.anim='windup';if(p===280){e.jumpFrom=e.x;e.jumpTo=Math.max(40,Math.min(472,M.x+(M.x<e.x?-65:65)));e.rainX=e.roll===6?Math.max(54,Math.min(458,M.x)):null;}}
+ else if(p<300){e.anim='windup';if(p===280){e.jumpFrom=e.x;e.jumpTo=Math.max(KEIKO_L,Math.min(KEIKO_R,M.x+(M.x<e.x?-65:65)));e.rainX=e.roll===6?Math.max(KEIKO_L,Math.min(KEIKO_R,M.x)):null;}}
  else if(p<340){if(p===300&&e.rainX!=null){for(const dx of [-56,-28,0,28,56])M.enemyShots.push({kind:'chip',x:e.rainX+dx,y:100,vx:0,vy:3.1,damage:3});}const k=(p-300)/40;e.x=e.jumpFrom+(e.jumpTo-e.jumpFrom)*k;e.y=256-Math.sin(k*Math.PI)*85;e.dir=M.x<e.x?-1:1;e.anim='walk';}
  else {e.y=256;e.anim='idle';}
- e.x=Math.max(32,Math.min(480,e.x));
+ e.x=Math.max(KEIKO_L,Math.min(KEIKO_R,e.x));
 }
 // High contrast face and pips stay readable at the game's native resolution.
 function mansionRollFace(x,y,n,rolling=false){
@@ -8564,11 +8571,11 @@ function mansionSeitenWin(){const gift=mansionSeitenAmulet();M.seitenState='done
 function mansionSeitenAfterTalk(){const gift=M.flags.seitenDefeated&&mansionSeitenAmulet(),lines=['海音ちゃん……おかえり。\n今日は、少しだけ隣にいてくれる？'];if(gift){lines.push('渡したかったもの、まだ持ってたの。\n……受け取ってくれる？',SEITEN_AMULET_LINE);mansionSave();}lines.push('お出かけなら、私も連れていって。\n海音ちゃんの隣なら、寂しくないから。','……また追いかけっこ、する？\n今度は、拗ねてるんじゃないよ。\n海音ちゃんと遊びたいだけ。');mansionTalkShow('青天',lines);M.talk.offerSeiten=true;mansionUI();}
 function mansionSeitenChallenge(){if(M.room!=='seitenArena'||M.talk?.speaker!=='青天'||!M.talk.offerSeiten||!M.flags.seitenDefeated)return false;mansionTalkClose(true);M.seitenState='ready';M.enemies=[mansionNewSeiten()];M.messageT=0;mansionTalkShow('青天',['……ふふ。今日は、置いていかれなかった。\nじゃあ、いっぱい遊ぼうね。'],'seitenStart');return true;}
 // Aim and facing lock at the start of each windup. Released attacks never follow the player.
-function mansionSeitenMode(e,mode){e.mode=mode;e.modeT=0;if(mode==='crouch'||mode==='rushWind'){e.fromX=e.x;const max=mode==='rushWind'?(e.hp<=e.maxHp/2?260:220):(e.multi?270:220);e.targetX=Math.max(54,Math.min(458,Math.max(e.x-max,Math.min(e.x+max,M.x+M.vx*8))));e.dir=e.targetX<e.x?-1:1;}
+function mansionSeitenMode(e,mode){e.mode=mode;e.modeT=0;if(mode==='crouch'||mode==='rushWind'){e.fromX=e.x;const max=mode==='rushWind'?(e.hp<=e.maxHp/2?260:220):(e.multi?270:220);e.targetX=Math.max(KEIKO_L,Math.min(KEIKO_R,Math.max(e.x-max,Math.min(e.x+max,M.x+M.vx*8))));e.dir=e.targetX<e.x?-1:1;}
  if(mode==='inhale'){e.dir=M.x<e.x?-1:1;e.singingRage=e.hp<=e.maxHp/2;e.targetX=null;}if(mode==='idle')e.targetX=null;
 }
 function mansionSeitenAI(e){if(M.seitenState!=='active')return;const rage=e.hp<=e.maxHp/2,t=++e.modeT;e.trail=e.trail.filter(p=>++p.age<14);
- if(e.mode==='idle'){e.y=256;e.dir=M.x<e.x?-1:1;e.pose=-1;if(Math.abs(M.x-e.x)>80){const old=e.x;e.x=Math.max(54,Math.min(458,e.x+e.dir*(rage?2:1.65)));e.walkDistance+=Math.abs(e.x-old);e.pose=Math.floor(e.walkDistance/5)%2;}if(t>=(rage?16:22)){e.turn++;const next=['crouch','inhale','rushWind','crouch'][((e.turn-1)%4)];e.multi=rage;e.leaps=rage?3:2;mansionSeitenMode(e,next);sfx('warn');}}
+ if(e.mode==='idle'){e.y=256;e.dir=M.x<e.x?-1:1;e.pose=-1;if(Math.abs(M.x-e.x)>80){const old=e.x;e.x=Math.max(KEIKO_L,Math.min(KEIKO_R,e.x+e.dir*(rage?2:1.65)));e.walkDistance+=Math.abs(e.x-old);e.pose=Math.floor(e.walkDistance/5)%2;}if(t>=(rage?16:22)){e.turn++;const next=['crouch','inhale','rushWind','crouch'][((e.turn-1)%4)];e.multi=rage;e.leaps=rage?3:2;mansionSeitenMode(e,next);sfx('warn');}}
  else if(e.mode==='crouch'){e.pose=2;e.y=256;if(t>=(e.multi?20:26)){mansionSeitenMode(e,'leap');sfx('swoosh');}}
  else if(e.mode==='leap'){const duration=e.multi?30:36,k=Math.min(1,t/duration);e.x=e.fromX+(e.targetX-e.fromX)*k;e.y=256-Math.sin(k*Math.PI)*(e.multi?90:80);e.pose=k<.36?3:4;if(t%4===0)e.trail.push({x:e.x,y:e.y,pose:e.pose,dir:e.dir,age:0});if(k===1){e.y=256;mansionSeitenMode(e,'land');mansionBurst(e.x,253,'#f7adbb',8);sfx('land');}}
  else if(e.mode==='land'){e.pose=5;e.y=256;if(t>=(e.multi?12:16)){if(--e.leaps>0){mansionSeitenMode(e,'crouch');sfx('warn');}else mansionSeitenMode(e,'idle');}}
@@ -9090,7 +9097,7 @@ function mansionUpgradeHTML(){return `<h2>星詠みの強化</h2><p>「欠片ち
 function mansionUpgradeOpen(){M.map=true;M.menuTab='upgrade';M.talk=null;releaseAll();mansionUI();}
 
 // ---------------------------------------------------------------- boss ダーク星詠み
-const HOSHI_FLOOR=224,HOSHI_L=40,HOSHI_R=472;
+const HOSHI_FLOOR=224;let HOSHI_L=40,HOSHI_R=472;
 function mansionNewHoshi(){return{kind:'hoshiBoss',id:'hoshi',x:400,y:HOSHI_FLOOR,face:-1,dir:-1,hp:130,maxHp:130,lift:0,t:0,st:0,flash:0,mode:'idle',mt:0,cycle:0,gaps:[],nextGaps:null};}
 function mansionHoshiEnter(room){if(room!=='obsDome')return;if(M.flags.hoshiyomiDefeated){M.hoshiState='done';return;}M.hoshiState='waiting';M.enemies=M.enemies.filter(e=>e.kind!=='hoshiBoss');M.enemies.push(mansionNewHoshi());}
 function mansionHoshiTrigger(){if(M.room!=='obsDome'||M.hoshiState!=='waiting'||M.map||M.x<70)return;M.hoshiState='ready';const again=M.hoshiTries>0;M.hoshiTries=(M.hoshiTries||0)+1;
@@ -9163,7 +9170,7 @@ function mansionHatchDraw(){const h=MANSION_HATCHES[M.room];if(!h)return;if(M.ha
 //  falling things show their safe gaps first. Every attack telegraphs before it can hurt.
 //  Art per partner: assets/<name>-sequel.png/.json (hi-res 512 cells) → old normal sheet → placeholder.
 // =====================================================================
-const KEIKO_FLOOR=224,KEIKO_L=40,KEIKO_R=472;
+const KEIKO_FLOOR=224;let KEIKO_L=40,KEIKO_R=472; // test.56: set per fight to the one-screen window (arenaSet)
 const KEIKO_BOSSES={
  tobiume:{room:'kTobi',name:'ハネウメ',real:'飛梅',hp:220,col:'#ff8cc0',sub:'#ffd6ea',art:'tobiume',normal:'tobiume',flag:'keikoTobiume',
   seq:['hFan','hDive','hFan','hKick'],rageSeq:['hFan','hKick','hDive','hFan','hDive','hKick'],hover:56,
@@ -9172,7 +9179,7 @@ const KEIKO_BOSSES={
   fake:['あっ、海音ちゃーん！ 飛梅ちゃんだよ！ 迎えに来てくれたんだね！','……あれ？ 海音ちゃんって、こんなに背が低かったっけ？ まあいっか、梅干し食べる？'],pre:['……ぷぷっ、バレちゃった？ あたしは跳梅（ハネウメ）！ 本物の飛梅は、そこの檻の中だよ。','返してほしかったら、勝ってみな！ あたしの方が飛梅より、ずーっと高く跳べるんだから！'],
   again:['ぴょーん、あたしの勝ち！ ……でもまだやる？ いいよ、跳ね足りないし！'],vanish:['あいたたた……負けちゃった。あたし、月の光でできた影法師なんだ。','本物は返してあげる。……じゃあね、ぴょーん！'],rematch:['あのそっくりさん、月が出てればまた出てくるみたい。もう一回、腕試ししてく？'],
   post:['海音ちゃーん！ 出られたー！ ありがとう！ あのそっくりさん、あたしのマネばっかりするんだもん！','海音ちゃんがあたしのために怒ってくれたの、ちゃんと見てたよ。……へへ、ちょっと嬉しかった。腕試しなら、いつでも飛梅ちゃんが付き合うからね！','はい、星詠みの欠片3つ！ これからは一緒に戦おうね！']},
- neenia:{room:'kNeen',name:'ネムニア',real:'ネーニア',hp:250,col:'#8fb0ff',sub:'#e4ecff',art:'neenia',normal:'neenia',flag:'keikoNeenia',
+ neenia:{room:'kNeen',name:'ネムニア',real:'ネーニア',hp:300,col:'#8fb0ff',sub:'#e4ecff',art:'neenia',normal:'neenia',flag:'keikoNeenia',
   seq:['nAim','nLob','nBack','rain','nRico'],rageSeq:['snare','nAim','nBack','nLob','nRico','rain'],
   volley:{n:2,rn:3,pat:'mix',speed:3.0,kind:'arrow'},rain:{w:52,rw:46},snare:{n:2,rn:3},
   pose:{volley:'attack',rain:'attack',snare:'attack',walk:'walk',idle:'idle'},
@@ -9206,13 +9213,13 @@ const KEIKO_BOSSES={
   pose:{volley:'attack',rain:'attack',snare:'attack',walk:'walk',idle:'idle'},
   pre:['書架の裏は、霧の狩場。……わたしはラヴィス。','この霧の中で、あなたの足音だけがよく聞こえる。……狩りの時間よ。'],
   again:['霧はまだ晴れていない。……弓を引き直すわ。'],post:['……霧が、晴れていく。見事ね。','この矢羽を。影はあと少し。全部そろえば、あなたは影を纏える。']},
- nocturne:{shade:true,room:'sLily',name:'夜想ノクターン',hp:340,col:'#a03ab0',sub:'#ffc8f4',art:'shade_lily',normal:'lily_dark',flag:'shadeLily',wait:[44,30],
+ nocturne:{shade:true,room:'sLily',name:'夜想ノクターン',hp:260,col:'#a03ab0',sub:'#ffc8f4',art:'shade_lily',normal:'lily_dark',flag:'shadeLily',wait:[44,30],
   seq:['nScreech','nSpin','nDive','lSong','lStars'],rageSeq:['lHearts','nSpin','nScreech','nDive','nSpin','lStars'],super:'nEncore',
   wave:{n:2,rn:2,speed:3.0},volley:{n:3,rn:4,pat:'high',speed:3.0,kind:'note'},rain:{w:50,rw:44},
   pose:{wave:'attack',volley:'attack',rain:'attack',walk:'walk',idle:'idle'},
   pre:['ようこそ、水底の劇場へ。わたしはノクターン——真夜中だけの歌姫。','観客はあなた一人。拍手の代わりに、悲鳴を聞かせて？'],
   again:['カーテンコールには早いわ。……もう一曲。'],post:['……拍手、聞こえた。あなたの勝ち。','夜の旋律をあげる。影の衣は、すぐそこよ。']},
- eclipse:{shade:true,morph:true,room:'sStar',name:'蝕王エクリプス',hp:380,col:'#5a3aa0',sub:'#d8c0ff',art:'shade_star',normal:'disaster_dark',flag:'shadeStar',wait:[42,28],
+ eclipse:{shade:true,morph:true,room:'sStar',name:'蝕王エクリプス',hp:280,col:'#5a3aa0',sub:'#d8c0ff',art:'shade_star',normal:'disaster_dark',flag:'shadeStar',wait:[42,28],
   seq:['eLunge','dLance','eCross','sword','dSpear'],rageSeq:['dWhip','axe','eCross','eLunge','dLance','eCross'],super:'eTotal',
   sword:{n:2,rn:3,speed:3.4},spear:{speed:7},axe:{},scythe:{},bow:{n:3,rn:4,pat:'alt',speed:3.6,kind:'arrow'},
   pose:{sword:'sword',spear:'spear',axe:'axe',scythe:'scythe',bow:'bow',walk:'idle',idle:'idle'},
@@ -9246,7 +9253,7 @@ function mansionKeikoEnter(room){M.keiko=null;const id=KEIKO_BY_ROOM[room];if(!i
 function mansionKeikoBoss(){return M.enemies.find(e=>e.kind==='keikoBoss');}
 function mansionKeikoTrigger(){const k=M.keiko;if(!k||k.state!=='waiting'||M.map||M.x<64)return;const B=KEIKO_BOSSES[k.id];
  if(M.flags[B.flag]){k.state='idleDone';return;}k.state='ready';if(B.shade){mansionTalkShow(B.name,B.pre,mansionKeikoStart);return;}mansionTalkShow(B.real+'？',B.fake,()=>{mansionBurst(mansionKeikoBoss().x,KEIKO_FLOOR-24,'#c8b0ff',16);mansionTalkShow(B.name,B.pre,mansionKeikoStart);});}
-function mansionKeikoStart(){const k=M.keiko;if(!k)return;k.state='active';const e=mansionKeikoBoss();Object.assign(e,mansionKeikoNew(k.id));e.x=M.x<256?400:112;e.mode='walk';M.enemyShots=[];M.map=false;}
+function mansionKeikoStart(){const k=M.keiko;if(!k)return;k.state='active';const e=mansionKeikoBoss();Object.assign(e,mansionKeikoNew(k.id));e.x=M.x<(KEIKO_L+KEIKO_R)/2?KEIKO_R-24:KEIKO_L+24;e.mode='walk';M.enemyShots=[];M.map=false;}
 function mansionKeikoRematch(){const k=M.keiko;if(!k)return;M.flags[KEIKO_BOSSES[k.id].flag+'Rematch']=true;mansionKeikoStart();}
 function mansionKeikoActive(){return !!(M.keiko&&M.keiko.state==='active');}
 function mansionKeikoArenaSolids(){return mansionKeikoActive()?[[0,0,24,256],[MR[M.room].w-24,0,24,256]]:[];}
@@ -9550,10 +9557,10 @@ const KEIKO_MOVES={
   if(lt===DUR){e.beams=[];juiceFlash('#ff4a6a',8);}
   if(lt>DUR+60)kEnd(e);},
  // ===== 蝕王エクリプス (sword with purple trail / cannon orb) =====
- eLunge(e,B,t,r){const TELE=r?28:36;if(t===1){e.edge=e.x<M.x?KEIKO_L:KEIKO_R;e.trail=[];}
+ eLunge(e,B,t,r){const TELE=r?28:36;if(t===1){e.edge=e.x<M.x?KEIKO_L+20:KEIKO_R-20;e.trail=[];}
   if(t<=TELE){const d=e.edge-e.x;e.x+=Math.sign(d)*Math.min(Math.abs(d),7);kFaceP(e);if(t>TELE-20)kFx(e,{type:'line',x0:e.x,x1:e.face>0?KEIKO_R+8:KEIKO_L-8,y:KF-14,end:2,col:(t&4)?'#ffffff':'#b070ff'});}
-  else if(e.trail.length<200&&e.x>KEIKO_L-4&&e.x<KEIKO_R+4){e.x+=e.face*(r?8:7);if(t%2===0)e.trail.push(e.x);mansionBurst(e.x-e.face*10,KF-14,'#8a3aff',1);if(e.x<=KEIKO_L||e.x>=KEIKO_R){e.done=t;juiceShake(3,8);
-    e.pillars=[];const xs=e.trail.filter((x,i)=>i%3===0);for(let i=0;i<xs.length;i++)if(i%3!==1)e.pillars.push(xs[i]);}}
+  else if(e.trail.length<200&&e.x>KEIKO_L-4&&e.x<KEIKO_R+4){e.x+=e.face*(r?8:7);if(t%2===0)e.trail.push(e.x);mansionBurst(e.x-e.face*10,KF-14,'#8a3aff',1);if(e.x<=KEIKO_L+20&&e.face<0||e.x>=KEIKO_R-20&&e.face>0){e.done=t;juiceShake(3,8);
+    e.pillars=[];const xs=e.trail.filter((x,i)=>i%3===0&&x>KEIKO_L+30&&x<KEIKO_R-30);for(let i=0;i<xs.length;i++)if(i%2===0)e.pillars.push(xs[i]);}}
   if(e.done){const lt=t-e.done;if(lt<30)for(const x of e.pillars)kFx(e,{type:'col',x,w:20,end:2,col:lt>16?'#ffffff':'#8a3aff'});
    if(lt===30){juiceShake(4,10);sfx('hit');e.beams=e.pillars.map(x=>({x0:x-10,x1:x+10,y:KTOP+40,h:KF-KTOP-40,col:'#b070ff'}));}if(lt===44)e.beams=[];if(lt>64){e.done=0;e.trail=[];mansionKeikoMode(e,'walk');}}},
  eCross(e,B,t,r){const F=12,AP=22;if(t===F){kHide(e,true);e.wx=kClampX(M.x-(M.face||1)*60);}if(t>F&&t<F+AP)kFx(e,{type:'ring',x:e.wx,end:2,col:'#b070ff'});
@@ -9719,7 +9726,7 @@ const SQ_MOVES={
  // ---------------- 青天 ----------------
  sSkyPounce(e,t,r){if(t<=20){e.pose=2;e.y=SQF;if(t===1){e.dir=M.x<e.x?-1:1;sfx('warn');}kFx(e,{type:'glow',x:e.x,y:SQF-4,r:3+t/5,col:'#ff7fae',end:2});return;}
   if(t<=40){e.pose=3;e.y=SQF-(t-20)*15;if(t===21){sfx('swoosh');juiceShake(2,6);}return;}
-  if(t<=70){e.y=-60;if(t<=54)e.tx=Math.max(54,Math.min(458,M.x));sqMark(e,e.tx,30,t>54?'#ffffff':'#ff7fae');if(!fxOf(e,'sky_beam'))sqCol(e,e.tx,24,'#ff7fae');else if(t===55)KFXL.push({ef:fxOf(e,'sky_beam'),x:e.tx,y:SQF,t:0,flip:1,sx:1,sy:2.8,row:0,loop:26});return;}
+  if(t<=70){e.y=-60;if(t<=54)e.tx=Math.max(KEIKO_L,Math.min(KEIKO_R,M.x));sqMark(e,e.tx,30,t>54?'#ffffff':'#ff7fae');if(!fxOf(e,'sky_beam'))sqCol(e,e.tx,24,'#ff7fae');else if(t===55)KFXL.push({ef:fxOf(e,'sky_beam'),x:e.tx,y:SQF,t:0,flip:1,sx:1,sy:2.8,row:0,loop:26});return;}
   if(t<=80){if(t===71)fxSpawn(e,'slash',e.tx,SQF-40,{rot:Math.PI/2,sx:.6,sy:.6});sqMark(e,e.tx,30,'#ffffff');e.x=e.tx;e.pose=4;e.y=Math.min(SQF,-60+(t-70)*32);sqTouch(e,[e.x-13,e.y-34,26,34],3);if(e.y>=SQF){e.y=SQF;}return;}
   if(t===81){e.y=SQF;e.pose=5;juiceShake(5,14);sfx('land');mansionBurst(e.x,SQF-3,'#ffaac5',14);sqWave(e,e.x,r?2.8:2.4,'#ff7fae');}
   if(t>(r?96:104))return true;},
@@ -9729,13 +9736,13 @@ const SQ_MOVES={
   if(t>31+V*30+20)return true;},
  sLullaby(e,t,r){ // super: ソラノコエ・ララバイ
   if(t===1){juiceCut('ソラノコエ・ララバイ','#ff7fae','青天');fxSpawn(e,'aura',e.x,e.y,{follow:true,loop:180});}
-  if(t<=40){e.pose=6;e.x+=(256-e.x)*.08;e.y=SQF-Math.min(56,t*1.6);return;}
+  if(t<=40){e.pose=6;e.x+=((KEIKO_L+KEIKO_R)/2-e.x)*.08;e.y=SQF-Math.min(56,t*1.6);return;}
   e.pose=7;const cy=e.y-24;for(let w=0;w<3;w++){const at=60+w*44,gap=[3,1,5][w];
-   if(t>at-26&&t<at){const ga=(gap+1.5)*Math.PI*2/14;kFx(e,{type:'seg',x0:e.x,y0:cy,x1:e.x+Math.cos(ga)*300,y1:cy+Math.sin(ga)*300,col:'#9fe8ff',end:2});kFx(e,{type:'sqsafe',x:Math.max(60,Math.min(452,e.x+(SQF-cy)/Math.tan(ga))),w:36,end:2});}
+   if(t>at-26&&t<at){const ga=(gap+1.5)*Math.PI*2/14;kFx(e,{type:'seg',x0:e.x,y0:cy,x1:e.x+Math.cos(ga)*300,y1:cy+Math.sin(ga)*300,col:'#9fe8ff',end:2});kFx(e,{type:'sqsafe',x:Math.max(KEIKO_L,Math.min(KEIKO_R,e.x+(SQF-cy)/Math.tan(ga))),w:36,end:2});}
    if(t===at){juiceShake(3,10);juiceFlash('#ff7fae',5);sfx('song');fxSpawn(e,'noteBurst',e.x,cy);for(let k=0;k<14;k++){if(k>=gap&&k<=gap+2)continue;const a=k*Math.PI*2/14;kb(e,{x:e.x,y:cy,vx:Math.cos(a)*1.6,vy:Math.sin(a)*1.6,shape:'note',life:260});}}}
   if(t>60+3*44+30){e.y=Math.min(SQF,e.y+3);if(e.y>=SQF)return true;}},
  // ---------------- ダイスロール ----------------
- dSlam(e,t,r){if(t<=24){e.anim='windup';if(t===1){e.dir=M.x<e.x?-1:1;e.jf=e.x;sfx('warn');}if(t<=16)e.jt=Math.max(40,Math.min(472,M.x));sqMark(e,e.jt,34,t>16?'#ffffff':'#ffcc6f');return;}
+ dSlam(e,t,r){if(t<=24){e.anim='windup';if(t===1){e.dir=M.x<e.x?-1:1;e.jf=e.x;sfx('warn');}if(t<=16)e.jt=Math.max(KEIKO_L,Math.min(KEIKO_R,M.x));sqMark(e,e.jt,34,t>16?'#ffffff':'#ffcc6f');return;}
   if(t<=64){const k=(t-24)/40;e.anim='walk';e.x=e.jf+(e.jt-e.jf)*k;e.y=SQF-Math.sin(k*Math.PI)*100;sqMark(e,e.jt,34,'#ffffff');if(k>.5)sqTouch(e,[e.x-13,e.y-36,26,36],3);return;}
   if(t===65){e.y=SQF;e.anim='idle';juiceShake(5,14);sfx('land');mansionBurst(e.x,SQF-3,'#ffe2a0',14);sqWave(e,e.x,r?2.8:2.4,'#ffcc6f');fxSpawn(e,'roll_impact',e.x,SQF-20,{row:Math.floor(Math.random()*6)});for(const s of[-1,1])M.enemyShots.push({kind:'dice',x:e.x+s*8,y:SQF-30,vx:s*1.4,vy:-3,damage:2});}
   if(t>100)return true;},
@@ -9745,13 +9752,13 @@ const SQ_MOVES={
    if(t===at){fxSpawn(e,'slash',e.x+e.dir*20,SQF-20,{flip:e.dir,sx:.5,sy:.5});M.enemyShots.push({kind:'card',x:e.x+e.dir*22,y:hi?233:250,vx:e.dir*2.7,vy:0,damage:2});sfx('shot');}}
   if(t>30+N*EV+40)return true;},
  dJackpot(e,t,r){ // super: ジャックポット・ナイト
-  if(e.faces)for(let k=0;k<3;k++)kFx(e,{type:'die',x:176+k*80,y:100,n:e.faces[k]||1+((t>>2)+k)%6,rolling:!e.faces[k],end:2});
+  if(e.faces)for(let k=0;k<3;k++)kFx(e,{type:'die',x:(KEIKO_L+KEIKO_R)/2+(k-1)*56,y:100,n:e.faces[k]||1+((t>>2)+k)%6,rolling:!e.faces[k],end:2});
   if(t===1){juiceCut('ジャックポット・ナイト','#ffcc6f','ダイスロール');fxSpawn(e,'aura',e.x,e.y,{follow:true,loop:120});e.faces=[0,0,0];}
   e.anim=t<100?'windup':'throwDice';e.y=SQF;
-  for(let k=0;k<3;k++){if(t===50+k*16){e.faces[k]=1+Math.floor(Math.random()*6);sfx('start');juiceShake(2,4);fxSpawn(e,'roll_impact',176+k*80,100,{row:e.faces[k]-1,sx:.7,sy:.7});}}
-  for(let k=0;k<3;k++){const at=110+k*56;if(t===at-40){const pl=Math.floor((Math.max(40,Math.min(471,M.x))-40)/72);e.safe=Math.max(0,Math.min(5,pl+((e.faces[k]%3)-1)));}
-   if(t>at-40&&t<at)for(let l=0;l<6;l++){const x=40+l*72+36;if(l===e.safe)kFx(e,{type:'sqsafe',x,w:72,end:2});else sqCol(e,x,72,t>=at-12?'#ffffff':'#ffad42');}
-   if(t===at){sfx('shot');for(let l=0;l<6;l++)if(l!==e.safe)for(const dx of[-24,0,24])M.enemyShots.push({kind:'chip',x:40+l*72+36+dx,y:96,vx:0,vy:3,damage:2});}}
+  for(let k=0;k<3;k++){if(t===50+k*16){e.faces[k]=1+Math.floor(Math.random()*6);sfx('start');juiceShake(2,4);fxSpawn(e,'roll_impact',(KEIKO_L+KEIKO_R)/2+(k-1)*56,100,{row:e.faces[k]-1,sx:.7,sy:.7});}}
+  for(let k=0;k<3;k++){const at=110+k*56;if(t===at-40){const LW=(KEIKO_R-KEIKO_L)/4,pl=Math.floor((Math.max(KEIKO_L,Math.min(KEIKO_R-1,M.x))-KEIKO_L)/LW);e.safe=Math.max(0,Math.min(3,pl+((e.faces[k]%3)-1)));}
+   if(t>at-40&&t<at)for(let l=0;l<4;l++){const LW=(KEIKO_R-KEIKO_L)/4,x=KEIKO_L+l*LW+LW/2;if(l===e.safe)kFx(e,{type:'sqsafe',x,w:LW,end:2});else sqCol(e,x,LW,t>=at-12?'#ffffff':'#ffad42');}
+   if(t===at){sfx('shot');for(let l=0;l<4;l++)if(l!==e.safe)for(const dx of[-16,0,16])M.enemyShots.push({kind:'chip',x:KEIKO_L+l*(KEIKO_R-KEIKO_L)/4+(KEIKO_R-KEIKO_L)/8+dx,y:96,vx:0,vy:3,damage:2});}}
   if(t>110+3*56+40)return true;},
  // ---------------- アスターテ (tutorial: slow, every attack shown long before) ----------------
  aCrescentTrio(e,t,r){e.y=SQF;e.pose=15;if(t===1){e.dir=M.x<e.x?-1:1;e.pat=[0,1,0];sfx('warn');fxSpawn(e,'aura',e.x,SQF,{follow:true,loop:150});}
@@ -9759,7 +9766,7 @@ const SQ_MOVES={
    if(t===at){fxSpawn(e,'impact',e.x+e.dir*26,SQF-(hi?24:10),{sx:.7,sy:.7});M.enemyShots.push({kind:'crescent',x:e.x+e.dir*26,y:SQF-(hi?24:10),vx:e.dir*2.1,vy:0});sfx('shot');juiceShake(1,4);}}
   if(t>36+3*40+20)return true;},
  aMoonDrop(e,t,r){e.y=SQF;e.pose=t<20?8:15;if(t===1){e.dir=M.x<e.x?-1:1;sfx('warn');e.drops=[];}
-  for(let i=0;i<3;i++){const at=20+i*56;if(t===at){const x=Math.max(250,Math.min(590,M.x+[0,-8,8][i]));e.drops.push(x);fxSpawn(e,'impact',x,105,{sx:.6,sy:.6});M.enemyShots.push({kind:'star',x,y:105,vx:0,vy:2.3});sfx('tink');}}
+  for(let i=0;i<3;i++){const at=20+i*56;if(t===at){const x=Math.max(KEIKO_L,Math.min(KEIKO_R,M.x+[0,-8,8][i]));e.drops.push(x);fxSpawn(e,'impact',x,105,{sx:.6,sy:.6});M.enemyShots.push({kind:'star',x,y:105,vx:0,vy:2.3});sfx('tink');}}
   for(const x of e.drops)sqMark(e,x,22,'#d1b3ff');
   if(t>20+3*56+60)return true;},
 };
@@ -9781,6 +9788,9 @@ function sqPhaseWrap(base,id,activeKey){return function(e){if(M[activeKey]!=='ac
  base(e);};}
 mansionDiceAI=sqPhaseWrap(mansionDiceAI,'dice','diceState');
 mansionAstarteAI=sqPhaseWrap(mansionAstarteAI,'astarte','sparState');
+// test.56 one-screen arena: アスターテ keeps her distance (backs off when crowded) and her body hurts on touch like every other boss
+{const base=mansionAstarteAI;mansionAstarteAI=function(e){base(e);if(M.sparState!=='active'||e.sq||e.striking)return;const d=M.x-e.x;if(Math.abs(d)<56){const away=d>0?-1:1,nx=Math.max(KEIKO_L,Math.min(KEIKO_R,e.x+away*1.4));if(nx===e.x&&Math.abs(d)<30)e.x=Math.max(KEIKO_L,Math.min(KEIKO_R,e.x-away*2.2));else e.x=nx;}
+ if(mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,[e.x-11,e.y-34,22,34]))mansionDamage(2,M.x<e.x?-1:1);};}
 // ---- draw: telegraphs/bullets fx on top of each boss
 for(const [fn,key] of [['mansionSeitenBossDraw','seitenState'],['mansionDiceDraw','diceState']]){const base=globalThis[fn]||window[fn];if(typeof base!=='function')continue;const w=function(e){if(e.id&&M[key]==='active'){if(e.sq&&e.y<-20){mansionKeikoMovesDraw(e);return;}base(e);mansionKeikoMovesDraw(e);}else base(e);};globalThis[fn]=w;}
 // room change / fight start clears leftover juice (hit-stop, shake, cut-in)
@@ -9806,10 +9816,10 @@ let DICE_DRAW_E=null;
 // ---------------- the girl ----------------
 KEIKO_BOSSES.diceGirl={name:'ダイスロール（素顔）',col:'#ff6a9a',sub:'#f3e9ff',pose:{},seq:[],rageSeq:[]};
 const GIRL_COL='#ff6a3a',GIRL_SMOKE='#b9b2ad',GIRL_EMBER='#ffb03a',GIRL_ASH='#8f8a86';
-function mansionNewDiceGirl(){return{kind:'diceBoss',girl:true,id:'diceGirl',x:380,y:SQF,hp:200,maxHp:200,t:0,dir:-1,flash:0,anim:'idle',mode:'walk',mt:0,cycle:0,lift:0,hidden:false};}
+function mansionNewDiceGirl(){return{kind:'diceBoss',girl:true,id:'diceGirl',x:380,y:SQF,hp:180,maxHp:180,t:0,dir:-1,flash:0,anim:'idle',mode:'walk',mt:0,cycle:0,lift:0,hidden:false};}
 function i0col(l){return l&1?GIRL_EMBER:GIRL_ASH;}
 function girlMode(e,m){e.mode=m;e.mt=0;e.hidden=false;e.aimLine=null;}
-function girlClamp(x){return Math.max(52,Math.min(460,x));}
+function girlClamp(x){return Math.max(KEIKO_L,Math.min(KEIKO_R,x));}
 function girlFace(e){e.dir=M.x<e.x?-1:1;}
 const GIRL_MOVES={
  // ember rush: locked dash line, after-images, drops smouldering ember bombs that burst into ash sparks
@@ -9840,17 +9850,17 @@ const GIRL_MOVES={
   if(t>30+e.roll*EV+30)return true;},
  // ash rain: hops up, flicks ash — sweeping columns of falling embers with one open lane that moves
  gSugarRain(e,t,r){if(t===1){e.lift=0;sfx('swoosh');}if(t<20){e.lift=t*3;e.pose='jump';return;}e.pose='telegraph';
-  const W=6,LW=72,base=40,EV=r?40:48;for(let w=0;w<3;w++){const at=40+w*EV;if(t===at-30)e.safe=Math.max(0,Math.min(W-1,Math.floor((M.x-base)/LW)+(w%2?1:-1)));
+  const W=4,LW=(KEIKO_R-KEIKO_L)/4,base=KEIKO_L,EV=r?40:48;for(let w=0;w<3;w++){const at=40+w*EV;if(t===at-30)e.safe=Math.max(0,Math.min(W-1,Math.floor((M.x-base)/LW)+(w%2?1:-1)));
    if(t>at-30&&t<at)for(let l=0;l<W;l++){const x=base+l*LW+LW/2;if(l===e.safe)kFx(e,{type:'sqsafe',x,w:LW,end:2});else sqCol(e,x,LW,t>at-10?'#ffffff':GIRL_COL);}
-   if(t===at){sfx('shot');for(let l=0;l<W;l++)if(l!==e.safe)for(const dx of[-22,0,22])kb(e,{x:base+l*LW+LW/2+dx,y:40,vy:3.2,shape:'orb',col:i0col(l),life:90});}}
+   if(t===at){sfx('shot');for(let l=0;l<W;l++)if(l!==e.safe)for(const dx of[-16,0,16])kb(e,{x:base+l*LW+LW/2+dx,y:40,vy:3.2,shape:'orb',col:i0col(l),life:90});}}
   if(t>40+3*EV+10){e.lift=Math.max(0,e.lift-4);if(!e.lift)return true;}},
  // super: ラスト・ワンプカー — three rolls; odd = card walls from both sides (jump / slide), even = smoke ring with a floor-side gap
  gAllIn(e,t,r){if(t===1){juiceCut('ラスト・ワンプカー',GIRL_COL,'ダイスロール（素顔）');fxSpawn(e,'aura',e.x,e.y,{follow:true,loop:260});e.rolls=[];}
-  if(t<30){e.x+=(256-e.x)*.1;e.pose='telegraph';return;}
+  if(t<30){e.x+=((KEIKO_L+KEIKO_R)/2-e.x)*.1;e.pose='telegraph';return;}
   for(let k=0;k<3;k++){const at=60+k*70;if(t===at-30){e.rolls[k]=1+Math.floor(Math.random()*6);sfx('start');fxSpawn(e,'roll_impact',e.x,e.y-70,{row:e.rolls[k]-1});}
    const n=e.rolls[k];if(t>at-30&&t<at+40&&n)kFx(e,{type:'die',x:e.x,y:e.y-70,n,end:2});
-   if(n&&n%2===1){const hi=[0,1,0];for(let j=0;j<3;j++){const ft=at+j*14,y=hi[(j+k)%3]?233:250;if(t>ft-14&&t<ft)for(const s of[-1,1])kFx(e,{type:'line',x0:s<0?40:472,x1:s<0?120:392,y,col:t>ft-5?'#ffffff':GIRL_COL,end:2});
-     if(t===ft){sfx('shot');for(const s of[-1,1])M.enemyShots.push({kind:'card',x:s<0?40:472,y,vx:s<0?2.6:-2.6,vy:0,damage:2});}}}
+   if(n&&n%2===1){const hi=[0,1,0];for(let j=0;j<3;j++){const ft=at+j*14,y=hi[(j+k)%3]?233:250;if(t>ft-14&&t<ft)for(const s of[-1,1])kFx(e,{type:'line',x0:s<0?KEIKO_L-16:KEIKO_R+16,x1:s<0?KEIKO_L+50:KEIKO_R-50,y,col:t>ft-5?'#ffffff':GIRL_COL,end:2});
+     if(t===ft){sfx('shot');for(const s of[-1,1])M.enemyShots.push({kind:'card',x:s<0?KEIKO_L-16:KEIKO_R+16,y,vx:s<0?2.6:-2.6,vy:0,damage:2});}}}
    else if(n){const cy=e.y-24,gap=1+(k*2)%5;if(t>at-26&&t<at){const ga=(gap+1)*Math.PI*2/14;kFx(e,{type:'seg',x0:e.x,y0:cy,x1:e.x+Math.cos(ga)*300,y1:cy+Math.sin(ga)*300,col:'#9fe8ff',end:2});kFx(e,{type:'sqsafe',x:girlClamp(e.x+(SQF-cy)/Math.tan(ga)),w:36,end:2});}
     if(t===at){juiceShake(3,10);sfx('song');for(let q=0;q<14;q++){if(q>=gap&&q<=gap+2)continue;const a=q*Math.PI*2/14;kb(e,{x:e.x,y:cy,vx:Math.cos(a)*1.5,vy:Math.sin(a)*1.5,shape:'bigorb',r:4,col:GIRL_SMOKE,life:220});}}}}
   if(t>60+3*70+30)return true;},

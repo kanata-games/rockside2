@@ -135,22 +135,22 @@ function mansionSparRetry(){M.sparState='ready';M.hp=mansionMaxHP();M.enemyShots
 function mansionAstarteGuide(){const lines=M.room==='cellar'?(M.flags.seal?['紋章をお持ちなら、封印の先へ進めますよ。\n水路の途切れには、気をつけてくださいね。']:['この先は、水脈の紋章がないと通れません。\n大広間の上階から、書庫を探してみましょう。']):M.room==='hall'?['上へ進むには、魔法の壁キックですね。\n壁へ向かって押しながら、跳んでみてください。']:M.room==='garden'?['お身体は、もう大丈夫そうですね。\nあの月のことは、私も少し調べておきます。']:['紫の扉の前で「調べる」と、行き先を選べますよ。\n拠点と、探索先の要所を繋ぐ扉です。','まだ通れない道は、覚えておくといいですね。\n新しい力を得たら、一緒に確かめましょう。'];if(M.room==='bedroom')lines.push(M.flags.astarteReward?'本番の手合わせも、いつでもどうぞ。\n護符の力が、海音ちゃんを支えてくれますよ。':'もっと確かめたいときは、本番の手合わせを。\n最後までできたら、護符をお贈りしますね。');if(M.room==='bedroom')lines.push('探索には、私もご一緒しますね。\n画面上の交代ボタンで、いつでも呼んでください。');mansionTalkShow('アスターテ',lines);if(M.room==='bedroom'){M.talk.offerFull=true;mansionUI();}}
 // Ground attack directions and rain targets are locked when telegraphed, never homing during strikes.
 function mansionAstarteAI(e){if(M.sparState!=='active')return;const phase=e.t%360,rage=e.hp<=e.maxHp/2,oldX=e.x;e.dir=M.x<e.x?-1:1;e.pose=-1;e.striking=false;
- if((phase<25||(phase>55&&phase<110)||(phase>145&&phase<165))&&Math.abs(M.x-e.x)>85){e.x=Math.max(250,Math.min(590,e.x+e.dir*(rage?1.65:1.25)));e.walkDistance=(e.walkDistance||0)+Math.abs(e.x-oldX);e.pose=4+(Math.floor(e.walkDistance/8)%4);}
+ if((phase<25||(phase>55&&phase<110)||(phase>145&&phase<165))&&Math.abs(M.x-e.x)>85){e.x=Math.max(KEIKO_L,Math.min(KEIKO_R,e.x+e.dir*(rage?1.65:1.25)));e.walkDistance=(e.walkDistance||0)+Math.abs(e.x-oldX);e.pose=4+(Math.floor(e.walkDistance/8)%4);}
  if((phase>=25&&phase<=44)||(phase>=115&&phase<=134))e.pose=15;
  if(phase===40||phase===130){const high=phase===130;M.enemyShots.push({kind:'crescent',x:e.x+e.dir*26,y:256-(high?24:10),vx:e.dir*(rage?2.7:2.2),vy:0});sfx('shot');}
  if(phase===175){e.slashDir=e.dir;sfx('warn');}
  if(phase>=175&&phase<=195){e.dir=e.slashDir||e.dir;e.pose=8;}
- if(phase>195&&phase<=215){e.dir=e.slashDir||e.dir;e.x=Math.max(250,Math.min(590,e.x+e.dir*(rage?4.6:4)));e.walkDistance=(e.walkDistance||0)+Math.abs(e.x-oldX);e.pose=4+(Math.floor(e.walkDistance/8)%4);}
+ if(phase>195&&phase<=215){e.dir=e.slashDir||e.dir;e.x=Math.max(KEIKO_L,Math.min(KEIKO_R,e.x+e.dir*(rage?4.6:4)));e.walkDistance=(e.walkDistance||0)+Math.abs(e.x-oldX);e.pose=4+(Math.floor(e.walkDistance/8)%4);}
  if(phase>=216&&phase<=225){e.dir=e.slashDir||e.dir;e.pose=9;e.striking=true;}
  if(phase===216){mansionBurst(e.x+e.dir*35,237,'#d1b3ff',12);sfx('shot');}
  if(phase>225&&phase<245){e.dir=e.slashDir||e.dir;e.pose=rage&&phase<235?8:11;}
- if(rage&&phase>=235&&phase<=242){e.dir=e.slashDir||e.dir;e.pose=10;e.striking=true;e.x=Math.max(250,Math.min(590,e.x+e.dir*1.5));}
+ if(rage&&phase>=235&&phase<=242){e.dir=e.slashDir||e.dir;e.pose=10;e.striking=true;e.x=Math.max(KEIKO_L,Math.min(KEIKO_R,e.x+e.dir*1.5));}
  if(e.striking){const front=(M.x-e.x)*e.dir;if(front>-10&&front<72&&M.y>230)mansionDamage(3,e.dir);}
  if(phase>=245&&phase<=250)e.pose=12;
- if(phase===250){e.leapFrom=e.x;e.leapTo=Math.max(260,Math.min(590,M.x+(e.x>M.x?-110:110)));sfx('warn');}
+ if(phase===250){e.leapFrom=e.x;e.leapTo=Math.max(KEIKO_L,Math.min(KEIKO_R,M.x+(e.x>M.x?-110:110)));sfx('warn');}
  if(phase>250&&phase<=295&&Number.isFinite(e.leapFrom)){const k=(phase-250)/45;e.x=e.leapFrom+(e.leapTo-e.leapFrom)*k;e.y=256-Math.sin(k*Math.PI)*72;e.pose=k<.5?13:14;}else e.y=256;
  if(phase>295&&phase<305)e.pose=12;
- if(rage&&phase===300){e.rainX=Math.max(248,Math.min(590,M.x));sfx('warn');}
+ if(rage&&phase===300){e.rainX=Math.max(KEIKO_L,Math.min(KEIKO_R,M.x));sfx('warn');}
  if(rage&&phase>305&&phase<=334)e.pose=15;
  if(rage&&phase===330&&Number.isFinite(e.rainX)){for(const dx of [-24,-12,0,12,24])M.enemyShots.push({kind:'star',x:e.rainX+dx,y:105,vx:0,vy:2.7});e.rainX=null;}
  if((phase>195&&phase<=215)||(phase>250&&phase<=295)){if(mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,[e.x-13,e.y-34,26,34]))mansionDamage(2,M.x<e.x?-1:1);}
@@ -170,7 +170,7 @@ function mansionSave(){try{localStorage.setItem(MANSION_KEY,JSON.stringify({vers
 function mansionSay(text,time=220){M.message=text;M.messageT=time;}
 function mansionStart(resume=false){mansionGuardRelease();M.guardFlash=0;const saved=resume?mansionRead():null;M.actor='umine';M.swapCool=0;M.abilityCool=0;M.castT=0;Object.assign(M,{hp:16,hurt:0,dead:0,t:0,flags:saved?.flags||{seal:false,boss:false,complete:false,seitenLeftArchive:false,archiveLatch:false,starShortcut:false,seitenDefeated:false,hoshiyomiDefeated:false},shards:saved?.shards||0,vialHP:saved?.vialHP||0,shardsTaken:saved?.shardsTaken||[],upg:saved?.upg||{},dropCount:0,hoshiTries:0,visited:saved?.visited||['bedroom'],portals:saved?.portals||[...MANSION_WARP_START],checkpoint:saved?.checkpoint||{room:'bedroom',x:110,y:208},map:false,talk:null,menuTab:'status',saved:!!saved,saveError:false});M.hp=mansionMaxHP();mansionEnter(M.checkpoint.room,M.checkpoint.x,M.checkpoint.y);setState('mansion');mansionSay(resume?'また、ここから探してみよう。':'紫の扉はワープ。普通の扉からも回廊へ進めるよ。');mansionUI();}
 function mansionEnter(room,x,y){mansionGuardRelease();M.guardFlash=0;Object.assign(M,{room,x,y,waterPlatform:null,slideJump:false,castT:0,sparState:'waiting',sparMode:'tutorial',sparReturn:null,diceReturn:null,diceState:'waiting',seitenState:M.flags.seitenDefeated?'done':'waiting',stepT:0,stepCool:0,clawQueued:false,walkDistance:0,vx:0,vy:0,h:MC.h,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,shots:[],enemyShots:[],fx:[],transition:16,near:null,prompt:''});mansionLiftEnter(room);mansionPropsEnter(room);M.enemies=MR[room].enemies.flatMap((e,i)=>mansionFoeSpawn(e,i));if(room==='seitenArena'&&!M.flags.seitenDefeated)M.enemies.push(mansionNewSeiten());mansionHoshiEnter(room);mansionKeikoEnter(room);if(MR[room].boss&&!M.flags.boss)M.enemies.push(mansionNewAstarte());if(!M.visited.includes(room))M.visited.push(room);mansionCamera(true);mansionSave();}
-function mansionSolids(){const r=MR[M.room];return [...r.floor,...r.blocks,...(M.waterPlatform?[M.waterPlatform.box]:[]),...(M.lift?[mansionLiftBox()]:[]),...(r.switchGate&&!M.flags[r.lever.flag]?[r.switchGate]:[]),...(r.topCaps||[[0,-16,r.w,16]]),...mansionHatchSolids(),[-16,0,16,r.h],[r.w,0,16,r.h],...(r.gate&&!M.flags.seal?[r.gate]:[]),...(M.room==='seitenArena'&&M.seitenState==='active'?[[0,0,40,256],[472,0,40,256]]:[]),...mansionKeikoArenaSolids(),...(M.room==='garden'&&M.sparState==='active'?[[208,0,12,288]]:[])];}
+function mansionSolids(){const r=MR[M.room];return [...r.floor,...r.blocks,...(M.waterPlatform?[M.waterPlatform.box]:[]),...(M.lift?[mansionLiftBox()]:[]),...(r.switchGate&&!M.flags[r.lever.flag]?[r.switchGate]:[]),...(r.topCaps||[[0,-16,r.w,16]]),...mansionHatchSolids(),[-16,0,16,r.h],[r.w,0,16,r.h],...(r.gate&&!M.flags.seal?[r.gate]:[]),...(M.room==='seitenArena'&&M.seitenState==='active'?[[0,0,40,256],[472,0,40,256]]:[]),...(typeof arenaWalls==='function'?arenaWalls():[]),...mansionKeikoArenaSolids(),...(M.room==='garden'&&M.sparState==='active'?[[208,0,12,288]]:[])];}
 function mansionOverlap(x,y,w,h,b){return x<b[0]+b[2]&&x+w>b[0]&&y<b[1]+b[3]&&y+h>b[1];}
 function mansionFits(x,y,h=MC.h){return !mansionSolids().some(b=>mansionOverlap(x-MC.w/2,y-h,MC.w,h,b));}
 function mansionBurst(x,y,color='#8beeff',n=9){for(let i=0;i<n;i++)M.fx.push({x,y,vx:Math.cos(i/n*6.28)*(1+i%3),vy:Math.sin(i/n*6.28)*(1+i%3),life:20+i%7,color});}
@@ -186,10 +186,17 @@ function mansionUse(){if(mansionHatchUse())return;if(M.sparMode==='full'||M.dice
 function mansionBossZoomed(z){return M.bossZoom&&M.bossZoom<z?M.bossZoom:z;}
 function mansionView(){const zoom=mansionBossZoomed((M.room==='gallery'&&M.galleryWide!==false)||['archiveInner','clockTower','moonReservoir','starPassage','forbiddenArchive','seitenArena'].includes(M.room)?.8:1);return{zoom,w:VW/zoom,h:VH/zoom};}
 function mansionGalleryViewToggle(){if(M.room!=='gallery'||!M.map)return;M.galleryWide=M.galleryWide===false;mansionCamera(true);mansionUI();}
+const ARENA_CENTER={garden:420},ARENA_TY=40;
+function arenaWindowX(room){const r=MR[room];return Math.max(0,Math.min(r.w-VW,(ARENA_CENTER[room]??r.w/2)-VW/2));}
+// boss bounds follow the window: bosses stay 20px inside it, the player is walled at its edges
+function arenaSet(x0){if(x0==null){KEIKO_L=40;KEIKO_R=472;HOSHI_L=40;HOSHI_R=472;return;}KEIKO_L=HOSHI_L=x0+16;KEIKO_R=HOSHI_R=x0+VW-16;}
+function arenaWalls(){const C=M.bossCam;if(!C)return[];const r=MR[M.room];return[[KEIKO_L-MC.w/2-16,0,16,r.h],[KEIKO_R+MC.w/2,0,16,r.h]];} // player centre stays within KEIKO_L..KEIKO_R
 function mansionCamera(snap=false){const bf=typeof mansionBossFocus==='function'?mansionBossFocus():null,R0=MR[M.room];
  // test.55: boss fights use ONE fixed zoom + locked Y, chosen at fight start (whole arena width, min .5); X fixed if it fits, else slow horizontal follow
- if(bf){if(!M.bossCam||M.bossCam.e!==bf||M.bossCam.room!==M.room){M.bossZoom=Math.max(.5,Math.min(1,VW/R0.w));const v=mansionView();M.bossCam={e:bf,room:M.room,zoom:M.bossZoom,ty:v.h>R0.h?(R0.h-v.h)*.5:Math.max(0,Math.min(R0.h-v.h,M.y-158/v.zoom)),fit:v.w>=R0.w-1};snap=true;}
-  const C=M.bossCam;M.bossZoom=C.zoom;const v=mansionView();const tx=C.fit?(R0.w-v.w)/2:Math.max(0,Math.min(R0.w-v.w,(M.x+bf.x)/2-v.w/2));M.camX=snap||C.fit?tx:M.camX+(tx-M.camX)*.06;M.camY=C.ty;return;}
+ // test.56: one-screen boss arenas — zoom 1, camera fully fixed on a 256px window; invisible walls keep the fight inside it
+ if(bf){if(!M.bossCam||M.bossCam.e!==bf||M.bossCam.room!==M.room){M.bossZoom=1;const x0=arenaWindowX(M.room);M.bossCam={e:bf,room:M.room,zoom:1,x0,ty:R0.h>VH?ARENA_TY:0};arenaSet(x0);M.x=Math.max(KEIKO_L,Math.min(KEIKO_R,M.x));bf.x=Math.max(KEIKO_L,Math.min(KEIKO_R,bf.x));if(bf.tx!=null)bf.tx=Math.max(KEIKO_L,Math.min(KEIKO_R,bf.tx));}
+  const C=M.bossCam;if(M.x<KEIKO_L-2||M.x>KEIKO_R+2)M.x=Math.max(KEIKO_L,Math.min(KEIKO_R,M.x));M.bossZoom=1;M.camX=C.x0;M.camY=C.ty;return;}
+ if(M.bossCam)arenaSet(null);
  M.bossCam=null;M.bossZoom=0;
  {const r=R0,v=mansionView(),focus=M.x,tx=Math.max(0,Math.min(r.w-v.w,focus-v.w*.43)),ty=v.h>r.h?(r.h-v.h)*.62:Math.max(0,Math.min(r.h-v.h,M.y-158/v.zoom));M.camX=snap?tx:M.camX+(tx-M.camX)*.17;M.camY=snap?ty:M.camY+(ty-M.camY)*.14;}}
 
@@ -490,10 +497,10 @@ function mansionDiceAI(e){
  else if(p<184){e.anim='throwDice';const count=e.roll>=3?3:e.roll===2?2:1,spacing=24;if(p>=112&&(p-112)%spacing===0&&(p-112)/spacing<count){M.enemyShots.push({kind:'dice',x:e.x+e.dir*25,y:e.y-22,vx:e.dir*(2.3+e.roll*.12+(rage?.25:0)),vy:-1.2,damage:e.roll>=5?3:2});sfx('shot');}}
  else if(p<225){if(p===184)e.dir=M.x<e.x?-1:1;e.anim='windup';}
  else if(p<270){e.anim='flickCards';const count=e.roll>=4?3:1;if((p-225)%18===0&&(p-225)/18<count){M.enemyShots.push({kind:'card',x:e.x+e.dir*25,y:233,vx:e.dir*(3.1+(rage?.3:0)),vy:0,damage:2});sfx('shot');}}
- else if(p<300){e.anim='windup';if(p===280){e.jumpFrom=e.x;e.jumpTo=Math.max(40,Math.min(472,M.x+(M.x<e.x?-65:65)));e.rainX=e.roll===6?Math.max(54,Math.min(458,M.x)):null;}}
+ else if(p<300){e.anim='windup';if(p===280){e.jumpFrom=e.x;e.jumpTo=Math.max(KEIKO_L,Math.min(KEIKO_R,M.x+(M.x<e.x?-65:65)));e.rainX=e.roll===6?Math.max(KEIKO_L,Math.min(KEIKO_R,M.x)):null;}}
  else if(p<340){if(p===300&&e.rainX!=null){for(const dx of [-56,-28,0,28,56])M.enemyShots.push({kind:'chip',x:e.rainX+dx,y:100,vx:0,vy:3.1,damage:3});}const k=(p-300)/40;e.x=e.jumpFrom+(e.jumpTo-e.jumpFrom)*k;e.y=256-Math.sin(k*Math.PI)*85;e.dir=M.x<e.x?-1:1;e.anim='walk';}
  else {e.y=256;e.anim='idle';}
- e.x=Math.max(32,Math.min(480,e.x));
+ e.x=Math.max(KEIKO_L,Math.min(KEIKO_R,e.x));
 }
 // High contrast face and pips stay readable at the game's native resolution.
 function mansionRollFace(x,y,n,rolling=false){
@@ -528,11 +535,11 @@ function mansionSeitenWin(){const gift=mansionSeitenAmulet();M.seitenState='done
 function mansionSeitenAfterTalk(){const gift=M.flags.seitenDefeated&&mansionSeitenAmulet(),lines=['海音ちゃん……おかえり。\n今日は、少しだけ隣にいてくれる？'];if(gift){lines.push('渡したかったもの、まだ持ってたの。\n……受け取ってくれる？',SEITEN_AMULET_LINE);mansionSave();}lines.push('お出かけなら、私も連れていって。\n海音ちゃんの隣なら、寂しくないから。','……また追いかけっこ、する？\n今度は、拗ねてるんじゃないよ。\n海音ちゃんと遊びたいだけ。');mansionTalkShow('青天',lines);M.talk.offerSeiten=true;mansionUI();}
 function mansionSeitenChallenge(){if(M.room!=='seitenArena'||M.talk?.speaker!=='青天'||!M.talk.offerSeiten||!M.flags.seitenDefeated)return false;mansionTalkClose(true);M.seitenState='ready';M.enemies=[mansionNewSeiten()];M.messageT=0;mansionTalkShow('青天',['……ふふ。今日は、置いていかれなかった。\nじゃあ、いっぱい遊ぼうね。'],'seitenStart');return true;}
 // Aim and facing lock at the start of each windup. Released attacks never follow the player.
-function mansionSeitenMode(e,mode){e.mode=mode;e.modeT=0;if(mode==='crouch'||mode==='rushWind'){e.fromX=e.x;const max=mode==='rushWind'?(e.hp<=e.maxHp/2?260:220):(e.multi?270:220);e.targetX=Math.max(54,Math.min(458,Math.max(e.x-max,Math.min(e.x+max,M.x+M.vx*8))));e.dir=e.targetX<e.x?-1:1;}
+function mansionSeitenMode(e,mode){e.mode=mode;e.modeT=0;if(mode==='crouch'||mode==='rushWind'){e.fromX=e.x;const max=mode==='rushWind'?(e.hp<=e.maxHp/2?260:220):(e.multi?270:220);e.targetX=Math.max(KEIKO_L,Math.min(KEIKO_R,Math.max(e.x-max,Math.min(e.x+max,M.x+M.vx*8))));e.dir=e.targetX<e.x?-1:1;}
  if(mode==='inhale'){e.dir=M.x<e.x?-1:1;e.singingRage=e.hp<=e.maxHp/2;e.targetX=null;}if(mode==='idle')e.targetX=null;
 }
 function mansionSeitenAI(e){if(M.seitenState!=='active')return;const rage=e.hp<=e.maxHp/2,t=++e.modeT;e.trail=e.trail.filter(p=>++p.age<14);
- if(e.mode==='idle'){e.y=256;e.dir=M.x<e.x?-1:1;e.pose=-1;if(Math.abs(M.x-e.x)>80){const old=e.x;e.x=Math.max(54,Math.min(458,e.x+e.dir*(rage?2:1.65)));e.walkDistance+=Math.abs(e.x-old);e.pose=Math.floor(e.walkDistance/5)%2;}if(t>=(rage?16:22)){e.turn++;const next=['crouch','inhale','rushWind','crouch'][((e.turn-1)%4)];e.multi=rage;e.leaps=rage?3:2;mansionSeitenMode(e,next);sfx('warn');}}
+ if(e.mode==='idle'){e.y=256;e.dir=M.x<e.x?-1:1;e.pose=-1;if(Math.abs(M.x-e.x)>80){const old=e.x;e.x=Math.max(KEIKO_L,Math.min(KEIKO_R,e.x+e.dir*(rage?2:1.65)));e.walkDistance+=Math.abs(e.x-old);e.pose=Math.floor(e.walkDistance/5)%2;}if(t>=(rage?16:22)){e.turn++;const next=['crouch','inhale','rushWind','crouch'][((e.turn-1)%4)];e.multi=rage;e.leaps=rage?3:2;mansionSeitenMode(e,next);sfx('warn');}}
  else if(e.mode==='crouch'){e.pose=2;e.y=256;if(t>=(e.multi?20:26)){mansionSeitenMode(e,'leap');sfx('swoosh');}}
  else if(e.mode==='leap'){const duration=e.multi?30:36,k=Math.min(1,t/duration);e.x=e.fromX+(e.targetX-e.fromX)*k;e.y=256-Math.sin(k*Math.PI)*(e.multi?90:80);e.pose=k<.36?3:4;if(t%4===0)e.trail.push({x:e.x,y:e.y,pose:e.pose,dir:e.dir,age:0});if(k===1){e.y=256;mansionSeitenMode(e,'land');mansionBurst(e.x,253,'#f7adbb',8);sfx('land');}}
  else if(e.mode==='land'){e.pose=5;e.y=256;if(t>=(e.multi?12:16)){if(--e.leaps>0){mansionSeitenMode(e,'crouch');sfx('warn');}else mansionSeitenMode(e,'idle');}}

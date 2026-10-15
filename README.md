@@ -11,6 +11,13 @@ ROCKSIDE II / 2.0.0-test.46（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 - 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs` `node tools/test-hoshiyomi.cjs` and `node tools/test-keiko.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
+### 2.0.0-test.56
+- ボス戦を初代と同じ「1画面」に。全ボス（影4体・ダーク星詠み・青天・ダイスロール紳士／素顔・アスターテ・偽物）がズーム1.0、カメラ完全固定（横も縦も動かない）で戦う。
+- 部屋そのものは変えず、戦闘中だけ画面幅256pxの「アリーナ窓」に見えない壁を張る。扉・到達性は従来どおり。
+- 狭い舞台に合わせて再調整：攻撃レーンを4本に、出現位置を窓内に、アスターテは近づかれると距離を取る（体当たり2ダメージ）。
+- 蝕王エクリプスの突進は壁の手前で止まり、逃げ場を残す。HP調整：ニーニア300／ノクターン260／エクリプス280／素顔180。
+- 敗北後の復帰で窓の外に出てしまう不具合を修正。
+
 ### 2.0.0-test.55
 - ダイスロールの中身は**大人の女性（お姉さん）でヘビースモーカー**、という設定に合わせて直した。test.54 の飴への置き換えをやめ、一服・煙草の台詞に戻した。
   - 技の見た目を煙草・煙・灰・火の粉に変更（動きと難しさは同じ）：エンバー・ラッシュ（突進中に火種を落とし、火の粉になってはじける）、スモーク・ヴェール、シガー・スピン（火のついた煙草が回る→はじく）、ローデッド・ダイス、アッシュ・レイン（灰と火の粉が列ごとに降る）。

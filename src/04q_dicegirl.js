@@ -18,10 +18,10 @@ let DICE_DRAW_E=null;
 // ---------------- the girl ----------------
 KEIKO_BOSSES.diceGirl={name:'ダイスロール（素顔）',col:'#ff6a9a',sub:'#f3e9ff',pose:{},seq:[],rageSeq:[]};
 const GIRL_COL='#ff6a3a',GIRL_SMOKE='#b9b2ad',GIRL_EMBER='#ffb03a',GIRL_ASH='#8f8a86';
-function mansionNewDiceGirl(){return{kind:'diceBoss',girl:true,id:'diceGirl',x:380,y:SQF,hp:200,maxHp:200,t:0,dir:-1,flash:0,anim:'idle',mode:'walk',mt:0,cycle:0,lift:0,hidden:false};}
+function mansionNewDiceGirl(){return{kind:'diceBoss',girl:true,id:'diceGirl',x:380,y:SQF,hp:180,maxHp:180,t:0,dir:-1,flash:0,anim:'idle',mode:'walk',mt:0,cycle:0,lift:0,hidden:false};}
 function i0col(l){return l&1?GIRL_EMBER:GIRL_ASH;}
 function girlMode(e,m){e.mode=m;e.mt=0;e.hidden=false;e.aimLine=null;}
-function girlClamp(x){return Math.max(52,Math.min(460,x));}
+function girlClamp(x){return Math.max(KEIKO_L,Math.min(KEIKO_R,x));}
 function girlFace(e){e.dir=M.x<e.x?-1:1;}
 const GIRL_MOVES={
  // ember rush: locked dash line, after-images, drops smouldering ember bombs that burst into ash sparks
@@ -52,17 +52,17 @@ const GIRL_MOVES={
   if(t>30+e.roll*EV+30)return true;},
  // ash rain: hops up, flicks ash — sweeping columns of falling embers with one open lane that moves
  gSugarRain(e,t,r){if(t===1){e.lift=0;sfx('swoosh');}if(t<20){e.lift=t*3;e.pose='jump';return;}e.pose='telegraph';
-  const W=6,LW=72,base=40,EV=r?40:48;for(let w=0;w<3;w++){const at=40+w*EV;if(t===at-30)e.safe=Math.max(0,Math.min(W-1,Math.floor((M.x-base)/LW)+(w%2?1:-1)));
+  const W=4,LW=(KEIKO_R-KEIKO_L)/4,base=KEIKO_L,EV=r?40:48;for(let w=0;w<3;w++){const at=40+w*EV;if(t===at-30)e.safe=Math.max(0,Math.min(W-1,Math.floor((M.x-base)/LW)+(w%2?1:-1)));
    if(t>at-30&&t<at)for(let l=0;l<W;l++){const x=base+l*LW+LW/2;if(l===e.safe)kFx(e,{type:'sqsafe',x,w:LW,end:2});else sqCol(e,x,LW,t>at-10?'#ffffff':GIRL_COL);}
-   if(t===at){sfx('shot');for(let l=0;l<W;l++)if(l!==e.safe)for(const dx of[-22,0,22])kb(e,{x:base+l*LW+LW/2+dx,y:40,vy:3.2,shape:'orb',col:i0col(l),life:90});}}
+   if(t===at){sfx('shot');for(let l=0;l<W;l++)if(l!==e.safe)for(const dx of[-16,0,16])kb(e,{x:base+l*LW+LW/2+dx,y:40,vy:3.2,shape:'orb',col:i0col(l),life:90});}}
   if(t>40+3*EV+10){e.lift=Math.max(0,e.lift-4);if(!e.lift)return true;}},
  // super: ラスト・ワンプカー — three rolls; odd = card walls from both sides (jump / slide), even = smoke ring with a floor-side gap
  gAllIn(e,t,r){if(t===1){juiceCut('ラスト・ワンプカー',GIRL_COL,'ダイスロール（素顔）');fxSpawn(e,'aura',e.x,e.y,{follow:true,loop:260});e.rolls=[];}
-  if(t<30){e.x+=(256-e.x)*.1;e.pose='telegraph';return;}
+  if(t<30){e.x+=((KEIKO_L+KEIKO_R)/2-e.x)*.1;e.pose='telegraph';return;}
   for(let k=0;k<3;k++){const at=60+k*70;if(t===at-30){e.rolls[k]=1+Math.floor(Math.random()*6);sfx('start');fxSpawn(e,'roll_impact',e.x,e.y-70,{row:e.rolls[k]-1});}
    const n=e.rolls[k];if(t>at-30&&t<at+40&&n)kFx(e,{type:'die',x:e.x,y:e.y-70,n,end:2});
-   if(n&&n%2===1){const hi=[0,1,0];for(let j=0;j<3;j++){const ft=at+j*14,y=hi[(j+k)%3]?233:250;if(t>ft-14&&t<ft)for(const s of[-1,1])kFx(e,{type:'line',x0:s<0?40:472,x1:s<0?120:392,y,col:t>ft-5?'#ffffff':GIRL_COL,end:2});
-     if(t===ft){sfx('shot');for(const s of[-1,1])M.enemyShots.push({kind:'card',x:s<0?40:472,y,vx:s<0?2.6:-2.6,vy:0,damage:2});}}}
+   if(n&&n%2===1){const hi=[0,1,0];for(let j=0;j<3;j++){const ft=at+j*14,y=hi[(j+k)%3]?233:250;if(t>ft-14&&t<ft)for(const s of[-1,1])kFx(e,{type:'line',x0:s<0?KEIKO_L-16:KEIKO_R+16,x1:s<0?KEIKO_L+50:KEIKO_R-50,y,col:t>ft-5?'#ffffff':GIRL_COL,end:2});
+     if(t===ft){sfx('shot');for(const s of[-1,1])M.enemyShots.push({kind:'card',x:s<0?KEIKO_L-16:KEIKO_R+16,y,vx:s<0?2.6:-2.6,vy:0,damage:2});}}}
    else if(n){const cy=e.y-24,gap=1+(k*2)%5;if(t>at-26&&t<at){const ga=(gap+1)*Math.PI*2/14;kFx(e,{type:'seg',x0:e.x,y0:cy,x1:e.x+Math.cos(ga)*300,y1:cy+Math.sin(ga)*300,col:'#9fe8ff',end:2});kFx(e,{type:'sqsafe',x:girlClamp(e.x+(SQF-cy)/Math.tan(ga)),w:36,end:2});}
     if(t===at){juiceShake(3,10);sfx('song');for(let q=0;q<14;q++){if(q>=gap&&q<=gap+2)continue;const a=q*Math.PI*2/14;kb(e,{x:e.x,y:cy,vx:Math.cos(a)*1.5,vy:Math.sin(a)*1.5,shape:'bigorb',r:4,col:GIRL_SMOKE,life:220});}}}}
   if(t>60+3*70+30)return true;},

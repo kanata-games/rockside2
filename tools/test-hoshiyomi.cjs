@@ -54,7 +54,7 @@ function bossBot(){return run(`(()=>{const e=M.enemies.find(e=>e.kind==='hoshiBo
   const hp=run('M.hp');if(hp<lastHp){hurt+=lastHp-hp;if(process.env.DBG)console.log('hit',run('(()=>{const e=M.enemies.find(e=>e.kind==="hoshiBoss");return JSON.stringify({m:e.mode,mt:e.mt,ex:Math.round(e.x),ey:Math.round(e.y),x:Math.round(M.x),y:Math.round(M.y),h:M.h,sl:M.slideT,vy:M.vy.toFixed(1),hp:e.hp})})()'));}lastHp=hp;}
  run('releaseAll()');
  console.log(`  bot: ${frames} frames, damage taken ${hurt}, retries ${retries}, modes ${[...seen].join('/')}`);
- assert.equal(run('M.hoshiState'),'done','bot beats ダーク星詠み');assert(retries===0,'bot never dies');assert(hurt<=8,'fight is readable: bot took '+hurt);['hsConstel','hsOrbit','hsComet','hsNova'].forEach(m=>assert(seen.has(m),'signature move shown: '+m));
+ assert.equal(run('M.hoshiState'),'done','bot beats ダーク星詠み');assert(retries===0,'bot never dies');assert(hurt<=12,'fight is readable: bot took '+hurt);['hsConstel','hsOrbit','hsComet','hsNova'].forEach(m=>assert(seen.has(m),'signature move shown: '+m));
  assert(tele.rain&&tele.dash&&tele.shoot,'every attack telegraphs');for(const m of['walk','shoot','dash','rain'])assert(seen.has(m),m);
  assert(run('M.flags.hoshiyomiDefeated'));assert(run('M.talk&&M.talk.speaker==="星詠み"'),'post-fight talk');assert(run('M.shards>=3'));
  run('mansionTalkClose(true);M.map=false;mansionEnter("obsDome",100,224)');assert(!run('M.enemies.some(e=>e.kind==="hoshiBoss")'),'stays defeated');

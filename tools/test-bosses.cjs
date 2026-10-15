@@ -84,6 +84,10 @@ console.log('PASS boss move sets (test.49): impostors mimic their dark originals
   seiten:'M.flags.boss=true;mansionEnter("seitenArena",40,256);mansionSeitenStart();M.talk=null;M.map=false;M.enemies[0].id="seiten";sqStart(M.enemies[0],"sSkyPounce")'};
  for(const [id,s] of Object.entries(fights)){run(s);ticks(1);const zs=new Set(),ys=new Set();let xs=[];
   for(let i=0;i<400;i++){run('releaseAll();M.hurt=999;M.hp=mansionMaxHP();keys.right=(M.t>>6)&1;keys.left=!keys.right;if(M.ground&&!(M.t%50))inp.jumpPressed=true');ticks(1);zs.add(run('M.bossZoom.toFixed(4)'));ys.add(run('M.camY.toFixed(3)'));xs.push(run('M.camX'));}
-  assert.equal(zs.size,1,id+' zoom constant: '+[...zs]);assert.equal(ys.size,1,id+' camera Y locked: '+[...ys]);let jump=0;for(let i=1;i<xs.length;i++)jump=Math.max(jump,Math.abs(xs[i]-xs[i-1]));assert(jump<3,id+' camera X smooth: '+jump);res.push(id+' zoom '+[...zs][0]);}
+  assert.equal(zs.size,1,id+' zoom constant: '+[...zs]);assert.equal(ys.size,1,id+' camera Y locked: '+[...ys]);let jump=0;for(let i=1;i<xs.length;i++)jump=Math.max(jump,Math.abs(xs[i]-xs[i-1]));assert.equal(jump,0,id+' camera X fixed: '+jump);assert.equal([...zs][0],'1.0000',id+' zoom 1');res.push(id+' zoom '+[...zs][0]);}
  run('M.keiko&&(M.keiko.state="done");M.enemyShots=[];M.diceReal=false');
- console.log('PASS boss camera (test.55): fixed zoom + locked Y + smooth/fixed X during fights and supers ('+res.join(', ')+').');}
+ console.log('PASS boss camera (test.55/56): one-screen arenas, zoom 1, camera X/Y fully fixed during fights and supers ('+res.join(', ')+').');}
+// ===== test.56: one-screen arenas — player is walled inside the 256px window during fights =====
+{run('M.diceReal=false;mansionEnter("diceArena",160,256);M.enemies=[mansionNewDice()];mansionDiceStart();M.talk=null;M.map=false');ticks(1);const x0=run('M.bossCam.x0');
+ run('releaseAll();keys.left=true;M.hurt=999');ticks(200);assert(run('M.x')>=x0,'left wall holds');run('releaseAll();keys.right=true');ticks(260);assert(run('M.x')<=x0+256,'right wall holds');run('releaseAll()');
+ console.log('PASS one-screen arenas (test.56): window x '+x0+'–'+(x0+256)+', walls hold, boss bounds '+run('KEIKO_L')+'–'+run('KEIKO_R')+'.');}

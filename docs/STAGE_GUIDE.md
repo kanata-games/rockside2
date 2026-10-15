@@ -428,3 +428,8 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 
 ## 22. ボス戦カメラ (test.55)
 - `mansionCamera`：ボス戦は開始時に `M.bossCam` を一度だけ作る（zoom＝max(.5, VW/部屋の幅)、Yは固定）。戦闘中にズームを変えたり、縦に動かしたりしないこと。画面揺れは2pxまで。
+
+## 23. 1画面アリーナ (test.56)
+- ボス戦はズーム1.0・カメラ完全固定。戦闘は部屋中央（庭はx=420中心）の幅256pxの窓で行い、`arenaWalls()`の見えない壁で KEIKO_L..KEIKO_R（窓x0+16..x0+240）に収める。
+- 部屋の形・扉は変更しない。新しいボスの攻撃は必ず KEIKO_L/R を基準に作る（固定座標禁止）。
+- 突進系は壁の20px手前で止めて逃げ場を残す。予告（テレグラフ）は従来どおり必須。
