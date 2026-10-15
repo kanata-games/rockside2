@@ -76,4 +76,4 @@ console.log('PASS boss move sets (test.49): impostors mimic their dark originals
  for(const m of ['gCandyRush','gLoadedDice','gSmokeVeil','gLolliSpin','gSugarRain','gAllIn'])assert(seen.has(m),'girl shows '+m);
  assert(run('M.flags.diceGirlDefeated&&M.flags.diceGirlReward'));assert.equal(run('mansionPermanentCount("moonCandy")'),1);
  run('M.talk=null;M.map=false;mansionDiceReturn()');
- console.log('PASS ダイスロール本気 (test.54): gentleman = practice until the four shades, then the girl inside fights for real (6 new moves + super スウィート・オールイン); reward 月影の飴玉 (+2 max HP).');}
+ console.log('PASS ダイスロール本気 (test.54): gentleman = practice until the four shades, then the woman inside (heavy smoker) fights for real (6 new moves + super ラスト・ワンプカー); reward 月影のシガーケース (+2 max HP).');}
