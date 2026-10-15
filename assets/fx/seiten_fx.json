@@ -1,0 +1,124 @@
+{
+ "boss": "seiten",
+ "scaleNote": "エフェクトはゲーム画面ピクセルの4倍で描画。drawScale 0.25 で等倍表示",
+ "palette": "crimson",
+ "effects": {
+  "seiten_slash": {
+   "file": "seiten_slash.png",
+   "frameWidth": 256,
+   "frameHeight": 256,
+   "frames": 4,
+   "ms": [
+    40,
+    40,
+    60,
+    80
+   ],
+   "loop": false,
+   "anchor": [
+    100,
+    140
+   ],
+   "rotatesWithDirection": true,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "爪・飛びかかりの斬撃軌跡"
+  },
+  "seiten_shockwave": {
+   "file": "seiten_shockwave.png",
+   "frameWidth": 256,
+   "frameHeight": 128,
+   "frames": 4,
+   "ms": [
+    60,
+    60,
+    70,
+    90
+   ],
+   "loop": false,
+   "anchor": [
+    128,
+    96
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "着地（land）の衝撃"
+  },
+  "seiten_impact": {
+   "file": "seiten_impact.png",
+   "frameWidth": 192,
+   "frameHeight": 192,
+   "frames": 4,
+   "ms": [
+    50,
+    60,
+    70,
+    90
+   ],
+   "loop": false,
+   "anchor": [
+    96,
+    96
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "命中点"
+  },
+  "seiten_aura": {
+   "file": "seiten_aura.png",
+   "frameWidth": 160,
+   "frameHeight": 224,
+   "frames": 4,
+   "ms": [
+    90,
+    90,
+    90,
+    90
+   ],
+   "loop": true,
+   "anchor": [
+    80,
+    214
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "必殺（inhale→sing）の溜め中にループ"
+  },
+  "seiten_sky_beam": {
+   "file": "seiten_sky_beam.png",
+   "frameWidth": 96,
+   "frameHeight": 320,
+   "frames": 4,
+   "ms": [
+    60,
+    60,
+    60,
+    60
+   ],
+   "loop": true,
+   "anchor": [
+    48,
+    320
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "空から落ちる柱ビーム。anchor＝下端中央（地面）。縦に伸ばす/繰り返し",
+   "stretch": "縦方向に自由に引き伸ばし、または縦に並べて繰り返し（上下端はつながる）"
+  }
+ },
+ "cutin": {
+  "file": "seiten_cutin.png",
+  "size": [
+   512,
+   288
+  ],
+  "blend": "normal",
+  "display": "必殺技の直前に、画面中央に横帯（高さ画面の約40%、幅いっぱい）で表示。drawScale≈0.5（画面幅384なら約256px幅）で右から左へ 120ms でスライドイン→700ms 静止→150ms でフェードアウト。帯の背景は画像に含まれる",
+  "source": "seiten-sequel-idle.png idle1",
+  "note": "既存スプライトの上半身を切り出して拡大し、テーマ背景（集中線など）に重ねたもの"
+ }
+}

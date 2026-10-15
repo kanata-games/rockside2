@@ -1,0 +1,49 @@
+{
+ "boss": "astarte",
+ "scaleNote": "エフェクトはゲーム画面ピクセルの4倍で描画。drawScale 0.25 で等倍表示",
+ "palette": "astarte",
+ "effects": {
+  "astarte_impact": {
+   "file": "astarte_impact.png",
+   "frameWidth": 128,
+   "frameHeight": 128,
+   "frames": 4,
+   "ms": [
+    60,
+    70,
+    80,
+    100
+   ],
+   "loop": false,
+   "anchor": [
+    64,
+    64
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "チュートリアル用の控えめな命中点"
+  },
+  "astarte_aura": {
+   "file": "astarte_aura.png",
+   "frameWidth": 112,
+   "frameHeight": 160,
+   "frames": 4,
+   "ms": [
+    110,
+    110,
+    110,
+    110
+   ],
+   "loop": true,
+   "anchor": [
+    56,
+    152
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "控えめな溜めオーラ（チュートリアル）"
+  }
+ }
+}

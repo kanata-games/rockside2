@@ -1,6 +1,17 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');const noop=()=>{},elements=new Map(),listeners={},writes=[];function el(){const e={width:256,height:240,style:{},dataset:{},classList:{add:noop,remove:noop,toggle:noop},handlers:{},addEventListener:function(k,f){this.handlers[k]=f},setAttribute:noop,getBoundingClientRect:()=>({left:0,top:0,width:390,height:366}),setPointerCapture:noop};const context=new Proxy({getImageData:()=>({data:new Uint8ClampedArray(e.width*e.height*4)}),measureText:s=>({width:String(s).length*8}),createLinearGradient:()=>({addColorStop:noop}),createRadialGradient:()=>({addColorStop:noop})},{get:(o,k)=>o[k]||noop,set:(o,k,v)=>(o[k]=v,true)});e.getContext=()=>context;return e;}const document={getElementById:k=>{if(!elements.has(k))elements.set(k,el());return elements.get(k)},createElement:()=>el(),querySelectorAll:()=>[],body:el(),addEventListener:noop};const images=[];class Image{constructor(){images.push(this);}set src(v){this._src=v;}get src(){return this._src;}}
 const storage=new Map();const win={innerWidth:390,innerHeight:844,devicePixelRatio:2,addEventListener:(k,fn)=>(listeners[k] ||= []).push(fn)};const sandbox={window:win,document,Image,location:{search:'',href:'https://example.com/'},navigator:{userAgent:'test'},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>{writes.push(k);storage.set(k,v)},removeItem:k=>storage.delete(k)},URLSearchParams,requestAnimationFrame:noop,setTimeout:noop,performance:{now:()=>0},console,Uint8Array,Uint8ClampedArray,Int32Array,Math};vm.createContext(sandbox);const html=fs.readFileSync(require('path').resolve(__dirname,process.argv[2]||'../preview.html'),'utf8');vm.runInContext(html.split('<script>')[1].split('</script>')[0],sandbox,{timeout:10000});const run=s=>vm.runInContext(s,sandbox,{timeout:10000});
-function ticks(n){run(`for(let i=0;i<${n};i++)update()`)}
+// frame-exact checks: hit-stop is covered in test-bosses, so clear it here before each frame
+// test.51: generic dodge for the floor-256 specials (青天/ダイスロール/アスターテ): read the same telegraphs a player sees
+const SQBOT=`(()=>{const e=M.enemies[0];if(!e||!e.sq)return;keys.left=keys.right=false;if(e.sq==='sHeartFan'||e.sq==='sLullaby'||e.sq==='dJackpot'){keys.jump=false;inp.jumpPressed=false;}const fx=e.fx||[];
+ const go=x=>{if(Math.abs(M.x-x)>4){keys.left=M.x>x;keys.right=M.x<x;}};
+ const safe=fx.find(f=>f.type==='sqsafe');if(safe){go(safe.x);}
+ const seg=fx.find(f=>f.type==='seg'&&f.col==='#9fe8ff');if(seg&&seg.y1>seg.y0)go(Math.max(60,Math.min(450,seg.x0+(240-seg.y0)*(seg.x1-seg.x0)/(seg.y1-seg.y0))));
+ const marks=fx.filter(f=>f.type==='sqmark'||f.type==='sqcol');if(!safe&&!seg&&marks.length){const m=marks[0];if(Math.abs(M.x-m.x)<m.w/2+30){const dir=m.x>256?-1:1;keys.left=dir<0;keys.right=dir>0;}}
+ const near=M.enemyShots.filter(b=>(b.x-M.x)*(b.vx||0)<0&&Math.abs(b.x-M.x)<46&&b.y>M.y-34&&b.y<M.y+4&&!b.vy);
+ for(const b of near){if(b.y<M.y-18&&b.kind!=='kShot'){mansionInput.slide=true;}else if(M.ground)inp.jumpPressed=true;}
+ const air=M.enemyShots.find(b=>b.kind==='kShot'&&b.vy&&Math.hypot(b.x-M.x,b.y-(M.y-13))<34);if(air&&M.ground&&air.y>M.y-30)inp.jumpPressed=true;
+})()`;
+function ticks(n){run(`for(let i=0;i<${n};i++){if(typeof KJ!=="undefined")KJ.stop=0;update()}`)}
 function clearKeys(){run('releaseAll();mansionInput.slide=mansionInput.use=mansionInput.map=false;')}
 run('mansionStart(false)');ticks(30);assert.equal(run('M.y'),208);assert(run('M.ground'));assert(run('mansionRead().checkpoint.room==="bedroom"'));
 run('M.x=231;mansionInput.use=true;');ticks(1);assert.equal(run('M.room'),'bedroom');assert(run("M.map&&M.menuTab==='area'"));run("M.map=false;M.x=180;mansionUse()");assert.equal(run('M.room'),'gallery');
@@ -147,7 +158,7 @@ run('M.enemyShots=[];M.enemies[0].t=129');ticks(1);assert(run('M.enemyShots.some
 run('M.enemyShots=[];M.enemies[0].t=219;M.enemies[0].slashDir=-1;M.x=460;M.y=256;M.hurt=0');ticks(1);assert.equal(run('M.hp'),13);
 run('M.enemyShots=[];M.enemies[0].t=219;M.x=460;M.y=210;M.vy=0;M.hurt=0');ticks(1);assert.equal(run('M.hp'),13);
 // Leap changes sides, and second-half rain is telegraphed at a captured position.
-run('M.enemies[0].t=249;M.shots=[];M.enemyShots=[]');ticks(1);const leapFrom=run('M.enemies[0].x');ticks(22);assert(run('M.enemies[0].y<200'));ticks(23);assert(Math.abs(run('M.enemies[0].x')-leapFrom)>100);assert.equal(run('M.enemies[0].y'),256);
+run('KJ.stop=0;M.enemies[0].t=249;M.shots=[];M.enemyShots=[]');ticks(1);const leapFrom=run('M.enemies[0].x');ticks(22);assert(run('M.enemies[0].y<200'));ticks(23);assert(Math.abs(run('M.enemies[0].x')-leapFrom)>100);assert.equal(run('M.enemies[0].y'),256);
 run('M.enemies[0].hp=20;M.enemies[0].t=299;M.x=400;M.y=256');ticks(1);const rainX=run('M.enemies[0].rainX');assert.equal(rainX,400);run('M.x=450');ticks(30);assert.equal(run('M.enemyShots.filter(s=>s.kind==="star").length'),5);assert(run('M.enemyShots.every(s=>Number.isFinite(s.x))'));assert.equal(run('M.enemies[0].rainX'),null);
 run('M.enemyShots=[];M.enemies[0].hp=21;M.enemies[0].t=299');ticks(1);run('M.enemies[0].hp=20;M.enemies[0].t=329');ticks(1);assert.equal(run('M.enemyShots.length'),0);
 run('M.enemies[0].x=500;M.enemies[0].y=256;M.enemies[0].t=0');
@@ -486,8 +497,8 @@ for(const actor of ['umine','astarte']){
     else{if(Math.abs(d)<90){keys.left=d>0&&M.x>60;keys.right=d<0&&M.x<452;}if(M.ground&&((e.mode==='rush'&&Math.abs(d)<80)||(e.mode==='clawWind'&&e.modeT>=7&&Math.abs(d)<90))){inp.jumpPressed=true;catCross=d<0?-1:1;catCrossUntil=M.t+38;keys.left=catCross<0;keys.right=catCross>0;}}}
    }
    else if(M.actor==='astarte'?Math.abs(d)>40:Math.abs(d)<100){if(M.actor==='astarte'){keys.right=d>0;keys.left=d<0;}else{keys.left=d>0&&M.x>65;keys.right=d<0&&M.x<447;}}
-   const wave=M.enemyShots.find(b=>b.kind==='songWave'&&(b.x-M.x)*b.vx<0&&Math.abs(b.x-M.x)<(M.actor==='astarte'?50:36));if(M.ground&&wave)inp.jumpPressed=true;if(M.actor==='umine'&&e.mode==='sing'&&M.y<232)keys.jump=false;})()`);
-  if(run('M.enemies[0]?.mode')==='sing')seenSong=true;if(run('M.enemies[0]?.hp')<=32)seenRage=true;ticks(1);minHP=Math.min(minHP,run('M.hp'));
+   const wave=M.enemyShots.find(b=>b.kind==='songWave'&&(b.x-M.x)*b.vx<0&&Math.abs(b.x-M.x)<(M.actor==='astarte'?50:36));if(M.ground&&wave)inp.jumpPressed=true;if(M.actor==='umine'&&e.mode==='sing'&&M.y<232)keys.jump=false;})()`);run(SQBOT);
+  if(run('M.enemies[0]?.mode')==='sing')seenSong=true;if(run('M.enemies[0]?.hp')<=32)seenRage=true;{const h0=run('M.hp');ticks(1);if(process.env.DBG&&run('M.hp')<h0)console.log('hit',actor,run('JSON.stringify([M.enemies[0]?.mode,M.enemies[0]?.sq,M.enemies[0]?.st,M.enemies[0]?.modeT,Math.round(M.x),Math.round(M.y),Math.round(M.enemies[0]?.x),M.enemies[0]?.hp,M.hp])'));}minHP=Math.min(minHP,run('M.hp'));
  }
  clearKeys();assert.equal(run('M.seitenState'),'done',actor+' completes normal-HP battle without immunity');assert(seenSong&&seenRage);assert(minHP>0&&minHP<16);assert.equal(run('mansionRead().flags.seitenDefeated'),true);assert.equal(run('mansionRead().checkpoint.room'),'forbiddenArchive');
  run('mansionTalkClose(true);M.map=false;M.x=24;M.y=256;mansionUse();mansionStart(true)');assert.equal(run('M.room'),'forbiddenArchive');assert(run('M.flags.boss&&M.flags.starShortcut&&M.flags.archiveLatch&&M.flags.seitenLeftArchive&&M.flags.seitenDefeated'));

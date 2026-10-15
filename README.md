@@ -11,6 +11,14 @@ ROCKSIDE II / 2.0.0-test.46（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 - 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs` `node tools/test-hoshiyomi.cjs` and `node tools/test-keiko.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
+### 2.0.0-test.51
+- 青天：新技 天翔け(sSkyPounce：空へ消え、光の柱で予告してから落下＋着地の衝撃波)、ハートの扇(sHeartFan：白線の方向だけ空く扇弾)、怒り時の必殺 ソラノコエ・ララバイ（カットイン、音符の輪3回。隙間の方向を水色の線＋床の安全地帯で予告）。
+- ダイスロール：新技 ダイス・スタンプ(dSlam：着地点マーク→跳躍→衝撃波＋跳ねるサイコロ)、カードの壁(dCardWall：上下交互のカード。高さを光で予告、低い＝ジャンプ／高い＝スライディング)、怒り時の必殺 ジャックポット・ナイト（カットイン、出目3つで安全な列が決まり、それ以外の列にチップの雨。必殺中はカメラが部屋全体を映す）。
+- アスターテ（チュートリアルのまま）：三日月三連(低・高・低を溜めの光で予告)、月の雫(足元マーク→ゆっくり落ちる星)。溜めオーラと命中エフェクトを追加。
+- ヒットストップ・画面揺れ・被弾フラッシュを全ボスに拡張。ボスカメラを青天/ダイスロール/アスターテにも適用。
+- 納品FX（hoshiyomi_ / seiten_ / diceroll_ / dice_roll_impact / astarte_）を読み込み、カットイン画像も表示。素材が無い場合はコード描画になる。
+- ダーク星詠みの難しさを調整：HP 140→130、彗星の星を減らし、ノヴァの隙間が必ず下向きに開くよう修正（上向きになると避けられない不具合があった）。予測ボットは被弾6/16、負けなしで勝てる。
+
 ### 2.0.0-test.50
 - シャドウ4体に納品FX素材を適用（slash / shockwave / impact / aura、固有：ヴェスパーの隕石・ラヴィスの矢の雨・ノクターンの音の輪・エクリプスのビーム）。必殺技のカットインに立ち絵画像。素材が無い場合はこれまでのコード描画に戻る。
 - ダーク星詠みを作り直し：新技 星座結び(hsConstel)・彗星落とし(hsComet)・周回星弾(hsOrbit)、怒り時の必殺 スターダスト・ノヴァ（隙間の方向を水色の線で予告）。HP 100→140、浮遊、怒り時のフラッシュ・揺れ。

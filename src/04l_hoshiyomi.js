@@ -73,7 +73,7 @@ function mansionUpgradeOpen(){M.map=true;M.menuTab='upgrade';M.talk=null;release
 
 // ---------------------------------------------------------------- boss ダーク星詠み
 const HOSHI_FLOOR=224,HOSHI_L=40,HOSHI_R=472;
-function mansionNewHoshi(){return{kind:'hoshiBoss',id:'hoshi',x:400,y:HOSHI_FLOOR,face:-1,dir:-1,hp:140,maxHp:140,lift:0,t:0,st:0,flash:0,mode:'idle',mt:0,cycle:0,gaps:[],nextGaps:null};}
+function mansionNewHoshi(){return{kind:'hoshiBoss',id:'hoshi',x:400,y:HOSHI_FLOOR,face:-1,dir:-1,hp:130,maxHp:130,lift:0,t:0,st:0,flash:0,mode:'idle',mt:0,cycle:0,gaps:[],nextGaps:null};}
 function mansionHoshiEnter(room){if(room!=='obsDome')return;if(M.flags.hoshiyomiDefeated){M.hoshiState='done';return;}M.hoshiState='waiting';M.enemies=M.enemies.filter(e=>e.kind!=='hoshiBoss');M.enemies.push(mansionNewHoshi());}
 function mansionHoshiTrigger(){if(M.room!=='obsDome'||M.hoshiState!=='waiting'||M.map||M.x<70)return;M.hoshiState='ready';const again=M.hoshiTries>0;M.hoshiTries=(M.hoshiTries||0)+1;
  const lines=again?['……また来たんだ。しつこいじゃん。','いいよ、何回でも星降らせたげる。キャハッ☆']:['……あれ？ 誰か来たじゃん。うち、今ちょー星読んでんだけど。','ねえ、聞こえる？ 星がさ……「全部うちのもの」って言ってんの。マジで。','邪魔すんなら、星ごと降らせちゃうけど……いいよね？ キャハッ☆'];

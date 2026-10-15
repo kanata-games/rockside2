@@ -408,3 +408,8 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 ## 17. ボスFX素材とダーク星詠み (test.50)
 - `assets/fx/shade_<tobi|neen|lily|star>_fx.json` を読み込む（vesper→tobi, lavis→neen, nocturne→lily, eclipse→star）。4コマ横並び、drawScale 0.25。`fxSpawn(e,name,x,y,{flip,rot,sx,follow,loop})` で出す。素材が無ければ何も出さず、既存のコード描画だけになる。
 - ダーク星詠みは `KEIKO_BOSSES.hoshi` で同じ技エンジン(04o)を使う。通常: shoot, hsConstel, dash, hsOrbit, rain, hsComet。怒り時: 必殺 hsNova のあと hsComet 始まりの順番。§14 のとおり、彼女も攻略のヒントは話さない。
+
+## 18. 続編ボスの必殺技とFX (test.51)
+- 04p_sequelboss.js：青天・ダイスロール・アスターテは元のAIのまま、特殊技を間に挟む（青天は通常2ターンごと、ダイスロール/アスターテは2周期に1回。挟んでいる間は周期の時計を止める）。怒り時に1回だけ必殺技（青天 sLullaby／ダイスロール dJackpot。アスターテには無し）。
+- 予告は床基準(y=256)の sqmark / sqcol / sqsafe を使う。輪弾の隙間は必ず床側に開ける。
+- FXのjsonと接頭辞：hoshiyomi_fx.json (hoshi_)、seiten_fx.json (seiten_)、diceroll_fx.json (diceroll_ / dice_)、astarte_fx.json (astarte_)。接頭辞を外した名前で fxSpawn する（例 'sky_beam', 'roll_impact' の row＝出目-1）。

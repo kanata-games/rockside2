@@ -1,0 +1,150 @@
+{
+ "boss": "diceroll",
+ "scaleNote": "エフェクトはゲーム画面ピクセルの4倍で描画。drawScale 0.25 で等倍表示",
+ "palette": "dice",
+ "effects": {
+  "diceroll_slash": {
+   "file": "diceroll_slash.png",
+   "frameWidth": 256,
+   "frameHeight": 256,
+   "frames": 4,
+   "ms": [
+    40,
+    40,
+    60,
+    80
+   ],
+   "loop": false,
+   "anchor": [
+    100,
+    140
+   ],
+   "rotatesWithDirection": true,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "杖・マントの斬撃軌跡"
+  },
+  "diceroll_shockwave": {
+   "file": "diceroll_shockwave.png",
+   "frameWidth": 256,
+   "frameHeight": 128,
+   "frames": 4,
+   "ms": [
+    60,
+    60,
+    70,
+    90
+   ],
+   "loop": false,
+   "anchor": [
+    128,
+    96
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "着地・踏みつけの衝撃"
+  },
+  "diceroll_impact": {
+   "file": "diceroll_impact.png",
+   "frameWidth": 192,
+   "frameHeight": 192,
+   "frames": 4,
+   "ms": [
+    50,
+    60,
+    70,
+    90
+   ],
+   "loop": false,
+   "anchor": [
+    96,
+    96
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "サイコロ弾の命中点"
+  },
+  "diceroll_aura": {
+   "file": "diceroll_aura.png",
+   "frameWidth": 160,
+   "frameHeight": 224,
+   "frames": 4,
+   "ms": [
+    90,
+    90,
+    90,
+    90
+   ],
+   "loop": true,
+   "anchor": [
+    80,
+    214
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "必殺の溜め中にループ"
+  },
+  "dice_roll_impact": {
+   "file": "dice_roll_impact.png",
+   "frameWidth": 192,
+   "frameHeight": 192,
+   "frames": 4,
+   "rows": 6,
+   "ms": [
+    50,
+    60,
+    70,
+    90
+   ],
+   "loop": false,
+   "anchor": [
+    96,
+    96
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "faces": {
+    "1": {
+     "row": 0,
+     "y": 0
+    },
+    "2": {
+     "row": 1,
+     "y": 192
+    },
+    "3": {
+     "row": 2,
+     "y": 384
+    },
+    "4": {
+     "row": 3,
+     "y": 576
+    },
+    "5": {
+     "row": 4,
+     "y": 768
+    },
+    "6": {
+     "row": 5,
+     "y": 960
+    }
+   },
+   "note": "出目の爆発。行＝出目（1行目=1 … 6行目=6）。各行4コマを左から再生"
+  }
+ },
+ "cutin": {
+  "file": "diceroll_cutin.png",
+  "size": [
+   512,
+   288
+  ],
+  "blend": "normal",
+  "display": "必殺技の直前に、画面中央に横帯（高さ画面の約40%、幅いっぱい）で表示。drawScale≈0.5（画面幅384なら約256px幅）で右から左へ 120ms でスライドイン→700ms 静止→150ms でフェードアウト。帯の背景は画像に含まれる",
+  "source": "diceroll_dark.png 0コマ目（48pxドット絵をNEARESTで拡大）",
+  "note": "既存スプライトの上半身を切り出して拡大し、テーマ背景（集中線など）に重ねたもの"
+ }
+}

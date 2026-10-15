@@ -1,0 +1,145 @@
+{
+ "boss": "hoshiyomi",
+ "scaleNote": "エフェクトはゲーム画面ピクセルの4倍で描画。drawScale 0.25 で等倍表示",
+ "palette": "hoshi",
+ "effects": {
+  "hoshi_constellation_link": {
+   "file": "hoshi_constellation_link.png",
+   "frameWidth": 256,
+   "frameHeight": 64,
+   "frames": 4,
+   "ms": [
+    90,
+    90,
+    90,
+    90
+   ],
+   "loop": true,
+   "anchor": [
+    20,
+    32
+   ],
+   "rotatesWithDirection": true,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "星座の線（星同士をつなぐ攻撃）。左の星を始点に置き、終点方向へ回転",
+   "stretch": "3分割で伸ばす：左端 0-40px と右端 216-256px（星）はそのまま、中央 40-216px を横に引き伸ばす（または中央を繰り返し）。長さL(画面px)なら中央幅=L*4-80"
+  },
+  "hoshi_starburst": {
+   "file": "hoshi_starburst.png",
+   "frameWidth": 192,
+   "frameHeight": 192,
+   "frames": 4,
+   "ms": [
+    50,
+    60,
+    70,
+    90
+   ],
+   "loop": false,
+   "anchor": [
+    96,
+    96
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "星弾の着弾・命中点"
+  },
+  "hoshi_orbit_orb": {
+   "file": "hoshi_orbit_orb.png",
+   "frameWidth": 128,
+   "frameHeight": 96,
+   "frames": 4,
+   "ms": [
+    90,
+    90,
+    90,
+    90
+   ],
+   "loop": true,
+   "anchor": [
+    64,
+    48
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "周回する星の玉（詠唱中に体のまわりへ配置、または弾として）。ループ"
+  },
+  "hoshi_comet_trail": {
+   "file": "hoshi_comet_trail.png",
+   "frameWidth": 256,
+   "frameHeight": 64,
+   "frames": 4,
+   "ms": [
+    70,
+    70,
+    70,
+    70
+   ],
+   "loop": true,
+   "anchor": [
+    226,
+    32
+   ],
+   "rotatesWithDirection": true,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "星を降らす詠唱の流星。anchor＝頭の星。進行方向（右が0°）に回転"
+  },
+  "hoshi_nova_ring": {
+   "file": "hoshi_nova_ring.png",
+   "frameWidth": 256,
+   "frameHeight": 256,
+   "frames": 4,
+   "ms": [
+    60,
+    60,
+    70,
+    90
+   ],
+   "loop": false,
+   "anchor": [
+    128,
+    128
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "lighter",
+   "note": "広がる衝撃波リング（詠唱完了・着地）"
+  },
+  "hoshi_aura": {
+   "file": "hoshi_aura.png",
+   "frameWidth": 160,
+   "frameHeight": 224,
+   "frames": 4,
+   "ms": [
+    90,
+    90,
+    90,
+    90
+   ],
+   "loop": true,
+   "anchor": [
+    80,
+    214
+   ],
+   "rotatesWithDirection": false,
+   "drawScale": 0.25,
+   "blend": "normal",
+   "note": "必殺の溜め中、足元中心にループ"
+  }
+ },
+ "cutin": {
+  "file": "hoshiyomi_cutin.png",
+  "size": [
+   512,
+   288
+  ],
+  "blend": "normal",
+  "display": "必殺技の直前に、画面中央に横帯（高さ画面の約40%、幅いっぱい）で表示。drawScale≈0.5（画面幅384なら約256px幅）で右から左へ 120ms でスライドイン→700ms 静止→150ms でフェードアウト。帯の背景は画像に含まれる",
+  "source": "hoshiyomi_dark-sequel.png 0コマ目（idle）",
+  "note": "既存スプライトの上半身を切り出して拡大し、テーマ背景（集中線など）に重ねたもの"
+ }
+}
