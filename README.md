@@ -1,8 +1,32 @@
 # 海音ちゃんの冒険２ — 屋敷探索テスト
 
-ROCKSIDE II / 2.0.0-test.40（GitHub公開版・Sitesテスト版）。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
+ROCKSIDE II / 2.0.0-test.41（GitHub公開版）。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
 
-## 現在の公開版（2026-10-15 / test.40）
+## ステージの作り方 / How to build stages
+
+**部屋を追加・修正する前に必ず読む → [docs/STAGE_GUIDE.md](docs/STAGE_GUIDE.md)**（日本語・英語）
+**Read [docs/STAGE_GUIDE.md](docs/STAGE_GUIDE.md) before adding or editing rooms** (Japanese + English).
+
+- 部屋は `src/03b_rooms.js` のASCIIタイル（1文字=16px、1画面=16×15マス）で作る。/ Rooms are ASCII tiles in `src/03b_rooms.js` (1 char = 16 px; 1 screen = 16×15 tiles).
+- 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs`.
+- ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
+
+## 現在の公開版（2026-10-15 / test.41）
+
+- ステージ作り直し第1段階 / Stage rebuild phase 1:
+  - 14部屋をすべて16pxタイルの格子に作り直した。/ All 14 rooms rebuilt on the 16 px tile grid.
+  - 世界地図は256×240の画面セル単位で、ゲーム内マップは悪魔城風に部屋の大きさどおり描く。/ The world map uses 256×240 screen cells, and the in-game map draws each room at its real size, Castlevania-style.
+  - 当たり判定と同じタイルをエリア別の色で描く。/ Collision tiles are drawn exactly as they collide, styled per area.
+- 動き / Moves:
+  - スライディングは高さ1行のすき間を通る（slideH 14）。/ The slide fits a 1-row gap (slideH 14).
+  - スライディングジャンプ（Xのダッシュジャンプ式）を追加。/ Added the slide jump (like X's dash jump).
+  - 壁キックで時計塔の東壁と大広間の東壁を登れる。/ Wall kicks climb the clock tower's east wall and the hall's east wall.
+- 到達テスト / Reach test: `tools/reach.js` checks every save, door, warp, lever and boss, plus one-way traps.
+  - 隠し小物を2つ追加：貯水室（壁キック）、星灯り（スライディングジャンプ）。/ Two secret breakables were added: the reservoir (wall kick) and the star passage (slide jump).
+- 回廊の西端に段を付け、大広間に東から戻る道を作った（以前は落下か一方通行になっていた）。/ The gallery's west end got stairs, and the hall got a way back from the east. Before, these were a fall or a one-way trip.
+- セーブキー `rockside2_mansion_v1` と `version:1` はそのまま。新しい床に合わない古い記録地点は、その部屋のセーブに移る。/ Save key `rockside2_mansion_v1` and `version:1` are unchanged. An old checkpoint that doesn't fit the new floor moves to that room's save.
+
+## 前の公開版（2026-10-15 / test.40）
 
 公開URL：https://kanata-games.github.io/rockside2/
 

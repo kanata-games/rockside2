@@ -324,7 +324,7 @@ const MANSION_AREA_STYLE={hub:['#1d1a28','#3d3448','#c5a88a','#6e5a6a'],mansion:
 function mansionSolidAt(r,c,row){const ch=row<0||row>=r.grid.length||c<0||c>=r.grid[0].length?'#':r.grid[row][c];return ch==='#';}
 function mansionTilesDraw(r,cx,cy,view){const P=MANSION_AREA_STYLE[r.area]||MANSION_AREA_STYLE.mansion,c0=Math.max(0,Math.floor(cx/16)),c1=Math.min(r.grid[0].length-1,Math.floor((cx+view.w)/16)),r0=Math.max(0,Math.floor(cy/16)),r1=Math.min(r.grid.length-1,Math.floor((cy+view.h)/16));
  for(let row=r0;row<=r1;row++){const line=r.grid[row];for(let c=c0;c<=c1;c++){const ch=line[c],x=c*16,y=row*16;
-  if(ch==='#'){const top=!mansionSolidAt(r,c,row-1),bottom=!mansionSolidAt(r,c,row+1),left=!mansionSolidAt(r,c-1,row),right=!mansionSolidAt(r,c+1,row),deep=!top&&!bottom&&!left&&!right&&mansionSolidAt(r,c,row-2);
+  if(ch==='#'){const top=!mansionSolidAt(r,c,row-1),bottom=!mansionSolidAt(r,c,row+1),left=!mansionSolidAt(r,c-1,row),right=!mansionSolidAt(r,c+1,row),deep=!top&&!bottom&&!left&&!right&&mansionSolidAt(r,c-1,row-1)&&mansionSolidAt(r,c+1,row-1)&&mansionSolidAt(r,c,row-2);
    mrect(x,y,16,16,P[0]);
    if(deep){if(((c*7+row*3)%5)===0)mrect(x+4,y+6,7,1,P[3]);continue;}
    const off=(row&1)?8:0;mrect(x+1,y+1,15,14,P[1]);mrect(x,y+8,16,1,P[0]);mrect(x+off,y+1,1,7,P[0]);mrect(x+(off?0:8),y+9,1,7,P[0]);
