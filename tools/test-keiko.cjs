@@ -20,7 +20,7 @@ function bot(){return run(`(()=>{const e=M.enemies.find(e=>e.kind==='keikoBoss')
 const results={};
 for(const id of ['tobiume','neenia','lily','disaster']){const B=run(`KEIKO_BOSSES.${id}`);
  run(`M.upg={};M.flags.${B.flag}=false;mansionEnter("${B.room}",40,224);M.transition=0;M.hp=mansionMaxHP();M.shards=0;`);clearKeys();run('keys.right=true');ticks(40);clearKeys();
- assert(run(`M.talk&&M.talk.speaker===${JSON.stringify(B.name)}`),id+' intro talk');for(let i=0;i<6&&run('!!M.talk');i++)run('mansionTalkNext()');assert.equal(run('M.keiko.state'),'active');
+ assert(run(`M.talk&&M.talk.speaker===${JSON.stringify(B.real+'？')}`),id+' impostor greets as the friend');run('mansionTalkNext();mansionTalkNext()');assert(run(`M.talk&&M.talk.speaker===${JSON.stringify(B.name)}`),id+' impostor reveals itself');for(let i=0;i<6&&run('!!M.talk');i++)run('mansionTalkNext()');assert.equal(run('M.keiko.state'),'active');
  const seen=new Set(),tel=new Set();let hurt=0,last=run('M.hp'),retries=0,frames=0;
  while(frames<12000&&run('M.keiko.state')==='active'||run('!!M.talk')&&run('M.keiko.state')!=='done'){if(run('!!M.talk')){retries++;run('mansionTalkNext()');continue;}
   seen.add(bot());ticks(1);frames++;
@@ -30,18 +30,18 @@ for(const id of ['tobiume','neenia','lily','disaster']){const B=run(`KEIKO_BOSSE
  console.log(`  ${id}: ${frames} frames, damage ${hurt}, retries ${retries}, modes ${[...seen].join('/')}, telegraphs ${[...tel].join('/')}`);
  assert.equal(run('M.keiko.state'),'done',id+' bot wins');assert.equal(retries,0,id+' bot never loses');assert(hurt<=8,id+' readable: took '+hurt);
  for(const m of [...new Set([...B.seq,...B.rageSeq])]){assert(seen.has(m),id+' uses '+m);assert(tel.has(m)||(m==='snare'&&tel.has('snare')),id+' telegraphs '+m);}
- assert(run(`M.flags.${B.flag}`));assert.equal(run('M.shards'),3,id+' gives 3 shards');assert(run(`M.talk&&M.talk.speaker===${JSON.stringify(B.name)}&&M.talk.lines.length===3`),'post talk');run('mansionTalkClose(true);M.map=false');
- run(`mansionEnter("${B.room}",256,224);M.transition=0`);ticks(3);assert(!run('M.talk'),'no repeat fight on re-entry');assert.equal(run('mansionNearbyNPC()&&mansionNearbyNPC().id'),'keiko_'+id);
- run('mansionUse()');for(let i=0;i<3&&run('!!M.talk');i++)run('mansionTalkNext()');assert(run('mansionKeikoActive()'),'rematch');run('M.keiko.state="done";M.enemyShots=[]');
+ assert(run(`M.talk&&M.talk.speaker===${JSON.stringify(B.name)}`),'impostor fades');assert(!run(`M.flags.${B.flag}`));run('mansionTalkNext();mansionTalkNext()');assert(run(`M.flags.${B.flag}`),'real friend freed');assert.equal(run('M.shards'),3,id+' gives 3 shards');assert(run(`M.talk&&M.talk.speaker===${JSON.stringify(B.real)}&&M.talk.lines.length===3`),'real friend talks');run('mansionTalkClose(true);M.map=false');
+ run(`mansionEnter("${B.room}",430,224);M.transition=0`);ticks(3);assert(!run('M.talk'),'no repeat fight on re-entry');assert.equal(run('mansionNearbyNPC()&&mansionNearbyNPC().id'),'keiko_'+id);
+ run('mansionUse()');for(let i=0;i<4&&run('!!M.talk');i++)run('mansionTalkNext()');assert(run('mansionKeikoActive()'),'rematch');run('M.keiko.state="done";M.enemyShots=[]');
  run('mansionSave();');assert(run(`JSON.parse(localStorage.getItem(MANSION_KEY)).flags.${B.flag}===true`));
  results[id]=hurt;}
-console.log('PASS sparring bots: 飛梅 / ネーニア / リリィ / スターさん each telegraph every attack; the bot dodges from the warnings and wins (damage '+JSON.stringify(results)+'), 3 shards, post-fight talk, rematch NPC, saved flags.');
+console.log('PASS impostor bosses: ハネウメ / ネムニア / リリリ / ズターさん greet as the friend, reveal themselves, telegraph every attack; the bot dodges from the warnings and wins; the real friend is freed (damage '+JSON.stringify(results)+'), 3 shards, post-fight talk, rematch NPC, saved flags.');
 // retry after a loss + arena locks + save round trip
-{run('M.flags.keikoLily=false;mansionEnter("kLily",40,224);M.transition=0;mansionKeikoStart();M.talk=null;M.map=false;M.hurt=0;M.hp=1;mansionDamage(2,1)');assert(run('M.talk&&M.talk.speaker==="リリィ"'));assert.equal(run('M.hp'),run('mansionMaxHP()'));run('mansionTalkNext()');assert(run('mansionKeikoActive()'));
+{run('M.flags.keikoLily=false;mansionEnter("kLily",40,224);M.transition=0;mansionKeikoStart();M.talk=null;M.map=false;M.hurt=0;M.hp=1;mansionDamage(2,1)');assert(run('M.talk&&M.talk.speaker==="リリリ"'));assert.equal(run('M.hp'),run('mansionMaxHP()'));run('mansionTalkNext()');assert(run('mansionKeikoActive()'));
  assert.equal(run('mansionSolids().filter(b=>b[2]===24).length'),2,'arena doors are sealed during a spar');
  run('M.keiko.state="done";mansionSave();mansionStart(true)');assert(run('M.flags.keikoTobiume&&M.flags.keikoNeenia&&M.flags.keikoStar'));
- console.log('PASS spar retry: losing restores HP with a friendly line and restarts; arena seals during the fight; flags survive save/load.');}
+ console.log('PASS impostor retry: losing restores HP with a friendly line and restarts; arena seals during the fight; flags survive save/load.');}
 // garden door + art loader order
 {run('M.flags.boss=true;M.flags.seal=true;mansionEnter("garden",328,256);M.transition=0;M.enemies=[]');ticks(2);const d=run('MR.garden.doors.find(d=>d.to==="kGate")');assert(d,'garden has a door to 稽古庭');
- run(`globalThis.__req=[];globalThis.fetch=u=>{__req.push(u);return Promise.resolve({ok:false})};keikoArtLoad('neenia');`);assert.equal(run('__req[0]'),'assets/neenia-sequel.json');
- console.log('PASS garden door to 月下の稽古庭; partner art requests <name>-sequel first.');}
+ run(`globalThis.__req=[];globalThis.fetch=u=>{__req.push(u);return Promise.resolve({ok:false})};keikoArtLoad('neenia');`);assert.equal(run('__req[0]'),'assets/neenia-sequel.json');assert(run('__req.includes("assets/neenia_real-sequel.json")'),'real friend art requests <normal>_real-sequel');
+ console.log('PASS garden door to 月下の稽古庭; impostor art requests <name>-sequel, the real friend <normal>_real-sequel (then the first-game normal sheet).');}

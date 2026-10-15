@@ -9,58 +9,62 @@
 // =====================================================================
 const KEIKO_FLOOR=224,KEIKO_L=40,KEIKO_R=472;
 const KEIKO_BOSSES={
- tobiume:{room:'kTobi',name:'飛梅',hp:130,col:'#ff8cc0',sub:'#ffd6ea',art:'tobiume',normal:'tobiume',flag:'keikoTobiume',
+ tobiume:{room:'kTobi',name:'ハネウメ',real:'飛梅',hp:130,col:'#ff8cc0',sub:'#ffd6ea',art:'tobiume',normal:'tobiume',flag:'keikoTobiume',
   seq:['volley','swoop','volley','shock'],rageSeq:['volley','shock','swoop','volley','swoop'],
   volley:{n:2,rn:3,pat:'alt',speed:2.4,kind:'heart'},swoop:{speed:5.4},shock:{},
   pose:{volley:'attack',swoop:'fly',shock:'kick',walk:'fly',idle:'idle'},
-  pre:['海音ちゃーん！ 待ってたよ！ 腕がなまってるって聞いたから、飛梅ちゃんが稽古つけてあげる！','ハートは高いのと低いのがあるからね。高いのはスライディング、低いのはジャンプ！','急降下の前には光る線が出るよ。見てから動けば大丈夫。いっくよー！'],
-  again:['ありゃ、休憩しよっか。……よし、もう一回いっくよー！'],
-  post:['すごいすごい！ 海音ちゃん、動きがどんどん戻ってきてる！','急降下キックのあとは、地面に衝撃が走るでしょ？ あれはジャンプでぴょん！ 忘れないでね。','はい、星詠みの欠片！ 3つあげる。これで、いつでも一緒に戦えるね！']},
- neenia:{room:'kNeen',name:'ネーニア',hp:140,col:'#8fb0ff',sub:'#e4ecff',art:'neenia',normal:'neenia',flag:'keikoNeenia',
+  fake:['あっ、海音ちゃーん！ 飛梅ちゃんだよ！ 迎えに来てくれたんだね！','……あれ？ 海音ちゃんって、こんなに背が低かったっけ？ まあいっか、梅干し食べる？'],pre:['……ぷぷっ、バレちゃった？ あたしは跳梅（ハネウメ）！ 本物の飛梅は、そこの檻の中だよ。','返してほしかったら、勝ってみな！ 高いハートはくぐって、低いのはジャンプ。急降下の前には線が光るからね！'],
+  again:['ぴょーん、あたしの勝ち！ ……でもまだやる？ いいよ、跳ね足りないし！'],vanish:['あいたたた……負けちゃった。あたし、月の光でできた影法師なんだ。','本物は返してあげる。……じゃあね、ぴょーん！'],rematch:['あのそっくりさん、月が出てればまた出てくるみたい。もう一回、腕試ししてく？'],
+  post:['海音ちゃーん！ 出られたー！ ありがとう！ あのそっくりさん、あたしのマネばっかりするんだもん！','海音ちゃんの勘、取り戻す腕試しなら、いつでも飛梅ちゃんが付き合うよ。急降下キックのあとの衝撃は、ジャンプでぴょん！ だよ。','はい、星詠みの欠片3つ！ これからは一緒に戦おうね！']},
+ neenia:{room:'kNeen',name:'ネムニア',real:'ネーニア',hp:140,col:'#8fb0ff',sub:'#e4ecff',art:'neenia',normal:'neenia',flag:'keikoNeenia',
   seq:['volley','rain','volley','snare'],rageSeq:['volley','snare','rain','volley','rain'],
   volley:{n:2,rn:3,pat:'mix',speed:3.0,kind:'arrow'},rain:{w:52,rw:46},snare:{n:2,rn:3},
   pose:{volley:'attack',rain:'attack',snare:'attack',walk:'walk',idle:'idle'},
-  pre:['来たわね、海音。弓の稽古相手、引き受けたわ。','高い矢はくぐって、低い矢は跳ぶ。地面の印には、しばらく茨が残るから立たないこと。','……手加減はしないわよ。構えなさい。'],
-  again:['焦りすぎよ。息を整えて。……もう一度。'],
-  post:['……いい目をしてる。前より、ずっと落ち着いているわ。','矢の雨は、落ちてくる前に隙間が見える。焦らず、立つ場所を選びなさい。','これ、持っていきなさい。……背中は、私が守るわ。']},
- lily:{room:'kLily',name:'リリィ',hp:140,col:'#ffd2ef',sub:'#fff4fb',art:'lily',normal:'lily',flag:'keikoLily',
+  fake:['海音……来てくれたのね。私よ、ネーニア。','さあ、こっちへ。……弓？ ああ、あれは重いから置いてきたわ。ふわぁ……'],pre:['……眠くて芝居が続かないわ。私はネムニア。本物は奥で、静かに眠ってもらってる。','高い矢はくぐって、低い矢は跳んで。茨の印には立たないこと。……私に勝てたら、返してあげる。'],
+  again:['……すぅ。あら、もう眠いの？ もう一度、子守唄代わりに射ってあげる。'],vanish:['……ふぁ。久しぶりに、よく目が覚めたわ。','私は月が見せた夢。……本物は、もう起こしてあげる。'],rematch:['あの影、まだ庭のどこかで眠っているわ。……もう一度、射合ってみる？'],
+  post:['海音。……あなたが、私の偽者を鎮めてくれたのね。檻の中から見ていたわ。','腕試しの相手なら、私が引き受けるわ。矢の雨は、落ちる前に隙間が光る。焦らず、立つ場所を選びなさい。','これを持っていきなさい。……背中は、私が守る。']},
+ lily:{room:'kLily',name:'リリリ',real:'リリィ',hp:140,col:'#ffd2ef',sub:'#fff4fb',art:'lily',normal:'lily',flag:'keikoLily',
   seq:['wave','volley','rain','wave'],rageSeq:['wave','volley','rain','wave','volley'],
   wave:{n:1,rn:2,speed:2.6},volley:{n:2,rn:3,pat:'high',speed:2.6,kind:'note'},rain:{w:56,rw:48},
   pose:{wave:'attack',volley:'attack',rain:'attack',walk:'walk',idle:'idle'},
-  pre:['海音ちゃん、いらっしゃーい♪ 今日はリリィとウミミのスペシャルレッスンだよっ！','歌の波はジャンプ、音符はスライディング！ スターライトレインは、光ってる隙間に入ってね♪','それじゃあ、ライブスタート！'],
-  again:['だいじょうぶ？ ウミミが心配してるよ。……アンコール、いける？♪'],
-  post:['すごーい！ 海音ちゃん、ステップばっちりだったよ♪','リズムがわかれば、怖くないでしょ？ 次の相手にも、その調子でね！','ウミミも拍手してる！ 欠片はファンサービス、3つどうぞっ♪']},
- disaster:{room:'kDis',name:'スターさん',hp:170,col:'#71d9ff',sub:'#d8f6ff',art:'disaster',normal:'star',flag:'keikoStar',
+  fake:['海音ちゃーん！ リリィだよっ♪ 会いたかったー！','ウミミ？ えーっと……今日はお休み！ かわりにリリリ……じゃなくて、リリィが歌うね♪'],pre:['あっ、言っちゃった。そう、あたしはリリリ！ リリィちゃんは楽屋の檻で待機中でーす♪','歌の波はジャンプ、音符はスライディング！ ライブについてこれたら返してあげる♪'],
+  again:['ざんねーん、アンコールはリリリにおまかせ♪ もう一回いってみよー！'],vanish:['えー、負けちゃった！ リリリ、月の光の舞台にしか立てないの。','リリィちゃんは楽屋から出してあげるね。……またね、ばいばーい♪'],rematch:['あの子、月が出たらまた歌いに来るって。もう一回、腕試ししていく？♪'],
+  post:['海音ちゃん！ 助けてくれてありがとうっ♪ 楽屋に閉じこめられて、ずっと出番待ちだったの！','リリィのそっくりさん、手ごわかったでしょ？ リズムがわかれば怖くないよ。次の相手にも、その調子で！','ウミミも拍手してる！ 欠片はファンサービス、3つどうぞっ♪ これからは一緒にステージだね！']},
+ disaster:{room:'kDis',name:'ズターさん',real:'スターさん',hp:170,col:'#71d9ff',sub:'#d8f6ff',art:'disaster',normal:'star',flag:'keikoStar',
   seq:['sword','spear','axe','scythe','bow'],rageSeq:['sword','scythe','spear','axe','bow','scythe'],
   sword:{n:1,rn:2,speed:3.0},spear:{speed:6},axe:{},scythe:{},bow:{n:2,rn:3,pat:'alt',speed:3.2,kind:'arrow'},
   pose:{sword:'sword',spear:'spear',axe:'axe',scythe:'scythe',bow:'bow',walk:'idle',idle:'idle'},
-  pre:['よう、海音。オレの錬金剣、また好きに形を変えられるようになったんだ。','試し斬りの相手、頼むぜ。武器が変わる前には紫に光って、頭の上に次の武器が出る。よく見とけよ！','剣の波と斧の衝撃はジャンプ、大鎌と弓はスライディングだ。いくぜ！'],
-  again:['悪い、ちょっと張り切りすぎた。……もう一本、いけるか？'],
-  post:['……ははっ、まいった！ 海音、すっかり勘が戻ったな。','武器が変わる瞬間を見る。前の旅で、オマエが一番うまかったところだ。','欠片、持ってけ。これで背中は任せられるぜ。……みんなで、この館の謎を解こうな。']},
+  fake:['よう、海音。オレだ、スターさんだぜ。','錬金剣？ ……ああ、あれな。オレ様の……いや、オレの剣は今日もピカピカだ。ククク……'],pre:['……チッ、口調がもたなかったか。オレ様は錬金のズターさん！ 本物は奥の檻だ。','武器が変わる前には紫に光り、頭の上に次の武器が出る。剣の波と斧の衝撃は跳べ、大鎌と弓はくぐれ。いくぞ！'],
+  again:['フハハ、まだまだだな！ ……だが筋は悪くない。もう一本やるか？'],vanish:['ぐぬぬ……見事だ。オレ様は、月が錬金した写し身にすぎん。','本物は返してやる。……せいぜい、仲良くやるんだな！'],rematch:['あのズターとかいうやつ、月の光でまた湧くらしい。もう一戦、やってみるか？'],
+  post:['よう、海音！ 助かったぜ。オレのニセモノ、片付けてくれたんだな。','武器が変わる瞬間を見る。前の旅で、オマエが一番うまかったところだ。腕試しなら、いつでも相手になるぜ。','欠片、持ってけ。これで背中は任せられるぜ。……みんなで、この館の謎を解こうな。']},
 };
+const KEIKO_CAGE_X=440;
 const KEIKO_BY_ROOM=Object.fromEntries(Object.entries(KEIKO_BOSSES).map(([id,b])=>[b.room,id]));
 const KEIKO_MORPH_ICON={sword:'剣',spear:'槍',axe:'斧',scythe:'鎌',bow:'弓'};
 // ---- art: <art>-sequel → <normal> grid sheet (old 32px normal art, scaled) → placeholder
 const KEIKO_GRID_META={neenia:{frameWidth:32,frameHeight:32,cx:11,animations:{idle:{frames:[0,1],ms:400}}},lily:{frameWidth:32,frameHeight:32,cx:16,animations:{idle:{frames:[0,1],ms:400}}}};
-function keikoArtLoad(id){const B=KEIKO_BOSSES[id];if(typeof fetch!=='function')return;const key='k_'+id;
- const grid=()=>fetch('assets/'+B.normal+'.json').then(r=>{if(!r.ok)throw 0;return r.json();}).catch(()=>KEIKO_GRID_META[B.normal]||{frameWidth:32,frameHeight:32,animations:{idle:{frames:[0],ms:400}}}).then(meta=>{const img=new Image();img.onload=()=>{if(HOSHI_ART[key]?.mode==='sequel')return;const fh=+meta.frameHeight||32;HOSHI_ART[key]={mode:'grid',img,meta:{...meta,drawScale:meta.drawScale||Math.max(1,Math.round(54/fh*2)/2)}};};img.src='assets/'+(meta.image||B.normal+'.png');});
- fetch('assets/'+B.art+'-sequel.json').then(r=>{if(!r.ok)throw 0;return r.json();}).then(meta=>{const img=new Image();img.onload=()=>{HOSHI_ART[key]={mode:'sequel',img,meta};};img.onerror=grid;img.src='assets/'+(meta.image||B.art+'-sequel.png');}).catch(grid);
- const f=new Image();f.onload=()=>{HOSHI_ART[key+'Face']={mode:'face',img:f};};f.src='assets/'+B.normal+'_face.png';}
+// impostor (偽者) art: assets/<art>-sequel → placeholder.  real character: assets/<normal>_real-sequel → first-game normal sheet (scaled) → placeholder.
+function keikoSheetLoad(key,sequel,gridName){if(typeof fetch!=='function')return;
+ const grid=()=>{if(!gridName)return;fetch('assets/'+gridName+'.json').then(r=>{if(!r.ok)throw 0;return r.json();}).catch(()=>KEIKO_GRID_META[gridName]||{frameWidth:32,frameHeight:32,animations:{idle:{frames:[0],ms:400}}}).then(meta=>{const img=new Image();img.onload=()=>{if(HOSHI_ART[key]?.mode==='sequel')return;const fh=+meta.frameHeight||32;HOSHI_ART[key]={mode:'grid',img,meta:{...meta,drawScale:meta.drawScale||Math.max(1,Math.round(54/fh*2)/2)}};};img.src='assets/'+(meta.image||gridName+'.png');});};
+ fetch('assets/'+sequel+'.json').then(r=>{if(!r.ok)throw 0;return r.json();}).then(meta=>{const img=new Image();img.onload=()=>{HOSHI_ART[key]={mode:'sequel',img,meta};};img.onerror=grid;img.src='assets/'+(meta.image||sequel+'.png');}).catch(grid);}
+function keikoArtLoad(id){const B=KEIKO_BOSSES[id];keikoSheetLoad('k_'+id,B.art+'-sequel',null);keikoSheetLoad('r_'+id,B.normal+'_real-sequel',B.normal);
+ if(typeof Image!=='function')return;const f=new Image();f.onload=()=>{HOSHI_ART['r_'+id+'Face']={mode:'face',img:f};};f.onerror=()=>{const b=new Image();b.onload=()=>{if(!HOSHI_ART['r_'+id+'Face'])HOSHI_ART['r_'+id+'Face']={mode:'face',img:b};};b.src='assets/'+B.normal+'_face.png';};f.src='assets/'+B.normal+'_real-sequel-face.png';}
 for(const id of Object.keys(KEIKO_BOSSES))keikoArtLoad(id);
 const KEIKO_ALIAS={attack:['attackA','attack','shoot','idle'],kick:['attackB','kick','special_dive_kick','attack','fly','idle'],fly:['move','fly','walk','idle'],walk:['move','walk','fly','idle'],telegraph:['telegraph','transform','attack','idle'],
  sword:['attackA','sword','attack','idle'],spear:['attackB','spear','attack','idle'],axe:['attackB','axe','attack','idle'],scythe:['attackA','scythe','attack','idle'],bow:['attackA','bow','attack','idle'],transform:['telegraph','transform','attack','idle'],hurt:['hurt','idle']};
-function keikoDraw(id,e,pose){const key='k_'+id,save=HOSHI_POSE_ALIAS[pose];if(KEIKO_ALIAS[pose])HOSHI_POSE_ALIAS[pose]=KEIKO_ALIAS[pose];const ok=hoshiDrawArt(key,e.x,e.y-(e.lift||0),pose,e.t,e.face,e.flash>0&&(e.flash&2)?.55:1);if(save)HOSHI_POSE_ALIAS[pose]=save;else delete HOSHI_POSE_ALIAS[pose];if(ok)return;keikoPlaceholder(id,e.x,e.y-(e.lift||0),pose,e.t,e.face);}
-function keikoPlaceholder(id,x,y,pose,t,dir){const B=KEIKO_BOSSES[id],f=dir<0?-1:1,R=(a,b,w,h,c)=>mrect(f>0?x+a:x-a-w,y+b,w,h,c),bob=(t>>5)&1;
+function keikoDraw(id,e,pose,real){const key=(real?'r_':'k_')+id,save=HOSHI_POSE_ALIAS[pose];if(KEIKO_ALIAS[pose])HOSHI_POSE_ALIAS[pose]=KEIKO_ALIAS[pose];const ok=hoshiDrawArt(key,e.x,e.y-(e.lift||0),pose,e.t,e.face,e.flash>0&&(e.flash&2)?.55:1);if(save)HOSHI_POSE_ALIAS[pose]=save;else delete HOSHI_POSE_ALIAS[pose];if(ok)return;keikoPlaceholder(id,e.x,e.y-(e.lift||0),pose,e.t,e.face,!real);}
+function keikoPlaceholder(id,x,y,pose,t,dir,fake){const B=KEIKO_BOSSES[id],f=dir<0?-1:1,R=(a,b,w,h,c)=>mrect(f>0?x+a:x-a-w,y+b,w,h,c),bob=(t>>5)&1;
  const hair={tobiume:'#ff8cc0',neenia:'#e8ecf4',lily:'#ffe6a8',disaster:'#2a3a6a'}[id],dress={tobiume:'#c8406a',neenia:'#2a3a7a',lily:'#ff9ad8',disaster:'#1c2a4a'}[id];
  R(-5,-8,4,8,'#2a2030');R(2,-8,4,8,'#2a2030');R(-6,-26,13,18,dress);R(-6,-12,13,3,B.sub);R(-4,-37+bob,9,10,'#f4dcd0');R(-6,-40+bob,13,5,hair);R(-6,-38+bob,3,12,hair);R(4,-38+bob,3,9,hair);R(2,-33+bob,2,1,'#3a2a48');
  if(id==='neenia'){R(8,-30,2,18,'#a07a4a');R(9,-29,1,16,'#e8e4c8');}if(id==='lily'){R(-3,-44+bob,7,3,'#ffe27a');}if(id==='tobiume'){R(-12,-28,6,10,'#ffd6ea');R(-14,-24,6,6,'#ffb0d0');}
- if(id==='disaster'&&pose!=='idle'){R(8,-30,16,3,'#71d9ff');R(8,-30,3,8,'#c8f4ff');}}
+ if(id==='disaster'&&pose!=='idle'){R(8,-30,16,3,'#71d9ff');R(8,-30,3,8,'#c8f4ff');}
+ if(fake){g.globalAlpha=.25;g.fillStyle='#c8b0ff';g.fillRect(x-10,y-46,20,46);g.globalAlpha=1;}}
 // ---- state
-function mansionKeikoNew(id){const B=KEIKO_BOSSES[id];return{kind:'keikoBoss',id,x:400,y:KEIKO_FLOOR,face:-1,hp:B.hp,maxHp:B.hp,t:0,flash:0,mode:'idle',mt:0,cycle:0,gaps:[],nextGaps:null,marks:[],lift:0};}
+function mansionKeikoNew(id){const B=KEIKO_BOSSES[id];return{kind:'keikoBoss',id,x:200,y:KEIKO_FLOOR,face:-1,hp:B.hp,maxHp:B.hp,t:0,flash:0,mode:'idle',mt:0,cycle:0,gaps:[],nextGaps:null,marks:[],lift:0};}
 function mansionKeikoEnter(room){M.keiko=null;const id=KEIKO_BY_ROOM[room];if(!id)return;const B=KEIKO_BOSSES[id];M.keiko={id,state:'waiting'};M.enemies.push(mansionKeikoNew(id));}
 function mansionKeikoBoss(){return M.enemies.find(e=>e.kind==='keikoBoss');}
-function mansionKeikoTrigger(){const k=M.keiko;if(!k||k.state!=='waiting'||M.map||M.x<70||M.x>MR[M.room].w-70)return;const B=KEIKO_BOSSES[k.id];
- if(M.flags[B.flag]){k.state='idleDone';return;}k.state='ready';mansionTalkShow(B.name,B.pre,mansionKeikoStart);}
+function mansionKeikoTrigger(){const k=M.keiko;if(!k||k.state!=='waiting'||M.map||M.x<64)return;const B=KEIKO_BOSSES[k.id];
+ if(M.flags[B.flag]){k.state='idleDone';return;}k.state='ready';mansionTalkShow(B.real+'？',B.fake,()=>{mansionBurst(mansionKeikoBoss().x,KEIKO_FLOOR-24,'#c8b0ff',16);mansionTalkShow(B.name,B.pre,mansionKeikoStart);});}
 function mansionKeikoStart(){const k=M.keiko;if(!k)return;k.state='active';const e=mansionKeikoBoss();Object.assign(e,mansionKeikoNew(k.id));e.x=M.x<256?400:112;e.mode='walk';M.enemyShots=[];M.map=false;}
 function mansionKeikoRematch(){const k=M.keiko;if(!k)return;M.flags[KEIKO_BOSSES[k.id].flag+'Rematch']=true;mansionKeikoStart();}
 function mansionKeikoActive(){return !!(M.keiko&&M.keiko.state==='active');}
@@ -113,7 +117,7 @@ function mansionKeikoAI(e){const k=M.keiko;if(!k||k.state!=='active'){e.mode='id
 function mansionKeikoBulletUpdate(){if(!M.keiko)return;const e=mansionKeikoBoss();for(const b of M.enemyShots){if(b.kind==='kRain'&&b.y>KEIKO_FLOOR-4){b.dead=true;mansionBurst(b.x,KEIKO_FLOOR-4,b.col,3);}
  if(b.shape==='scythe'){b.age=(b.age||0)+1;if(b.boom&&(b.x<KEIKO_L-8||b.x>KEIKO_R+8)){b.vx=-b.vx;b.boom=0;b.back=true;}if(b.back&&e&&Math.abs(b.x-e.x)<10)b.dead=true;}}}
 function mansionKeikoPose(e){const B=KEIKO_BOSSES[e.id];if(e.flash>0)return'hurt';if(e.id==='disaster'&&KEIKO_MORPH_ICON[e.mode]&&e.mt<18)return'transform';const wind={volley:36,bow:44,sword:44,wave:40,scythe:44,snare:30,shock:40,axe:40,swoop:e.hp<=e.maxHp/2?30:40,spear:e.hp<=e.maxHp/2?30:40,rain:60}[e.mode];if(wind&&e.mt<wind)return'telegraph';if(e.mode==='rain')return'kick';return B.pose[e.mode]||'idle';}
-function mansionKeikoDraw(e){const B=KEIKO_BOSSES[e.id],rage=e.hp<=e.maxHp/2;
+function mansionKeikoDraw(e){const B=KEIKO_BOSSES[e.id],rage=e.hp<=e.maxHp/2;if(!M.keiko||!['active','ready','waiting'].includes(M.keiko.state))return;
  if(e.mode==='rain'){for(const[a,b]of e.gaps||[]){g.globalAlpha=.28+.12*Math.sin(M.t*.2);mrect(a,20,b-a,KEIKO_FLOOR-20,'#9fe8ff');g.globalAlpha=1;mrect(a,KEIKO_FLOOR-3,b-a,3,'#c9fbff');mansionDiamond((a+b)/2,KEIKO_FLOOR-12,4,'#ffffff');}
   for(const[a,b]of e.nextGaps||[]){if((M.t>>3)&1){mrect(a,KEIKO_FLOOR-3,b-a,3,'#ffe27a');mansionDiamond((a+b)/2,KEIKO_FLOOR-14,4,'#ffe27a');}}}
  for(const mk of e.marks){const armed=mk.t>=mk.arm;if(armed){for(let x=mk.x-mk.w/2;x<mk.x+mk.w/2;x+=5)mrect(x,KEIKO_FLOOR-6-((x*7)&3),2,6+((x*7)&3),'#6ab070');}else if((M.t>>2)&1){mrect(mk.x-mk.w/2,KEIKO_FLOOR-2,mk.w,2,'#ff6a6a');mansionDiamond(mk.x,KEIKO_FLOOR-10,3,'#ff6a6a');}}
@@ -133,11 +137,20 @@ function keikoBulletDraw(b){const c=b.col||'#fff';
  if(b.shape==='heart'){mansionDiamond(b.x,b.y,6,'#2a1030');mrect(b.x-4,b.y-3,3,3,c);mrect(b.x+1,b.y-3,3,3,c);mansionDiamond(b.x,b.y+1,3,c);return;}
  if(b.shape==='note'){mrect(b.x-3,b.y,5,4,c);mrect(b.x+1,b.y-7,2,8,c);mrect(b.x+1,b.y-7,4,2,c);return;}
  mansionDiamond(b.x,b.y,6,'#1a1030');mansionDiamond(b.x,b.y,4,c);mansionDiamond(b.x,b.y,2,'#fff6c8');}
-function mansionKeikoWin(){const k=M.keiko,B=KEIKO_BOSSES[k.id],first=!M.flags[B.flag];k.state='done';M.messageT=0;M.flags[B.flag]=true;M.enemyShots=[];M.shots=[];const e=mansionKeikoBoss();if(e){e.hp=e.maxHp;e.mode='idle';e.marks=[];e.lift=0;}M.hp=mansionMaxHP();if(first)mansionShardGain(3,true);mansionSave();
- mansionTalkShow(B.name,first?B.post:['いい稽古だった！ またいつでも相手するよ。']);}
+function mansionKeikoWin(){const k=M.keiko,B=KEIKO_BOSSES[k.id],first=!M.flags[B.flag];k.state='done';M.messageT=0;M.enemyShots=[];M.shots=[];const e=mansionKeikoBoss();if(e){mansionBurst(e.x,e.y-24,'#c8b0ff',20);e.hp=e.maxHp;e.mode='idle';e.marks=[];e.lift=0;}M.hp=mansionMaxHP();
+ const meet=()=>{const was=!M.flags[B.flag];M.flags[B.flag]=true;if(was)mansionShardGain(3,true);mansionSave();mansionBurst(256,KEIKO_FLOOR-24,B.col,18);sfx('heal');mansionTalkShow(B.real,was?B.post:['お疲れさま、海音！ いい腕試しだったよ。']);};
+ mansionTalkShow(B.name,B.vanish,meet);M.talk.afterClose=meet;}
 function mansionKeikoRetry(){const k=M.keiko,B=KEIKO_BOSSES[k.id];k.state='ready';M.enemyShots=[];M.shots=[];M.hp=mansionMaxHP();M.hurt=60;M.poseT=M.castT=M.stepT=0;M.x=80;M.y=KEIKO_FLOOR;M.vx=M.vy=0;const e=mansionKeikoBoss();if(e)Object.assign(e,mansionKeikoNew(k.id));mansionTalkShow(B.name,B.again,mansionKeikoStart);}
-function mansionKeikoPortrait(p,c){const sp=M.talk?.speaker,id=Object.keys(KEIKO_BOSSES).find(id=>KEIKO_BOSSES[id].name===sp);if(!id)return false;c.setAttribute('aria-label',sp);const f=HOSHI_ART['k_'+id+'Face'];
- if(f){p.imageSmoothingEnabled=f.img.width>64;p.drawImage(f.img,0,0,f.img.width,f.img.height,0,0,96,96);return true;}const B=KEIKO_BOSSES[id];p.fillStyle='#1a1030';p.fillRect(0,0,96,96);p.fillStyle=B.col;p.fillRect(20,14,56,40);p.fillStyle='#f4dcd0';p.fillRect(28,26,40,36);p.fillStyle=B.sub;p.fillRect(16,66,64,30);return true;}
+function mansionKeikoPortrait(p,c){const sp=M.talk?.speaker;let real=false,id=Object.keys(KEIKO_BOSSES).find(id=>KEIKO_BOSSES[id].name===sp||KEIKO_BOSSES[id].real+'？'===sp);if(!id){id=Object.keys(KEIKO_BOSSES).find(id=>KEIKO_BOSSES[id].real===sp);real=!!id;}if(!id)return false;c.setAttribute('aria-label',sp);const B=KEIKO_BOSSES[id],f=real&&HOSHI_ART['r_'+id+'Face'];
+ if(f){p.imageSmoothingEnabled=f.img.width>64;p.drawImage(f.img,0,0,f.img.width,f.img.height,0,0,96,96);return true;}
+ const a=HOSHI_ART[(real?'r_':'k_')+id];if(a&&a.mode==='sequel'){const fr=a.meta.frames[0],[rx,ry,rw]=fr.rect;p.imageSmoothingEnabled=true;p.drawImage(a.img,rx+rw*.3,ry+40,rw*.4,rw*.4,0,0,96,96);if(!real){p.fillStyle='rgba(120,90,200,.25)';p.fillRect(0,0,96,96);}return true;}
+ p.fillStyle=real?'#1a1030':'#2a1a50';p.fillRect(0,0,96,96);p.fillStyle=B.col;p.fillRect(20,14,56,40);p.fillStyle='#f4dcd0';p.fillRect(28,26,40,36);p.fillStyle=B.sub;p.fillRect(16,66,64,30);if(!real){p.fillStyle='#fff';p.font='bold 28px sans-serif';p.fillText('?',60,40);}return true;}
 // after the fight, the partner stays in her/his arena: talk to rematch
-function mansionKeikoTalkNPC(){const k=M.keiko,B=KEIKO_BOSSES[k.id];mansionTalkShow(B.name,['もう一回、腕試ししてく？ じゃあ構えて！'],mansionKeikoStart);}
-for(const [id,B] of Object.entries(KEIKO_BOSSES))HUB_NPCS.push({id:'keiko_'+id,room:B.room,x:256,y:KEIKO_FLOOR,name:B.name,enabled:()=>!!M.flags[B.flag]&&M.keiko&&M.keiko.state!=='active'&&M.keiko.state!=='ready',draw:(x,y,t,dir)=>{const e=mansionKeikoBoss();if(e){e.x=x;e.y=y;e.face=dir;e.t=t;}},talk:mansionKeikoTalkNPC});
+function mansionKeikoTalkNPC(){const k=M.keiko,B=KEIKO_BOSSES[k.id];mansionTalkShow(B.real,B.rematch,()=>{mansionTalkShow(B.name,['……呼んだ？ じゃあ、もう一回勝負！'],mansionKeikoStart);});}
+for(const [id,B] of Object.entries(KEIKO_BOSSES))HUB_NPCS.push({id:'keiko_'+id,room:B.room,x:KEIKO_CAGE_X,y:KEIKO_FLOOR,name:B.real,enabled:()=>!!M.flags[B.flag]&&M.keiko&&M.keiko.state!=='active'&&M.keiko.state!=='ready',draw:(x,y,t,dir)=>keikoDraw(id,{x,y,t,face:dir,flash:0,lift:0},'idle',true),talk:mansionKeikoTalkNPC});
+
+// the real friend's cage at the right end of each captive room (drawn behind actors)
+function mansionKeikoCageDraw(){const k=M.keiko;if(!k)return;const B=KEIKO_BOSSES[k.id],freed=!!M.flags[B.flag],x=KEIKO_CAGE_X,y=KEIKO_FLOOR;
+ if(!freed){g.globalAlpha=.85;keikoDraw(k.id,{x,y,t:M.t,face:-1,flash:0,lift:0},'idle',true);g.globalAlpha=1;
+  mrect(x-30,y-70,60,4,'#8a8fa8');mrect(x-30,y-2,60,4,'#8a8fa8');for(let i=0;i<=6;i++)mrect(x-30+i*10,y-70,2,70,'#b8bdd0');g.globalAlpha=.18+.08*Math.sin(M.t*.1);mrect(x-30,y-70,60,70,'#b070ff');g.globalAlpha=1;}
+ else{mrect(x-30,y-2,60,4,'#6a6f88');for(let i=0;i<=6;i+=6)mrect(x-30+i*10,y-24,2,24,'#8a8fa8');}}

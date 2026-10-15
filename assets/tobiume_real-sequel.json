@@ -1,0 +1,129 @@
+{
+ "image": "tobiume_real-sequel.png",
+ "frameWidth": 512,
+ "frameHeight": 512,
+ "scale": 0.1227,
+ "displayHeight": "立ち姿 頭頂〜足 440px（ネイティブ）× 0.1227 ≈ 54px",
+ "facing": "right",
+ "anchorNote": "anchor＝足元。全フレーム anchor.y=500。座標はすべてネイティブのセル内座標（左向きは x → 511-x）。半透明部分は alpha 中間値あり",
+ "character": "飛梅（本人）。ピンク髪、白い羽、白とピンクのドレス",
+ "frames": [
+  {
+   "name": "idle0",
+   "rect": [
+    0,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    142,
+    61,
+    332,
+    500
+   ],
+   "hitbox": [
+    176,
+    61,
+    157,
+    439
+   ]
+  },
+  {
+   "name": "idle1",
+   "rect": [
+    512,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    142,
+    61,
+    332,
+    500
+   ],
+   "hitbox": [
+    176,
+    61,
+    157,
+    439
+   ]
+  },
+  {
+   "name": "talk",
+   "rect": [
+    1024,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    143,
+    62,
+    335,
+    500
+   ],
+   "hitbox": [
+    176,
+    62,
+    160,
+    438
+   ]
+  }
+ ],
+ "animations": {
+  "idle": {
+   "frames": [
+    0,
+    1
+   ],
+   "ms": [
+    2000,
+    150
+   ],
+   "loop": true,
+   "note": "1＝まばたき"
+  },
+  "talk": {
+   "frames": [
+    2
+   ],
+   "ms": [
+    600
+   ],
+   "loop": false,
+   "alias": "peace",
+   "note": "ピース／会話"
+  },
+  "peace": {
+   "frames": [
+    2
+   ],
+   "ms": [
+    600
+   ],
+   "loop": false,
+   "alias_of": "talk"
+  }
+ },
+ "hitboxes": {
+  "body": "各フレームの hitbox [x,y,w,h]（ネイティブ。アンカー±80px の胴体帯）"
+ },
+ "source": "work/real/raw/tobiume_real-sequel.jpg（3×1）→ work/real/build_real.py"
+}

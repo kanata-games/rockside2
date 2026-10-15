@@ -1,0 +1,129 @@
+{
+ "image": "lily_real-sequel.png",
+ "frameWidth": 512,
+ "frameHeight": 512,
+ "scale": 0.1227,
+ "displayHeight": "立ち姿 頭頂〜足 440px（ネイティブ）× 0.1227 ≈ 54px",
+ "facing": "right",
+ "anchorNote": "anchor＝足元。全フレーム anchor.y=500。座標はすべてネイティブのセル内座標（左向きは x → 511-x）。半透明部分は alpha 中間値あり",
+ "character": "リリー（本人）。薄紫の長髪、紫の透けるロングドレス",
+ "frames": [
+  {
+   "name": "idle0",
+   "rect": [
+    0,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    150,
+    61,
+    374,
+    500
+   ],
+   "hitbox": [
+    176,
+    61,
+    161,
+    439
+   ]
+  },
+  {
+   "name": "idle1",
+   "rect": [
+    512,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    135,
+    68,
+    388,
+    500
+   ],
+   "hitbox": [
+    176,
+    68,
+    161,
+    432
+   ]
+  },
+  {
+   "name": "talk",
+   "rect": [
+    1024,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    148,
+    61,
+    381,
+    500
+   ],
+   "hitbox": [
+    176,
+    61,
+    161,
+    439
+   ]
+  }
+ ],
+ "animations": {
+  "idle": {
+   "frames": [
+    0,
+    1
+   ],
+   "ms": [
+    2000,
+    150
+   ],
+   "loop": true,
+   "note": "1＝まばたき"
+  },
+  "talk": {
+   "frames": [
+    2
+   ],
+   "ms": [
+    600
+   ],
+   "loop": false,
+   "alias": "peace",
+   "note": "ピース／会話"
+  },
+  "peace": {
+   "frames": [
+    2
+   ],
+   "ms": [
+    600
+   ],
+   "loop": false,
+   "alias_of": "talk"
+  }
+ },
+ "hitboxes": {
+  "body": "各フレームの hitbox [x,y,w,h]（ネイティブ。アンカー±80px の胴体帯）"
+ },
+ "source": "work/real/raw/lily_real-sequel.jpg（3×1）→ work/real/build_real.py"
+}

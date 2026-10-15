@@ -315,3 +315,22 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 - 絵：`assets/<art>-sequel.json`（コマの名前は idle, move, telegraph, attackA, attackB, hurt, defeat）→ 前作の普通の絵（`tobiume.png`、`neenia.png`、`lily.png`、`star.png`。54pxくらいになるよう拡大）→ 仮の絵。顔は `<normal>_face.png`。/ Art: `assets/<art>-sequel.json` (frame names idle, move, telegraph, attackA, attackB, hurt, defeat), then the first game's normal sheets scaled to about 54 px, then placeholder art. Faces use `<normal>_face.png`.
 - 背景：エリア設定に `open:true` があると、奥の壁にアーチの開口部をあける（`artOpenArches`）。far `moonGarden` は `assets/bg/wander_far.png` と `wander_mid.png` を使い、なければコードで描く。/ Backgrounds: `open:true` cuts arches in the back wall (`artOpenArches`). The far layer `moonGarden` uses `assets/bg/wander_far.png` and `wander_mid.png`, or draws them in code.
 - 地図：部屋の短い名前は `MANSION_MAP_NAMES` に足す。名前はセルに収まる大きさまで縮む。/ Map: add short room names to `MANSION_MAP_NAMES`; labels shrink to fit their cell.
+
+
+## 12. ニセモノと檻の部屋 / Impostors and cage rooms (test.46)
+- `KEIKO_BOSSES[id]` の項目：/ Fields:
+  - `name`：ニセモノの名前 / the impostor's name
+  - `real`：本物の名前 / the real friend's name
+  - `fake`：友だちのふりをする最初のせりふ。話し手は「本物の名前＋？」 / the opening lines in disguise; the speaker shows as `real+'？'`
+  - `pre`：正体を明かして、攻撃のヒントを言う / the reveal plus attack hints
+  - `again`：負けたとき / after a loss
+  - `vanish`：消えるとき / as it fades
+  - `post`：本物のせりふ / the real friend's lines
+  - `rematch`：本物に話しかけたとき（再戦）/ when talking to the real friend (rematch)
+- 檻の部屋は 32×15 の部屋で、扉は左の1つだけ。檻と本物は `KEIKO_CAGE_X` の位置に、コード（`mansionKeikoCageDraw`）で描く。/ Cage rooms are 32×15 with one door on the left. The cage and the real friend are drawn in code (`mansionKeikoCageDraw`) at `KEIKO_CAGE_X`.
+  - 檻の部屋は、ほかのエリアの部屋に番号付きの扉（`links`）でつなぐ。部屋の順番が続かないように、ばらばらの場所に置く。/ Link cage rooms to rooms in other areas with numbered doors (`links`), spread out rather than consecutive.
+- 絵の読み込み順：/ Art loading order:
+  - ニセモノ：`<art>-sequel`（無ければ仮の絵）/ impostor: `<art>-sequel`, else placeholder
+  - 本物：`<normal>_real-sequel` → 前作の `<normal>.png` を拡大 → 仮の絵 / real friend: `<normal>_real-sequel`, then the first game's `<normal>.png` scaled up, then placeholder
+  - 顔：`<normal>_real-sequel-face.png` → `<normal>_face.png` / faces: `<normal>_real-sequel-face.png`, then `<normal>_face.png`
+- 本物の絵のコード名は tobiume, neenia, lily, star。/ The real friends' asset names are tobiume, neenia, lily and star.

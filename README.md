@@ -1,6 +1,6 @@
 # 海音ちゃんの冒険２ — 屋敷探索テスト
 
-ROCKSIDE II / 2.0.0-test.45（GitHub公開版）。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
+ROCKSIDE II / 2.0.0-test.46（GitHub公開版）。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
 
 ## ステージの作り方 / How to build stages
 
@@ -11,7 +11,28 @@ ROCKSIDE II / 2.0.0-test.45（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 - 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs` `node tools/test-hoshiyomi.cjs` and `node tools/test-keiko.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
-## 現在の公開版（2026-10-15 / test.45）
+## 現在の公開版（2026-10-15 / test.46）
+
+- test.45 の4人の hi-res の絵が本物に似ていなかったので、別人のニセモノ（月が映した写し身）にした。ニセモノとはふつうのボス戦になる。/ The four hi-res sprites from test.45 didn't look like the real characters, so they are now different, original impostors (phantoms cast by the moon). Fighting them is a real boss fight.
+  - ハネウメ（跳梅）：飛梅のニセモノ / impostor of 飛梅
+  - ネムニア：ネーニアのニセモノ / impostor of ネーニア
+  - リリリ：リリィのニセモノ / impostor of リリィ
+  - ズターさん：スターさんのニセモノ / impostor of スターさん
+- 本物の4人は、それぞれ別の場所にある檻の部屋に閉じこめられている。続けて戦う作りはやめた。/ The real four are each held in a cage room in a different part of the world, no longer as back-to-back arenas.
+  - 梅香の離れ：稽古庭の渡り廊の先 / past 渡り廊 in the sparring garden
+  - 弓張りの塔牢：天文書庫の控え室の扉から / through a door in the observatory's 控え室
+  - 月影の楽屋：拠点の地下室の扉から / through a door in the hub cellar
+  - 錬金の封印室：星灯りの渡り廊下の扉から / through a door in 星灯りの渡り廊下
+- 部屋に入ると、ニセモノが友だちのふりをして近づいてくる。少しずれたことを言ったあと正体を明かして、戦いになる。/ In each room the impostor approaches as Umine's friend, says something slightly off, then reveals itself and fights.
+- 勝つとニセモノは消え、檻が開いて本物が出てくる。本物は腕試しや協力の話、助言をくれて、星詠みの欠片を3つくれる。/ Winning makes the impostor fade, the cage opens, and the real friend comes out: cooperation talk, a tip, and 3 star shards.
+  - 本物に話しかけると、ニセモノを呼び出して再戦できる。/ Talk to the real friend to summon the impostor for a rematch.
+- 絵：/ Art:
+  - ニセモノ：`assets/<tobiume|neenia|lily|disaster>-sequel`、なければ仮の絵 / impostors: those sheets, else placeholder
+  - 本物：`assets/<tobiume|neenia|lily|star>_real-sequel`（素材づくり担当の、本物に似せた絵が届いて入っている）。なければ前作の普通の絵を拡大、それもなければ仮の絵。/ real friends: the art maker's faithful `_real-sequel` sheets (already in), else the first game's normal sheets scaled up, else placeholder
+  - ユーザーの資料：`refs/<tobiume|neenia|star|lily>_real.png` / the user's references
+- 稽古庭の中：崩れ門 → 井戸塔 → 休み処（セーブ・ワープ）→ 渡り廊 → 梅香の離れ。スライディング・壁キック・スライディングジャンプで進むのは変わらない。/ The garden route: 崩れ門, 井戸塔, 休み処 (save + warp), 渡り廊, 梅香の離れ, still gated by slide, wall kick and slide jump.
+
+## 前の公開版（2026-10-15 / test.45）
 
 - 新エリア「月下の稽古庭」：崩れかけた月夜の庭と回廊、8部屋。/ New area 月下の稽古庭: a crumbling moonlit garden and cloister, 8 rooms.
   - 入口は中庭の新しい扉。/ Entered through a new door in the garden.
