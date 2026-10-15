@@ -1,6 +1,6 @@
 # 海音ちゃんの冒険２ — 屋敷探索テスト
 
-ROCKSIDE II / 2.0.0-test.41（GitHub公開版）。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
+ROCKSIDE II / 2.0.0-test.42（GitHub公開版）。前作 ROCKSIDE v0.12.0 から独立した続編開発用プロジェクト。由来は BASE_ORIGIN.json に記録。前作リポジトリには変更を加えない。
 
 ## ステージの作り方 / How to build stages
 
@@ -11,7 +11,40 @@ ROCKSIDE II / 2.0.0-test.41（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 - 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
-## 現在の公開版（2026-10-15 / test.41）
+## 現在の公開版（2026-10-15 / test.42）
+
+- 見た目 / Visuals (`src/04j_stage_art.js`):
+  - エリア別タイルセット：縁取り、ひび、欠け石、苔・真鍮・木の天板、深い壁の陰影。/ Per-area tilesets with caps, cracks, missing bricks, moss/brass/wood trims and depth shading.
+  - 奥の壁：石積み・羽目板・レンガ・濡れ石・大理石。付け柱、廻り縁、腰壁つき。/ Back walls in ashlar, panelling, brick, wet stone or marble, with pilasters, crown mouldings and wainscots.
+  - 窓から奥のパララックス（月夜、書架の奥、回る歯車、地下水の洞、星空）が見える。/ Windows look out on parallax far layers: a moonlit night, deep stacks, turning gears, a water cavern, a starfield.
+  - 小物を自動配置（本棚、燭台、彫像、木箱、バルブ、配管、水晶、天体儀）。/ Props are placed automatically: bookshelves, candelabra, statues, crates, valves, pipes, crystals, orreries.
+  - 灯り（暗さ＋燭台・窓・セーブ・ワープの光）、窓からの光の筋、ほこり、低い霧。/ Lighting: darkness lit by candles, windows, saves and warps, plus window god-rays, dust motes and low fog.
+- 関門を「場所」にした / Gates became places (`scenes`):
+  - 大広間：2本柱をやめ、崩れた大階段の芯を壁キックで登る。帰りは東壁の折れた螺旋階段。/ Hall: the two pillars are gone. You wall-kick up the core of a collapsed grand staircase, and come back down a broken spiral stair on the east wall.
+  - 書庫：スライディングの穴は倒れた本棚の下。/ Archive: the slide gap runs under a fallen bookcase.
+  - 時計塔：東の壁キックは昇降機の竪穴。/ Clock tower: the east wall-kick climb is an elevator shaft.
+  - 貯水室：配管シャフト。/ Reservoir: a pipe chase.
+  - 星灯り：崩れた橋をスライディングジャンプで越える。/ Star passage: the slide jump crosses a broken bridge.
+- 敵 / Foes (`src/04k_foes.js`):
+  - 部屋データの `foes` から種類ごとに出す。/ Foes spawn by kind from each room's `foes` list.
+  - 新しい6種：
+    - 盾持ち鎧：正面の弾は弾く。背後から攻撃するか、下をスライディングでくぐる。
+    - 壁這い
+    - 浮遊砲台：予告してから狙い撃つ。
+    - コウモリの群れ
+    - 跳ねる本ミミック
+    - 天井から落ちる水滴スライム
+  - New kinds:
+    - shield walker: frontal shots bounce off. Hit it from behind or slide under it.
+    - wall crawler
+    - hover turret: it telegraphs, then fires an aimed shot.
+    - bat swarm
+    - hopping book mimic
+    - drip slime that drops from the ceiling
+  - 絵は `assets/enemies/<kind>.png/.json` に置き、manifest に名前を足すと差し替わる。それまでは仮のドット絵。/ To swap in real art, drop `assets/enemies/<kind>.png/.json` in place and add the kind to the manifest. Until then a placeholder pixel sprite is drawn.
+  - 仕様は STAGE_GUIDE §9。/ The spec is in STAGE_GUIDE §9.
+
+## 前の公開版（2026-10-15 / test.41）
 
 - ステージ作り直し第1段階 / Stage rebuild phase 1:
   - 14部屋をすべて16pxタイルの格子に作り直した。/ All 14 rooms rebuilt on the 16 px tile grid.
@@ -26,7 +59,7 @@ ROCKSIDE II / 2.0.0-test.41（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 - 回廊の西端に段を付け、大広間に東から戻る道を作った（以前は落下か一方通行になっていた）。/ The gallery's west end got stairs, and the hall got a way back from the east. Before, these were a fall or a one-way trip.
 - セーブキー `rockside2_mansion_v1` と `version:1` はそのまま。新しい床に合わない古い記録地点は、その部屋のセーブに移る。/ Save key `rockside2_mansion_v1` and `version:1` are unchanged. An old checkpoint that doesn't fit the new floor moves to that room's save.
 
-## 前の公開版（2026-10-15 / test.40）
+## さらに前の公開版（2026-10-15 / test.40）
 
 公開URL：https://kanata-games.github.io/rockside2/
 

@@ -128,9 +128,91 @@ Slide tunnel (1 free row)     Wall-kick shaft (2-3 wide)    Slide-jump gap (6 em
 - セーブのキー `rockside2_mansion_v1` / `version:1` は変えない。古いセーブの記録地点が新しい床に合わないときは、その部屋の `S` に自動で移る。/ Don't change the save key `rockside2_mansion_v1` / `version:1`. An old checkpoint that no longer fits the new floor moves to that room's `S` automatically.
 - `HUB_NPCS`（`src/04i_mansion.js`）のアスターテや青天の立ち位置は座標で書いてある。部屋を作り直したら、その位置に床があるか確認。/ The Astarte and Seiten spots in `HUB_NPCS` (`src/04i_mansion.js`) are hard-coded coordinates. After rebuilding a room, check there is floor at those spots.
 
-## 8. 今の世界 / The current world (phase 1)
+## 8. 今の世界 / The current world
 
 - 14部屋・88セル。進む順番：書庫の紋章（スライディングのトンネルの先）→ 封書の錠 → 星灯りの錠 → 中庭のアスターテ。/ 14 rooms, 88 cells. Unlock order: archive seal (past the slide tunnel), then the 封書 latch, then the 星灯り latch, then Astarte in the garden.
-- 壁キック：大広間の柱と東の壁、時計塔の東壁のたて穴、貯水室の隠し棚。/ Wall kick: the hall pillars and east wall, the clock tower's east-wall shaft, and the reservoir's secret shelf.
+- 壁キック：大広間の崩れた大階段の芯、時計塔の昇降機の竪穴、貯水室の配管シャフト（隠し棚）。大広間の帰り道は東壁の折れた螺旋階段（ジャンプで登る）。/ Wall kick: the hall's collapsed-staircase core, the clock tower's elevator shaft, and the reservoir's pipe chase (secret ledge). The hall's way back is a broken spiral stair on the east wall, climbed by jumping.
 - スライディング：書庫の低いトンネル（ここを抜けないと先へ進めない）。/ Slide: the archive's low tunnel. Everything past it requires going through.
 - スライディングジャンプ：星灯りの渡り廊下の隠し棚（6マスの溝）。/ Slide jump: the star passage's secret ledge across a 6-tile gap.
+
+
+## 9. 場面・敵・敵の絵 / Scenes, foes and foe art (test.42)
+
+### 場面 `scenes` / Scenes
+関門には必ず「理由のある場所」を付ける。部屋の定義に `scenes:[[type,col,row,w,h]]` を足す（単位はタイル）。
+Every gate needs a reason to be there. Add `scenes:[[type,col,row,w,h]]` to the room def (units are tiles).
+
+| type | 用途 / use |
+|---|---|
+| `stairwell` | 崩れた大階段。その塊を壁キックで登る。/ A collapsed grand staircase; you wall-kick up the block. |
+| `spiral` | 折れた螺旋階段。足場の'='と組み合わせる。/ A broken spiral stair; pair it with '=' stubs. |
+| `shaft` | 昇降機の竪穴か煙突。壁キック用。/ An elevator shaft or chimney, for wall-kick climbs. |
+| `pipes` | 配管シャフト。水のエリア向け。/ A pipe chase, for water areas. |
+| `bridge` | 崩れた橋。スライディングジャンプで越える穴に。/ A broken bridge over a slide-jump gap. |
+| `fallen` | 倒れた本棚。スライディングでくぐる塊に。/ A fallen bookcase over a slide tunnel block. |
+
+- 絵は当たり判定を変えない。形はいつも ASCII のタイルで作る。/ Scenes are art only; collision always comes from the ASCII tiles.
+- ただの柱だけで壁キックさせない。/ Never make bare pillars just for wall-kicking.
+
+### 敵 `foes` / Foes
+`foes:[[kind,col,row,{opts}]]`。`row` は敵が立つ行で、天井の敵ならぶら下がる行（天井タイルのすぐ下）。
+`foes:[[kind,col,row,{opts}]]`. `row` is the row the foe stands in; for ceiling foes, the row it hangs in, just below the ceiling tile.
+
+| kind | 動き / behaviour | opts |
+|---|---|---|
+| `shield` | 盾持ち鎧。正面の攻撃を弾き、約0.7秒かけて振り向く。体の下に14pxのすき間があり、スライディングでくぐれる。/ An armoured walker. It blocks attacks from the front and takes about 0.7 s to turn. A 14 px gap under its body lets a slide pass. | `range`（巡回の半幅 / patrol half-width, px） |
+| `crawler` | 隣の壁を上下に這う。/ Crawls up and down the adjacent wall. | `wall:1`（右の壁 / right wall）または `wall:-1`（左の壁 / left wall） |
+| `turret` | 浮いて揺れる。0.6秒光って予告し、狙って撃つ。/ Hovers and bobs. It glows for 0.6 s as a warning, then fires an aimed shot. | `alt`（この行から何px上に浮くか / px above the row） |
+| `bats` | n匹がぶら下がり、近づくと起きて群れで襲う。/ n bats hang; they wake when Umine is near and swoop as a swarm. | `n` |
+| `bookmimic` | 近づくと跳ねて寄ってくる。/ Hops toward Umine when she is near. | |
+| `slime` | 天井にいて、真下を通ると落ち、床を這う。/ Hangs from the ceiling, drops when Umine passes below, then crawls along the floor. | |
+
+昔の印 `w`（歩き）と `f`（飛び）も使える。/ The legacy markers `w` (walker) and `f` (flyer) still work.
+
+### 敵の絵の仕様 / Enemy sheet spec（素材づくり担当向け / for the art maker）
+`assets/enemies/<kind>.png` と `assets/enemies/<kind>.json` を置き、`assets/enemies/manifest.json` の `{"kinds":[...]}` に名前を足す。どちらかが無ければ仮のドット絵のまま。
+Put `assets/enemies/<kind>.png` and `assets/enemies/<kind>.json` in place, and add the kind to `{"kinds":[...]}` in `assets/enemies/manifest.json`. If either file is missing, the placeholder sprite is used.
+
+```json
+{
+  "frame": [32, 40],
+  "anchor": [16, 40],
+  "facing": 1,
+  "anims": {
+    "walk":  {"frames": [0,1,2,3], "fps": 8},
+    "guard": {"frames": [4], "fps": 1},
+    "turn":  {"frames": [5,6], "fps": 6, "loop": false}
+  },
+  "hitbox":  [-11, -40, 22, 40],
+  "contact": [-11, -40, 22, 26]
+}
+```
+
+- **シート / Sheet:** コマは左から右へ並べ、画像の幅で折り返す（コマ番号は0から）。背景は透明、拡大しない等倍ドット。/ Frames run left to right and wrap at the image width, numbered from 0. Transparent background, 1:1 pixels (no upscaling).
+- **anchor:** 足元の点。床の線、天井の敵なら体の下端。/ The feet point: the floor line, or the bottom of the body for ceiling foes.
+- **facing:** 絵が右向きなら1、左向きなら-1。逆向きは反転で描く。/ 1 if the art faces right, -1 if it faces left. The other direction is drawn mirrored.
+- **hitbox:** 攻撃が当たる箱で、anchor からの相対位置 `[x,y,w,h]`。/ The box attacks hit, `[x,y,w,h]` relative to the anchor.
+- **contact:** 海音が触れるとダメージを受ける箱。盾持ちは下にすき間を残す（y+h ≤ -14）。/ The box that hurts Umine on touch. For the shield walker, leave the gap underneath (y+h ≤ -14).
+- **アニメ名 / Animation names** (fps is at 60 frames per second; `loop:false` stops on the last frame):
+
+| kind | anims |
+|---|---|
+| shield | `walk`, `guard`, `turn` |
+| crawler | `crawl` |
+| turret | `idle`, `charge`, `fire` |
+| bat | `sleep`, `fly` |
+| bookmimic | `idle`, `hop`, `land` |
+| slime | `hang`, `fall`, `crawl` |
+
+- **目安の大きさ / Suggested sizes:**
+
+| kind | size (px) |
+|---|---|
+| shield | 32×44 |
+| crawler | 16×16 |
+| turret | 24×24 |
+| bat | 16×12 |
+| bookmimic | 24×20 |
+| slime | 20×14 |
+
+- 絵は壁キックの竪穴などの「場所」と同じ色調にすると馴染む。エリアの色は `ART` を参照。/ Art blends in best when it matches the palette of the place, such as a wall-kick shaft. Each area's colours are in `ART` in `src/04j_stage_art.js`.
