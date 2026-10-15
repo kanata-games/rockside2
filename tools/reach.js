@@ -17,15 +17,24 @@ const args=process.argv.slice(2),QUIET=args.includes('--quiet'),jsonOut=args.inc
 const START={room:'bedroom',x:MR.bedroom.cp[0],y:MR.bedroom.cp[1]};
 const MOVES_ALL=['jump','wallkick','slide','slidejump'];
 const JUMP=[4,4,4,3],SJUMP=[8,8,6,6]; // max columns by rise 0..3 tiles
-function solidFn(r,flags){const G=r.grid,H=G.length,W=G[0].length,lever=r.lever&&r.lever.flag;
- return (c,row)=>{if(c<0||c>=W||row<0)return true;if(row>=H)return false;const ch=G[row][c];return ch==='#'||ch==='='||(ch==='g'&&!flags.seal)||(ch==='k'&&!flags[lever]);};}
+// Vertical exits stitch rooms: a row above the top (or below the bottom) is looked up in the room across the gap
+// (any column of that neighbouring room, so Umine can step off the shaft onto its floor).
+function across(r,side,c){if(!(r.vexits||[]).some(v=>v.side===side))return null;const[cx,cy,cw,ch]=r.cell,wx=cx+Math.floor(c/16),wy=side==='up'?cy-1:cy+ch,to=MANSION_WORLD.cells[wx+','+wy];
+ if(!to||!(r.vexits||[]).some(v=>v.side===side&&v.to===to))return null;const t=MR[to];return{to,t,tc:c+(cx-t.cell[0])*16};}
+function solidFn(r,flags,depth=0){const G=r.grid,H=G.length,W=G[0].length,lever=r.lever&&r.lever.flag;
+ return (c,row)=>{if(c<0||c>=W)return true;
+  if(row<0){const v=depth<2&&across(r,'up',c);if(!v)return true;return solidFn(v.t,flags,depth+1)(v.tc,v.t.grid.length+row);}
+  if(row>=H){const v=depth<2&&across(r,'down',c);if(!v)return false;return solidFn(v.t,flags,depth+1)(v.tc,row-H);}
+  const ch=G[row][c];return ch==='#'||ch==='='||(ch==='g'&&!flags.seal)||(ch==='k'&&!flags[lever]);};}
+function keyFn(id){const r=MR[id],H=r.grid.length;return(c,row)=>{if(row<0){const v=across(r,'up',c);if(v)return v.to+'|'+v.tc+'|'+(v.t.grid.length+row);}
+ if(row>=H){const v=across(r,'down',c);if(v)return v.to+'|'+v.tc+'|'+(row-H);}return id+'|'+c+'|'+row;};}
 function liftCells(r){const s=new Set();if(!r.lift)return s;for(const y of r.lift.stops)for(let c=r.lift.x/16;c<(r.lift.x+r.lift.w)/16;c++)s.add(c+','+y/16);return s;}
 // Build the move graph for one flag set. Node key: room|c|row (row = tile row of the feet, standing on row+1).
 function graph(flags,moves){const nodes=new Map(),edges=new Map(),add=(a,b)=>{if(!edges.has(a))edges.set(a,new Set());edges.get(a).add(b);};
  const has=m=>moves.includes(m);
  for(const[id,r]of Object.entries(MR)){const S0=solidFn(r,flags),lifts=liftCells(r),S=(c,row)=>S0(c,row)||lifts.has(c+','+row);const W=r.grid[0].length,H=r.grid.length;
-  const free=(c,row)=>!S0(c,row);const stand=(c,row)=>free(c,row)&&free(c,row-1)&&S(c,row+1);const K=(c,row)=>id+'|'+c+'|'+row;
-  const fall=(c,row)=>{while(row<H&&free(c,row)&&free(c,row-1)){if(S(c,row+1))return K(c,row);row++;}return null;};
+  const free=(c,row)=>!S0(c,row);const stand=(c,row)=>free(c,row)&&free(c,row-1)&&S(c,row+1);const K=keyFn(id);
+  const fall=(c,row)=>{while(row<H+30&&free(c,row)&&free(c,row-1)){if(S(c,row+1))return K(c,row);row++;}return null;};
   const rectFree=(c0,c1,r0,r1)=>{for(let c=Math.min(c0,c1);c<=Math.max(c0,c1);c++)for(let y=r0;y<=r1;y++)if(!free(c,y))return false;return true;};
   const arc=(k,c,row,dir,table,rise)=>{for(let h=0;h<=rise;h++){const top=row-h-1-(h>=3?1:0);if(!rectFree(c,c,top,row))break;for(let dx=1;dx<=table[h];dx++){const tc=c+dir*dx,f=row-h;if(!rectFree(c,tc,top,f))break;const t=stand(tc,f)?K(tc,f):fall(tc,f);if(t&&t!==k)add(k,t);}}};
   for(let row=0;row<H;row++)for(let c=0;c<W;c++){if(!stand(c,row))continue;const k=K(c,row);nodes.set(k,{room:id,c,row});
@@ -34,13 +43,13 @@ function graph(flags,moves){const nodes=new Map(),edges=new Map(),add=(a,b)=>{if
     if(has('slidejump')&&free(c+d,row)&&free(c+d,row-1))arc(k,c,row,d,SJUMP,3);
     if(has('slide')){let x=c+d,open=0;while(x>=0&&x<W&&free(x,row)){if(!S(x,row+1)){const t=fall(x,row);if(t)add(k,t);break;}if(free(x,row-1)){add(k,K(x,row));if(++open>6)break;}else open=0;x+=d;}}
     if(has('wallkick')){// climb column c with a wall on side d; the kick pushes into column c-d (or bounces off a 1-wide shaft)
-     if(S0(c+d,row-1)||S0(c+d,row-2)){const ceil=(x,y)=>free(x,y-1)&&!free(x,y-2);let y=row-1;while(y>0&&free(c,y-1)&&(S0(c+d,y)||S0(c+d,y-1))&&!ceil(c-d,y)&&!ceil(c-2*d,y)){y--;}
+     if(S0(c+d,row-1)||S0(c+d,row-2)){const ceil=(x,y)=>free(x,y-1)&&!free(x,y-2);let y=row-1;while(y>-28&&free(c,y-1)&&(S0(c+d,y)||S0(c+d,y-1))&&!ceil(c-d,y)&&!ceil(c-2*d,y)){y--;}
       for(let f=row-1;f>=y;f--){// airborne feet row f at column c
        if(stand(c,f))add(k,K(c,f));if(free(c+d,f)&&free(c+d,f-1)&&S(c+d,f+1))add(k,K(c+d,f));
        for(const s of[-1,1])for(let dx=1;dx<=3;dx++){const tc=c+s*dx;if(!rectFree(c,tc,f-1,f))break;if(stand(tc,f))add(k,K(tc,f));}}
       // top of the wall: step onto it (the last kick also swings 2 columns away, so those must be open too)
       const swingOK=(f)=>[c-d,c-2*d].every(x=>{let fr=true,so=true;for(let q=f-1;q<=y;q++){if(free(x,q))so=false;else fr=false;}return fr||so;});
-      for(let f=y;f>=Math.max(0,y-3);f--)if(stand(c+d,f)&&rectFree(c,c,f-1,y)&&swingOK(f))add(k,K(c+d,f));}}
+      for(let f=y;f>=y-3;f--)if(stand(c+d,f)&&rectFree(c,c,f-1,y)&&swingOK(f))add(k,K(c+d,f));}}
    }}
   // Doors, extension, lift stops and portals: connect to the nearest standing node.
   const near=(x,y)=>{const c=Math.floor(x/16),row=y/16-1;return stand(c,row)?K(c,row):null;};
@@ -59,7 +68,7 @@ function bfs(G,from,portalsOk,flags){const seen=new Set([from]),q=[from];const p
  return seen;}
 function points(){const pts=[];for(const[id,r]of Object.entries(MR)){const P=(kind,x,y)=>pts.push({room:id,kind,x,y});
  if(r.cp)P('save',...r.cp);if(r.seal)P('seal',r.seal[0],r.seal[1]+2);if(r.lever)P('lever',r.lever.x,r.lever.y);if(r.boss)P('boss',...r.boss);if(r.goal)P('goal',...r.goal);if(r.npc)P('npc',...r.npc);if(r.extension)P('extension',...r.extension);
- for(const d of r.doors)P('door→'+d.to,d.x,d.y);if(PORTALS[id])P('warp',PORTALS[id].x,PORTALS[id].y);for(const p of MANSION_WORLD.props[id]||[])P(p[0],p[1],p[2]);}return pts;}
+ for(const d of r.doors)P('door→'+d.to,d.x,d.y);if(PORTALS[id])P('warp',PORTALS[id].x,PORTALS[id].y);for(const p of MANSION_WORLD.props[id]||[])P(p[0],p[1],p[2]);for(const sh of r.shards||[])P('shard',sh[0],sh[1]);}return pts;}
 function solve(moves){let flags={};const order=[];let reach,G;
  for(let it=0;it<20;it++){G=graph(flags,moves);const start=MR[START.room]._near(START.x,START.y);reach=bfs(G,start,true,flags);let added=false;
   for(const[id,r]of Object.entries(MR)){const hit=(x,y)=>{const k=r._near(x,y);return k&&reach.has(k);};
@@ -89,8 +98,8 @@ const unRoom={};for(const k of unreached){const r=k.split('|')[0];unRoom[r]=(unR
 if(!QUIET){console.log(`rooms ${rooms.length}, map cells ${Object.keys(MANSION_WORLD.cells).length}, standable tiles ${standable.length}, reached ${full.reach.size}`);
  console.log('unlock order: '+(full.order.join(' -> ')||'(none)'));
  for(const m in gates){const by={};for(const g of gates[m]){const[r]=g.split(':');by[r]=(by[r]||0)+1;}console.log(`needs ${m}: ${gates[m].length?gates[m].length+' key points behind it ('+Object.entries(by).map(([r,n])=>r+' '+n).join(', ')+')':'(nothing)'}`);}
- const tele=Object.keys(MR).filter(id=>!MR[id].doors.length&&!Object.values(MR).some(r=>r.doors.some(d=>d.to===id)));if(tele.length)console.log('teleport-only rooms (entered by events, not doors): '+tele.join(', '));
+ const tele=Object.keys(MR).filter(id=>!MR[id].doors.length&&!(MR[id].vexits||[]).length&&!Object.values(MR).some(r=>r.doors.some(d=>d.to===id)));if(tele.length)console.log('teleport-only rooms (entered by events, not doors): '+tele.join(', '));
  const iso=Object.entries(unRoom).filter(([r])=>!tele.includes(r)).filter(([r,n])=>n).map(([r,n])=>`${r}:${n}`);if(iso.length)console.log('standable but unreached tiles (sealed-off decor/arena pockets): '+iso.join(' '));}
 if(jsonOut)fs.writeFileSync(jsonOut,JSON.stringify({reach:byRoom,unreached:unreached.map(k=>k.split('|')),order:full.order,gates,problems}));
 if(problems.length){console.log('PROBLEMS ('+problems.length+'):');for(const p of problems)console.log('  - '+p);process.exit(1);}
-console.log('OK: every save, door, warp, lever, seal, boss, goal, NPC and breakable is reachable; no one-way traps.');
+console.log('OK: every save, door, warp, lever, seal, boss, goal, NPC, breakable and star shard is reachable; no one-way traps.');
