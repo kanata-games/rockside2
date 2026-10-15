@@ -1,0 +1,94 @@
+{
+ "image": "crawler.png",
+ "frame": {
+  "w": 20,
+  "h": 14
+ },
+ "count": 16,
+ "anchor": {
+  "cx": 10,
+  "feet_y": 14,
+  "note": "feet_y = first empty row under the feet"
+ },
+ "facing": "right (house convention: all frames face right, flip for left — see src/02b_chars.js)",
+ "animations": {
+  "idle": {
+   "frames": [
+    0,
+    1
+   ],
+   "ms": 220,
+   "loop": true
+  },
+  "move": {
+   "frames": [
+    2,
+    3,
+    4,
+    5
+   ],
+   "ms": 110,
+   "loop": true
+  },
+  "telegraph": {
+   "frames": [
+    6,
+    7
+   ],
+   "ms": 180,
+   "loop": false
+  },
+  "attack": {
+   "frames": [
+    8,
+    9
+   ],
+   "ms": 90,
+   "loop": false,
+   "active": [
+    0
+   ]
+  },
+  "hurt": {
+   "frames": [
+    10,
+    11
+   ],
+   "ms": 70,
+   "loop": false
+  },
+  "death": {
+   "frames": [
+    12,
+    13,
+    14,
+    15
+   ],
+   "ms": 90,
+   "loop": false
+  }
+ },
+ "hitbox": {
+  "body": [
+   2,
+   4,
+   16,
+   8
+  ],
+  "attack": [
+   14,
+   2,
+   6,
+   9
+  ],
+  "format": "[x,y,w,h] in frame px, mirror x when flipped"
+ },
+ "notes": "drawn on the floor facing right. For walls/ceilings the game rotates the frame 90/180/270 deg around (cx, feet_y).",
+ "wall_rotation": {
+  "floor": 0,
+  "right_wall": -90,
+  "ceiling": 180,
+  "left_wall": 90,
+  "pivot": "cx,feet_y"
+ }
+}

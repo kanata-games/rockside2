@@ -1,0 +1,87 @@
+{
+ "image": "book.png",
+ "frame": {
+  "w": 20,
+  "h": 20
+ },
+ "count": 16,
+ "anchor": {
+  "cx": 9,
+  "feet_y": 20,
+  "note": "feet_y = first empty row under the feet"
+ },
+ "facing": "right (house convention: all frames face right, flip for left — see src/02b_chars.js)",
+ "animations": {
+  "idle": {
+   "frames": [
+    0,
+    1
+   ],
+   "ms": 220,
+   "loop": true
+  },
+  "move": {
+   "frames": [
+    2,
+    3,
+    4,
+    5
+   ],
+   "ms": 110,
+   "loop": true
+  },
+  "telegraph": {
+   "frames": [
+    6,
+    7
+   ],
+   "ms": 180,
+   "loop": false
+  },
+  "attack": {
+   "frames": [
+    8,
+    9
+   ],
+   "ms": 90,
+   "loop": false,
+   "active": [
+    0
+   ]
+  },
+  "hurt": {
+   "frames": [
+    10,
+    11
+   ],
+   "ms": 70,
+   "loop": false
+  },
+  "death": {
+   "frames": [
+    12,
+    13,
+    14,
+    15
+   ],
+   "ms": 90,
+   "loop": false
+  }
+ },
+ "hitbox": {
+  "body": [
+   3,
+   8,
+   13,
+   10
+  ],
+  "attack": [
+   10,
+   2,
+   9,
+   14
+  ],
+  "format": "[x,y,w,h] in frame px, mirror x when flipped"
+ },
+ "notes": "mimic book; idle closed (sleepy eye), move = hop, telegraph opens jaws"
+}

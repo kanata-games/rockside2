@@ -1,0 +1,103 @@
+{
+ "image": "armor.png",
+ "frame": {
+  "w": 40,
+  "h": 36
+ },
+ "count": 19,
+ "anchor": {
+  "cx": 18,
+  "feet_y": 36,
+  "note": "feet_y = first empty row under the feet"
+ },
+ "facing": "right (house convention: all frames face right, flip for left — see src/02b_chars.js)",
+ "animations": {
+  "idle": {
+   "frames": [
+    0,
+    1
+   ],
+   "ms": 220,
+   "loop": true
+  },
+  "move": {
+   "frames": [
+    2,
+    3,
+    4,
+    5
+   ],
+   "ms": 110,
+   "loop": true
+  },
+  "guard": {
+   "frames": [
+    6,
+    7
+   ],
+   "ms": 160,
+   "loop": true
+  },
+  "telegraph": {
+   "frames": [
+    8,
+    9
+   ],
+   "ms": 180,
+   "loop": false
+  },
+  "attack": {
+   "frames": [
+    10,
+    11,
+    12
+   ],
+   "ms": 90,
+   "loop": false,
+   "active": [
+    0,
+    1
+   ]
+  },
+  "hurt": {
+   "frames": [
+    13,
+    14
+   ],
+   "ms": 70,
+   "loop": false
+  },
+  "death": {
+   "frames": [
+    15,
+    16,
+    17,
+    18
+   ],
+   "ms": 90,
+   "loop": false
+  }
+ },
+ "hitbox": {
+  "body": [
+   9,
+   2,
+   18,
+   32
+  ],
+  "attack": [
+   30,
+   16,
+   10,
+   7
+  ],
+  "format": "[x,y,w,h] in frame px, mirror x when flipped",
+  "guard_block": [
+   22,
+   10,
+   8,
+   18
+  ]
+ },
+ "notes": "spear thrust; shield blocks from the front during guard"
+}

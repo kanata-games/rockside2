@@ -1,0 +1,96 @@
+{
+ "image": "slime.png",
+ "frame": {
+  "w": 18,
+  "h": 18
+ },
+ "count": 19,
+ "anchor": {
+  "cx": 8,
+  "feet_y": 18,
+  "note": "feet_y = first empty row under the feet"
+ },
+ "facing": "right (house convention: all frames face right, flip for left — see src/02b_chars.js)",
+ "animations": {
+  "idle": {
+   "frames": [
+    0,
+    1
+   ],
+   "ms": 220,
+   "loop": true
+  },
+  "move": {
+   "frames": [
+    2,
+    3,
+    4,
+    5
+   ],
+   "ms": 110,
+   "loop": true
+  },
+  "fall": {
+   "frames": [
+    6,
+    7,
+    8
+   ],
+   "ms": 90,
+   "loop": false
+  },
+  "telegraph": {
+   "frames": [
+    9,
+    10
+   ],
+   "ms": 180,
+   "loop": false
+  },
+  "attack": {
+   "frames": [
+    11,
+    12
+   ],
+   "ms": 90,
+   "loop": false,
+   "active": [
+    0
+   ]
+  },
+  "hurt": {
+   "frames": [
+    13,
+    14
+   ],
+   "ms": 70,
+   "loop": false
+  },
+  "death": {
+   "frames": [
+    15,
+    16,
+    17,
+    18
+   ],
+   "ms": 90,
+   "loop": false
+  }
+ },
+ "hitbox": {
+  "body": [
+   3,
+   5,
+   11,
+   11
+  ],
+  "attack": [
+   8,
+   6,
+   9,
+   10
+  ],
+  "format": "[x,y,w,h] in frame px, mirror x when flipped"
+ },
+ "notes": "water drop; fall = drop from ceiling (play once, then idle)"
+}

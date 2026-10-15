@@ -1,0 +1,90 @@
+{
+ "image": "bat.png",
+ "frame": {
+  "w": 20,
+  "h": 16
+ },
+ "count": 18,
+ "anchor": {
+  "cx": 10,
+  "feet_y": 16,
+  "note": "flyer: anchor is body bottom-centre; place by centre"
+ },
+ "facing": "right (house convention: all frames face right, flip for left — see src/02b_chars.js)",
+ "animations": {
+  "idle": {
+   "frames": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "ms": 220,
+   "loop": true
+  },
+  "move": {
+   "frames": [
+    4,
+    5,
+    6,
+    7
+   ],
+   "ms": 110,
+   "loop": true
+  },
+  "telegraph": {
+   "frames": [
+    8,
+    9
+   ],
+   "ms": 180,
+   "loop": false
+  },
+  "attack": {
+   "frames": [
+    10,
+    11
+   ],
+   "ms": 90,
+   "loop": false,
+   "active": [
+    0,
+    1
+   ]
+  },
+  "hurt": {
+   "frames": [
+    12,
+    13
+   ],
+   "ms": 70,
+   "loop": false
+  },
+  "death": {
+   "frames": [
+    14,
+    15,
+    16,
+    17
+   ],
+   "ms": 90,
+   "loop": false
+  }
+ },
+ "hitbox": {
+  "body": [
+   2,
+   3,
+   16,
+   11
+  ],
+  "attack": [
+   8,
+   6,
+   9,
+   8
+  ],
+  "format": "[x,y,w,h] in frame px, mirror x when flipped"
+ },
+ "notes": "flying; swoop = game moves it diagonally down toward the hero during attack"
+}

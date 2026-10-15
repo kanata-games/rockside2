@@ -574,8 +574,42 @@ console.log('PASS buddy40: legacy reward migration / idempotent save, three-way 
  for(const id of run('Object.keys(MR)'))for(const i of run(`Object.keys(MR.${id}.doors)`)){const d=`MR.${id}.doors[${i}]`;assert(run(`!!MR[${d}.to]&&mansionFitsIn(${d}.to,${d}.at[0],${d}.at[1])`),id+' door '+i+' arrives inside a wall');assert(run(`MR[${d}.to].doors.some(b=>b.to==='${id}')||MR[${d}.to].extensionDoor?.to==='${id}'`),id+' door '+i+' has no way back');}
  // Old saves whose checkpoint no longer stands on the new grid snap to that room's save altar.
  run('localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{seal:true},visited:["bedroom","gallery"],checkpoint:{room:"gallery",x:900,y:140}}));mansionStart(true)');assert.equal(run('M.room'),'gallery');assert.equal(run('M.x'),run('MR.gallery.cp[0]'));assert.equal(run('M.y'),run('MR.gallery.cp[1]'));
- // Hall way back west: wall-kick the east wall up to the balcony, then cross the pillar tops (no one-way trap).
- p=JSON.parse(kickClimb('hall',470,368,1,176));assert(p[1]===176&&p[2]&&p[0]<=440,'hall east wall to balcony: '+p);
- clearKeys();run('keys.left=true;keys.jump=true');for(let i=0;i<900&&run('M.x>150');i++){run('if(M.ground||(M.wall&&M.kickLock===0))inp.jumpPressed=true');ticks(1);}clearKeys();assert(run('M.x<=150'),'hall east-to-west return: '+run('JSON.stringify([M.x,M.y])'));
+ // Hall way back west: climb the broken spiral stair stubs on the east wall to the balcony, then cross the stair core (no one-way trap).
+ const route=(pts)=>{for(const[tx,ty,jd=40]of pts){let ok=false;for(let i=0;i<400&&!ok;i++){const s=JSON.parse(run('JSON.stringify([M.x,M.y,M.ground])'));const dx=tx-s[0];clearKeys();if(Math.abs(dx)>3)run('keys.'+(dx>0?'right':'left')+'=true');if(ty<s[1]-2){run('keys.jump=true');if(s[2]&&Math.abs(dx)<jd)run('inp.jumpPressed=true');}ticks(1);const n=JSON.parse(run('JSON.stringify([M.x,M.y,M.ground])'));ok=n[2]&&Math.abs(n[1]-ty)<1&&Math.abs(n[0]-tx)<8;}if(!ok)return run('JSON.stringify([M.x,M.y,'+tx+','+ty+'])');}clearKeys();return 'ok';};
+ run('M.map=false;M.actor="umine";mansionEnter("hall",440,368);M.enemies=[];M.hurt=0;M.transition=0;');ticks(2);
+ assert.equal(route([[472,320],[456,272],[478,224],[430,176,60],[200,192]]),'ok','hall spiral stair route');
+ clearKeys();run('keys.left=true');for(let i=0;i<300&&run('M.x>150');i++)ticks(1);clearKeys();assert(run('M.x<=150'),'hall east-to-west return: '+run('JSON.stringify([M.x,M.y])'));
  console.log('PASS stage tiles: wall-kick shaft and ledge gap, slide jump reach vs normal jump, one-row slide tunnel, hall way back west, paired doors, stale checkpoint snapping.');
+}
+
+// ---- test.42 foes: data-driven kinds, shield rules, wake/drop/fire behaviours, sprite-sheet loader.
+{
+ const prep=(room,x,y)=>{clearKeys();run(`M.map=false;M.actor='umine';mansionEnter('${room}',${x},${y});M.hurt=0;M.transition=0;M.hp=mansionMaxHP();`);};
+ // every room's foe list spawns and runs without throwing; kinds come from data
+ for(const id of run('Object.keys(MR)')){prep(id,MR_cp(id)[0],MR_cp(id)[1]);ticks(120);}
+ function MR_cp(id){return run(`JSON.stringify(MR.${id}.cp||MR.${id}.doors[0]&&[MR.${id}.doors[0].x,MR.${id}.doors[0].y]||[64,64])`).replace(/[\[\]]/g,'').split(',').map(Number);}
+ const kinds=run('JSON.stringify([...new Set(Object.values(MR).flatMap(r=>r.enemies.map(e=>e[0])))])');for(const k of ['shield','crawler','turret','bats','bookmimic','slime'])assert(kinds.includes(k),'room data uses foe kind '+k);
+ // shield walker: front shots are deflected, shots from behind hurt
+ prep('hall',260,368);run('M.enemies=M.enemies.filter(e=>e.kind==="shield");{const e=M.enemies[0];e.x=330;e.face=-1;e.min=200;e.max=420;}');
+ run('M.shots.push({x:316,y:350,vx:4})');ticks(2);assert.equal(run('M.enemies[0].hp'),4,'shield blocks a frontal shot');
+ run('M.enemies[0].face=-1;M.shots.push({x:346,y:350,vx:-4})');ticks(2);assert.equal(run('M.enemies[0].hp'),3,'shot from behind hurts the shield walker');
+ // standing contact hurts, a slide passes underneath the shield arm
+ run('{const e=M.enemies[0];e.x=330;e.face=-1;M.hp=mansionMaxHP();M.hurt=0;M.x=330;M.y=368;M.ground=true;M.h=MC.h}');ticks(1);assert(run('M.hp<mansionMaxHP()'),'standing into the shield walker hurts');
+ run('{const e=M.enemies[0];e.x=330;e.face=-1;e.turnT=0;M.hp=mansionMaxHP();M.hurt=0;M.x=300;M.y=368;M.vx=0;M.vy=0;M.knock=0;M.ground=true;M.h=MC.h;M.face=1;}');ticks(1);run('mansionInput.slide=true');let under=false;for(let i=0;i<30;i++){ticks(1);run('mansionInput.slide=false');if(process.env.DBG)console.log(run('JSON.stringify([M.x,M.y,M.h,M.slideT,M.hp,M.enemies[0].x,M.enemies[0].face])'));if(run('Math.abs(M.x-M.enemies[0].x)<4&&M.h===MC.slideH'))under=true;}
+ assert(under,'slide reaches under the shield walker');assert.equal(run('M.hp'),run('mansionMaxHP()'),'sliding under the shield walker does no damage');assert(run('M.x>M.enemies[0].x'),'slide ends behind the shield walker');
+ // bats sleep until Umine comes close, then swoop
+ prep('archiveInner',100,368);assert(run('M.enemies.filter(e=>e.kind==="bat").length===4'),'bats swarm spawns 4 bats');ticks(5);assert(run('M.enemies.filter(e=>e.kind==="bat").every(b=>b.state==="sleep")'));
+ run('M.x=488;M.y=96;M.ground=false');ticks(3);run('M.x=488;M.y=96');assert(run('M.enemies.some(e=>e.kind==="bat"&&e.state==="fly")'),'bats wake when Umine is near');
+ // slime drips down when Umine walks beneath
+ prep('cellar',60,208);run('M.enemies=M.enemies.filter(e=>e.kind==="slime").slice(0,1);M.x=M.enemies[0].x+40');ticks(3);assert.equal(run('M.enemies[0].state'),'hang');run('M.x=M.enemies[0].x+4');ticks(2);assert.equal(run('M.enemies[0].state'),'fall');run('M.x=M.enemies[0].x+120');ticks(140);assert.equal(run('M.enemies[0].state'),'crawl','slime lands and crawls');
+ // hover turret telegraphs then fires an aimed shot
+ prep('starPassage',900,224);run('M.enemies=M.enemies.filter(e=>e.kind==="turret");M.enemyShots=[];M.x=M.enemies[0].x-60;M.y=224;M.hurt=999');let fired=false,charged=false;for(let i=0;i<200&&!fired;i++){ticks(1);if(run('M.enemies[0].state==="charge"'))charged=true;fired=run('M.enemyShots.length>0');}assert(charged&&fired,'turret charges then fires');
+ // book mimic hops toward Umine
+ prep('archive',60,208);run('M.enemies=M.enemies.filter(e=>e.kind==="bookmimic");M.x=M.enemies[0].x+70;M.hurt=999');const bx=run('M.enemies[0].x');let hopped=false;for(let i=0;i<120;i++){ticks(1);if(run('M.enemies[0].state==="hop"'))hopped=true;}assert(hopped&&run('M.enemies[0].x')>bx,'book mimic hops toward Umine');
+ // wall crawler rides the shaft wall
+ prep('clockTower',560,576);run('M.enemies=M.enemies.filter(e=>e.kind==="crawler");M.hurt=999');const cy0=run('M.enemies[0].y');ticks(60);assert(run('M.enemies[0].side===1&&Math.abs(M.enemies[0].y-'+cy0+')>20&&M.enemies[0].x===39*16+9'),'crawler climbs along the east shaft wall');
+ // sprite-sheet loader: json hitbox replaces the placeholder box, drawing uses the sheet
+ run('mansionFoeArtLoad("bat",{width:64,height:16},{frame:[16,16],anchor:[8,16],facing:1,anims:{sleep:{frames:[0],fps:1},fly:{frames:[1,2,3],fps:10}},hitbox:[-6,-12,12,12],contact:[-5,-11,10,10]})');
+ assert.equal(run('MANSION_FOES.bat.box.join()'),'12,12');assert(run('mansionFoeDrawSheet({kind:"bat",x:10,y:10,state:"fly",t:5,st:0,face:-1})'),'sheet draw path');
+ console.log('PASS foes: 6 data-driven kinds spawn from room data; shield blocks front shots, hurts standing contact, slide passes under; bats wake, slime drops, turret fires, mimic hops, crawler climbs; sheet loader applies json hitbox.');
 }

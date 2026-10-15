@@ -2859,7 +2859,7 @@ const ROOM_DEFS=[
   '################################################################################################',
   '################################################################################################',
   '################################################################################################']},
- {id:'hall',name:'水鏡の大広間',area:'mansion',cx:9,cy:1,tone:'#334d69',links:{1:'archive:1'},rows:[
+ {id:'hall',name:'水鏡の大広間',area:'mansion',cx:9,cy:1,tone:'#334d69',links:{1:'archive:1'},scenes:[['stairwell',10,12,5,11],['spiral',27,12,4,11]],foes:[['shield',22,22,{range:56}]],rows:[
   '################################',
   '#..............................#',
   '#..............................#',
@@ -2871,18 +2871,18 @@ const ROOM_DEFS=[
   '#...O..........................#',
   '#.......................P......#',
   '#.................c...1........#',
-  '#...............============...#',
-  '#.........#...#................#',
-  '#.........#...#................#',
-  '#.........#...#................#',
-  '#.........#...#........f.......#',
-  '#.........#...#................#',
-  '#.........#...#................#',
-  '#.........#...#................#',
-  '#.........#...#................#',
-  '#.........#...#................#',
-  '#.........#...#................#',
-  '#D..S.v...#...#...............D#',
+  '#..............=============...#',
+  '#..........###.................#',
+  '#.........#####................#',
+  '#.........#####..............==#',
+  '#.........#####........f.......#',
+  '#.........#####................#',
+  '#.........#####.............=..#',
+  '#.........#####................#',
+  '#.........#####................#',
+  '#.........#####..............==#',
+  '#.........#####................#',
+  '#D..S.v...#####...........D....#',
   '################################',
   '################################',
   '################################',
@@ -2890,7 +2890,7 @@ const ROOM_DEFS=[
   '################################',
   '################################',
   '################################']},
- {id:'archive',name:'月影の書庫',area:'library',cx:8,cy:-1,tone:'#42374e',links:{1:'hall:1',2:'bedroom:3',3:'starPassage:1'},need:{2:'seal',3:'starShortcut'},lift:{col:45,w:4,stops:[208,448]},extension:{link:'archiveInner:1',onEnterFlag:'seitenLeftArchive'},rows:[
+ {id:'archive',scenes:[['fallen',11,1,4,11]],foes:[['bookmimic',18,12]],name:'月影の書庫',area:'library',cx:8,cy:-1,tone:'#42374e',links:{1:'hall:1',2:'bedroom:3',3:'starPassage:1'},need:{2:'seal',3:'starShortcut'},lift:{col:45,w:4,stops:[208,448]},extension:{link:'archiveInner:1',onEnterFlag:'seitenLeftArchive'},rows:[
   '################################################################',
   '#..........####.............................................####',
   '#..........####.............................................####',
@@ -2921,7 +2921,7 @@ const ROOM_DEFS=[
   '################################..K..S..x...K........v.K.X..####',
   '################################################################',
   '################################################################']},
- {id:'archiveInner',name:'封書の回廊',area:'library',cx:12,cy:-1,tone:'#44384f',links:{1:'archive:X'},lever:{flag:'archiveLatch',label:'封書の錠'},rows:[
+ {id:'archiveInner',foes:[['bats',30,1,{n:4}],['bookmimic',25,22]],name:'封書の回廊',area:'library',cx:12,cy:-1,tone:'#44384f',links:{1:'archive:X'},lever:{flag:'archiveLatch',label:'封書の錠'},rows:[
   '################################################################',
   '#...................................................k.......####',
   '#...................................................k.......####',
@@ -2952,7 +2952,7 @@ const ROOM_DEFS=[
   '################################################################',
   '################################################################',
   '################################################################']},
- {id:'clockTower',name:'時計塔の吹き抜け',area:'tower',cx:16,cy:-2,tone:'#3b3c52',lift:{col:17,w:4,stops:[128,352,576],initialStop:2},rows:[
+ {id:'clockTower',scenes:[['shaft',37,0,3,36]],foes:[['crawler',39,30,{wall:1}],['turret',5,28,{alt:0}]],name:'時計塔の吹き抜け',area:'tower',cx:16,cy:-2,tone:'#3b3c52',lift:{col:17,w:4,stops:[128,352,576],initialStop:2},rows:[
   '################################################',
   '#.......................................########',
   '#.......................................########',
@@ -2998,7 +2998,7 @@ const ROOM_DEFS=[
   '################################################',
   '################################################',
   '################################################']},
- {id:'moonReservoir',name:'月映しの貯水室',area:'water',cx:19,cy:-3,tone:'#254457',ventOffsets:[0,60,120],rows:[
+ {id:'moonReservoir',scenes:[['pipes',60,1,3,22]],foes:[['slime',54,1]],name:'月映しの貯水室',area:'water',cx:19,cy:-3,tone:'#254457',ventOffsets:[0,60,120],rows:[
   '################################################################',
   '#..............................................................#',
   '#..............................................................#',
@@ -3029,7 +3029,7 @@ const ROOM_DEFS=[
   '################################################################',
   '################################################################',
   '################################################################']},
- {id:'starPassage',name:'星灯りの渡り廊下',area:'star',cx:23,cy:-3,tone:'#273754',warpOrder:3,links:{1:'archive:3'},need:{1:'starShortcut'},lever:{flag:'starShortcut',label:'星灯りの錠'},rows:[
+ {id:'starPassage',scenes:[['bridge',58,14,6,1]],foes:[['turret',60,9,{alt:0}]],name:'星灯りの渡り廊下',area:'star',cx:23,cy:-3,tone:'#273754',warpOrder:3,links:{1:'archive:3'},need:{1:'starShortcut'},lever:{flag:'starShortcut',label:'星灯りの錠'},rows:[
   '################################################################################',
   '#.......................................................................########',
   '#.......................................................................########',
@@ -3060,7 +3060,7 @@ const ROOM_DEFS=[
   '################################################################################',
   '################################################################################',
   '################################################################################']},
- {id:'forbiddenArchive',name:'禁書庫・封じられた閲覧室',area:'library',cx:28,cy:-3,tone:'#372e49',rows:[
+ {id:'forbiddenArchive',foes:[['bats',45,1,{n:3}],['bookmimic',20,22],['bookmimic',48,22]],name:'禁書庫・封じられた閲覧室',area:'library',cx:28,cy:-3,tone:'#372e49',rows:[
   '################################################################',
   '#..............................................................#',
   '#..............................................................#',
@@ -3122,7 +3122,7 @@ const ROOM_DEFS=[
   '################################',
   '################################',
   '################################']},
- {id:'cellar',name:'蒼い地下水路',area:'water',cx:11,cy:2,tone:'#233f52',portalNeed:'seal',warpOrder:2,rows:[
+ {id:'cellar',foes:[['slime',8,2],['slime',21,2]],name:'蒼い地下水路',area:'water',cx:11,cy:2,tone:'#233f52',portalNeed:'seal',warpOrder:2,rows:[
   '################################',
   '################################',
   '#.............g................#',
@@ -3234,6 +3234,9 @@ function buildMansionWorld(defs){
   for(const m of marks.filter(m=>m.ch==='w'||m.ch==='f')){
    if(m.ch==='w'){let a=m.c,b=m.c;while(a>0&&at(a-1,m.r)==='.'||a>0&&!ROOM_SOLID_CHARS.includes(at(a-1,m.r))&&ROOM_SOLID_CHARS.includes(at(a-1,m.r+1))){if(m.c-a>=4)break;a--;}while(!ROOM_SOLID_CHARS.includes(at(b+1,m.r))&&ROOM_SOLID_CHARS.includes(at(b+1,m.r+1))&&b-m.c<4)b++;r.enemies.push(['walk',m.x,m.y,a*16+8,b*16+8]);}
    else r.enemies.push(['fly',m.x,m.y,m.x-48,m.x+48]);}
+  // def.foes: [[kind,col,row,{range,...}]] -- data-driven enemy list (see MANSION_FOES in 04k_foes.js). row = the row the foe stands in (or hangs from for ceiling kinds).
+  for(const f of d.foes||[]){const[kind,col,row,o={}]=f;const x=col*16+8,y=(row+1)*16,rg=o.range??48;r.enemies.push([kind,x,y,x-rg,x+rg,o]);}
+  if(d.scenes)r.scenes=d.scenes.map(s=>s.slice());
   const kinds={c:'candle',v:'vase',x:'box'};const pr=marks.filter(m=>kinds[m.ch]).map(m=>[kinds[m.ch],m.x,m.y,'water']);if(pr.length)props[d.id]=pr;
   const w=one('W');if(w)portals[d.id]={x:w[0],y:w[1],...(d.portalNeed?{need:d.portalNeed}:{})};
   r._marks=marks;r._def=d;MR[d.id]=r;
@@ -7699,7 +7702,7 @@ const ASTARTE_PLAYER_SIZE=80; // Compare the body, not the weapon-inclusive cell
 function mansionScythePose(){const t=M.poseT,k=t>34?0:t>28?1:t>24?2:t>20?3:t>14?4:t>8?5:t>4?6:7;return(M.scytheStage===2?25:17)+k;}
 function mansionScythe(stage=1){M.scytheStage=stage;M.scytheQueued=false;M.cool=stage===2?48:46;M.poseT=40;M.scytheFace=M.face;M.scytheHit=false;sfx('shot');}
 function mansionScytheHit(){if(M.scytheHit)return;M.scytheHit=true;const face=M.scytheFace,second=M.scytheStage===2,reach=second?62:49,height=second?44:38,box=[face>0?M.x-5:M.x-reach,M.y-(M.slideT?18:height),reach+5,height];
-for(const e of M.enemies){if(e.hp<=0||e.kind==='boss'||(e.kind==='seitenBoss'&&M.seitenState!=='active')||(e.kind==='diceBoss'&&M.diceState!=='active'))continue;if(e.kind==='seitenBoss'&&e.guard>0)continue;if(mansionOverlap(e.x-(e.kind==='diceBoss'||e.kind==='seitenBoss'?14:10),e.y-(e.kind==='diceBoss'||e.kind==='seitenBoss'?38:24),e.kind==='diceBoss'||e.kind==='seitenBoss'?28:20,e.kind==='diceBoss'||e.kind==='seitenBoss'?38:24,box)){e.hp=Math.max(0,e.hp-2);e.flash=8;if(e.kind==='seitenBoss')e.guard=18;mansionScytheImpact(e.x,e.y-15,second);sfx('hit');if(e.kind==='seitenBoss'&&e.hp===0){mansionSeitenWin();return;}if(e.kind==='diceBoss'&&e.hp===0){mansionDiceWin();return;}if(e.hp===0&&M.hp<mansionMaxHP())M.hp++;}}
+for(const e of M.enemies){if(e.hp<=0||e.kind==='boss'||(e.kind==='seitenBoss'&&M.seitenState!=='active')||(e.kind==='diceBoss'&&M.diceState!=='active'))continue;if(e.kind==='seitenBoss'&&e.guard>0)continue;if(mansionOverlap(e.x-(e.kind==='diceBoss'||e.kind==='seitenBoss'?14:10),e.y-(e.kind==='diceBoss'||e.kind==='seitenBoss'?38:24),e.kind==='diceBoss'||e.kind==='seitenBoss'?28:20,e.kind==='diceBoss'||e.kind==='seitenBoss'?38:24,box)){if(mansionFoeBlock(e,Math.sign(M.x-e.x)||1))continue;e.hp=Math.max(0,e.hp-2);e.flash=8;if(e.kind==='seitenBoss')e.guard=18;mansionScytheImpact(e.x,e.y-15,second);sfx('hit');if(e.kind==='seitenBoss'&&e.hp===0){mansionSeitenWin();return;}if(e.kind==='diceBoss'&&e.hp===0){mansionDiceWin();return;}if(e.hp===0&&M.hp<mansionMaxHP())M.hp++;}}
 for(const p of M.props){if(p.hp<=0||!mansionOverlap(p.x-11,p.y-(p.kind==='candle'?36:22),22,p.kind==='candle'?36:22,box))continue;const shot={x:p.x,y:p.y-12};mansionPropsHit(shot);mansionScytheImpact(p.x,p.y-12,second);}
 }
 // Pixel-shaped light; deterministic render geometry never mutates combat state.
@@ -7839,7 +7842,7 @@ function mansionRead(){try{const s=JSON.parse(localStorage.getItem(MANSION_KEY))
 function mansionSave(){try{localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,rewardVersion:2,flags:M.flags,visited:M.visited,portals:M.portals,checkpoint:M.checkpoint}));M.saved=true;M.saveError=false;}catch{M.saveError=true;}}
 function mansionSay(text,time=220){M.message=text;M.messageT=time;}
 function mansionStart(resume=false){mansionGuardRelease();M.guardFlash=0;const saved=resume?mansionRead():null;M.actor='umine';M.swapCool=0;M.abilityCool=0;M.castT=0;Object.assign(M,{hp:16,hurt:0,dead:0,t:0,flags:saved?.flags||{seal:false,boss:false,complete:false,seitenLeftArchive:false,archiveLatch:false,starShortcut:false,seitenDefeated:false},visited:saved?.visited||['bedroom'],portals:saved?.portals||[...MANSION_WARP_START],checkpoint:saved?.checkpoint||{room:'bedroom',x:110,y:208},map:false,talk:null,menuTab:'status',saved:!!saved,saveError:false});M.hp=mansionMaxHP();mansionEnter(M.checkpoint.room,M.checkpoint.x,M.checkpoint.y);setState('mansion');mansionSay(resume?'また、ここから探してみよう。':'紫の扉はワープ。普通の扉からも回廊へ進めるよ。');mansionUI();}
-function mansionEnter(room,x,y){mansionGuardRelease();M.guardFlash=0;Object.assign(M,{room,x,y,waterPlatform:null,slideJump:false,castT:0,sparState:'waiting',sparMode:'tutorial',sparReturn:null,diceReturn:null,diceState:'waiting',seitenState:M.flags.seitenDefeated?'done':'waiting',stepT:0,stepCool:0,clawQueued:false,walkDistance:0,vx:0,vy:0,h:MC.h,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,shots:[],enemyShots:[],fx:[],transition:16,near:null,prompt:''});mansionLiftEnter(room);mansionPropsEnter(room);M.enemies=MR[room].enemies.map((e,i)=>({kind:e[0],x:e[1],y:e[2],baseY:e[2],min:e[3],max:e[4],dir:i%2?-1:1,hp:e[0]==='fly'?2:3,t:0,flash:0}));if(room==='seitenArena'&&!M.flags.seitenDefeated)M.enemies.push(mansionNewSeiten());if(MR[room].boss&&!M.flags.boss)M.enemies.push(mansionNewAstarte());if(!M.visited.includes(room))M.visited.push(room);mansionCamera(true);mansionSave();}
+function mansionEnter(room,x,y){mansionGuardRelease();M.guardFlash=0;Object.assign(M,{room,x,y,waterPlatform:null,slideJump:false,castT:0,sparState:'waiting',sparMode:'tutorial',sparReturn:null,diceReturn:null,diceState:'waiting',seitenState:M.flags.seitenDefeated?'done':'waiting',stepT:0,stepCool:0,clawQueued:false,walkDistance:0,vx:0,vy:0,h:MC.h,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,shots:[],enemyShots:[],fx:[],transition:16,near:null,prompt:''});mansionLiftEnter(room);mansionPropsEnter(room);M.enemies=MR[room].enemies.flatMap((e,i)=>mansionFoeSpawn(e,i));if(room==='seitenArena'&&!M.flags.seitenDefeated)M.enemies.push(mansionNewSeiten());if(MR[room].boss&&!M.flags.boss)M.enemies.push(mansionNewAstarte());if(!M.visited.includes(room))M.visited.push(room);mansionCamera(true);mansionSave();}
 function mansionSolids(){const r=MR[M.room];return [...r.floor,...r.blocks,...(M.waterPlatform?[M.waterPlatform.box]:[]),...(M.lift?[mansionLiftBox()]:[]),...(r.switchGate&&!M.flags[r.lever.flag]?[r.switchGate]:[]),[0,-16,r.w,16],[-16,0,16,r.h],[r.w,0,16,r.h],...(r.gate&&!M.flags.seal?[r.gate]:[]),...(M.room==='seitenArena'&&M.seitenState==='active'?[[0,0,40,256],[472,0,40,256]]:[]),...(M.room==='garden'&&M.sparState==='active'?[[208,0,12,288]]:[])];}
 function mansionOverlap(x,y,w,h,b){return x<b[0]+b[2]&&x+w>b[0]&&y<b[1]+b[3]&&y+h>b[1];}
 function mansionFits(x,y,h=MC.h){return !mansionSolids().some(b=>mansionOverlap(x-MC.w/2,y-h,MC.w,h,b));}
@@ -7906,11 +7909,11 @@ function updateMansion(){
  if(inp.shoot&&M.cool===0&&M.actor==='astarte'&&!mansionGuarding()){mansionScythe();}
  if(inp.shoot&&M.cool===0&&mansionIsUmine()&&M.shots.length<3){M.shots.push({x:M.x+M.face*13,y:M.y-(M.slideT?7:17),vx:M.face*4.8});M.cool=10;M.poseT=14;sfx('shot');}
  if(M.actor==='seiten'){mansionSeitenPlayerUpdate();if(M.map)return;}
- for(const shot of M.shots){shot.x+=shot.vx;if(solids.some(b=>mansionOverlap(shot.x-2,shot.y-2,4,4,b))){shot.dead=true;mansionBurst(shot.x,shot.y,'#96eaff',3);}mansionPropsHit(shot);for(const e of M.enemies){if(!shot.dead&&e.hp>0&&(e.kind!=='boss'||M.sparState==='active')&&(e.kind!=='diceBoss'||M.diceState==='active')&&(e.kind!=='seitenBoss'||M.seitenState==='active')&&Math.abs(shot.x-e.x)<(e.kind==='boss'||e.kind==='diceBoss'||e.kind==='seitenBoss'?19:12)&&shot.y>e.y-(e.kind==='boss'||e.kind==='diceBoss'||e.kind==='seitenBoss'?38:24)&&shot.y<e.y+2){shot.dead=true;if((e.kind==='boss'||e.kind==='seitenBoss')&&e.guard>0){mansionBurst(shot.x,shot.y,'#baa5ed',2);continue;}e.hp-=shot.damage||1;e.flash=6;if(e.kind==='boss'||e.kind==='seitenBoss')e.guard=18;mansionBurst(shot.x,shot.y,'#b1f8ff',4);sfx('hit');if(e.kind==='seitenBoss'&&e.hp<=0){mansionSeitenWin();return;}if(e.kind==='diceBoss'&&e.hp<=0){mansionDiceWin();return;}if(e.kind==='boss'&&e.hp<=(M.sparMode==='full'?0:e.maxHp/2)){mansionBurst(e.x,e.y-12,'#ffdca1',14);mansionSparWin();}else if(e.hp<=0){mansionBurst(e.x,e.y-12,'#ffdca1',14);if(M.hp<mansionMaxHP())M.hp++;}}}}
+ for(const shot of M.shots){shot.x+=shot.vx;if(solids.some(b=>mansionOverlap(shot.x-2,shot.y-2,4,4,b))){shot.dead=true;mansionBurst(shot.x,shot.y,'#96eaff',3);}mansionPropsHit(shot);for(const e of M.enemies){if(!shot.dead&&e.hp>0&&(e.kind!=='boss'||M.sparState==='active')&&(e.kind!=='diceBoss'||M.diceState==='active')&&(e.kind!=='seitenBoss'||M.seitenState==='active')&&(MANSION_FOES[e.kind]?mansionFoeHit(e,shot.x-2,shot.y-2,4,4):(Math.abs(shot.x-e.x)<(e.kind==='boss'||e.kind==='diceBoss'||e.kind==='seitenBoss'?19:12)&&shot.y>e.y-(e.kind==='boss'||e.kind==='diceBoss'||e.kind==='seitenBoss'?38:24)&&shot.y<e.y+2))){shot.dead=true;if(mansionFoeBlock(e,shot.vx>0?-1:1)){sfx('hit');continue;}if((e.kind==='boss'||e.kind==='seitenBoss')&&e.guard>0){mansionBurst(shot.x,shot.y,'#baa5ed',2);continue;}e.hp-=shot.damage||1;e.flash=6;if(e.kind==='boss'||e.kind==='seitenBoss')e.guard=18;mansionBurst(shot.x,shot.y,'#b1f8ff',4);sfx('hit');if(e.kind==='seitenBoss'&&e.hp<=0){mansionSeitenWin();return;}if(e.kind==='diceBoss'&&e.hp<=0){mansionDiceWin();return;}if(e.kind==='boss'&&e.hp<=(M.sparMode==='full'?0:e.maxHp/2)){mansionBurst(e.x,e.y-12,'#ffdca1',14);mansionSparWin();}else if(e.hp<=0){mansionBurst(e.x,e.y-12,'#ffdca1',14);if(M.hp<mansionMaxHP())M.hp++;}}}}
  M.shots=M.shots.filter(s=>!s.dead&&Math.abs(s.x-M.x)<300);
  if(M.map)return;
  mansionPickupsUpdate();
- for(const e of M.enemies){if(e.hp<=0)continue;e.t++;if(e.flash)e.flash--;if(e.guard)e.guard--;
+ for(const e of M.enemies){if(e.hp<=0)continue;e.t++;if(e.flash)e.flash--;if(e.guard)e.guard--;if(MANSION_FOES[e.kind]){mansionFoeUpdate(e,solids);if(M.map)return;continue;}
   if(e.kind==='walk'){e.x+=e.dir*.55;if(e.x<e.min||e.x>e.max)e.dir*=-1;}
   if(e.kind==='fly'){e.x+=e.dir*.55;if(e.x<e.min||e.x>e.max)e.dir*=-1;e.y=e.baseY+Math.sin(e.t*.055)*14;}
   if(e.kind==='seitenBoss'){mansionSeitenAI(e);if(M.map)return;continue;}
@@ -8014,15 +8017,15 @@ function mansionDecorDraw(r){for(const[k,x,y]of r.decor||[]){
 }}
 function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.round(M.camY),view=mansionView();g.save();g.scale(view.zoom,view.zoom);
  mrect(0,0,view.w,view.h,r.tone);
- if(mansionBackdrop){const bw=320,bh=240,off=-Math.round(cx*.18)%bw;g.globalAlpha=.42;for(let i=-1;i<2;i++)g.drawImage(mansionBackdrop,off+i*bw,-Math.round(cy*.15),bw,bh);g.globalAlpha=1;}
- mrect(0,0,view.w,view.h,'rgba(6,12,29,.42)');if(M.room==='cellar'||M.room==='hubCellar')mrect(0,0,view.w,view.h,'rgba(0,35,52,.34)');
+ if(!artDrawFar(r,cx,cy,view)){if(mansionBackdrop){const bw=320,bh=240,off=-Math.round(cx*.18)%bw;g.globalAlpha=.42;for(let i=-1;i<2;i++)g.drawImage(mansionBackdrop,off+i*bw,-Math.round(cy*.15),bw,bh);g.globalAlpha=1;}
+ mrect(0,0,view.w,view.h,'rgba(6,12,29,.42)');if(M.room==='cellar'||M.room==='hubCellar')mrect(0,0,view.w,view.h,'rgba(0,35,52,.34)');}
  if(M.room==='garden'){mrect(0,0,view.w,view.h,'#17233e');for(let i=0;i<50;i++)mrect((i*47+13)%256,(i*23)%165,1,1,i%2?'#8cadc0':'#ffe9a0');g.fillStyle='#d8d8c2';g.beginPath();g.arc(195-cx*.035,68-cy*.12,24,0,7);g.fill();for(let i=0;i<8;i++){const x=i*48-(cx*.18)%48;mrect(x,165-cy*.15,30,75,'#202b47');mrect(x+3,154-cy*.15,24,12,'#2d3c59');}}
 
  g.save();g.translate(-cx,-cy);
- mansionAreaBack(r,cx,cy,view);if(M.room==='seitenArena')mansionForbiddenDecor();mansionHubDecor();if(M.room==='diceArena')mansionDiceDecor();mansionDecorDraw(r);
+ artDrawBack(r,cx,cy,view);if(M.room==='seitenArena')mansionForbiddenDecor();mansionHubDecor();if(M.room==='diceArena')mansionDiceDecor();mansionDecorDraw(r);
  if(M.room==='garden'){mrect(0,230,640,26,'#35435b');for(let x=0;x<640;x+=40){mrect(x,227,32,4,'#97a2b7');mrect(x+4,236,24,18,'#26334e');}for(const x of [204,624]){mrect(x,97,12,159,'#64718c');mrect(x-4,91,20,8,'#aab5c6');}if(M.sparState==='active'){mrect(210,112,2,144,'#c9a5fc');const e=M.enemies.find(e=>e.kind==='boss');if(e?.rainX!=null){mrect(e.rainX-28,252,56,3,'#ffc34e');for(let y=125;y<244;y+=12)mrect(e.rainX-1,y,2,5,'#d673ff');}}}
 
- mansionTilesDraw(r,cx,cy,view);mansionLiftDraw();mansionMechanismsDraw();
+ artDrawFront(r,cx,cy,view);mansionLiftDraw();mansionMechanismsDraw();
  if(r.extension)drawMansionDoor(r.extension[0],r.extension[1],64,!mansionDoorAvailable(r.extensionDoor));
  if(r.gate&&!M.flags.seal){const b=r.gate;mrect(...b,'#263556');for(let yy=b[1]+6;yy<b[1]+b[3];yy+=14){mrect(b[0]+5,yy,6,8,'#80e8ed');mrect(b[0],yy+2,16,2,'#b5e8d9');}}
  for(const d of r.doors){const locked=d.need&&!M.flags[d.need];if(drawMansionDoor(d.x,d.y,64,locked))continue;mrect(d.x-12,d.y-53,24,53,'#101424');mrect(d.x-14,d.y-55,28,3,locked?'#746375':'#a1b9c9');mrect(d.x-14,d.y-53,3,53,'#7c899f');mrect(d.x+11,d.y-53,3,53,'#596a84');mrect(d.x-8,d.y-47,16,44,locked?'#44344d':'#294663');mrect(d.x+5,d.y-24,3,3,locked?'#c68d90':'#ffe5a0');if(!locked){mrect(d.x-5,d.y-41,10,1,'#6faebc');mrect(d.x-5,d.y-36,10,1,'#496f91');}}
@@ -8032,9 +8035,8 @@ function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.roun
  if(M.room==='bedroom'&&!drawMansionBed(34,208,90)){mrect(34,168,83,15,'#657f9f');mrect(36,165,79,6,'#d2dfe9');mrect(32,150,4,55,'#8b7281');mrect(115,174,4,31,'#8b7281');mrect(40,161,19,6,'#f4f1ee');mrect(65,168,47,13,'#8fa8ca');mrect(42,183,4,25,'#705b72');}
  mansionPropsDraw();
  for(const n of HUB_NPCS)if(n.room===M.room&&(!n.enabled||n.enabled()))n.draw(n.x,n.y,M.t,M.x<n.x?-1:1);
- if(M.room==='hall'){for(let y=208;y<360;y+=24){mansionDiamond(157,y,3,'#80e4ee');mansionDiamond(243,y,3,'#80e4ee');}}
  if(r.goal){const[x,y]=r.goal;mrect(x-17,y-75,34,75,'#0b142a');for(let z=-14;z<=14;z+=7)if(!M.flags.boss)mrect(x+z,y-72,3,72,'#c6b37c');mrect(x-19,y-77,38,4,'#f0dbaa');}
- for(const e of M.enemies){if(e.hp<=0)continue;if(e.kind==='seitenBoss'){mansionSeitenBossDraw(e);continue;}if(e.kind==='diceBoss'){mansionDiceDraw(e);continue;}if(e.kind==='boss'){const wind=M.sparState==='active'&&(e.pose===8||e.striking);g.globalAlpha=e.guard>0&&(e.guard&2)?0.6:1;drawMansionAstarte(e.x,e.y,M.t,e.dir,e.pose??-1);g.globalAlpha=1;if(M.sparState==='active'){mrect(e.x-26,e.y-64,52,4,'#182039');mrect(e.x-25,e.y-63,50*e.hp/e.maxHp,2,'#c7a2f6');if(e.striking){g.beginPath();g.arc(e.x+e.dir*24,e.y-20,30,e.dir>0?-1.3:1.8,e.dir>0?1.3:4.5);g.strokeStyle='#170b34';g.lineWidth=6;g.stroke();g.strokeStyle='#cf63ff';g.lineWidth=4;g.stroke();g.strokeStyle='#fff4ae';g.lineWidth=1;g.stroke();}else if(wind){mansionDiamond(e.x+e.dir*35,e.y-35,4,'#f4d6ff');}}continue;}const sz=24;g.drawImage(pick(e.kind==='fly'?SPR.flyer[(frame>>3)&1]:SPR.walker[(frame>>3)&1],e.dir,e.flash>0),Math.round(e.x-12),Math.round(e.y-24),sz,sz);}
+ for(const e of M.enemies){if(e.hp<=0)continue;if(MANSION_FOES[e.kind]){mansionFoeDraw(e);continue;}if(e.kind==='seitenBoss'){mansionSeitenBossDraw(e);continue;}if(e.kind==='diceBoss'){mansionDiceDraw(e);continue;}if(e.kind==='boss'){const wind=M.sparState==='active'&&(e.pose===8||e.striking);g.globalAlpha=e.guard>0&&(e.guard&2)?0.6:1;drawMansionAstarte(e.x,e.y,M.t,e.dir,e.pose??-1);g.globalAlpha=1;if(M.sparState==='active'){mrect(e.x-26,e.y-64,52,4,'#182039');mrect(e.x-25,e.y-63,50*e.hp/e.maxHp,2,'#c7a2f6');if(e.striking){g.beginPath();g.arc(e.x+e.dir*24,e.y-20,30,e.dir>0?-1.3:1.8,e.dir>0?1.3:4.5);g.strokeStyle='#170b34';g.lineWidth=6;g.stroke();g.strokeStyle='#cf63ff';g.lineWidth=4;g.stroke();g.strokeStyle='#fff4ae';g.lineWidth=1;g.stroke();}else if(wind){mansionDiamond(e.x+e.dir*35,e.y-35,4,'#f4d6ff');}}continue;}const sz=24;g.drawImage(pick(e.kind==='fly'?SPR.flyer[(frame>>3)&1]:SPR.walker[(frame>>3)&1],e.dir,e.flash>0),Math.round(e.x-12),Math.round(e.y-24),sz,sz);}
  if(!M.dead||M.dead%8<4){if(!M.hurt||M.hurt%6<3){
  if(M.actor==='astarte'){g.save();if(M.slideT){g.translate(M.x,M.y);g.scale(1,.65);g.translate(-M.x,-M.y);}drawMansionAstartePlayer(M.x,M.y,M.t,M.poseT?M.scytheFace:M.face,(mansionGuarding()||M.guardFlash&&M.ground&&!M.poseT&&!M.castT)?16:M.castT?15:M.poseT?mansionScythePose():!M.ground?(M.vy<0?13:14):Math.abs(M.vx)>.1&&!M.hurt?4+Math.floor(M.walkDistance/8)%4:-1,ASTARTE_PLAYER_SIZE);g.restore();mansionScytheDraw();mansionGuardDraw();}else if(M.actor==='seiten'){mansionSeitenPlayerDraw();}else{
  const action=M.slideT?'slide':(!M.ground&&(M.wall||M.kickLock))?'wall':null;
@@ -8047,7 +8049,7 @@ function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.roun
  mansionWaterPlatformDraw();
  for(const s of M.shots){if(s.kind==='song'){mansionSeitenBulletDraw(s);continue;}if(s.kind==='star'){mansionScytheStar(s.x-s.vx*2,s.y,4,'#826438');mansionScytheStar(s.x,s.y,6,'#271d39');mansionScytheStar(s.x,s.y,5,'#ffd05b');mansionScytheStar(s.x,s.y,2,'#fffdf2');continue;}mrect(s.x-4,s.y-2,8,4,'#5ec9f1');mrect(s.x-2,s.y-1,4,2,'#e2ffff');}
  for(const s of M.enemyShots){if(s.kind==='songWave'||s.kind==='songNote'){mansionSeitenBulletDraw(s);continue;}if(s.kind==='dice'||s.kind==='card'||s.kind==='chip'){mansionDiceBulletDraw(s);continue;}if(s.kind==='crescent'){g.beginPath();g.arc(s.x,s.y,5,-1.2,1.2);g.strokeStyle='#170b34';g.lineWidth=5;g.stroke();g.strokeStyle='#b54dff';g.lineWidth=3;g.stroke();g.strokeStyle='#fff4ae';g.lineWidth=1;g.stroke();}else{mansionDiamond(s.x,s.y,6,'#170b34');mansionDiamond(s.x,s.y,5,'#ffb52e');mansionDiamond(s.x,s.y,3,'#ffe55d');mansionDiamond(s.x,s.y,1,'#ffffff');}}
- for(const f of M.fx){if(f.kind==='scytheImpact'){mansionScytheImpactDraw(f);continue;}g.globalAlpha=Math.min(1,f.life/12);mrect(f.x,f.y,2,2,f.color);}g.globalAlpha=1;g.restore();
+ for(const f of M.fx){if(f.kind==='scytheImpact'){mansionScytheImpactDraw(f);continue;}g.globalAlpha=Math.min(1,f.life/12);mrect(f.x,f.y,2,2,f.color);}g.globalAlpha=1;artLighting(r,cx,cy,view);g.restore();
  g.restore();
  // Dark edge vignette uses stepped pixel bars; all solid surfaces keep bright top edges.
  mrect(0,0,VW,27,'rgba(5,10,24,.94)');rectLine(4,2,23,23,'#6688a2');drawText(M.actor==='seiten'?'SEITEN':M.actor==='astarte'?'ASTARTE':'UMINE',34,6,'c',1);for(let i=0;i<mansionMaxHP();i++)mrect(34+i*4,17,3,6,i<M.hp?'#8de5f9':'#303b54');
@@ -8224,7 +8226,7 @@ function mansionForbiddenDecor(){const r=MR[M.room],arena=true;mrect(0,0,r.w,r.h
 
 function mansionSeitenClaw(stage=1){M.clawStage=stage;M.clawFace=M.face;M.clawHit=false;M.clawQueued=false;M.poseT=28;M.cool=32;sfx('swoosh');}
 function mansionSeitenClawHit(){if(M.clawHit)return;M.clawHit=true;const reach=M.clawStage===2?42:35,box=[M.clawFace>0?M.x-4:M.x-reach,M.y-32,reach+4,32];
- for(const e of M.enemies){if(e.hp<=0||e.kind==='boss'||(e.kind==='seitenBoss'&&(M.seitenState!=='active'||e.guard>0))||(e.kind==='diceBoss'&&M.diceState!=='active'))continue;if(!mansionOverlap(e.x-13,e.y-34,26,34,box))continue;e.hp=Math.max(0,e.hp-2);e.flash=8;if(e.kind==='seitenBoss')e.guard=18;mansionBurst(e.x,e.y-18,'#ffb4cf',6);sfx('hit');if(e.hp===0){if(e.kind==='diceBoss'){mansionDiceWin();return;}if(e.kind==='seitenBoss'){mansionSeitenWin();return;}if(M.hp<mansionMaxHP())M.hp++;}}
+ for(const e of M.enemies){if(e.hp<=0||e.kind==='boss'||(e.kind==='seitenBoss'&&(M.seitenState!=='active'||e.guard>0))||(e.kind==='diceBoss'&&M.diceState!=='active'))continue;if(!mansionOverlap(e.x-13,e.y-34,26,34,box))continue;if(mansionFoeBlock(e,Math.sign(M.x-e.x)||1))continue;e.hp=Math.max(0,e.hp-2);e.flash=8;if(e.kind==='seitenBoss')e.guard=18;mansionBurst(e.x,e.y-18,'#ffb4cf',6);sfx('hit');if(e.hp===0){if(e.kind==='diceBoss'){mansionDiceWin();return;}if(e.kind==='seitenBoss'){mansionSeitenWin();return;}if(M.hp<mansionMaxHP())M.hp++;}}
  for(const p of M.props){if(p.hp>0&&mansionOverlap(p.x-11,p.y-(p.kind==='candle'?36:22),22,p.kind==='candle'?36:22,box))mansionPropsHit({x:p.x,y:p.y-12});}
 }
 function mansionSeitenPlayerUpdate(){if(M.stepT)return;if(M.castT===18){M.shots.push({kind:'song',x:M.x+M.songFace*17,y:M.y-20,vx:M.songFace*3.8,damage:2});mansionBurst(M.x+M.songFace*17,M.y-20,'#ffe2a0',5);sfx('song');}
@@ -8234,6 +8236,341 @@ function mansionSeitenPlayerUpdate(){if(M.stepT)return;if(M.castT===18){M.shots.
 function mansionSeitenPlayerDraw(){const face=M.castT?M.songFace:M.poseT?M.clawFace:M.face,pose=M.stepT?2:M.castT?(M.castT>18?6:7):M.poseT?(M.poseT>23?2:M.poseT>18?3:M.poseT>9?4:5):!M.ground?(M.vy<0?3:4):Math.abs(M.vx)>.1&&!M.hurt?Math.floor(M.walkDistance/7)%2:-1;
  if(pose<0)drawMansionSeiten(M.x,M.y,M.t,face);else mansionSeitenPoseDraw(M.x,M.y,pose,face,M.t);
  if(M.poseT<=18&&M.poseT>=10){g.save();g.translate(M.x,M.y);g.scale(face,1);const k=(18-M.poseT)/8,reach=M.clawStage===2?42:35;for(let i=0;i<3;i++){g.beginPath();g.moveTo(11,-30+i*6);g.quadraticCurveTo(reach-10,-28+i*5,reach,-22+i*5+k*7);g.strokeStyle='#26132e';g.lineWidth=5;g.stroke();g.strokeStyle='#ff679e';g.lineWidth=3;g.stroke();g.strokeStyle='#fff2cc';g.lineWidth=1;g.stroke();}g.restore();}
+}
+
+// =====================================================================
+//  STAGE ART (test.42): per-area tilesets, back walls with props,
+//  parallax far layers seen through windows, scenes, lighting and fog.
+//  Each room is pre-rendered once into two canvases (back = wall/props,
+//  front = tiles), the far layer and the lighting are drawn per frame.
+// =====================================================================
+const ART={
+ // wall: [base, block, blockHi, mortar, trim, trimHi]  stone: [cap, capHi, capLo, face, faceHi, faceLo, mortar, deep]
+ hub:{wall:['#2a2233','#352b40','#41364c','#1d1825','#7b5f4a','#c5a17a'],stone:['#b49172','#e9caa0','#6b5145','#4a3d4d','#5e4f62','#352c3a','#211b27','#18131e'],dark:.22,far:'night',win:'arch',glow:'#ffcf8a'},
+ mansion:{wall:['#18233a','#203049','#2a3b58','#121a2b','#56688a','#a9c3d8'],stone:['#8fb4c8','#e1f6ff','#4d6880','#33445f','#42587a','#24314a','#151e30','#0e1524'],dark:.34,far:'night',win:'arch',glow:'#ffd49a'},
+ library:{wall:['#241a2c','#2e2236','#3a2c43','#18111e','#7a5a3e','#cfa271'],stone:['#8a6342','#d4a46e','#4e3424','#3e2f47','#4f3d5a','#2c2135','#1a1320','#120d17'],dark:.42,far:'stacks',win:'slit',glow:'#ffb969'},
+ tower:{wall:['#1f1f30','#29293d','#34344b','#151522','#8a7348','#e2c27c'],stone:['#a88f5c','#f0d79a','#5d4c30','#3a3a52','#4a4a66','#26263a','#17172a','#10101d'],dark:.38,far:'gears',win:'round',glow:'#ffc978'},
+ water:{wall:['#102633','#15303f','#1d3d4e','#0a1a24','#3f7c7a','#9fe6dc'],stone:['#4f9a86','#a8f0d4','#28584f','#24485a','#2f5a6e','#173342','#0d212c','#08161e'],dark:.46,far:'cavern',win:'arch',glow:'#8ff2ff'},
+ star:{wall:['#141a35','#1b2344','#252f57','#0e1228','#6c74b8','#d8dcff'],stone:['#7d87c9','#eef0ff','#414a86','#2c3563','#3a4579','#1e2447','#121733','#0b0f24'],dark:.3,far:'stars',win:'tall',glow:'#bfd0ff'},
+ garden:{wall:null,stone:['#5f9a5a','#b8e39a','#35603a','#3c4a5e','#4b5c72','#2a3546','#1a2230','#121823'],dark:.18,far:null,win:null,glow:'#ffe7a8'},
+ play:{wall:null,stone:['#b07a8e','#f4c9d4','#6a4258','#4a2b45','#5d3858','#321d30','#1e1020','#150a17'],dark:0,far:null,win:null,glow:'#ffd0e0'},
+};
+function artH(a,b){let h=(a*374761393+b*668265263)|0;h=(h^(h>>>13))*1274126177|0;return(h^(h>>>16))>>>0;}
+function artR(c,x,y,w,h,col){c.fillStyle=col;c.fillRect(Math.round(x),Math.round(y),w,h);}
+function artSolid(r,c,row){if(row<0||row>=r.grid.length||c<0||c>=r.grid[0].length)return true;return r.grid[row][c]==='#';}
+function artFree(r,c0,r0,c1,r1){for(let y=r0;y<=r1;y++)for(let x=c0;x<=c1;x++){if(y<0||x<0||y>=r.grid.length||x>=r.grid[0].length)return false;if(r.grid[y][x]!=='.'&&!/[a-zA-Z0-9]/.test(r.grid[y][x]))return false;if(r.grid[y][x]==='#')return false;}return true;}
+function artInScene(r,c,row,type){return(r.scenes||[]).some(s=>(!type||s[0]===type)&&c>=s[1]&&c<s[1]+s[3]&&row>=s[2]&&row<s[2]+s[4]);}
+
+// ---------------------------------------------------------------- back wall
+function artBackWall(c,r,A){const W=r.w,H=r.h,[base,blk,hi,mor,trim,trimHi]=A.wall;
+ artR(c,0,0,W,H,base);
+ if(r.area==='library'){ // dark panelled wood with vertical grain
+  for(let x=0;x<W;x+=32){artR(c,x,0,31,H,blk);artR(c,x+31,0,1,H,mor);for(let y=0;y<H;y+=4)if(artH(x,y)%5===0)artR(c,x+4+artH(y,x)%22,y,2,1,hi);}
+ }else if(r.area==='tower'){ // red-brown brick, rivetted iron bands
+  for(let y=0;y<H;y+=8)for(let x=-(y/8&1)*8;x<W;x+=16){const v=artH(x,y)%4;artR(c,x+1,y+1,14,6,v===0?hi:blk);artR(c,x+1,y+1,14,1,v===1?trim+'55':hi);}
+  for(let y=96;y<H;y+=160){artR(c,0,y,W,6,'#2c2b3a');artR(c,0,y,W,1,'#5b5a70');for(let x=6;x<W;x+=24)artR(c,x,y+2,2,2,'#8f8aa0');}
+ }else if(r.area==='water'){ // large wet ashlar with moss streaks
+  for(let y=0;y<H;y+=24)for(let x=-(y/24&1)*24;x<W;x+=48){artR(c,x+1,y+1,46,22,artH(x,y)%3?blk:hi);artR(c,x+1,y+1,46,1,'#2a5466');if(artH(y,x)%4===0)for(let k=0;k<22;k+=2)artR(c,x+8+artH(x,k)%30,y+1+k,1,2,'#2b5f52');}
+ }else if(r.area==='star'){ // polished night marble with veins and glyph rings
+  for(let y=0;y<H;y+=32)for(let x=0;x<W;x+=32){artR(c,x,y,31,31,artH(x,y)%3?blk:hi);artR(c,x,y,31,1,'#323d6c');}
+  c.strokeStyle='#3c4a85';c.lineWidth=1;for(let i=0;i<W*H/9000;i++){const x=artH(i,7)%W,y=artH(i,9)%H;c.beginPath();c.moveTo(x,y);for(let k=1;k<6;k++)c.lineTo(x+k*9,y+((artH(i,k)%11)-5));c.stroke();}
+ }else{ // hub/mansion ashlar + wallpaper above wainscot
+  for(let y=0;y<H;y+=16)for(let x=-(y/16&1)*16;x<W;x+=32){const v=artH(x,y)%5;artR(c,x+1,y+1,30,14,v===0?hi:blk);artR(c,x+1,y+1,30,1,v===0?trim+'66':hi);}
+  if(r.area==='hub'){for(let x=0;x<W;x+=12){artR(c,x,0,5,H,'rgba(140,100,120,.10)');}for(let y=6;y<H;y+=24)for(let x=6;x<W;x+=24)artR(c,x,y,2,2,'rgba(220,180,140,.18)');}
+ }
+ // depth: darker toward the ceiling, a little toward the floor
+ const gr=c.createLinearGradient(0,0,0,H);gr.addColorStop(0,'rgba(4,4,14,.5)');gr.addColorStop(.45,'rgba(4,4,14,.05)');gr.addColorStop(1,'rgba(4,4,14,.28)');c.fillStyle=gr;c.fillRect(0,0,W,H);
+}
+// pilasters on every 128px seam (fake architecture rhythm, skipped where solid)
+function artPilasters(c,r,A){const[ ,blk,hi,mor,trim,trimHi]=A.wall;
+ for(let x=128;x<r.w;x+=128){const col=x>>4;let top=null;
+  for(let row=0;row<=r.grid.length;row++){const free=row<r.grid.length&&!artSolid(r,col,row)&&!artSolid(r,col-1,row);
+   if(free&&top===null)top=row;if((!free||row===r.grid.length)&&top!==null){if(row-top>=4){const y0=top*16,y1=row*16;artR(c,x-7,y0,14,y1-y0,mor);artR(c,x-6,y0,12,y1-y0,blk);artR(c,x-6,y0,2,y1-y0,hi);artR(c,x+3,y0,3,y1-y0,mor);artR(c,x-9,y0+2,18,5,trim);artR(c,x-9,y0+2,18,1,trimHi);artR(c,x-9,y1-6,18,6,trim);artR(c,x-9,y1-6,18,1,trimHi);}top=null;}}}
+}
+// crown moulding under ceilings, wainscot / skirting above floors
+function artTrims(c,r,A){const[ ,blk,hi,mor,trim,trimHi]=A.wall,rows=r.grid.length,cols=r.grid[0].length;
+ for(let row=1;row<rows-1;row++)for(let col=0;col<cols;col++){if(artSolid(r,col,row))continue;const x=col*16,y=row*16;
+  if(artSolid(r,col,row-1)){artR(c,x,y,16,3,trim);artR(c,x,y+3,16,1,mor);artR(c,x,y,16,1,trimHi);if(col%2===0)artR(c,x+6,y+3,4,3,trim);}
+  if(artSolid(r,col,row+1)&&!artSolid(r,col,row-1)&&r.area!=='garden'){
+   if(r.area==='library'||r.area==='hub'){artR(c,x,y-12,16,28,mor);artR(c,x+1,y-11,14,26,blk);artR(c,x+3,y-8,10,20,hi);artR(c,x+4,y-7,8,18,blk);artR(c,x,y-14,16,2,trim);artR(c,x,y-14,16,1,trimHi);}
+   else if(r.area==='tower'){artR(c,x,y+8,16,8,'#2a2a3c');for(let k=0;k<16;k+=4)artR(c,x+k,y+9,2,6,'#3d3d55');artR(c,x,y+8,16,1,trim);}
+   else if(r.area==='water'){artR(c,x,y+10,16,6,'#164046');if(artH(col,row)%3===0)artR(c,x+3,y+6,2,10,'#2c7a62');artR(c,x,y+12,16,1,'#2d6d6a');}
+   else{artR(c,x,y+6,16,10,mor);artR(c,x+1,y+7,14,8,blk);artR(c,x,y+6,16,1,trimHi);artR(c,x+((col&1)?2:9),y+9,5,4,hi);}
+  }}
+}
+// windows cut through the back wall so the far layer shows (returns light spots)
+function artWindows(c,r,A,lights,shafts){if(!A.win)return;const kind=A.win,cfg={arch:[40,80],slit:[16,56],round:[64,64],tall:[48,112]}[kind],[ww,wh]=cfg;
+ for(let band=0;band<r.h;band+=240)for(let x=64;x<r.w;x+=128){if(kind==='slit'&&artH(x,band)%2)continue;
+  const wx=x-ww/2,wy=band+40,c0=(wx>>4)-1,c1=((wx+ww)>>4)+1,r0=(wy>>4)-1,r1=((wy+wh)>>4)+1;if(!artFree(r,c0,r0,c1,r1))continue;
+  c.save();c.globalCompositeOperation='destination-out';c.beginPath();
+  if(kind==='round'){c.arc(x,wy+wh/2,ww/2,0,7);}else{c.moveTo(wx,wy+wh);c.lineTo(wx,wy+ww/2);c.arc(x,wy+ww/2,ww/2,Math.PI,0);c.lineTo(wx+ww,wy+wh);c.closePath();}
+  c.fill();c.restore();
+  // frame + mullions
+  c.strokeStyle=A.wall[4];c.lineWidth=4;c.beginPath();if(kind==='round')c.arc(x,wy+wh/2,ww/2+1,0,7);else{c.moveTo(wx-1,wy+wh);c.lineTo(wx-1,wy+ww/2);c.arc(x,wy+ww/2,ww/2+1,Math.PI,0);c.lineTo(wx+ww+1,wy+wh);}c.stroke();
+  c.strokeStyle=A.wall[5];c.lineWidth=1;c.stroke();
+  c.fillStyle=A.wall[3];
+  if(kind==='round'){for(let i=0;i<8;i++){const a=i*Math.PI/4;c.save();c.translate(x,wy+wh/2);c.rotate(a);c.fillRect(-1,0,2,ww/2);c.restore();}c.beginPath();c.arc(x,wy+wh/2,6,0,7);c.fill();}
+  else{c.fillRect(x-1,wy+4,2,wh-4);for(let yy=wy+ww/2+12;yy<wy+wh;yy+=22)c.fillRect(wx,yy,ww,2);}
+  artR(c,wx-5,wy+wh,ww+10,5,A.wall[4]);artR(c,wx-5,wy+wh,ww+10,1,A.wall[5]);
+  if(kind==='arch'&&r.area!=='water'){ // curtains
+   for(const s of[-1,1]){const cxp=s<0?wx-4:wx+ww-4;for(let k=0;k<8;k++)artR(c,cxp+(k&1),wy-4+k*12,8,12,k&1?'#4b1f36':'#5d2843');artR(c,cxp,wy-6,8,3,A.wall[5]);}}
+  lights.push({x,y:wy+wh/2,r:kind==='round'?90:70,cool:1});shafts.push({x:wx+3,y:wy+ww/3,w:ww-6,h:wh});
+ }
+}
+// floor props, wall props (sconces, shelves, pipes, gears, crystals) -- deterministic per room
+function artProps(c,r,A,lights){const rows=r.grid.length,cols=r.grid[0].length,area=r.area;
+ // floor runs: [row, c0, c1] where row is the free row standing on solid
+ const runs=[];for(let row=1;row<rows;row++){let s=null;for(let col=0;col<=cols;col++){const ok=col<cols&&!artSolid(r,col,row)&&artSolid(r,col,row+1)&&!artSolid(r,col,row-1)&&!artSolid(r,col,row-2);if(ok&&s===null)s=col;if(!ok&&s!==null){runs.push([row,s,col-1]);s=null;}}}
+ for(const[row,a,b]of runs){const y=(row+1)*16;
+  for(let col=a+1;col<b;col+=3){const hsh=artH(col*3+1,row*7),x=col*16+8;if(artInScene(r,col,row))continue;
+   let headroom=0;while(headroom<8&&!artSolid(r,col,row-headroom))headroom++;
+   if(area==='library'&&headroom>=6&&hsh%3===0&&col+2<=b){artShelf(c,x+8,y,40,Math.min(headroom-1,6)*16);col+=2;continue;}
+   if(area==='mansion'&&hsh%5===0&&headroom>=5){artStatue(c,x,y);continue;}
+   if((area==='mansion'||area==='hub')&&hsh%5===1){artCandelabra(c,x,y);lights.push({x,y:y-30,r:56,warm:1,flick:1});continue;}
+   if(area==='tower'&&hsh%4===0){artCrates(c,x,y,hsh);continue;}
+   if(area==='tower'&&hsh%4===1&&headroom>=4){artGearPile(c,x,y);continue;}
+   if(area==='water'&&hsh%3===0){artValve(c,x,y);continue;}
+   if(area==='water'&&hsh%3===1){artR(c,x-10,y-2,22,2,'#5ad0d8');artR(c,x-6,y-3,12,1,'#b6fbff');continue;}
+   if(area==='star'&&hsh%3===0){artCrystal(c,x,y,A);lights.push({x,y:y-14,r:48,blue:1});continue;}
+   if(area==='library'&&hsh%3===1){artBooks(c,x,y,hsh);continue;}
+   if(area==='library'&&hsh%5===2&&headroom>=4){artReadingLamp(c,x,y);lights.push({x,y:y-26,r:52,warm:1});continue;}
+  }}
+ // wall sconces at pilaster seams, two tiles above floors
+ for(let x=128;x<r.w;x+=128)for(let row=2;row<rows;row++){const col=x>>4;if(!artSolid(r,col,row+1)||artSolid(r,col,row)||artSolid(r,col,row-1)||artSolid(r,col,row-3))continue;if(area==='garden'||area==='play')continue;
+  const y=(row-2)*16+4;if(area==='water'){artPipeLamp(c,x,y);lights.push({x,y:y+4,r:60,blue:1});}else{artSconce(c,x,y,A);lights.push({x,y:y-4,r:64,warm:1,flick:1});}}
+ // area set-pieces on big blank walls
+ if(area==='water'){for(let x=40;x<r.w;x+=176){const col=x>>4;let y0=0;while(y0<rows&&artSolid(r,col,y0))y0++;let y1=y0;while(y1<rows&&!artSolid(r,col,y1))y1++;if(y1-y0>=5&&!artInScene(r,col,y0))artPipeRun(c,x,y0*16,(y1-y0)*16,artH(x,1));}}
+ if(area==='tower'){for(let x=96;x<r.w;x+=224)for(let band=0;band<r.h;band+=240){const cx0=x>>4,ry=(band+150)>>4;if(artFree(r,cx0-3,ry-3,cx0+3,ry+3))artGear(c,x,band+150,34,12,0,'#2f2f45','#4a4a66');}}
+ if(area==='library'){for(let x=200;x<r.w;x+=256)for(let band=0;band<r.h;band+=240){const cx0=x>>4,ry=(band+56)>>4;if(artFree(r,cx0-2,ry-1,cx0+2,ry+2))artPortrait(c,x,band+56);}}
+ if(area==='star'){for(let x=160;x<r.w;x+=256)for(let band=0;band<r.h;band+=240){const cx0=x>>4,ry=(band+140)>>4;if(artFree(r,cx0-2,ry-2,cx0+2,ry+2))artOrrery(c,x,band+140);}}
+}
+function artShelf(c,x,y,w,h){artR(c,x-w/2-2,y-h-4,w+4,h+4,'#3a2618');artR(c,x-w/2,y-h,w,h,'#1c120f');for(let yy=y-h+4;yy<y-6;yy+=20){for(let k=0;k<w-4;){const bw=3+artH(k,yy)%3,bh=11+artH(yy,k)%5;artR(c,x-w/2+2+k,yy+16-bh,bw,bh,['#6d3b45','#3f5d6e','#7a6a3e','#3d5a42','#5b3d6b','#8a4a32'][artH(k+x,yy)%6]);artR(c,x-w/2+2+k,yy+16-bh+2,bw,1,'rgba(255,230,180,.25)');k+=bw+(artH(k,yy+x)%5===0?3:0);}artR(c,x-w/2,yy+16,w,3,'#6b4a2c');artR(c,x-w/2,yy+16,w,1,'#a87a4c');}artR(c,x-w/2-3,y-h-6,w+6,3,'#8f6a42');}
+function artBooks(c,x,y,h){for(let i=0;i<4;i++)artR(c,x-8+(i&1)*2,y-4-i*4,16-(i&2)*2,4,['#6d3b45','#3f5d6e','#7a6a3e','#5b3d6b'][(h+i)%4]);artR(c,x+9,y-10,3,10,'#8a4a32');}
+function artReadingLamp(c,x,y){artR(c,x-1,y-24,2,24,'#6b5338');artR(c,x-5,y-2,10,2,'#8f6a42');artR(c,x-6,y-30,12,6,'#c98a3a');artR(c,x-4,y-31,8,1,'#ffd28a');}
+function artStatue(c,x,y){artR(c,x-9,y-10,18,10,'#4b5a74');artR(c,x-10,y-12,20,2,'#8ea3bf');artR(c,x-5,y-40,10,28,'#6c7f9a');artR(c,x-4,y-48,8,8,'#8ea3bf');artR(c,x-8,y-36,3,16,'#56677f');artR(c,x+5,y-38,3,14,'#56677f');artR(c,x-3,y-40,2,26,'#a9bdd5');}
+function artCandelabra(c,x,y){artR(c,x-1,y-26,2,26,'#8a7346');artR(c,x-6,y-2,12,2,'#b39a5e');artR(c,x-9,y-27,18,2,'#b39a5e');for(const dx of[-8,0,8]){artR(c,x+dx-1,y-33,2,6,'#efe6cf');artR(c,x+dx-1,y-36,2,3,'#ffcf6a');}}
+function artCrates(c,x,y,h){const n=1+h%2;for(let i=0;i<n;i++){const yy=y-14-i*14,xx=x-8+i*3;artR(c,xx,yy,16,14,'#5d4630');artR(c,xx,yy,16,2,'#8b6a45');artR(c,xx+1,yy+2,2,12,'#3f2f22');artR(c,xx+13,yy+2,2,12,'#3f2f22');artR(c,xx+3,yy+6,10,2,'#3f2f22');}}
+function artGear(c,x,y,rad,teeth,rot,col,hi){c.save();c.translate(x,y);c.rotate(rot);c.fillStyle=col;c.beginPath();for(let i=0;i<teeth*2;i++){const a=i*Math.PI/teeth,rr=i%2?rad:rad*1.16;c.lineTo(Math.cos(a)*rr,Math.sin(a)*rr);}c.closePath();c.fill();c.fillStyle=hi;c.beginPath();c.arc(0,0,rad*.62,0,7);c.fill();c.fillStyle=col;c.beginPath();c.arc(0,0,rad*.5,0,7);c.fill();for(let i=0;i<4;i++){c.save();c.rotate(i*Math.PI/2);c.fillStyle=hi;c.fillRect(-2,0,4,rad*.55);c.restore();}c.fillStyle=hi;c.beginPath();c.arc(0,0,rad*.16,0,7);c.fill();c.restore();}
+function artGearPile(c,x,y){artGear(c,x-4,y-8,8,8,.3,'#6b5a3a','#a88f5c');artGear(c,x+7,y-6,6,7,.1,'#5d4c30','#8a7348');}
+function artValve(c,x,y){artR(c,x-3,y-22,6,22,'#2f5a5e');artR(c,x-2,y-22,1,22,'#6fb8b0');artR(c,x-8,y-26,16,3,'#a46b45');artR(c,x-1,y-30,2,4,'#a46b45');artR(c,x-6,y-4,12,4,'#244548');}
+function artCrystal(c,x,y,A){artR(c,x-7,y-6,14,6,'#2c3563');artR(c,x-8,y-7,16,1,'#6c74b8');c.fillStyle='#9fb8ff';c.beginPath();c.moveTo(x,y-28);c.lineTo(x+6,y-14);c.lineTo(x,y-6);c.lineTo(x-6,y-14);c.closePath();c.fill();c.fillStyle='#eef4ff';c.fillRect(x-1,y-24,2,10);}
+function artSconce(c,x,y,A){artR(c,x-4,y,8,6,A.wall[4]);artR(c,x-1,y+6,2,4,A.wall[4]);artR(c,x-5,y-1,10,2,A.wall[5]);artR(c,x-2,y-7,4,6,'#efe6cf');artR(c,x-2,y-11,4,4,'#ffcf6a');artR(c,x-1,y-13,2,2,'#fff6c8');}
+function artPipeLamp(c,x,y){artR(c,x-6,y-2,12,10,'#1f4a50');artR(c,x-5,y-1,10,8,'#7fe8f0');artR(c,x-3,y+1,6,4,'#e6ffff');artR(c,x-7,y-3,14,2,'#a46b45');artR(c,x-7,y+8,14,2,'#a46b45');}
+function artPipeRun(c,x,y,h,s){const w=10+(s%2)*4;artR(c,x-w/2,y,w,h,'#24484e');artR(c,x-w/2+2,y,2,h,'#4f8f8c');artR(c,x+w/2-3,y,2,h,'#132c31');for(let yy=y+20+s%30;yy<y+h-8;yy+=64){artR(c,x-w/2-2,yy,w+4,5,'#a46b45');artR(c,x-w/2-2,yy,w+4,1,'#e3a676');}}
+function artPortrait(c,x,y){artR(c,x-17,y-20,34,40,'#8f6a42');artR(c,x-15,y-18,30,36,'#2a1d2f');artR(c,x-8,y-12,16,14,'#5b4560');artR(c,x-10,y+2,20,14,'#3e2f47');artR(c,x-17,y-20,34,1,'#e6bc84');}
+function artOrrery(c,x,y){c.strokeStyle='#6c74b8';c.lineWidth=1;for(const rr of[14,22,30]){c.beginPath();c.ellipse(x,y,rr,rr*.42,-.3,0,7);c.stroke();}c.fillStyle='#ffe8a8';c.beginPath();c.arc(x,y,4,0,7);c.fill();c.fillStyle='#9fb8ff';c.fillRect(x+20,y-8,3,3);c.fillRect(x-28,y+6,3,3);}
+
+// ---------------------------------------------------------------- scenes
+// def.scenes: [type,col,row,w,h] in tiles -- make the room's gate read as a real place.
+function artScenesBack(c,r,A){for(const[type,col,row,w,h]of r.scenes||[]){const x=col*16,y=row*16,W=w*16,H=h*16;
+ if(type==='stairwell'){ // collapsed grand staircase: ghost of the old flight running up the wall
+  c.fillStyle='#2a3a56';c.beginPath();c.moveTo(x-96,y+H);for(let k=0;k<9;k++){c.lineTo(x-96+k*16,y+H-k*14);c.lineTo(x-80+k*16,y+H-k*14);}c.lineTo(x+48,y+H);c.closePath();c.fill();
+  for(let k=1;k<9;k++){artR(c,x-96+k*16,y+H-k*14-2,16,3,'#8fb4c8');artR(c,x-96+k*16,y+H-k*14+1,16,1,'#1a2438');if(k<8)artR(c,x-90+k*16,y+H-k*14-24,2,22,'#6f8aa6');if(k<8)artR(c,x-91+k*16,y+H-k*14-26,4,2,'#a9c3d8');}
+  c.strokeStyle='#a9c3d8';c.lineWidth=2;c.beginPath();c.moveTo(x-96,y+H-28);c.lineTo(x+24,y+H-133);c.stroke();artR(c,x-110,y-40,2,40,'rgba(160,180,200,.28)');for(let k=0;k<5;k++)artR(c,x-120+k*6,y-46+k*2,10,2,'rgba(160,180,200,.2)'); // broken hand-rail
+ }else if(type==='spiral'){ // broken spiral stair column against the east wall
+  artR(c,x+W-12,y-32,12,H+32,'rgba(10,12,24,.6)');for(let yy=y-24;yy<y+H;yy+=12)artR(c,x+W-14,yy,14,2,'rgba(170,190,215,.25)');
+  c.strokeStyle='rgba(170,190,215,.25)';c.lineWidth=2;c.beginPath();for(let yy=y-30;yy<y+H;yy+=4){const px=x+W-8+Math.sin(yy*.09)*26;yy===y-30?c.moveTo(px,yy):c.lineTo(px,yy);}c.stroke();
+ }else if(type==='shaft'){ // chimney / elevator shaft: soot brick, guide rails, hanging chain
+  artR(c,x,y,W,H,'#120f18');for(let yy=y;yy<y+H;yy+=8)for(let xx=x-(yy/8&1)*6;xx<x+W;xx+=12)artR(c,xx+1,yy+1,10,6,artH(xx,yy)%4?'#1c1722':'#272030');
+  const g2=c.createLinearGradient(0,y,0,y+H);g2.addColorStop(0,'rgba(0,0,0,.6)');g2.addColorStop(1,'rgba(40,30,20,.1)');c.fillStyle=g2;c.fillRect(x,y,W,H);
+  artR(c,x+5,y,3,H,'#4a4a5e');artR(c,x+W-8,y,3,H,'#4a4a5e');artR(c,x+6,y,1,H,'#8a8aa0');artR(c,x+W-7,y,1,H,'#8a8aa0');
+  for(let yy=y;yy<y+H;yy+=6)artR(c,x+W/2-1+((yy/6)&1),yy,2,4,'#6b6b80');
+  for(let yy=y+40;yy<y+H;yy+=56)artR(c,x+8,yy,W-16,3,'#3a2a20');
+ }else if(type==='pipes'){ // service pipe chase behind a climb
+  artR(c,x,y,W,H,'rgba(5,15,20,.55)');for(let i=0;i<3;i++)artPipeRun(c,x+10+i*((W-20)/2),y,H,i);
+ }else if(type==='bridge'){ // broken bridge: stubs and hanging planks over a gap
+  for(let i=0;i<5;i++){const px=x+8+i*(W-16)/4,len=10+artH(i,col)%22;c.save();c.translate(px,y+4);c.rotate((artH(i,row)%7-3)*.08);artR(c,-3,0,6,len,'#6b4a2c');artR(c,-3,0,6,1,'#a87a4c');c.restore();}
+  c.strokeStyle='#8f6a42';c.lineWidth=1;c.beginPath();c.moveTo(x-8,y+2);c.quadraticCurveTo(x+W*.25,y+30,x+W*.4,y+46);c.moveTo(x+W+8,y+2);c.quadraticCurveTo(x+W*.75,y+24,x+W*.62,y+40);c.stroke();
+ }}}
+function artScenesFront(c,r,A){for(const[type,col,row,w,h]of r.scenes||[]){const x=col*16,y=row*16,W=w*16,H=h*16;
+ if(type==='stairwell'){ // the block itself is the stair core: marble flight sheared off, rubble at its foot
+  for(let k=0;k<h;k++){const yy=y+k*16;artR(c,x+W-6,yy+4,6,2,'#9fb8cc');artR(c,x+W-5,yy+6,5,8,'#56708c');}
+  c.fillStyle='rgba(225,246,255,.5)';c.beginPath();c.moveTo(x+16,y);c.lineTo(x+22,y+6);c.lineTo(x+28,y+2);c.lineTo(x+40,y+9);c.lineTo(x+46,y+1);c.lineTo(x+56,y+4);c.lineTo(x+56,y+1);c.lineTo(x+16,y-1);c.fill();
+  for(let i=0;i<6;i++){const rx=x-30+artH(i,3)%26,ry=y+H-4-artH(i,5)%4;artR(c,rx,ry,4+artH(i,9)%5,4,'#56708c');artR(c,rx,ry,3,1,'#9fb8cc');}
+  artR(c,x+W+2,y-2,2,8,'#a9c3d8');artR(c,x+W-2,y-6,10,2,'#a9c3d8');
+ }else if(type==='fallen'){ // fallen bookcase wedged across the corridor, crawl gap below
+  c.save();c.beginPath();c.rect(x,y,W,H);c.clip();artR(c,x,y,W,H,'#2a1a14');for(let yy=y+4;yy<y+H-4;yy+=18){for(let k=0;k<W-6;k+=5)artR(c,x+3+k,yy,4,14-artH(k,yy)%4,['#6d3b45','#3f5d6e','#7a6a3e','#3d5a42','#5b3d6b'][artH(k,yy)%5]);artR(c,x,yy+14,W,3,'#6b4a2c');}
+  artR(c,x,y,4,H,'#8f6a42');artR(c,x+W-4,y,4,H,'#8f6a42');artR(c,x,y+H-5,W,5,'#8f6a42');artR(c,x,y+H-5,W,1,'#d4a46e');c.restore();
+  for(let i=0;i<5;i++)artR(c,x-6+artH(i,1)%(W+12),y+H+2+(artH(i,2)%3)*2,6,3,['#6d3b45','#3f5d6e','#7a6a3e'][i%3]);
+ }}}
+
+// ---------------------------------------------------------------- tiles
+function artDist(r){const rows=r.grid.length,cols=r.grid[0].length,d=[];for(let y=0;y<rows;y++){d.push(new Array(cols).fill(9));for(let x=0;x<cols;x++)if(!artSolid(r,x,y))d[y][x]=0;}
+ for(let pass=1;pass<=3;pass++)for(let y=0;y<rows;y++)for(let x=0;x<cols;x++)if(d[y][x]===9){const n=[[1,0],[-1,0],[0,1],[0,-1]].some(([a,b])=>{const yy=y+b,xx=x+a;return yy>=0&&xx>=0&&yy<rows&&xx<cols&&d[yy][xx]===pass-1;});if(n)d[y][x]=pass;}return d;}
+function artTiles(c,r,A){const S=A.stone,[cap,capHi,capLo,face,faceHi,faceLo,mor,deep]=S,rows=r.grid.length,cols=r.grid[0].length,D=artDist(r),area=r.area;
+ for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){const ch=r.grid[row][col],x=col*16,y=row*16,h=artH(col,row);
+  if(ch==='#'){const d=D[row][col];
+   const top=!artSolid(r,col,row-1),bot=!artSolid(r,col,row+1),lf=!artSolid(r,col-1,row),rt=!artSolid(r,col+1,row);
+   artR(c,x,y,16,16,mor);
+   // bricks 16x8 staggered, varied tone, top-left highlight
+   for(let b=0;b<2;b++){const yy=y+b*8,off=((row*2+b)&1)?8:0;for(let k=-1;k<2;k++){const bx=x+off+k*16;const v=artH(bx+1,yy);const L=Math.max(bx,x),R=Math.min(bx+15,x+16);if(R<=L)continue;artR(c,L,yy+1,R-L,7,v%4===0?faceHi:v%4===1?faceLo:face);artR(c,L,yy+1,R-L,1,faceHi);}}
+   if(area==='tower'&&h%6===0){artR(c,x+2,y+2,12,12,'#4a4a62');artR(c,x+2,y+2,12,1,'#7a7a96');for(const[a,b]of[[3,3],[12,3],[3,12],[12,12]])artR(c,x+a,y+b,1,1,'#b4b4cc');}
+   if(h%13===0&&!top){artR(c,x+5,y+3,6,5,deep);artR(c,x+5,y+3,6,1,mor);} // missing brick
+   if(h%7===0){c.strokeStyle=deep;c.lineWidth=1;c.beginPath();c.moveTo(x+3+h%9,y+(top?4:0));c.lineTo(x+6+h%7,y+7);c.lineTo(x+4+h%5,y+12);c.lineTo(x+8+h%6,y+16);c.stroke();}
+   if(d===2){c.fillStyle='rgba(6,6,16,.3)';c.fillRect(x,y,16,16);}else if(d>=3){c.fillStyle='rgba(6,6,16,.52)';c.fillRect(x,y,16,16);}
+   if(lf){artR(c,x,y,2,16,faceHi);artR(c,x,y,1,16,capLo);}if(rt){artR(c,x+14,y,2,16,faceLo);artR(c,x+15,y,1,16,deep);}
+   if(bot){artR(c,x,y+13,16,3,faceLo);artR(c,x,y+15,16,1,deep);if(area==='water'&&h%3===0){artR(c,x+5+h%6,y+16,2,3+h%4,'#3d8f7a');}if(area==='library'&&h%4===0)artR(c,x+3+h%9,y+16,1,4+h%5,'#5a4a3a');}
+   if(top){ // per-area cap
+    if(area==='garden'){artR(c,x,y,16,5,cap);artR(c,x,y,16,1,capHi);for(let k=0;k<16;k+=3)artR(c,x+k,y-2+(artH(k,col)%3),1,3,capHi);artR(c,x,y+5,16,1,capLo);}
+    else if(area==='water'){artR(c,x,y,16,4,cap);artR(c,x,y,16,1,capHi);for(let k=0;k<16;k+=4)if(artH(col,k)%2)artR(c,x+k,y+4,3,2+artH(k,row)%3,cap);artR(c,x,y+1,16,1,'#d6fff0');}
+    else if(area==='tower'){artR(c,x,y,16,5,cap);artR(c,x,y,16,1,capHi);artR(c,x,y+4,16,1,capLo);artR(c,x+3,y+2,1,1,'#fff1c2');artR(c,x+12,y+2,1,1,'#fff1c2');}
+    else if(area==='library'){artR(c,x,y,16,5,cap);artR(c,x,y,16,1,capHi);for(let k=2;k<16;k+=5)artR(c,x+k,y+1,3,1,'#b98a58');artR(c,x,y+5,16,1,capLo);}
+    else if(area==='star'){artR(c,x,y,16,4,cap);artR(c,x,y,16,1,capHi);artR(c,x,y+4,16,1,'#c9a858');if(h%5===0)artR(c,x+7,y+1,2,2,'#ffffff');}
+    else{artR(c,x,y,16,4,cap);artR(c,x,y,16,1,capHi);artR(c,x,y+4,16,1,capLo);if(h%3===0)artR(c,x+2+h%10,y+1,4,1,capHi);}
+    if(lf){artR(c,x,y,2,5,capHi);}if(rt){artR(c,x+14,y,2,5,capLo);}}
+  }else if(ch==='='){const L=r.grid[row][col-1]!=='=',R=r.grid[row][col+1]!=='=';
+   if(area==='library'||area==='hub'){artR(c,x,y,16,7,'#6b4a2c');artR(c,x,y,16,2,'#d4a46e');artR(c,x,y+6,16,1,'#3a2618');if(L||R){const bx=L?x+1:x+11;artR(c,bx,y+7,4,8,'#4e3424');artR(c,bx,y+7,4,1,'#8f6a42');}}
+   else if(area==='tower'){artR(c,x,y,16,6,'#3a3a52');artR(c,x,y,16,2,'#c7ae78');for(let k=2;k<16;k+=4)artR(c,x+k,y+2,2,4,'#17172a');artR(c,x,y+6,16,2,'#26263a');if(col%2===0){c.strokeStyle='#4a4a66';c.beginPath();c.moveTo(x,y+8);c.lineTo(x+8,y+13);c.lineTo(x+16,y+8);c.stroke();}}
+   else if(area==='water'){artR(c,x,y,16,6,'#2f5a6e');artR(c,x,y,16,2,'#7fd3df');for(let k=1;k<16;k+=3)artR(c,x+k,y+2,1,4,'#173342');artR(c,x,y+6,16,4,'#24484e');artR(c,x,y+7,16,1,'#4f8f8c');if(L||R)artR(c,L?x:x+12,y+6,4,4,'#a46b45');}
+   else if(area==='star'){artR(c,x,y,16,6,'#3a4579');artR(c,x,y,16,2,'#eef0ff');artR(c,x+1,y+6,14,2,'rgba(150,180,255,.45)');artR(c,x+3,y+8,10,1,'rgba(150,180,255,.25)');}
+   else{artR(c,x,y,16,7,faceLo);artR(c,x,y,16,3,cap);artR(c,x,y,16,1,capHi);artR(c,x,y+7,16,1,deep);if(L||R){const bx=L?x+1:x+10;artR(c,bx,y+7,5,4,face);artR(c,bx+1,y+11,3,3,face);artR(c,bx,y+7,5,1,faceHi);}}
+  }}
+}
+
+// ---------------------------------------------------------------- build & cache
+const ART_CACHE={};
+function artBuild(id){const r=MR[id];if(ART_CACHE[id])return ART_CACHE[id];const A=ART[r.area]||ART.mansion,lights=[],shafts=[];
+ const back=mkCanvas(r.w,r.h),front=mkCanvas(r.w,r.h),bc=back.getContext('2d'),fc=front.getContext('2d');bc.imageSmoothingEnabled=fc.imageSmoothingEnabled=false;
+ if(A.wall){artBackWall(bc,r,A);artWindows(bc,r,A,lights,shafts);artPilasters(bc,r,A);artTrims(bc,r,A);}
+ artScenesBack(bc,r,A);if(A.wall)artProps(bc,r,A,lights);
+ artTiles(fc,r,A);artScenesFront(fc,r,A);
+ for(const[k,x,y]of r.decor||[])if(k==='C')lights.push({x,y:y-8,r:70,warm:1});
+ for(const p of MANSION_PROPS[id]||[])if(p[0]==='candle')lights.push({x:p[1],y:p[2]-14,r:46,warm:1,flick:1});
+ if(r.cp)lights.push({x:r.cp[0],y:r.cp[1]-27,r:64,blue:1});
+ if(MANSION_PORTALS[id])lights.push({x:MANSION_PORTALS[id].x,y:MANSION_PORTALS[id].y-24,r:72,blue:1});
+ for(const d of r.doors)lights.push({x:d.x,y:d.y-40,r:34,warm:1});
+ return ART_CACHE[id]={back,front,lights,shafts,A,motes:Array.from({length:Math.ceil(r.w*r.h/9000)},(_,i)=>[artH(i,1)%r.w,artH(i,2)%r.h,(artH(i,3)%100)/100])};}
+
+// ---------------------------------------------------------------- per-frame layers
+function artFar(r,cx,cy,view){const A=ART[r.area]||ART.mansion,W=view.w,H=view.h,t=M.t;
+ if(!A.far)return false;
+ if(A.far==='night'||A.far==='stars'){const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,A.far==='stars'?'#0a0d26':'#0b1530');gr.addColorStop(1,A.far==='stars'?'#26205a':'#2a3a62');g.fillStyle=gr;g.fillRect(0,0,W,H);
+  for(let i=0;i<70;i++){const x=((artH(i,11)%997)-cx*.04)%W,y=(artH(i,12)%(H*.8))-cy*.03;const tw=(t+i*17)%90<6;mrect((x+W)%W,y,tw?2:1,tw?2:1,i%5?'#9fb4e0':'#ffe9b0');}
+  if(A.far==='stars'){g.globalAlpha=.25;for(let i=0;i<4;i++){g.fillStyle=['#6a4aa8','#2f6aa8','#8a4a9a','#3a5ab0'][i];g.beginPath();g.ellipse((artH(i,5)%W)-cx*.05,60+i*40-cy*.04,70,22,.3,0,7);g.fill();}g.globalAlpha=1;}
+  g.fillStyle='#e8e4c8';g.beginPath();g.arc(W*.72-cx*.02,48-cy*.02,18,0,7);g.fill();g.fillStyle='rgba(232,228,200,.15)';g.beginPath();g.arc(W*.72-cx*.02,48-cy*.02,30,0,7);g.fill();
+  if(mansionBackdrop&&A.far==='night'){g.globalAlpha=.55;const bw=320,off=-Math.round(cx*.18)%bw;for(let i=-1;i<2;i++)g.drawImage(mansionBackdrop,off+i*bw,-Math.round(cy*.12),bw,240);g.globalAlpha=1;}
+  else{g.fillStyle='#10142e';for(let i=0;i<12;i++){const x=((i*70-cx*.2)%(W+70)+W+70)%(W+70)-35,h=60+artH(i,4)%70;g.fillRect(x,H-h-cy*.06+40,26,h+80);g.beginPath();g.moveTo(x-4,H-h-cy*.06+40);g.lineTo(x+13,H-h-cy*.06+12);g.lineTo(x+30,H-h-cy*.06+40);g.fill();}}
+ }else if(A.far==='stacks'){mrect(0,0,W,H,'#120b16');for(let L=0;L<2;L++){const sp=L?.35:.18,col=L?'#251a2c':'#1a1220';for(let i=-1;i<10;i++){const x=((i*60-cx*sp)%60+60)%60+i*60-60;g.fillStyle=col;g.fillRect(x,20-cy*sp*.3,44,H+40);for(let yy=30;yy<H;yy+=18)mrect(x+2,yy-cy*sp*.3,40,2,L?'#3a2a35':'#2a1d2a');}}
+  g.globalAlpha=.08;mrect(0,0,W,H,'#ffb060');g.globalAlpha=1;
+ }else if(A.far==='gears'){mrect(0,0,W,H,'#14142a');const gr=g.createRadialGradient(W/2,H*.4,10,W/2,H*.4,W);gr.addColorStop(0,'rgba(120,90,40,.35)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,W,H);
+  for(let i=0;i<6;i++){const x=((i*110-cx*.25)%660+660)%660-120,y=(i%3)*90+40-cy*.2,rad=28+(i%3)*14;artGear(g,x,y,rad,10+i%3*2,t*.004*(i%2?1:-1)*(40/rad),'#262640','#34344e');}
+  for(let i=0;i<3;i++){const x=((i*170+60-cx*.35)%510+510)%510-60;mrect(x,0,2,H,'#3a3a52');mrect(x-6,(t*.6+i*80)%(H+40)-20,14,10,'#4a4a66');}
+ }else if(A.far==='cavern'){const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#06121a');gr.addColorStop(1,'#0e3140');g.fillStyle=gr;g.fillRect(0,0,W,H);
+  for(let i=-1;i<6;i++){const x=((i*96-cx*.22)%96+96)%96+i*96-96;g.fillStyle='#0b2230';g.fillRect(x,30-cy*.1,14,H);g.beginPath();g.arc(x+55,90-cy*.1,48,Math.PI,0);g.lineTo(x+103,30-cy*.1);g.lineTo(x+7,30-cy*.1);g.fill();}
+  for(let i=0;i<4;i++){const x=((i*80+30-cx*.3)%320+320)%320;g.globalAlpha=.35;mrect(x,0,3,H,'#6fd0e0');g.globalAlpha=1;for(let k=0;k<6;k++)mrect(x,((t*2+k*41+i*13)%H),3,6,'#c8faff');}
+  g.globalAlpha=.4;for(let x=0;x<W;x+=8)mrect(x,H-26+Math.sin((x+t)*.05)*2,8,1,'#7fe0ec');g.globalAlpha=1;
+ }
+ return true;}
+const artLightCv=mkCanvas(330,310),artLc=artLightCv.getContext('2d');
+function artLighting(r,cx,cy,view){const art=artBuild(M.room),A=art.A,W=Math.ceil(view.w),H=Math.ceil(view.h),t=M.t;
+ // god-rays from windows
+ g.globalCompositeOperation='lighter';
+ for(const s of art.shafts){if(s.x>cx+W||s.x+s.w+70<cx)continue;g.fillStyle='rgba(120,150,255,.07)';g.beginPath();g.moveTo(s.x,s.y);g.lineTo(s.x+s.w,s.y);g.lineTo(s.x+s.w+50,s.y+s.h+80);g.lineTo(s.x+34,s.y+s.h+80);g.closePath();g.fill();}
+ // dust motes drifting through the light
+ for(const[x0,y0,p]of art.motes){const x=x0+Math.sin(t*.01+p*9)*14,y=(y0-t*(.1+p*.15)%r.h+r.h)%r.h;if(x<cx||x>cx+W||y<cy||y>cy+H)continue;g.fillStyle=r.area==='water'?'rgba(150,255,240,.35)':'rgba(255,230,180,.28)';g.fillRect(Math.round(x),Math.round(y),1,1);}
+ // colored glows
+ for(const L of art.lights){const x=L.x,y=L.y,rr=L.r*.8*(L.flick?1+Math.sin(t*.13+L.x)*.06:1);if(x<cx-rr||x>cx+W+rr||y<cy-rr||y>cy+H+rr)continue;
+  const gr=g.createRadialGradient(x,y,0,x,y,rr);gr.addColorStop(0,L.warm?'rgba(255,160,70,.2)':L.blue?'rgba(90,200,255,.2)':'rgba(110,140,255,.1)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(x-rr,y-rr,rr*2,rr*2);}
+ g.globalCompositeOperation='source-over';
+ // darkness with holes punched by lights and the player
+ if(A.dark>0){const lc=artLc;lc.globalCompositeOperation='source-over';lc.clearRect(0,0,330,310);lc.fillStyle='rgba(4,4,16,'+A.dark+')';lc.fillRect(0,0,W,H);lc.globalCompositeOperation='destination-out';
+  const all=art.lights.concat([{x:M.x,y:M.y-14,r:84,s:.8}]);
+  for(const L of all){const x=L.x-cx,y=L.y-cy,rr=L.r*(L.flick?1+Math.sin(t*.11+L.x)*.05:1);if(x<-rr||x>W+rr||y<-rr||y>H+rr)continue;const gr=lc.createRadialGradient(x,y,0,x,y,rr);gr.addColorStop(0,'rgba(0,0,0,'+(L.s||.95)+')');gr.addColorStop(.55,'rgba(0,0,0,'+((L.s||.95)*.5)+')');gr.addColorStop(1,'rgba(0,0,0,0)');lc.fillStyle=gr;lc.fillRect(x-rr,y-rr,rr*2,rr*2);}
+  g.drawImage(artLightCv,0,0,W,H,cx,cy,W,H);}
+ // low fog
+ if(r.area==='water'||r.area==='garden'||r.area==='library'){const col=r.area==='water'?'120,220,230':r.area==='garden'?'170,190,220':'180,140,200';
+  for(let band=0;band<r.h;band+=240){const fy=band+200;if(fy<cy-40||fy>cy+H+40)continue;const gr=g.createLinearGradient(0,fy-40,0,fy+40);gr.addColorStop(0,'rgba('+col+',0)');gr.addColorStop(.6,'rgba('+col+',.12)');gr.addColorStop(1,'rgba('+col+',.04)');g.fillStyle=gr;g.fillRect(cx,fy-40,W,80);
+   for(let i=0;i<5;i++){const x=cx+((i*83+t*(.15+i*.05))%(W+120))-60;g.fillStyle='rgba('+col+',.06)';g.beginPath();g.ellipse(x,fy+6+Math.sin(t*.01+i)*4,50,9,0,0,7);g.fill();}}}
+}
+// entry points called by mansionRoomDraw
+function artDrawFar(r,cx,cy,view){return artFar(r,cx,cy,view);}
+function artDrawBack(r,cx,cy,view){const a=artBuild(M.room),w=Math.min(Math.ceil(view.w)+1,r.w-Math.max(0,cx)),h=Math.min(Math.ceil(view.h)+1,r.h-Math.max(0,cy));if(w>0&&h>0)g.drawImage(a.back,Math.max(0,cx),Math.max(0,cy),w,h,Math.max(0,cx),Math.max(0,cy),w,h);}
+function artDrawFront(r,cx,cy,view){const a=artBuild(M.room),w=Math.min(Math.ceil(view.w)+1,r.w-Math.max(0,cx)),h=Math.min(Math.ceil(view.h)+1,r.h-Math.max(0,cy));if(w>0&&h>0)g.drawImage(a.front,Math.max(0,cx),Math.max(0,cy),w,h,Math.max(0,cx),Math.max(0,cy),w,h);}
+
+// =====================================================================
+//  FOES (test.42): data-driven enemy kinds + sprite-sheet loader.
+//  Rooms list enemies in def.foes ([kind,col,row,{opts}]) or with the
+//  legacy 'w'/'f' markers. Art drops in as assets/enemies/<kind>.png +
+//  <kind>.json (listed in assets/enemies/manifest.json); until then a
+//  pixel placeholder is drawn. Sheet spec: docs/STAGE_GUIDE.md.
+// =====================================================================
+const MANSION_FOES={
+ // box = [w,h] hurtbox above the feet point; contact = [dx,dy,w,h] that hurts Umine (relative to feet)
+ shield:{hp:4,box:[22,40],contact:[-11,-40,22,26],dmg:2},   // gap under the shield arm: slide (h14) passes, standing (h26) does not
+ crawler:{hp:2,box:[14,14],contact:[-7,-14,14,14],dmg:2},
+ turret:{hp:3,box:[18,16],contact:[-8,-16,16,16],dmg:2},
+ bat:{hp:1,box:[14,10],contact:[-6,-10,12,10],dmg:1},
+ bookmimic:{hp:3,box:[20,16],contact:[-9,-15,18,15],dmg:2},
+ slime:{hp:2,box:[18,12],contact:[-8,-11,16,11],dmg:2},
+};
+const MANSION_FOE_ART={};
+function mansionFoeArtLoad(kind,img,meta){MANSION_FOE_ART[kind]={img,meta};if(meta.hitbox&&MANSION_FOES[kind]){MANSION_FOES[kind].box=[meta.hitbox[2],meta.hitbox[3]];}if(meta.contact&&MANSION_FOES[kind])MANSION_FOES[kind].contact=meta.contact.slice();}
+(function(){if(typeof fetch!=='function')return;fetch('assets/enemies/manifest.json').then(r=>r.ok?r.json():{kinds:[]}).then(m=>{for(const kind of m.kinds||[])fetch('assets/enemies/'+kind+'.json').then(r=>r.json()).then(meta=>{const img=new Image();img.onload=()=>mansionFoeArtLoad(kind,img,meta);img.src='assets/enemies/'+kind+'.png';}).catch(()=>{});}).catch(()=>{});})();
+
+function mansionFoeSpawn(e,i){const[kind,x,y,min,max,o={}]=e;
+ if(kind==='walk'||kind==='fly')return[{kind,x,y,baseY:y,min,max,dir:i%2?-1:1,hp:kind==='fly'?2:3,t:0,flash:0}];
+ const base=(k,xx,yy,extra)=>Object.assign({kind:k,x:xx,y:yy,homeX:xx,homeY:yy,baseY:yy,min,max,dir:i%2?-1:1,face:i%2?-1:1,hp:(MANSION_FOES[k]||{hp:2}).hp,t:(i*37)%60,flash:0,vx:0,vy:0,state:'idle',st:0},extra||{});
+ if(kind==='bats'){const n=o.n||3;return Array.from({length:n},(_,k)=>base('bat',x-((n-1)*9)+k*18,y-((y/16|0)?0:0)-0+(k%2)*3-(o.hang===false?0:0),{state:'sleep',t:k*13}));}
+ if(kind==='slime'||kind==='bat')return[base(kind,x,y-0,{state:kind==='slime'?'hang':'sleep'})];
+ if(kind==='turret')return[base(kind,x,y-(o.alt??40),{baseY:y-(o.alt??40)})];
+ if(kind==='crawler'){const r=MR[M.room],c=x>>4,row=(y>>4)-1,side=o.wall??(artSolid(r,c+1,row)?1:artSolid(r,c-1,row)?-1:0);let top=row,bot=row;if(side){while(top>0&&!artSolid(r,c,top-1)&&artSolid(r,c+side,top-1))top--;while(bot<r.grid.length-1&&!artSolid(r,c,bot+1)&&artSolid(r,c+side,bot+1))bot++;}
+  return[base(kind,side?c*16+8+side*1:x,y,{side,minY:top*16+14,maxY:(bot+1)*16,dir:-1})];}
+ return[base(kind,x,y)];}
+
+function mansionFoeBox(e){const F=MANSION_FOES[e.kind];return[e.x-F.box[0]/2,e.y-F.box[1],F.box[0],F.box[1]];}
+function mansionFoeHit(e,x,y,w,h){return mansionOverlap(x,y,w,h,mansionFoeBox(e));}
+// true when the attack comes from the side the shield faces (fromDir = sign(attacker.x - e.x))
+function mansionFoeBlock(e,fromDir){if(e.kind!=='shield'||e.hp<=0)return false;if(fromDir!==e.face)return false;e.blockT=10;mansionBurst(e.x+e.face*12,e.y-26,'#dfe8f5',4);return true;}
+function mansionFoeSolid(x,y,w,h,solids){return solids.some(b=>mansionOverlap(x,y,w,h,b));}
+function mansionFoeBody(e,solids,w,h){e.vy=Math.min(5,e.vy+.28);
+ const nx=e.x+e.vx;if(!mansionFoeSolid(nx-w/2,e.y-h,w,h-1,solids))e.x=nx;else e.vx=0;
+ const ny=e.y+e.vy;if(!mansionFoeSolid(e.x-w/2,ny-h,w,h,solids)){e.y=ny;e.ground=false;}else{if(e.vy>0){e.ground=true;while(!mansionFoeSolid(e.x-w/2,e.y-h+1,w,h,solids))e.y++;}e.vy=0;}}
+
+function mansionFoeUpdate(e,solids){const F=MANSION_FOES[e.kind],dx=M.x-e.x,dy=(M.y-13)-(e.y-F.box[1]/2),ad=Math.abs(dx);e.st++;if(e.blockT)e.blockT--;
+ if(e.kind==='shield'){const want=Math.sign(dx)||e.face;
+  if(ad<130&&Math.abs(M.y-e.y)<40){if(want!==e.face){e.turnT=(e.turnT||0)+1;if(e.turnT>42){e.face=want;e.turnT=0;}}else{e.turnT=0;e.x+=e.face*.45;}e.state=e.turnT?'turn':'guard';}
+  else{e.x+=e.face*.35;e.state='walk';if(e.x<e.min){e.x=e.min;e.face=1;}if(e.x>e.max){e.x=e.max;e.face=-1;}}
+  e.x=Math.max(e.min-24,Math.min(e.max+24,e.x));
+  if(mansionFoeSolid(e.x+e.face*12-1,e.y-30,2,20,solids)||!mansionFoeSolid(e.x+e.face*12-1,e.y+1,2,2,solids)){e.x-=e.face*.6;}}
+ else if(e.kind==='crawler'){if(e.side){e.y+=e.dir*.6;if(e.y<e.minY){e.y=e.minY;e.dir=1;}if(e.y>e.maxY){e.y=e.maxY;e.dir=-1;}}else{e.x+=e.face*.5;if(e.x<e.min||e.x>e.max)e.face*=-1;}e.state='crawl';}
+ else if(e.kind==='turret'){e.y=e.baseY+Math.sin(e.t*.04)*5;e.x=e.homeX+Math.sin(e.t*.017)*10;e.face=Math.sign(dx)||1;
+  const near=ad<150&&Math.abs(dy)<120;if(e.state==='idle'&&near&&e.st>90){e.state='charge';e.st=0;}
+  if(e.state==='charge'&&e.st>36){const a=Math.atan2((M.y-14)-(e.y-8),M.x-e.x);M.enemyShots.push({x:e.x,y:e.y-8,vx:Math.cos(a)*2.1,vy:Math.sin(a)*2.1,damage:2});sfx('shot');e.state='fire';e.st=0;}
+  if(e.state==='fire'&&e.st>14){e.state='idle';e.st=0;}}
+ else if(e.kind==='bat'){if(e.state==='sleep'){if(ad<92&&Math.abs(dy)<110){e.state='fly';e.st=0;e.vx=0;e.vy=1.2;}}
+  else{const home=Math.hypot(e.x-e.homeX,e.y-e.homeY)>220,tx=home?e.homeX:M.x+Math.sin(e.t*.07+e.homeX)*18,ty=home?e.homeY:M.y-18+Math.cos(e.t*.09)*10;
+   e.vx+=Math.sign(tx-e.x)*.08;e.vy+=Math.sign(ty-e.y)*.07;const sp=Math.hypot(e.vx,e.vy);if(sp>1.6){e.vx*=1.6/sp;e.vy*=1.6/sp;}
+   if(!mansionFoeSolid(e.x+e.vx-5,e.y-10,10,10,solids))e.x+=e.vx;else e.vx*=-.5;if(!mansionFoeSolid(e.x-5,e.y+e.vy-10,10,10,solids))e.y+=e.vy;else e.vy*=-.5;
+   e.face=Math.sign(e.vx)||e.face;if(home&&Math.hypot(e.x-e.homeX,e.y-e.homeY)<6){e.state='sleep';e.x=e.homeX;e.y=e.homeY;e.vx=e.vy=0;}}}
+ else if(e.kind==='bookmimic'){mansionFoeBody(e,solids,16,14);if(e.ground){e.vx*=.6;if(ad<120&&Math.abs(M.y-e.y)<60&&e.st>46){e.vy=-4.2;e.vx=1.5*(Math.sign(dx)||1);e.face=Math.sign(dx)||1;e.st=0;e.ground=false;}
+   const awake=ad<120;e.state=awake?(e.st<10?'land':'idle'):'idle';e.awake=awake;}else e.state='hop';}
+ else if(e.kind==='slime'){if(e.state==='hang'){if(ad<18&&M.y>e.y){e.state='fall';e.vy=0;sfx('hit');}}
+  else{mansionFoeBody(e,solids,14,10);if(e.ground){e.state='crawl';e.vx=(Math.sign(dx)||1)*.35;e.face=Math.sign(dx)||1;}}}
+ const C=F.contact;if(mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,[e.x+C[0],e.y+C[1],C[2],C[3]]))mansionDamage(F.dmg,M.x<e.x?-1:1);}
+
+// ---------------------------------------------------------------- drawing
+function mansionFoeDrawSheet(e){const a=MANSION_FOE_ART[e.kind];if(!a)return false;const m=a.meta,an=(m.anims||{})[e.state]||(m.anims||{}).idle||{frames:[0],fps:1};
+ const fw=m.frame[0],fh=m.frame[1],[ax,ay]=m.anchor||[fw/2,fh],n=an.frames.length,k=an.loop===false?Math.min(n-1,Math.floor(e.st*(an.fps||8)/60)):Math.floor(e.t*(an.fps||8)/60)%n,f=an.frames[k],per=Math.max(1,Math.floor(a.img.width/fw));
+ const flip=(e.face||1)!==(m.facing||1);g.save();g.translate(Math.round(e.x),Math.round(e.y));if(e.kind==='crawler'&&e.side){g.rotate(-e.side*Math.PI/2);}if(flip)g.scale(-1,1);if(e.flash&&e.flash%2)g.globalAlpha=.55;
+ g.drawImage(a.img,(f%per)*fw,Math.floor(f/per)*fh,fw,fh,-ax,-ay,fw,fh);g.restore();return true;}
+function mansionFoeDraw(e){if(mansionFoeDrawSheet(e))return;const x=Math.round(e.x),y=Math.round(e.y),f=e.face||1,t=e.t,fl=e.flash&&e.flash%2;const R=(a,b,w,h,c)=>mrect(f>0?x+a:x-a-w,y+b,w,h,fl?'#ffffff':c);
+ if(e.kind==='shield'){const step=e.state==='walk'?((t>>4)&1):0;
+  R(-9,-12+step,4,12-step,'#3a4258');R(4,-12+(1-step),4,12-(1-step),'#3a4258');R(-10,-2,6,2,'#8d98b0');R(3,-2,6,2,'#8d98b0');                 // legs (open gap underneath)
+  R(-10,-34,18,22,'#4f5a78');R(-9,-33,16,3,'#a9b6d0');R(-8,-27,12,2,'#2c3248');R(-6,-42,12,9,'#5d6a8a');R(-5,-41,10,2,'#c9d4ea');R(0,-38,5,2,e.state==='guard'?'#ff6a5a':'#ffcf6a'); // torso + helm visor
+  R(8,-40,6,30,'#7d6a4a');R(9,-39,4,28,'#c9a65c');R(10,-30,2,8,'#fff1b8');R(7,-41,8,2,'#e6cf8a');                                   // tower shield on the facing side
+  if(e.blockT)R(14,-36,2,20,'#ffffff');if(e.state==='turn'&&(t&4))R(-4,-46,2,3,'#ffd06a');}
+ else if(e.kind==='crawler'){g.save();g.translate(x,y-7);if(e.side)g.rotate(e.side*Math.PI/2);const w=(t>>3)&1;mrect(-7,-4,14,8,fl?'#fff':'#5a3a6a');mrect(-6,-5,12,2,'#9a6aa8');for(let k=-6;k<=4;k+=5){mrect(k,4+(w^(k&1)),2,3,'#c9a0d0');mrect(k,-7-(w^(k&1)),2,3,'#c9a0d0');}mrect(-2,-2,4,4,'#ff6a8a');mrect(-1,-1,1,1,'#fff');g.restore();}
+ else if(e.kind==='turret'){const ch=e.state==='charge';mrect(x-9,y-14,18,12,fl?'#fff':'#3a4662');mrect(x-8,y-15,16,2,'#8ea3bf');mrect(x-3,y-2,6,3,'#2a3348');for(let k=0;k<3;k++)mrect(x-6+k*5,y+1+((t>>2)+k)%3,2,2,'#7fe8f0');
+  const a=Math.atan2((M.y-14)-(y-8),M.x-x);g.save();g.translate(x,y-8);g.rotate(a);mrect(0,-2,11,4,'#5d6a8a');mrect(9,-2,2,4,ch&&(t&2)?'#ffffff':'#ff7a5a');g.restore();mrect(x-2,y-11,4,4,ch?'#ffef9a':'#7fe8f0');
+  if(ch){g.globalAlpha=.35;g.fillStyle='#ffd06a';g.beginPath();g.arc(x,y-8,6+e.st/6,0,7);g.fill();g.globalAlpha=1;}}
+ else if(e.kind==='bat'){if(e.state==='sleep'){mrect(x-3,y-11,6,9,fl?'#fff':'#2a1f3a');mrect(x-4,y-12,8,2,'#4a3a5e');mrect(x-1,y-12,2,1,'#7a6a8e');mrect(x-2,y-5,1,1,'#ff5a7a');mrect(x+1,y-5,1,1,'#ff5a7a');}
+  else{const w=(t>>2)&1;mrect(x-3,y-8,6,6,fl?'#fff':'#2a1f3a');mrect(x-2,y-6,1,1,'#ff5a7a');mrect(x+1,y-6,1,1,'#ff5a7a');mrect(x-9,y-8+(w?-3:2),6,3,'#4a3a5e');mrect(x+3,y-8+(w?-3:2),6,3,'#4a3a5e');mrect(x-10,y-7+(w?-4:3),2,2,'#6a5a7e');mrect(x+8,y-7+(w?-4:3),2,2,'#6a5a7e');}}
+ else if(e.kind==='bookmimic'){const open=e.state==='hop'||e.awake&&(t>>4)%3===0,o=open?5:0;
+  R(-10,-8,20,8,'#5b2f3a');R(-10,-8,20,2,'#a8565a');R(-9,-2,18,2,'#efe2c4');                                           // lower cover + pages
+  R(-10,-16-o,20,8,'#6d3b45');R(-10,-16-o,20,2,'#c97a6a');R(-2,-14-o,4,4,'#d4a46e');R(-1,-13-o,2,2,'#fff1c2');           // upper cover with clasp
+  if(open){for(let k=-8;k<8;k+=3){R(k,-8-o+1,2,3,'#ffffff');R(k+1,-8,2,2,'#ffffff');}R(-9,-8-o,18,o,'#2a0f18');R(4,-12-o,2,2,'#ffef5a');}else R(8,-10,2,2,'#ffef5a');}
+ else if(e.kind==='slime'){const sq=e.state==='crawl'?Math.sin(t*.2)*2:0;if(e.state==='hang'){const dr=(t%90)/90;mrect(x-6,y-10,12,8,fl?'#fff':'#2f8fa0');mrect(x-4,y-11,8,2,'#7fe8f0');mrect(x-2,y-3,4,3+Math.floor(dr*3),'#2f8fa0');mrect(x-2,y-7,1,1,'#fff');mrect(x+2,y-7,1,1,'#fff');if(dr>.8)mrect(x-1,y+2+(dr-.8)*40,2,3,'#7fe8f0');}
+  else{mrect(x-8-sq,y-8+sq,16+sq*2,8-sq,fl?'#fff':'#2f8fa0');mrect(x-6-sq,y-9+sq,12+sq*2,2,'#7fe8f0');mrect(x-3,y-6,2,2,'#fff');mrect(x+2,y-6,2,2,'#fff');mrect(x-8,y-1,16,1,'#1d5f6e');}}
 }
 
 // =====================================================================
