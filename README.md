@@ -11,6 +11,16 @@ ROCKSIDE II / 2.0.0-test.46（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 - 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs` `node tools/test-hoshiyomi.cjs` and `node tools/test-keiko.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
+### 2.0.0-test.57
+- 壁キック・壁張り付きはそのまま。代わりに全ボスが「壁を狙う技」を1つずつ持つ（ロックマンX風）。予告（約0.7秒、壁際が点滅＋技名）→ 壁から離れれば必ず避けられる。
+  - 昇り（壁を下から上へ走る斬撃）：ハネウメ／ヴェスパー／エクリプス／青天
+  - 柱（張り付いた壁ごと撃ち抜く）：ネムニア／ズターさん／ラヴィス／ダイスロール紳士
+  - 波（床から天井までの壁が迫る。床の高さだけ隙間＝着地すれば安全）：リリリ／ノクターン／ダーク星詠み／素顔
+  - アスターテは「そよ風」：ダメージなし、壁から押し出すだけ。
+- 壁に張り付き続けるほど早く・頻繁に使う。普段は約10秒に1回。
+- 新テスト `tools/test-wall.cjs`：張り付きだけのボットは被弾し、通常ボットは勝つ。全13ボスで「張り付けば当たる／離れれば当たらない」を確認。
+- テスト用ボットのアリーナ幅を1画面に合わせて修正。ネムニアの技順を調整（跳弾矢を早めに）。
+
 ### 2.0.0-test.56
 - ボス戦を初代と同じ「1画面」に。全ボス（影4体・ダーク星詠み・青天・ダイスロール紳士／素顔・アスターテ・偽物）がズーム1.0、カメラ完全固定（横も縦も動かない）で戦う。
 - 部屋そのものは変えず、戦闘中だけ画面幅256pxの「アリーナ窓」に見えない壁を張る。扉・到達性は従来どおり。

@@ -17,7 +17,7 @@ function fight(id,upg){const B=run(`KEIKO_BOSSES.${id}`);
 const res={};
 for(const id of ['vesper','lavis','nocturne','eclipse']){
  const r=fight(id,{hp:4,shot:2,slide:2});
- console.log(`  ${id}: ${r.frames} frames, damage ${r.hurt}, losses ${r.losses}, modes ${[...r.seen].join('/')}`);
+ console.log(`  ${id}: ${r.frames} frames, damage ${r.hurt}, wallhits ${run('M.wc?M.wc.used+"/"+M.wc.hits:"-"')}, losses ${r.losses}, modes ${[...r.seen].join('/')}`);
  assert(r.won,id+' upgraded bot wins '+run('JSON.stringify([M.keiko&&M.keiko.state,M.x,M.y,M.hp,(M.enemies.find(e=>e.kind==="keikoBoss")||{}),KEIKO_L,KEIKO_R,M.talk&&M.talk.speaker])').slice(0,700));assert.equal(r.losses,0,id+' fair with upgrades');
  for(const m of new Set([...r.B.seq,...r.B.rageSeq]))assert(r.seen.has(m),id+' uses '+m);
  assert(r.B.hp>=220,'shade is beefy');

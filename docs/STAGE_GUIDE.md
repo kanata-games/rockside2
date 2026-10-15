@@ -433,3 +433,9 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 - ボス戦はズーム1.0・カメラ完全固定。戦闘は部屋中央（庭はx=420中心）の幅256pxの窓で行い、`arenaWalls()`の見えない壁で KEIKO_L..KEIKO_R（窓x0+16..x0+240）に収める。
 - 部屋の形・扉は変更しない。新しいボスの攻撃は必ず KEIKO_L/R を基準に作る（固定座標禁止）。
 - 突進系は壁の20px手前で止めて逃げ場を残す。予告（テレグラフ）は従来どおり必須。
+
+## 24. 壁カウンター (test.57)
+- `src/04r_wallcounter.js`。`WC_STYLE` にボスごとの型（rise / col / wave / push）と技名・色。新しいボスを足したら必ず登録する。
+- 予告 `WC_TELE`=44f、危険帯は壁から `WC_STRIP`=30px。波は床から34pxの隙間を残す。
+- 張り付き時間 `M.wc.cling` が36を超えると発動（間隔170f）、通常は `WC_SLOW`=600fごと。
+- 壁キックを無効にしないこと。「壁から離れれば安全」を必ず守る（test-wall.cjs）。

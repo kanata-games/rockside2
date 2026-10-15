@@ -17,7 +17,7 @@ const KEIKO_BOSSES={
   again:['ぴょーん、あたしの勝ち！ ……でもまだやる？ いいよ、跳ね足りないし！'],vanish:['あいたたた……負けちゃった。あたし、月の光でできた影法師なんだ。','本物は返してあげる。……じゃあね、ぴょーん！'],rematch:['あのそっくりさん、月が出てればまた出てくるみたい。もう一回、腕試ししてく？'],
   post:['海音ちゃーん！ 出られたー！ ありがとう！ あのそっくりさん、あたしのマネばっかりするんだもん！','海音ちゃんがあたしのために怒ってくれたの、ちゃんと見てたよ。……へへ、ちょっと嬉しかった。腕試しなら、いつでも飛梅ちゃんが付き合うからね！','はい、星詠みの欠片3つ！ これからは一緒に戦おうね！']},
  neenia:{room:'kNeen',name:'ネムニア',real:'ネーニア',hp:300,col:'#8fb0ff',sub:'#e4ecff',art:'neenia',normal:'neenia',flag:'keikoNeenia',
-  seq:['nAim','nLob','nBack','rain','nRico'],rageSeq:['snare','nAim','nBack','nLob','nRico','rain'],
+  seq:['nAim','nRico','rain','nLob','nBack'],rageSeq:['snare','nAim','nBack','nLob','nRico','rain'],
   volley:{n:2,rn:3,pat:'mix',speed:3.0,kind:'arrow'},rain:{w:52,rw:46},snare:{n:2,rn:3},
   pose:{volley:'attack',rain:'attack',snare:'attack',walk:'walk',idle:'idle'},
   fake:['海音……来てくれたのね。私よ、ネーニア。','さあ、こっちへ。……弓？ ああ、あれは重いから置いてきたわ。ふわぁ……'],pre:['……眠くて芝居が続かないわ。私はネムニア。本物は奥で、静かに眠ってもらってる。','……本物より上手に射てると思うのだけれど。私に勝てたら、返してあげる。'],

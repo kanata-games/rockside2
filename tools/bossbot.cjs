@@ -2,7 +2,7 @@
 // It looks at bullets, beams and the on-screen telegraphs (lines / columns / rings / marks / safe zones), simulates
 // 9 simple manoeuvres 48 frames ahead and picks the one that collides least, then faces the boss and shoots.
 module.exports=`(()=>{const e=M.enemies.find(e=>e.kind==='keikoBoss'||e.kind==='hoshiBoss');if(!e)return 'gone';releaseAll();
- const F=224,L=44,R=468,H=48;const bul=M.enemyShots.filter(b=>!b.dead).map(b=>({x:b.x,y:b.y,vx:b.vx||0,vy:b.vy||0,g:b.g||0,r:Math.max(3,b.r||3)+1}));
+ const F=224,L=KEIKO_L,R=KEIKO_R,H=48;const bul=M.enemyShots.filter(b=>!b.dead).map(b=>({x:b.x,y:b.y,vx:b.vx||0,vy:b.vy||0,g:b.g||0,r:Math.max(3,b.r||3)+1}));
  const haz=[];// {x0,x1,y0,y1,f0,f1}
  for(const bm of e.beams||[])haz.push({x0:bm.x0,x1:bm.x1,y0:bm.y,y1:bm.y+bm.h,f0:0,f1:10});
  for(const f of e.fx||[]){const lock=f.col==='#ffffff';
@@ -11,6 +11,10 @@ module.exports=`(()=>{const e=M.enemies.find(e=>e.kind==='keikoBoss'||e.kind==='
   else if(f.type==='ring')haz.push({x0:f.x-34,x1:f.x+34,y0:0,y1:F,f0:4,f1:60});
   else if(f.type==='mark')haz.push({x0:f.x-f.w/2-6,x1:f.x+f.w/2+6,y0:F-10,y1:F,f0:4,f1:70});}
  for(const mk of e.marks||[])haz.push({x0:mk.x-mk.w/2-6,x1:mk.x+mk.w/2+6,y0:F-8,y1:F,f0:mk.t>=mk.arm?0:Math.max(0,mk.arm-mk.t-4),f1:200});
+ for(const h of (M.wc&&M.wc.haz)||[]){const a=h.t-44,f0=Math.max(0,-a-3),sx0=h.side<0?KEIKO_L-20:KEIKO_R-34,sx1=h.side<0?KEIKO_L+34:KEIKO_R+20;
+  if(h.type==='col')haz.push({x0:sx0,x1:sx1,y0:0,y1:F+40,f0,f1:f0+26});
+  else if(h.type==='rise')haz.push({x0:sx0,x1:sx1,y0:0,y1:F+40,f0,f1:f0+40});
+  else if(h.type==='wave'){const x=a<0?h.wx:h.x;haz.push({x0:Math.min(x,x-h.side*60)-10,x1:Math.max(x,x-h.side*60)+10,y0:0,y1:h.gap0+2,f0,f1:f0+30});}}
  const safes=(e.fx||[]).filter(f=>f.type==='safe');const gaps=e.mode==='rain'?((e.nextGaps&&e.nextGaps.length?e.nextGaps:e.gaps)||[]):[];
  if(e.mode==='rain')for(let x=L;x<R;x+=8)if(gaps.length&&!gaps.some(([a,b])=>x>a+6&&x<b-6))haz.push({x0:x,x1:x+8,y0:0,y1:F,f0:20,f1:200});
  for(const s of safes)for(let x=L;x<R;x+=8)if(x+8<s.x-s.w/2+4||x>s.x+s.w/2-4)haz.push({x0:x,x1:x+8,y0:0,y1:F,f0:8,f1:60});

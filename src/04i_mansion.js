@@ -202,7 +202,7 @@ function mansionCamera(snap=false){const bf=typeof mansionBossFocus==='function'
 
 function updateMansion(){
  mansionUI();
- if(state==='mansion'&&mansionJuiceStop())return;
+ if(state==='mansion'&&mansionJuiceStop())return;if(state==='mansion'&&typeof wcTick==='function')wcTick();
  if(state==='mansionClear'){if(stateT>25&&(inp.startPressed||inp.shootPressed||mansionInput.use)){setState('mansion');M.checkpoint={room:'bedroom',x:110,y:208};mansionEnter('bedroom',110,208);mansionSay('拠点に戻ったよ。紫の扉で繋がった場所へ戻れるよ。');}if(inp.backPressed)setState('title');mansionInput.use=mansionInput.slide=mansionInput.map=false;return;}
  if(mansionInput.map){mansionMenuToggle();}mansionInput.map=false;
  if(inp.backPressed){if(M.map){mansionTalkClose();M.map=false;releaseAll();mansionGuardRelease();mansionUI();}else if(M.diceReturn){mansionDiceReturn();}else if(M.sparReturn){mansionFullReturn();}else{mansionSave();setState('title');}mansionInput.slide=mansionInput.use=false;return;}
@@ -415,7 +415,7 @@ function mansionMapDraw(){mrect(10,40,236,157,'rgba(5,13,29,.97)');rectLine(10,4
  const me=mansionDoorCellPos(M.room,M.x,M.y-12);if((M.t>>4)&1)mrect(me[0]-1,me[1]-1,3,3,'#ffe89e');
 }
 
-function renderMansion(){mansionRoomDraw();mansionJuiceDraw();if(M.map&&M.menuTab==='map')mansionMapDraw();if(state==='mansionClear'){mrect(14,63,228,102,'rgba(6,14,30,.96)');rectLine(14,63,228,102,'#b9d8d2');}blit();
+function renderMansion(){mansionRoomDraw();if(typeof wcDraw==='function')wcDraw();mansionJuiceDraw();if(M.map&&M.menuTab==='map')mansionMapDraw();if(state==='mansionClear'){mrect(14,63,228,102,'rgba(6,14,30,.96)');rectLine(14,63,228,102,'#b9d8d2');}blit();
  if(M.actor==='seiten'&&mansionSeitenPortrait){sctx.save();sctx.imageSmoothingEnabled=true;const scale=hiS();sctx.drawImage(mansionSeitenPortrait,275,230,655,655,5*scale,3*scale,21*scale,21*scale);sctx.restore();}else if(M.actor==='astarte'&&mansionAstarteFace){sctx.save();sctx.imageSmoothingEnabled=true;const scale=hiS();sctx.drawImage(mansionAstarteFace,5*scale,3*scale,21*scale,21*scale);sctx.restore();}else drawOpeningPortrait({face:0},5,3,21);
  drawHiText(mansionLocationName(),165,5,6.5,'#d9edf5','#0c1528');
  if(M.map&&M.menuTab!=='map')return;
