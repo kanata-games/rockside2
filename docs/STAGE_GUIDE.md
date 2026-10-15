@@ -413,3 +413,7 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 - 04p_sequelboss.js：青天・ダイスロール・アスターテは元のAIのまま、特殊技を間に挟む（青天は通常2ターンごと、ダイスロール/アスターテは2周期に1回。挟んでいる間は周期の時計を止める）。怒り時に1回だけ必殺技（青天 sLullaby／ダイスロール dJackpot。アスターテには無し）。
 - 予告は床基準(y=256)の sqmark / sqcol / sqsafe を使う。輪弾の隙間は必ず床側に開ける。
 - FXのjsonと接頭辞：hoshiyomi_fx.json (hoshi_)、seiten_fx.json (seiten_)、diceroll_fx.json (diceroll_ / dice_)、astarte_fx.json (astarte_)。接頭辞を外した名前で fxSpawn する（例 'sky_beam', 'roll_impact' の row＝出目-1）。
+
+## 19. 必殺技カットイン (test.52)
+- `juiceCut(技名,色,ボス名)`。右上の斜めの帯、y 18〜48（画面上20%以内）、44フレーム（入り4／抜け8）。停止は最大2フレーム。床や予告を絶対に隠さないこと。
+- 顔の切り抜きの中心は `CUT_FACE[id]`（512x288 の cutin 画像の目元の座標）。新しい cutin 画像を追加したらここに座標を足す。

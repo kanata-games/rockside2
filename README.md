@@ -11,6 +11,9 @@ ROCKSIDE II / 2.0.0-test.46（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 - 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs` `node tools/test-hoshiyomi.cjs` and `node tools/test-keiko.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
+### 2.0.0-test.52
+- 必殺技のカットインを作り直し：画面中央の大きな帯（約40%を約1.6秒覆っていた）をやめ、右上の小さな斜めの帯（画面上部 y18〜48、上20%以内）に変更。顔（目元）の切り抜き＋技名＋ボス名。4フレームで「カッ！」と入り、約0.73秒で横へ抜ける。長い停止なし（ヒットストップ2フレームのみ）、全画面フラッシュなし。高解像度のオーバーレイに描くので文字がくっきり見える。全ボスの必殺技に適用。
+
 ### 2.0.0-test.51
 - 青天：新技 天翔け(sSkyPounce：空へ消え、光の柱で予告してから落下＋着地の衝撃波)、ハートの扇(sHeartFan：白線の方向だけ空く扇弾)、怒り時の必殺 ソラノコエ・ララバイ（カットイン、音符の輪3回。隙間の方向を水色の線＋床の安全地帯で予告）。
 - ダイスロール：新技 ダイス・スタンプ(dSlam：着地点マーク→跳躍→衝撃波＋跳ねるサイコロ)、カードの壁(dCardWall：上下交互のカード。高さを光で予告、低い＝ジャンプ／高い＝スライディング)、怒り時の必殺 ジャックポット・ナイト（カットイン、出目3つで安全な列が決まり、それ以外の列にチップの雨。必殺中はカメラが部屋全体を映す）。

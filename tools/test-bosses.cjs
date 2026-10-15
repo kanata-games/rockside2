@@ -38,3 +38,8 @@ console.log('PASS boss move sets (test.49): impostors mimic their dark originals
  run('SHADE_FX.dice={impact:{img:{},frameWidth:8,frameHeight:8,frames:4,ms:[50,50,50,50],drawScale:.25,anchor:[4,4]}}');assert.equal(run('fxSpawn({id:"dice"},"impact",10,10)'),true);run('fxUpdateDraw()');assert(run('KFXL.length')>=1);run('delete SHADE_FX.dice;KFXL=[]');
  run('KJ.stop=0;KJ.cut=null;M.enemyShots=[]');
  console.log('PASS sequel bosses (test.51): '+JSON.stringify(res)+'; hit-stop on every boss; FX sheets optional with code-drawn fallback.');}
+// ===== test.52: small top-corner cut-in, no long freeze =====
+{run('KJ.stop=0;KJ.cut=null;juiceCut("テスト","#ff7fae","青天")');assert(run('KJ.stop')<=2,'cut-in adds at most the tiny hit-stop');
+ let maxT=0,boxOk=true;for(let i=0;i<80&&run('!!KJ.cut');i++){const b=run('(()=>{const b=juiceCutBox(KJ.cut);return [b.y0,b.y0+b.h,b.x0,b.w]})()');if(b[0]<0||b[1]>48||b[2]<256/3)boxOk=false;run('mansionJuiceStop()');maxT=i;}
+ assert(boxOk,'cut-in stays in the top-right corner, top 20% of the screen');assert(maxT<=48,'cut-in lasts under ~0.8s: '+maxT+' frames');
+ console.log('PASS cut-in (test.52): top-right slanted strip (y '+run('CUT_Y')+'–'+run('CUT_Y+CUT_H')+' of 240), '+run('CUT_LEN')+' frames, no freeze.');}

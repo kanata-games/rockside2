@@ -103,7 +103,7 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 <script>
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.51';
+const GAME_VERSION = '2.0.0-test.52';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.
@@ -9390,16 +9390,18 @@ const KJ={shakeT:0,shakeA:0,flashT:0,flashC:'#fff',flashMax:1,stop:0,cut:null};
 function juiceShake(a,t){KJ.shakeA=Math.max(KJ.shakeT>0?KJ.shakeA:0,a);KJ.shakeT=Math.max(KJ.shakeT,t);}
 function juiceFlash(c,t){KJ.flashC=c;KJ.flashT=KJ.flashMax=t;}
 function juiceStop(n){KJ.stop=Math.max(KJ.stop,n);}
-function juiceCut(name,col,sub){const e=M.enemies&&M.enemies.find(e=>e.id&&e.hp>0);KJ.cut={name,col,sub:sub||'',t:0,img:(SHADE_FX[e&&e.id]||{}).cutin?.img||null};juiceFlash('#ffffff',10);juiceStop(10);sfx('warn');}
-function mansionJuiceStop(){if(KJ.shakeT>0)KJ.shakeT--;if(KJ.flashT>0)KJ.flashT--;if(KJ.cut&&++KJ.cut.t>96)KJ.cut=null;if(KJ.stop>0){KJ.stop--;return true;}return false;}
+// test.52: Persona-style 'カッ！' cut-in — a small slanted strip in the top-right corner (y 18..48, top 20% of the screen),
+// eyes crop of the delivered cut-in art + move name. Snaps in (4f), holds, slides out; 44 frames ≈ 0.73s. No freeze, no full-screen band.
+const CUT_FACE={vesper:[256,72],lavis:[232,62],nocturne:[256,70],eclipse:[256,76],hoshi:[400,92],seiten:[395,195],dice:[300,78]};
+const CUT_LEN=44,CUT_IN=4,CUT_OUT=8,CUT_Y=18,CUT_H=30,CUT_W=150;
+function juiceCut(name,col,sub){const e=M.enemies&&M.enemies.find(e=>e.id&&e.hp>0);KJ.cut={name,col,sub:sub||'',t:0,id:e&&e.id,img:(SHADE_FX[e&&e.id]||{}).cutin?.img||null};juiceStop(2);sfx('warn');}
+function juiceCutBox(c){const _=0;const t=c.t,k=t<CUT_IN?1-t/CUT_IN:t>CUT_LEN-CUT_OUT?(t-(CUT_LEN-CUT_OUT))/CUT_OUT:0,ease=k*k;return{x0:VW-CUT_W-12+Math.round(ease*(CUT_W+24)),y0:CUT_Y,w:CUT_W,h:CUT_H};}
+function mansionJuiceStop(){if(KJ.shakeT>0)KJ.shakeT--;if(KJ.flashT>0)KJ.flashT--;if(KJ.cut&&++KJ.cut.t>CUT_LEN)KJ.cut=null;if(KJ.stop>0){KJ.stop--;return true;}return false;}
 function mansionJuiceShakeApply(){if(KJ.shakeT>0){const a=KJ.shakeA*Math.min(1,KJ.shakeT/8);g.translate(Math.round((artH(M.t,1)%100/50-1)*a),Math.round((artH(M.t,2)%100/50-1)*a));}}
 function mansionJuiceDraw(){g.save();g.setTransform(1,0,0,1,0,0);
  if(KJ.flashT>0){g.globalAlpha=.55*KJ.flashT/KJ.flashMax;g.fillStyle=KJ.flashC;g.fillRect(0,0,VW,VH);g.globalAlpha=1;}
- const c=KJ.cut;if(c){const t=c.t,inn=Math.min(1,t/8),out=t>80?(t-80)/16:0,x=Math.round((1-inn)*VW-out*VW*.0),a=1-out,y=VH*.55,BH=c.img?96:40;
-  g.globalAlpha=.9*a;const gr=g.createLinearGradient(0,y-BH/2,0,y+BH/2);gr.addColorStop(0,'#05020c');gr.addColorStop(.5,'#2a1048');gr.addColorStop(1,'#05020c');g.fillStyle=gr;g.fillRect(0,y-BH/2,VW,BH);g.fillStyle=c.col;g.fillRect(0,y-BH/2,VW,2);g.fillRect(0,y+BH/2-2,VW,2);
-  for(let i=0;i<6;i++){g.globalAlpha=.25*a;g.fillRect(((t*9+i*53)%(VW+60))-60,y-BH/2+6+i*(BH-12)/6,40,1);}
-  if(c.img){const ih=BH-4,iw=ih*512/288;g.globalAlpha=a;g.drawImage(c.img,VW-iw+x,y-ih/2,iw,ih);}
-  g.globalAlpha=a;g.textAlign='center';g.textBaseline='middle';g.font='bold 15px sans-serif';const tx=(c.img?VW*.32:VW/2)+x;g.fillStyle=c.col;g.fillText(c.name,tx+1,y+1);g.fillStyle='#ffffff';g.fillText(c.name,tx,y);if(c.sub){g.font='9px sans-serif';g.fillStyle='#d8c8f0';g.fillText(c.sub,tx,y+15);}g.textAlign='left';g.textBaseline='alphabetic';g.globalAlpha=1;}g.restore();}
+ g.restore();}
+
 const JUICE_BOSS_KINDS=['keikoBoss','hoshiBoss','boss','seitenBoss','diceBoss'];
 function mansionJuiceHit(e,shot){if(!JUICE_BOSS_KINDS.includes(e.kind))return;juiceStop(2);if(e.id)fxSpawn(e,'impact',shot.x,shot.y,{sx:.6,sy:.6});for(let i=0;i<5;i++)M.particles?.push?.({x:shot.x,y:shot.y,vx:(i-2)*.9,vy:-1-(i&1),life:14,col:'#ffffff'});mansionBurst(shot.x,shot.y,KEIKO_BOSSES[e.id]?.col||'#ffd',5);if(e.hp<=0){juiceStop(18);juiceShake(5,30);juiceFlash('#ffffff',16);}}
 function mansionJuicePlayerHurt(){if(mansionKeikoActive()||M.hoshiState==='active'||M.sparState==='active'||M.seitenState==='active'||M.diceState==='active'){juiceStop(5);juiceShake(3,10);juiceFlash('#ff3050',6);}}
@@ -9673,6 +9675,19 @@ Object.assign(KEIKO_MOVES,{
 });
 Object.assign(KEIKO_MOVE_POSE,{hsConstel:t=>t<56?'telegraph':'attack',hsComet:(t,e)=>e.lift>2&&!e.diveLine?'kick':'telegraph',hsOrbit:t=>t<50?'telegraph':'attack',hsNova:t=>t<70?'telegraph':'attack'});
 const HOSHI_POSE_MAP={telegraph:'shootWindup',attack:'shootStar',kick:'dash',fly:'move',walk:'move',idle:'idle'};
+
+// cut-in is drawn on the hi-res overlay after everything else (crisp text, above HUD bars)
+function mansionJuiceCutHi(){const c=KJ.cut;if(!c||typeof sctx==='undefined')return;const g=sctx;g.save();const kk=hiS();g.setTransform(kk,0,0,kk,0,0);{const B=juiceCutBox(c),sk=10,{x0,y0,w,h}=B;
+  const poly=(dx,dy,ww,hh)=>{g.beginPath();g.moveTo(dx+sk,dy);g.lineTo(dx+ww+sk,dy);g.lineTo(dx+ww,dy+hh);g.lineTo(dx,dy+hh);g.closePath();};
+  g.globalAlpha=1;g.fillStyle=c.col;poly(x0-4,y0-2,w+8,h+4);g.fill();g.fillStyle='#07030f';poly(x0,y0,w,h);g.fill();
+  const pw=70;if(c.img){const [fx,fy]=CUT_FACE[c.id]||[256,80],sw=220,sh=sw*h/pw;g.save();poly(x0,y0,pw,h);g.clip();g.imageSmoothingEnabled=true;g.drawImage(c.img,fx-sw/2,fy-sh/2,sw,sh,x0,y0,pw+sk,h);g.restore();}
+  else{g.fillStyle=c.col;g.globalAlpha=.5;poly(x0,y0,pw,h);g.fill();g.globalAlpha=1;}
+  g.fillStyle=c.col;g.beginPath();g.moveTo(x0+pw+sk,y0);g.lineTo(x0+pw+sk+3,y0);g.lineTo(x0+pw+3,y0+h);g.lineTo(x0+pw,y0+h);g.fill();
+  if(c.t<CUT_IN+3){g.globalAlpha=1-(c.t/(CUT_IN+3));g.fillStyle='#ffffff';poly(x0,y0,w,h);g.fill();g.globalAlpha=1;}
+  for(let i=0;i<3;i++){g.globalAlpha=.35;g.fillStyle=c.col;g.fillRect(x0+pw+14+((c.t*6+i*37)%(w-pw-14)),y0+4+i*9,12,1);}g.globalAlpha=1;
+  const tx=x0+pw+10;g.textAlign='left';g.textBaseline='middle';g.font='bold 10px sans-serif';g.fillStyle='#000';g.fillText(c.name,tx+1,y0+12+1,w-pw-12);g.fillStyle='#ffffff';g.fillText(c.name,tx,y0+12,w-pw-12);
+  if(c.sub){g.font='8px sans-serif';g.fillStyle=c.col;g.fillText(c.sub,tx+2,y0+h-7);}g.textBaseline='alphabetic';}g.restore();}
+{const base=renderMansion;renderMansion=function(){base();mansionJuiceCutHi();};}
 // =====================================================================
 //  test.51: 青天 / ダイスロール / アスターテ signature moves (floor 256 arenas).
 //  Each boss keeps its own AI; a special move takes over between normal turns.
