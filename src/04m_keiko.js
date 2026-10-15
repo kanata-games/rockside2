@@ -9,55 +9,55 @@
 // =====================================================================
 const KEIKO_FLOOR=224,KEIKO_L=40,KEIKO_R=472;
 const KEIKO_BOSSES={
- tobiume:{room:'kTobi',name:'ハネウメ',real:'飛梅',hp:130,col:'#ff8cc0',sub:'#ffd6ea',art:'tobiume',normal:'tobiume',flag:'keikoTobiume',
-  seq:['volley','swoop','volley','shock'],rageSeq:['volley','shock','swoop','volley','swoop'],
+ tobiume:{room:'kTobi',name:'ハネウメ',real:'飛梅',hp:220,col:'#ff8cc0',sub:'#ffd6ea',art:'tobiume',normal:'tobiume',flag:'keikoTobiume',
+  seq:['hFan','hDive','hFan','hKick'],rageSeq:['hFan','hKick','hDive','hFan','hDive','hKick'],hover:56,
   volley:{n:2,rn:3,pat:'alt',speed:2.4,kind:'heart'},swoop:{speed:5.4},shock:{},
   pose:{volley:'attack',swoop:'fly',shock:'kick',walk:'fly',idle:'idle'},
   fake:['あっ、海音ちゃーん！ 飛梅ちゃんだよ！ 迎えに来てくれたんだね！','……あれ？ 海音ちゃんって、こんなに背が低かったっけ？ まあいっか、梅干し食べる？'],pre:['……ぷぷっ、バレちゃった？ あたしは跳梅（ハネウメ）！ 本物の飛梅は、そこの檻の中だよ。','返してほしかったら、勝ってみな！ あたしの方が飛梅より、ずーっと高く跳べるんだから！'],
   again:['ぴょーん、あたしの勝ち！ ……でもまだやる？ いいよ、跳ね足りないし！'],vanish:['あいたたた……負けちゃった。あたし、月の光でできた影法師なんだ。','本物は返してあげる。……じゃあね、ぴょーん！'],rematch:['あのそっくりさん、月が出てればまた出てくるみたい。もう一回、腕試ししてく？'],
   post:['海音ちゃーん！ 出られたー！ ありがとう！ あのそっくりさん、あたしのマネばっかりするんだもん！','海音ちゃんがあたしのために怒ってくれたの、ちゃんと見てたよ。……へへ、ちょっと嬉しかった。腕試しなら、いつでも飛梅ちゃんが付き合うからね！','はい、星詠みの欠片3つ！ これからは一緒に戦おうね！']},
- neenia:{room:'kNeen',name:'ネムニア',real:'ネーニア',hp:140,col:'#8fb0ff',sub:'#e4ecff',art:'neenia',normal:'neenia',flag:'keikoNeenia',
-  seq:['volley','rain','volley','snare'],rageSeq:['volley','snare','rain','volley','rain'],
+ neenia:{room:'kNeen',name:'ネムニア',real:'ネーニア',hp:250,col:'#8fb0ff',sub:'#e4ecff',art:'neenia',normal:'neenia',flag:'keikoNeenia',
+  seq:['nAim','nLob','nBack','rain','nRico'],rageSeq:['snare','nAim','nBack','nLob','nRico','rain'],
   volley:{n:2,rn:3,pat:'mix',speed:3.0,kind:'arrow'},rain:{w:52,rw:46},snare:{n:2,rn:3},
   pose:{volley:'attack',rain:'attack',snare:'attack',walk:'walk',idle:'idle'},
   fake:['海音……来てくれたのね。私よ、ネーニア。','さあ、こっちへ。……弓？ ああ、あれは重いから置いてきたわ。ふわぁ……'],pre:['……眠くて芝居が続かないわ。私はネムニア。本物は奥で、静かに眠ってもらってる。','……本物より上手に射てると思うのだけれど。私に勝てたら、返してあげる。'],
   again:['……すぅ。あら、もう眠いの？ もう一度、子守唄代わりに射ってあげる。'],vanish:['……ふぁ。久しぶりに、よく目が覚めたわ。','私は月が見せた夢。……本物は、もう起こしてあげる。'],rematch:['あの影、まだ庭のどこかで眠っているわ。……もう一度、射合ってみる？'],
   post:['海音。……あなたが、私の偽者を鎮めてくれたのね。檻の中から見ていたわ。','久しぶりね。少し、背が伸びた？ ……ふふ、冗談よ。腕試しの相手なら、私が引き受けるわ。','これを持っていきなさい。……背中は、私が守る。']},
- lily:{room:'kLily',name:'リリリ',real:'リリィ',hp:140,col:'#ffd2ef',sub:'#fff4fb',art:'lily',normal:'lily',flag:'keikoLily',
-  seq:['wave','volley','rain','wave'],rageSeq:['wave','volley','rain','wave','volley'],
+ lily:{room:'kLily',name:'リリリ',real:'リリィ',hp:250,col:'#ffd2ef',sub:'#fff4fb',art:'lily',normal:'lily',flag:'keikoLily',
+  seq:['lSong','volley','lHearts','lMoon','lStars'],rageSeq:['lSong','lHearts','lStars','lMoon','volley','lSong'],
   wave:{n:1,rn:2,speed:2.6},volley:{n:2,rn:3,pat:'high',speed:2.6,kind:'note'},rain:{w:56,rw:48},
   pose:{wave:'attack',volley:'attack',rain:'attack',walk:'walk',idle:'idle'},
   fake:['海音ちゃーん！ リリィだよっ♪ 会いたかったー！','ウミミ？ えーっと……今日はお休み！ かわりにリリリ……じゃなくて、リリィが歌うね♪'],pre:['あっ、言っちゃった。そう、あたしはリリリ！ リリィちゃんは楽屋の檻で待機中でーす♪','リリリのライブ、最後まで聴いてってね！ 聴き終わったら返してあげる♪'],
   again:['ざんねーん、アンコールはリリリにおまかせ♪ もう一回いってみよー！'],vanish:['えー、負けちゃった！ リリリ、月の光の舞台にしか立てないの。','リリィちゃんは楽屋から出してあげるね。……またね、ばいばーい♪'],rematch:['あの子、月が出たらまた歌いに来るって。もう一回、腕試ししていく？♪'],
   post:['海音ちゃん！ 助けてくれてありがとうっ♪ 楽屋に閉じこめられて、ずっと出番待ちだったの！','リリィのそっくりさん、歌はちょっとだけ上手だったかも……。でもでも、ウミミがいるのはリリィの方だもんね！','ウミミも拍手してる！ 欠片はファンサービス、3つどうぞっ♪ これからは一緒にステージだね！']},
- disaster:{morph:true,room:'kDis',name:'ズターさん',real:'スターさん',hp:170,col:'#71d9ff',sub:'#d8f6ff',art:'disaster',normal:'star',flag:'keikoStar',
-  seq:['sword','spear','axe','scythe','bow'],rageSeq:['sword','scythe','spear','axe','bow','scythe'],
+ disaster:{morph:true,room:'kDis',name:'ズターさん',real:'スターさん',hp:290,col:'#71d9ff',sub:'#d8f6ff',art:'disaster',normal:'star',flag:'keikoStar',
+  seq:['sword','dSpear','axe','scythe'],rageSeq:['dLance','dWhip','bow','dSpear','scythe','axe','sword'],
   sword:{n:1,rn:2,speed:3.0},spear:{speed:6},axe:{},scythe:{},bow:{n:2,rn:3,pat:'alt',speed:3.2,kind:'arrow'},
   pose:{sword:'sword',spear:'spear',axe:'axe',scythe:'scythe',bow:'bow',walk:'idle',idle:'idle'},
   fake:['よう、海音。オレだ、スターさんだぜ。','錬金剣？ ……ああ、あれな。オレ様の……いや、オレの剣は今日もピカピカだ。ククク……'],pre:['……チッ、口調がもたなかったか。オレ様は錬金のズターさん！ 本物は奥の檻だ。','錬金の写し身、五つの武器で相手してやる。オレ様の方が本物よりずっと強いってこと、教えてやるぜ。いくぞ！'],
   again:['フハハ、まだまだだな！ ……だが筋は悪くない。もう一本やるか？'],vanish:['ぐぬぬ……見事だ。オレ様は、月が錬金した写し身にすぎん。','本物は返してやる。……せいぜい、仲良くやるんだな！'],rematch:['あのズターとかいうやつ、月の光でまた湧くらしい。もう一戦、やってみるか？'],
   post:['よう、海音！ 助かったぜ。オレのニセモノ、片付けてくれたんだな。','オレのニセモノと剣を交えるなんて、妙な気分だったろ。前の旅のオマエより、ずっと頼もしくなったな。腕試しなら、いつでも相手になるぜ。','欠片、持ってけ。これで背中は任せられるぜ。……みんなで、この館の謎を解こうな。']},
  // ---- test.47: 影の四騎 (shades) — original dark bosses from the old dazed-dark sprites. No cage / no fake; harder, faster patterns.
- vesper:{shade:true,room:'sTobi',name:'黄昏翼ヴェスパー',hp:220,col:'#c03a78',sub:'#ffb0d8',art:'shade_tobi',normal:'tobiume_dark',flag:'shadeTobi',wait:[46,30],
-  seq:['volley','swoop','shock','volley','swoop'],rageSeq:['swoop','volley','shock','swoop','volley','shock'],
+ vesper:{shade:true,room:'sTobi',name:'黄昏翼ヴェスパー',hp:340,col:'#c03a78',sub:'#ffb0d8',art:'shade_tobi',normal:'tobiume_dark',flag:'shadeTobi',wait:[46,30],
+  seq:['vOrb','vWarpKick','hFan','hDive','vOrb'],rageSeq:['hKick','vWarpKick','vOrb','vWarpKick','hDive','hFan'],hover:50,super:'vMeteor',
   volley:{n:3,rn:4,pat:'alt',speed:3.0,kind:'heart'},swoop:{speed:6.6},shock:{},
   pose:{volley:'attack',swoop:'fly',shock:'kick',walk:'fly',idle:'idle'},
   pre:['……黄昏の翼に、迷いこんだね。','わたしはヴェスパー。光を食べる、夕暮れの影。……きみの光は、どんな味かな。'],
   again:['まだ黄昏は終わらないよ。……もう一度、落ちておいで。'],post:['……夜が、来ちゃった。わたしの翼、きみに預けるよ。','影はあと三つ。全部をほどけば……きみの中の影も、目を覚ますかも。']},
- lavis:{shade:true,room:'sNeen',name:'霧弓ラヴィス',hp:220,col:'#3a4a9a',sub:'#b8c8ff',art:'shade_neen',normal:'neenia_dark',flag:'shadeNeen',wait:[44,30],
-  seq:['volley','rain','snare','volley','rain'],rageSeq:['volley','snare','rain','volley','snare','rain'],
+ lavis:{shade:true,room:'sNeen',name:'霧弓ラヴィス',hp:340,col:'#3a4a9a',sub:'#b8c8ff',art:'shade_neen',normal:'neenia_dark',flag:'shadeNeen',wait:[44,30],
+  seq:['lvPierce','lvSky','lvMist','nAim','nLob'],rageSeq:['nRico','nBack','lvMist','lvPierce','lvSky','lvPierce'],super:'lvHunt',
   volley:{n:3,rn:4,pat:'mix',speed:3.6,kind:'arrow'},rain:{w:50,rw:44},snare:{n:3,rn:4},
   pose:{volley:'attack',rain:'attack',snare:'attack',walk:'walk',idle:'idle'},
   pre:['書架の裏は、霧の狩場。……わたしはラヴィス。','この霧の中で、あなたの足音だけがよく聞こえる。……狩りの時間よ。'],
   again:['霧はまだ晴れていない。……弓を引き直すわ。'],post:['……霧が、晴れていく。見事ね。','この矢羽を。影はあと少し。全部そろえば、あなたは影を纏える。']},
- nocturne:{shade:true,room:'sLily',name:'夜想ノクターン',hp:220,col:'#a03ab0',sub:'#ffc8f4',art:'shade_lily',normal:'lily_dark',flag:'shadeLily',wait:[44,30],
-  seq:['wave','volley','rain','wave','volley'],rageSeq:['wave','rain','volley','wave','rain','volley'],
+ nocturne:{shade:true,room:'sLily',name:'夜想ノクターン',hp:340,col:'#a03ab0',sub:'#ffc8f4',art:'shade_lily',normal:'lily_dark',flag:'shadeLily',wait:[44,30],
+  seq:['nScreech','nSpin','nDive','lSong','lStars'],rageSeq:['lHearts','nSpin','nScreech','nDive','nSpin','lStars'],super:'nEncore',
   wave:{n:2,rn:2,speed:3.0},volley:{n:3,rn:4,pat:'high',speed:3.0,kind:'note'},rain:{w:50,rw:44},
   pose:{wave:'attack',volley:'attack',rain:'attack',walk:'walk',idle:'idle'},
   pre:['ようこそ、水底の劇場へ。わたしはノクターン——真夜中だけの歌姫。','観客はあなた一人。拍手の代わりに、悲鳴を聞かせて？'],
   again:['カーテンコールには早いわ。……もう一曲。'],post:['……拍手、聞こえた。あなたの勝ち。','夜の旋律をあげる。影の衣は、すぐそこよ。']},
- eclipse:{shade:true,morph:true,room:'sStar',name:'蝕王エクリプス',hp:260,col:'#5a3aa0',sub:'#d8c0ff',art:'shade_star',normal:'disaster_dark',flag:'shadeStar',wait:[42,28],
-  seq:['sword','spear','axe','scythe','bow','spear'],rageSeq:['sword','scythe','spear','axe','bow','scythe','spear'],
+ eclipse:{shade:true,morph:true,room:'sStar',name:'蝕王エクリプス',hp:380,col:'#5a3aa0',sub:'#d8c0ff',art:'shade_star',normal:'disaster_dark',flag:'shadeStar',wait:[42,28],
+  seq:['eLunge','dLance','eCross','sword','dSpear'],rageSeq:['dWhip','axe','eCross','eLunge','dLance','eCross'],super:'eTotal',
   sword:{n:2,rn:3,speed:3.4},spear:{speed:7},axe:{},scythe:{},bow:{n:3,rn:4,pat:'alt',speed:3.6,kind:'arrow'},
   pose:{sword:'sword',spear:'spear',axe:'axe',scythe:'scythe',bow:'bow',walk:'idle',idle:'idle'},
   pre:['星を喰らう天蓋へよく来た。我は蝕王エクリプス。','光ある者よ。汝の星が蝕まれるさまを、ここで見届けよう。'],
@@ -65,7 +65,7 @@ const KEIKO_BOSSES={
 };
 const KEIKO_CAGE_X=440;
 const KEIKO_BY_ROOM=Object.fromEntries(Object.entries(KEIKO_BOSSES).map(([id,b])=>[b.room,id]));
-const KEIKO_MORPH_ICON={sword:'剣',spear:'槍',axe:'斧',scythe:'鎌',bow:'弓'};
+const KEIKO_MORPH_ICON={sword:'剣',spear:'槍',axe:'斧',scythe:'鎌',bow:'弓',dSpear:'槍',dWhip:'鞭',dLance:'砲'};
 // ---- art: <art>-sequel → <normal> grid sheet (old 32px normal art, scaled) → placeholder
 const KEIKO_GRID_META={neenia:{frameWidth:32,frameHeight:32,cx:11,animations:{idle:{frames:[0,1],ms:400}}},lily:{frameWidth:32,frameHeight:32,cx:16,animations:{idle:{frames:[0,1],ms:400}}}};
 // impostor (偽者) art: assets/<art>-sequel → placeholder.  real character: assets/<normal>_real-sequel → first-game normal sheet (scaled) → placeholder.
@@ -94,15 +94,16 @@ function mansionKeikoStart(){const k=M.keiko;if(!k)return;k.state='active';const
 function mansionKeikoRematch(){const k=M.keiko;if(!k)return;M.flags[KEIKO_BOSSES[k.id].flag+'Rematch']=true;mansionKeikoStart();}
 function mansionKeikoActive(){return !!(M.keiko&&M.keiko.state==='active');}
 function mansionKeikoArenaSolids(){return mansionKeikoActive()?[[0,0,24,256],[MR[M.room].w-24,0,24,256]]:[];}
-function mansionKeikoMode(e,m){e.mode=m;e.mt=0;e.lift=0;}
+function mansionKeikoMode(e,m){const B=KEIKO_BOSSES[e.id];e.mode=m;e.mt=0;if(!B||!B.hover||e.hidden)e.lift=0;e.beams=[];e.aimLine=e.diveLine=e.rico=null;e.hidden=false;e.y=KEIKO_FLOOR;e.dark=0;e.vy=null;e.vt=0;e.landed=0;}
 function mansionKeikoGaps(e,n,w){const out=[],span=KEIKO_R-KEIKO_L-w;for(let i=0;i<n;i++){let x=KEIKO_L+((artH(e.cycle*7+i,(e.seed||0)+i*3)%1000)/1000)*span;for(let k=0;k<6&&out.some(g=>Math.abs(g-x)<w*2.2);k++)x=KEIKO_L+((x-KEIKO_L+span*.37)%span);out.push(Math.round(x));}return out.map(x=>[x,x+w]);}
 function keikoShot(e,o){M.enemyShots.push({kind:'kShot',x:e.x+e.face*16,y:KEIKO_FLOOR-(o.low?6:20),vx:e.face*o.speed,vy:0,damage:2,low:!!o.low,col:KEIKO_BOSSES[e.id].col,shape:o.shape||'orb',...o.extra});sfx('shot');}
 // ---- AI
 function mansionKeikoAI(e){const k=M.keiko;if(!k||k.state!=='active'){e.mode='idle';return;}const B=KEIKO_BOSSES[e.id],rage=e.hp<=e.maxHp/2,t=++e.mt,dx=M.x-e.x;
- if(rage&&!e.raged){e.raged=true;mansionSay('「'+B.name+'：まだまだ、ここからが本番！」',140);mansionBurst(e.x,e.y-30,B.col,16);}
+ if(rage&&!e.raged){e.raged=true;e.cycle=0;juiceFlash(B.col,8);juiceShake(3,12);mansionSay('「'+B.name+'：まだまだ、ここからが本番！」',140);mansionBurst(e.x,e.y-30,B.col,16);}
  for(const m of e.marks)m.t++;e.marks=e.marks.filter(m=>m.t<m.end);
- const m=e.mode;
- if(m==='walk'){e.face=Math.sign(dx)||e.face;const d=Math.abs(dx);if(d>180)e.x+=e.face*(rage?1.3:1);else if(d<140)e.x-=e.face*1.2;
+ mansionKeikoMovesUpdate(e);const m=e.mode;
+ if(KEIKO_MOVES[m])KEIKO_MOVES[m](e,B,t,rage);
+ else if(m==='walk'){if(B.hover)e.lift+=(B.hover-e.lift)*.08;if(rage&&B.super&&!e.superDone&&t>20){e.superDone=true;mansionKeikoMode(e,B.super);return;}e.face=Math.sign(dx)||e.face;const d=Math.abs(dx);if(d>180)e.x+=e.face*(rage?1.3:1);else if(d<140)e.x-=e.face*1.2;
   if(t>((B.wait||[64,40])[rage?1:0])){const seq=rage?B.rageSeq:B.seq;mansionKeikoMode(e,seq[e.cycle%seq.length]);e.cycle++;e.fromX=e.x;}}
  else if(m==='volley'||m==='bow'||m==='sword'){const P=B[m],WIND=m==='volley'?36:44,GAP=rage?42:46,n=rage?P.rn:P.n;if(t<WIND)e.face=Math.sign(dx)||e.face;
   if(t===1)e.pattern=Array.from({length:n},(_,i)=>m==='sword'?true:P.pat==='high'?false:P.pat==='low'?true:P.pat==='alt'?(i%2===1):((artH(e.cycle,i)&1)===1));
@@ -141,8 +142,8 @@ function mansionKeikoAI(e){const k=M.keiko;if(!k||k.state!=='active'){e.mode='id
  if(mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,box))mansionDamage(2,M.x<e.x?-1:1);}
 function mansionKeikoBulletUpdate(){if(!M.keiko)return;const e=mansionKeikoBoss();for(const b of M.enemyShots){if(b.kind==='kRain'&&b.y>KEIKO_FLOOR-4){b.dead=true;mansionBurst(b.x,KEIKO_FLOOR-4,b.col,3);}
  if(b.shape==='scythe'){b.age=(b.age||0)+1;if(b.boom&&(b.x<KEIKO_L-8||b.x>KEIKO_R+8)){b.vx=-b.vx;b.boom=0;b.back=true;}if(b.back&&e&&Math.abs(b.x-e.x)<10)b.dead=true;}}}
-function mansionKeikoPose(e){const B=KEIKO_BOSSES[e.id];if(e.flash>0)return'hurt';if(B.morph&&KEIKO_MORPH_ICON[e.mode]&&e.mt<18)return'transform';const wind={volley:36,bow:44,sword:44,wave:40,scythe:44,snare:30,shock:40,axe:40,swoop:e.hp<=e.maxHp/2?30:40,spear:e.hp<=e.maxHp/2?30:40,rain:60}[e.mode];if(wind&&e.mt<wind)return'telegraph';if(e.mode==='rain')return'kick';return B.pose[e.mode]||'idle';}
-function mansionKeikoDraw(e){const B=KEIKO_BOSSES[e.id],rage=e.hp<=e.maxHp/2;if(!M.keiko||!['active','ready','waiting'].includes(M.keiko.state))return;
+function mansionKeikoPose(e){const B=KEIKO_BOSSES[e.id];if(e.flash>0)return'hurt';if(B.morph&&KEIKO_MORPH_ICON[e.mode]&&e.mt<18)return'transform';if(KEIKO_MOVE_POSE[e.mode])return KEIKO_MOVE_POSE[e.mode](e.mt,e);const wind={volley:36,bow:44,sword:44,wave:40,scythe:44,snare:30,shock:40,axe:40,swoop:e.hp<=e.maxHp/2?30:40,spear:e.hp<=e.maxHp/2?30:40,rain:60}[e.mode];if(wind&&e.mt<wind)return'telegraph';if(e.mode==='rain')return'kick';return B.pose[e.mode]||'idle';}
+function mansionKeikoDraw(e){const B=KEIKO_BOSSES[e.id],rage=e.hp<=e.maxHp/2;if(!M.keiko||!['active','ready','waiting'].includes(M.keiko.state))return;mansionKeikoMovesDraw(e);if(e.hidden)return;
  if(e.mode==='rain'){for(const[a,b]of e.gaps||[]){g.globalAlpha=.28+.12*Math.sin(M.t*.2);mrect(a,20,b-a,KEIKO_FLOOR-20,'#9fe8ff');g.globalAlpha=1;mrect(a,KEIKO_FLOOR-3,b-a,3,'#c9fbff');mansionDiamond((a+b)/2,KEIKO_FLOOR-12,4,'#ffffff');}
   for(const[a,b]of e.nextGaps||[]){if((M.t>>3)&1){mrect(a,KEIKO_FLOOR-3,b-a,3,'#ffe27a');mansionDiamond((a+b)/2,KEIKO_FLOOR-14,4,'#ffe27a');}}}
  for(const mk of e.marks){const armed=mk.t>=mk.arm;if(armed){for(let x=mk.x-mk.w/2;x<mk.x+mk.w/2;x+=5)mrect(x,KEIKO_FLOOR-6-((x*7)&3),2,6+((x*7)&3),'#6ab070');}else if((M.t>>2)&1){mrect(mk.x-mk.w/2,KEIKO_FLOOR-2,mk.w,2,'#ff6a6a');mansionDiamond(mk.x,KEIKO_FLOOR-10,3,'#ff6a6a');}}

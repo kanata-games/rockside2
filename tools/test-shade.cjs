@@ -4,19 +4,7 @@ function ticks(n){run(`for(let i=0;i<${n};i++)update()`)}
 function clearKeys(){run('releaseAll();mansionInput.slide=mansionInput.use=mansionInput.map=false;')}
 // ===== test.45: 月下の稽古庭 — friendly sparring =====
 run('mansionStart(false)');ticks(5);
-function bot(){return run(`(()=>{const e=M.enemies.find(e=>e.kind==='keikoBoss');if(!e)return 'gone';releaseAll();if(!M.ground&&M.vy<0)keys.jump=true;const dx=e.x-M.x,ad=Math.abs(dx);let want=null;
- const tele=e.hp<=e.maxHp/2?30:40;
- if(e.mode==='rain'){const gs=(e.nextGaps&&e.nextGaps.length?e.nextGaps:e.gaps)||[];if(gs.length){let best=gs[0];for(const g of gs)if(Math.abs((g[0]+g[1])/2-M.x)<Math.abs((best[0]+best[1])/2-M.x))best=g;want=(best[0]+best[1])/2;}}
- if(want==null){want=e.x+(M.x<e.x?-150:150);if(want<60)want=e.x+150;if(want>450)want=e.x-150;}
- for(const mk of e.marks){if(Math.abs(want-mk.x)<mk.w/2+14)want=mk.x+(want<mk.x?-1:1)*(mk.w/2+22);if(Math.abs(M.x-mk.x)<mk.w/2+14)want=mk.x+(M.x<mk.x?-1:1)*(mk.w/2+24);}
- if((e.mode==='shock'||e.mode==='axe')&&e.toX!=null&&Math.abs(M.x-e.toX)<60)want=e.toX+(M.x<e.toX?-90:90);
- let jump=false,slide=false;
- if(e.mode==='spear'||e.mode==='swoop'){want=null;const toward=Math.sign(M.x-e.x)===e.face;if(e.mt>tele&&toward){if(e.mode==='spear'&&ad<84&&ad>40)jump=true;if(e.mode==='swoop'&&ad<50)slide=true;}}
- for(const b of M.enemyShots){if(b.kind!=='kShot')continue;const d=(b.x-M.x)*Math.sign(-b.vx);if(d>0&&d<70){if(b.low||ad<120){if(d<(b.low?64:76)&&(b.low||!slide))jump=true;}else if(d<34)slide=true;}}
- if(want!=null&&!M.slideT){if(want>M.x+4)keys.right=true;else if(want<M.x-4)keys.left=true;}
- if(jump&&M.ground){keys.jump=true;inp.jumpPressed=true;}else if(slide&&M.ground&&!M.slideT){mansionInput.slide=true;M.face=e.mode==='swoop'?-e.face:(Math.sign(e.x-M.x)||1);}
- if(!keys.right&&!keys.left&&!M.slideT)M.face=Math.sign(e.x-M.x)||M.face;
- keys.shoot=(M.t&1)===0&&(M.face===Math.sign(e.x-M.x));return e.mode;})()`);}
+const BOT=require('./bossbot.cjs');function bot(){return run(BOT);}
 // ===== test.47: 影の四騎 + ダーク海音ちゃん =====
 function fight(id,upg){const B=run(`KEIKO_BOSSES.${id}`);
  run(`M.talk=null;M.keiko=null;M.map=false;M.upg=${JSON.stringify(upg)};M.flags.${B.flag}=false;mansionEnter("${B.room}",40,224);M.transition=0;M.hp=mansionMaxHP();M.shards=0;`);clearKeys();run('keys.right=true');ticks(40);clearKeys();
@@ -46,9 +34,9 @@ console.log('PASS shade bosses: 黄昏翼ヴェスパー / 霧弓ラヴィス / 
 // dark style
 assert(run('M.flags.darkStyleUnlocked'),'all four unlock dark style');assert(run('mansionDarkOn()'),'auto-equipped on unlock');
 run('mansionSave();mansionStart(true)');assert(run('M.flags.darkStyleUnlocked&&M.flags.darkStyle'),'dark style saved');
-run('mansionEnter("sTobi",100,224);M.transition=0;M.enemies=[];M.talk=null;M.map=false;M.cool=0;M.shots=[];keys.shoot=true');ticks(1);run('releaseAll()');
+run('mansionEnter("sTobi",100,224);M.transition=0;M.enemies=[];M.talk=null;M.map=false;M.cool=0;M.shots=[];KJ.stop=0;keys.shoot=true');ticks(1);run('releaseAll()');
 assert(run('M.shots.length===1&&M.shots[0].pierce===true&&M.cool>=12'),'dark shots pierce '+run('JSON.stringify([M.shots,M.cool,M.map,M.actor,M.talk&&M.talk.speaker,state])'));
-run('M.shots=[{x:200,y:200,vx:5,damage:1,pierce:true}];M.enemies=[{kind:"bat",x:205,y:210,hp:5,maxHp:5,t:0,flash:0},{kind:"bat",x:212,y:210,hp:5,maxHp:5,t:0,flash:0}]');
+run('KJ.stop=0;M.shots=[{x:200,y:200,vx:5,damage:1,pierce:true}];M.enemies=[{kind:"bat",x:205,y:210,hp:5,maxHp:5,t:0,flash:0},{kind:"bat",x:212,y:210,hp:5,maxHp:5,t:0,flash:0}]');
 const before=run('M.enemies.map(e=>e.hp).join()');ticks(3);const after=run('M.enemies.map(e=>e.hp).join()');console.log('  pierce hp',before,'->',after);
 assert(run('M.enemies.filter(e=>e.hp===4).length')===2,'one shadow shot hits both foes once each');
 const sh=run('mansionStatusHTML()');assert(sh.includes('mDarkStyle'),'status toggle button');

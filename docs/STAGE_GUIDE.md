@@ -372,3 +372,35 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 - reach.js は `airdash` の動きを持つ（ジャンプ+3列、スライドジャンプ+4列）。`dashOnly:true` の部屋の欠片はダッシュ必須として調べ、ダッシュなしで取れたらエラー。ダッシュがあっても解除の順番は変わらないことを確かめる。/ reach.js models `airdash`; shards in `dashOnly:true` rooms must need it; the unlock order must not change.
   - 今のところダッシュ用の場所は `dashNook`（星屑の飛び石、kGate の扉8）。/ Current dash spot: `dashNook` via kGate door 8.
 - ボス戦カメラ：戦闘中（keiko／shade／ダーク星詠み）は、海音とボスの真ん中を映し、両方が入るまでズームアウトする（いちばん引いて部屋全体）。`mansionBossFocus()` と `M.bossZoom`。/ Boss camera: centres between Umine and the boss and zooms out until both fit (down to the whole room).
+
+## 16. ボスの技の作り方と演出 / Boss moves and juice (test.49)
+
+- **技の置き場所**：技は `src/04o_bossmoves.js` の `KEIKO_MOVES[name](e,B,t,rage)` に書く。ボスの `seq` / `rageSeq` に名前を並べると使われる。`super:'名前'` は、HPが半分になったときに1回だけ出る大技。
+  - **見た目**：
+    - 構えのポーズは `KEIKO_MOVE_POSE`。
+    - 予告は `kFx(e,{type,...})` で出す。種類：`line`（高さの線）、`col`（落ちてくる列）、`ring`（真上から来る印）、`mark`（床の印）、`safe`（安全な場所）、`glow`（ため）、`mist`（霧）。
+  - **当たるもの**：
+    - 当たり判定のある帯は `e.beams`。
+    - ねらい線は `e.aimLine` / `e.diveLine`（`lock:true` で白くなって止まる）。
+    - 跳ね返る道すじは `e.rico`。
+  - **弾**：`kb(e,{...})`。
+    - 動き：`g`（重力）、`bnc`（跳ね返る回数）、`split`（割れる）、`burst`（床で衝撃になる）、`sway`（横ゆれ）、`kRain`（床で消える）。
+    - 形：`bigorb`、`ring`、`spear`、`crescent`。
+  - **ワープ**：`kHide(e,true)` で消して、`kHide(e,false)` で戻す。消えている間は当たらない。
+  - **次の技へ**：`mansionKeikoMode(e,'walk')`。モードが変わると、ビーム・線・消えた状態がリセットされる。
+- **公平さのルール（必ず守る）**：
+  - 当たるものは、必ず先に予告を出す。予告が固まってから当たるまで14フレーム以上あける。
+  - 高い攻撃はスライディング、低い攻撃はジャンプ、降ってくる攻撃は隙間が先に光る。
+  - よけ方はせりふで説明しない（§14）。
+  - `rageSeq` は、怒ったときにはじめて出る技を先頭に置く。怒ると順番が0から始まるので、こうしないと戦いの中で一度も出ない技ができる。
+- **演出**：
+  - `juiceShake(強さ,時間)`：画面のゆれ。
+  - `juiceFlash(色,時間)`：画面の光。
+  - `juiceStop(フレーム)`：一瞬止める（ヒットストップ）。
+  - `juiceCut(技名,色,ボス名)`：大技のカットイン。
+  - 弾がボスに当たると2フレーム、とどめでは18フレーム止まる。海音がダメージを受けると5フレーム止まり、赤く光る。
+- **テスト**：`tools/bossbot.cjs` は、どのボスにも使える予測ボット。技を増やしたら `tools/test-bosses.cjs` を走らせて、次の3つを確かめる。
+  - 強化ありで負けない。
+  - 全部の技が出る。
+  - 大技のカットインが出る。
+- **ニセモノの元ネタ**：前作 rockside の闇版の動きをまねる（`04_game.js` の aiTobiume / aiNeenia / aiLily、`04b_disaster.js` の aiDisaster）。

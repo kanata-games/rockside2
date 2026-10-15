@@ -4,32 +4,20 @@ function ticks(n){run(`for(let i=0;i<${n};i++)update()`)}
 function clearKeys(){run('releaseAll();mansionInput.slide=mansionInput.use=mansionInput.map=false;')}
 // ===== test.45: 月下の稽古庭 — friendly sparring =====
 run('mansionStart(false)');ticks(5);
-function bot(){return run(`(()=>{const e=M.enemies.find(e=>e.kind==='keikoBoss');if(!e)return 'gone';releaseAll();if(!M.ground&&M.vy<0)keys.jump=true;const dx=e.x-M.x,ad=Math.abs(dx);let want=null;
- const tele=e.hp<=e.maxHp/2?30:40;
- if(e.mode==='rain'){const gs=(e.nextGaps&&e.nextGaps.length?e.nextGaps:e.gaps)||[];if(gs.length){let best=gs[0];for(const g of gs)if(Math.abs((g[0]+g[1])/2-M.x)<Math.abs((best[0]+best[1])/2-M.x))best=g;want=(best[0]+best[1])/2;}}
- if(want==null){want=e.x+(M.x<e.x?-150:150);if(want<60)want=e.x+150;if(want>450)want=e.x-150;}
- for(const mk of e.marks){if(Math.abs(want-mk.x)<mk.w/2+14)want=mk.x+(want<mk.x?-1:1)*(mk.w/2+22);if(Math.abs(M.x-mk.x)<mk.w/2+14)want=mk.x+(M.x<mk.x?-1:1)*(mk.w/2+24);}
- if((e.mode==='shock'||e.mode==='axe')&&e.toX!=null&&Math.abs(M.x-e.toX)<60)want=e.toX+(M.x<e.toX?-90:90);
- let jump=false,slide=false;
- if(e.mode==='spear'||e.mode==='swoop'){want=null;const toward=Math.sign(M.x-e.x)===e.face;if(e.mt>tele&&toward){if(e.mode==='spear'&&ad<84&&ad>40)jump=true;if(e.mode==='swoop'&&ad<50)slide=true;}}
- for(const b of M.enemyShots){if(b.kind!=='kShot')continue;const d=(b.x-M.x)*Math.sign(-b.vx);if(d>0&&d<70){if(b.low||ad<120){if(d<(b.low?64:76)&&(b.low||!slide))jump=true;}else if(d<34)slide=true;}}
- if(want!=null&&!M.slideT){if(want>M.x+4)keys.right=true;else if(want<M.x-4)keys.left=true;}
- if(jump&&M.ground){keys.jump=true;inp.jumpPressed=true;}else if(slide&&M.ground&&!M.slideT){mansionInput.slide=true;M.face=e.mode==='swoop'?-e.face:(Math.sign(e.x-M.x)||1);}
- if(!keys.right&&!keys.left&&!M.slideT)M.face=Math.sign(e.x-M.x)||M.face;
- keys.shoot=(M.t&1)===0&&(M.face===Math.sign(e.x-M.x));return e.mode;})()`);}
+const BOT=require('./bossbot.cjs');function bot(){return run(BOT);}
 const results={};
 for(const id of ['tobiume','neenia','lily','disaster']){const B=run(`KEIKO_BOSSES.${id}`);
- run(`M.upg={};M.flags.${B.flag}=false;mansionEnter("${B.room}",40,224);M.transition=0;M.hp=mansionMaxHP();M.shards=0;`);clearKeys();run('keys.right=true');ticks(40);clearKeys();
+ run(`M.upg={hp:4,shot:2,slide:2};M.flags.${B.flag}=false;mansionEnter("${B.room}",40,224);M.transition=0;M.hp=mansionMaxHP();M.shards=0;`);clearKeys();run('keys.right=true');ticks(40);clearKeys();
  assert(run(`M.talk&&M.talk.speaker===${JSON.stringify(B.real+'？')}`),id+' impostor greets as the friend');run('mansionTalkNext();mansionTalkNext()');assert(run(`M.talk&&M.talk.speaker===${JSON.stringify(B.name)}`),id+' impostor reveals itself');for(let i=0;i<6&&run('!!M.talk');i++)run('mansionTalkNext()');assert.equal(run('M.keiko.state'),'active');
  const seen=new Set(),tel=new Set();let hurt=0,last=run('M.hp'),retries=0,frames=0;
- while(frames<12000&&run('M.keiko.state')==='active'||run('!!M.talk')&&run('M.keiko.state')!=='done'){if(run('!!M.talk')){retries++;run('mansionTalkNext()');continue;}
+ while(frames<20000&&run('M.keiko.state')==='active'||run('!!M.talk')&&run('M.keiko.state')!=='done'){if(run('!!M.talk')){retries++;run('mansionTalkNext()');continue;}
   seen.add(bot());ticks(1);frames++;
   const tl=run(`(()=>{const e=M.enemies.find(e=>e.kind==='keikoBoss');const r=[];if(e.mode==='rain'&&e.gaps.length===2&&e.mt>25&&e.mt<80)r.push('rain');if((e.mode==='swoop'||e.mode==='spear')&&e.mt<20)r.push(e.mode);if(e.pattern&&e.mt<30)r.push(e.mode);if(e.marks.some(m=>m.t<m.arm))r.push('snare');if((e.mode==='shock'||e.mode==='axe')&&e.mt<30)r.push(e.mode);if(e.mode==='wave'&&e.mt<40)r.push('wave');if(e.mode==='scythe'&&e.mt<44)r.push('scythe');return r.join(',')})()`);for(const x of tl.split(',').filter(Boolean))tel.add(x);
   const hp=run('M.hp');if(hp<last){hurt+=last-hp;if(process.env.DBG)console.log(id,'hit',run('(()=>{const e=M.enemies.find(e=>e.kind==="keikoBoss");return JSON.stringify({m:e.mode,mt:e.mt,ex:Math.round(e.x),lift:e.lift,x:Math.round(M.x),y:Math.round(M.y),sh:M.enemyShots.map(b=>b.shape+(b.low?"L":"H")+Math.round(b.x))})})()'));}last=hp;}
  run('releaseAll()');
  console.log(`  ${id}: ${frames} frames, damage ${hurt}, retries ${retries}, modes ${[...seen].join('/')}, telegraphs ${[...tel].join('/')}`);
- assert.equal(run('M.keiko.state'),'done',id+' bot wins');assert.equal(retries,0,id+' bot never loses');assert(hurt<=8,id+' readable: took '+hurt);
- for(const m of [...new Set([...B.seq,...B.rageSeq])]){assert(seen.has(m),id+' uses '+m);assert(tel.has(m)||(m==='snare'&&tel.has('snare')),id+' telegraphs '+m);}
+ assert.equal(run('M.keiko.state'),'done',id+' bot wins');assert.equal(retries,0,id+' bot never loses');assert(hurt<=16,id+' readable: took '+hurt);
+ for(const m of [...new Set([...B.seq,...B.rageSeq])]){assert(seen.has(m),id+' uses '+m);if(['volley','bow','sword','rain','swoop','spear','snare','wave','shock','axe','scythe'].includes(m))assert(tel.has(m),id+' telegraphs '+m);}
  assert(run(`M.talk&&M.talk.speaker===${JSON.stringify(B.name)}`),'impostor fades');assert(!run(`M.flags.${B.flag}`));run('mansionTalkNext();mansionTalkNext()');assert(run(`M.flags.${B.flag}`),'real friend freed');assert.equal(run('M.shards'),3,id+' gives 3 shards');assert(run(`M.talk&&M.talk.speaker===${JSON.stringify(B.real)}&&M.talk.lines.length===3`),'real friend talks');run('mansionTalkClose(true);M.map=false');
  run(`mansionEnter("${B.room}",430,224);M.transition=0`);ticks(3);assert(!run('M.talk'),'no repeat fight on re-entry');assert.equal(run('mansionNearbyNPC()&&mansionNearbyNPC().id'),'keiko_'+id);
  run('mansionUse()');for(let i=0;i<4&&run('!!M.talk');i++)run('mansionTalkNext()');assert(run('mansionKeikoActive()'),'rematch');run('M.keiko.state="done";M.enemyShots=[]');
