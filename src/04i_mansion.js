@@ -322,7 +322,7 @@ function mansionMechanismsDraw(){const r=MR[M.room],l=r.lever;if(l){const open=M
 }
 
 // ---- Tile renderer: collision tiles are drawn exactly where they collide, styled per area ----
-const MANSION_AREA_STYLE={hub:['#1d1a28','#3d3448','#c5a88a','#6e5a6a'],mansion:['#111d32','#39475e','#98bcc8','#55657b'],library:['#1c1424','#463650','#c9a77c','#76607a'],tower:['#18182a','#3e3f55','#c7ae78','#6b6b82'],water:['#0e2230','#24495a','#7fd3df','#3f7486'],star:['#121a33','#2d3d66','#b4c4f0','#4f5f8f'],garden:['#18202e','#3c4a5e','#a8c69a','#5d6d80'],play:['#200f22','#4a2b45','#e3c991','#7b4a63']};
+const MANSION_AREA_STYLE={observatory:['#140f2c','#3a2f66','#d7b8ff','#6a5aa0'],hub:['#1d1a28','#3d3448','#c5a88a','#6e5a6a'],mansion:['#111d32','#39475e','#98bcc8','#55657b'],library:['#1c1424','#463650','#c9a77c','#76607a'],tower:['#18182a','#3e3f55','#c7ae78','#6b6b82'],water:['#0e2230','#24495a','#7fd3df','#3f7486'],star:['#121a33','#2d3d66','#b4c4f0','#4f5f8f'],garden:['#18202e','#3c4a5e','#a8c69a','#5d6d80'],play:['#200f22','#4a2b45','#e3c991','#7b4a63']};
 function mansionSolidAt(r,c,row){const ch=row<0||row>=r.grid.length||c<0||c>=r.grid[0].length?'#':r.grid[row][c];return ch==='#';}
 function mansionTilesDraw(r,cx,cy,view){const P=MANSION_AREA_STYLE[r.area]||MANSION_AREA_STYLE.mansion,c0=Math.max(0,Math.floor(cx/16)),c1=Math.min(r.grid[0].length-1,Math.floor((cx+view.w)/16)),r0=Math.max(0,Math.floor(cy/16)),r1=Math.min(r.grid.length-1,Math.floor((cy+view.h)/16));
  for(let row=r0;row<=r1;row++){const line=r.grid[row];for(let c=c0;c<=c1;c++){const ch=line[c],x=c*16,y=row*16;
