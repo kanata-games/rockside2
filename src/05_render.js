@@ -903,7 +903,6 @@ if (document.modelContext?.registerTool) {
   const lifetime = new AbortController();
   const tools = [
     {name:'read_sequel_model',description:'Read the selected Umine model and sequel test state.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute:()=>({size:SEQUEL_MODEL.size,loaded:SEQUEL_MODEL.frames.length===8,state,health:P.hp})},
-    {name:'set_sequel_model',description:'Select the same model size as the visible comparison buttons.',inputSchema:{type:'object',properties:{size:{type:'integer',enum:[32,40,48]}},required:['size'],additionalProperties:false},annotations:{readOnlyHint:false},execute:input=>{if(!input||Object.keys(input).length!==1||!Number.isInteger(input.size))throw new Error('Expected a model size');setSequelModel(input.size);return {size:SEQUEL_MODEL.size,loaded:SEQUEL_MODEL.frames.length===8};}}
   ];
   for(const tool of tools){try{Promise.resolve(document.modelContext.registerTool(tool,{signal:lifetime.signal})).catch(()=>{});}catch{}}
   window.addEventListener('pagehide',()=>lifetime.abort(),{once:true});

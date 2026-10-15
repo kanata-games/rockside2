@@ -58,7 +58,7 @@ function updateOpening(){
  if(inp.jumpPressed&&o.ground){o.vy=-CONFIG.jumpVel;o.ground=false;sfx('jump');}
  if(!inp.jump&&o.vy<-CONFIG.jumpCutVel)o.vy=-CONFIG.jumpCutVel;
  const oldX=o.x,oldY=o.y;o.x=Math.max(16,Math.min(o.room?934:244,o.x+o.vx));o.vy=Math.min(CONFIG.maxFall,o.vy+CONFIG.gravity);o.y+=o.vy;o.ground=false;
- const floors=o.room?[[0,330,176],[374,960,176],[480,540,150],[640,700,132]]:[[0,256,176]];
+ const floors=o.room?[[0,336,176],[368,960,176],[480,544,144],[640,704,128]]:[[0,256,176]];
  for(const [left,right,top] of floors){if(o.x+5>left&&o.x-5<right&&o.vy>=0&&oldY<=top&&o.y>=top){o.y=top;o.vy=0;o.ground=true;}}
  if(o.ground&&Math.abs(o.x-oldX)>.1)o.walkDistance+=Math.abs(o.x-oldX);else o.walkDistance=0;
  if(o.y>260){o.x=280;o.y=176;o.vy=0;o.ground=true;openingHint('大丈夫。もう一度、跳んでみよう。');}
@@ -75,16 +75,27 @@ function updateOpening(){
  if(o.room&&o.x>915){o.done=true;setState('openingDone');}
 }
 function openingRect(x,y,w,h,color){g.fillStyle=color;g.fillRect(Math.round(x),y,w,h);}
+// test.58: the opening uses the same stage-art pipeline as the game (04j_stage_art.js): far layer, cached back wall
+// (windows / pilasters / trims / props) and front tiles, built from small synthetic rooms that match the opening's
+// collision: 目覚めの客室 (hub art, like MR.bedroom) and 客室の回廊 (mansion art, like MR.gallery). Old flat rects are only a fallback.
+const OPEN_ART_DY=32;// opening floor y176 = in-game floor y208 (row 13), like MR.bedroom
+const OPEN_ROOMS={
+ __open0:{like:'bedroom',w:256,cols:16,solid:(c,r)=>r<1||r>=13||c===0},
+ __open1:{like:'gallery',w:960,cols:60,solid:(c,r)=>r<1||r>=13&&!(c===21||c===22)||r===11&&c>=30&&c<34||r===10&&c>=40&&c<44}};
+function openingArtRoom(id){const d=OPEN_ROOMS[id],L=MR[d.like];const grid=[];for(let r=0;r<18;r++){let row='';for(let c=0;c<d.cols;c++)row+=d.solid(c,r)?'#':'.';grid.push(row);}
+ return{name:L.name,area:L.area,tone:L.tone,w:d.w,h:288,grid,doors:[],decor:[],scenes:[],cell:[0,0,1,1]};}
+function openingArtDraw(id,cx,layer){if(typeof artBuild!=='function'||typeof MR==='undefined')return false;const had=Object.prototype.hasOwnProperty.call(MR,id),saved=M.room;
+ try{if(!had)MR[id]=openingArtRoom(id);M.room=id;const r=MR[id],view={w:VW,h:VH,zoom:1};
+  if(layer==='back'){mrect(0,0,VW,VH,r.tone||'#141c35');const X=Math.round(cx),Y=OPEN_ART_DY;artDrawFar(r,X,Y,view);g.save();g.translate(-X,-Y);artDrawBack(r,X,Y,view);artDrawFront(r,X,Y,view);if(typeof artLighting==='function')artLighting(r,X,Y,view);g.restore();}
+  return true;}catch(err){return false;}finally{M.room=saved;if(!had)delete MR[id];}}
 function drawOpeningRoom(){
- const o=OPENING,c=o.cam;openingRect(0,0,VW,VH,'#141c35');
- for(let x=-Math.round(c)%32;x<VW;x+=32){openingRect(x,34,1,142,'#253351');openingRect(x,172,32,4,'#668090');}
- openingRect(0,0,VW,35,'#10172b');openingRect(0,176,VW,64,'#29384b');
- for(let x=-Math.round(c)%16;x<VW;x+=16){openingRect(x,178,15,14,'#44566b');openingRect(x,195,15,14,'#344658');}
+ const o=OPENING,c=o.cam;
+ if(!openingArtDraw(o.room?'__open1':'__open0',o.room?c:0,'back')){openingRect(0,0,VW,VH,'#141c35');
+  for(let x=-Math.round(c)%32;x<VW;x+=32){openingRect(x,34,1,142,'#253351');openingRect(x,172,32,4,'#668090');}
+  openingRect(0,0,VW,35,'#10172b');openingRect(0,176,VW,64,'#29384b');
+  for(let x=-Math.round(c)%16;x<VW;x+=16){openingRect(x,178,15,14,'#44566b');openingRect(x,195,15,14,'#344658');}
+  if(o.room){openingRect(336-c,176,32,64,'#090e20');for(const [x,y,w] of [[480,144,64],[640,128,64]]){openingRect(x-c,y,w,6,'#86a4b4');openingRect(x-c,y+6,w,10,'#3b526b');}}}
  if(!o.room){
-  // Quiet guest room: window, bedside lamp, bed behind the heroine.
-  openingRect(138,54,58,64,'#7186a3');openingRect(141,57,52,58,'#243b64');
-  openingRect(166,57,2,58,'#a1b5ca');openingRect(141,84,52,2,'#a1b5ca');
-  openingRect(151,65,4,4,'#d6f6ff');openingRect(179,94,2,2,'#d6f6ff');
   if(!drawMansionBed(23,176,120)){
   openingRect(24,126,114,14,'#56738a');openingRect(25,124,112,7,'#d0dce4');
   openingRect(23,108,5,58,'#725779');openingRect(136,134,5,32,'#725779');
@@ -93,9 +104,6 @@ function drawOpeningRoom(){
   openingRect(165,129,2,19,'#cfc7a6');openingRect(159,121,15,10,'#e6c777');
   if(!drawMansionDoor(232,176,80)){openingRect(220,100,28,76,'#090f20');openingRect(222,102,24,74,'#304965');openingRect(225,112,18,46,'#24394f');openingRect(238,143,3,3,'#f0d58b');}
  }else{
-  for(let x=90;x<960;x+=160){openingRect(x-c,64,23,47,'#385577');openingRect(x+3-c,68,17,38,'#193150');openingRect(x+7-c,73,3,3,'#8beaff');}
-  for(const [x,y,w] of [[480,150,60],[640,132,60]]){openingRect(x-c,y,w,6,'#86a4b4');openingRect(x-c,y+6,w,12,'#3b526b');}
-  openingRect(330-c,176,44,64,'#090e20');
   for(const target of o.targets)if(target.hp){openingRect(target.x-10-c,target.y-12,20,24,'#788aa3');openingRect(target.x-7-c,target.y-8,14,14,'#49a9c6');openingRect(target.x-3-c,target.y-4,6,6,'#e4fcff');}
   if(!drawMansionDoor(935-c,176,88)){openingRect(920-c,88,30,88,'#81a4b2');openingRect(923-c,91,24,85,'#163b51');openingRect(942-c,139,3,3,'#ffda77');}
  }

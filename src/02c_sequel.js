@@ -1,9 +1,9 @@
 // Sequel-only model layer. Original body physics remain unchanged for comparison.
 const SEQUEL_MODEL = {size:48, frames:[], walkFrames:[], loading:true, failure:null, cell:128, cx:64, feet:124, muzzleX:105, muzzleY:80};
-try {const saved=Number(localStorage.getItem('rockside2_model_size'));if([32,40,48].includes(saved))SEQUEL_MODEL.size=saved;}catch{}
-function setSequelModel(size){if(![32,40,48].includes(size))throw new Error('Unknown model size');SEQUEL_MODEL.size=size;try{localStorage.setItem('rockside2_model_size',String(size));}catch{}refreshSequelModel();}
-function refreshSequelModel(){document.querySelectorAll('[data-model]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.model)===SEQUEL_MODEL.size)));document.getElementById('modelState').textContent=SEQUEL_MODEL.failure?'素材読込失敗':SEQUEL_MODEL.loading?'読込中':'サイズ比較';}
-for(const b of document.querySelectorAll('[data-model]'))b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();setSequelModel(Number(b.dataset.model));});
+// test.58: the game is unified on the 48px model; the old 32/40/48 comparison picker was removed.
+function setSequelModel(size){if(size!==48)throw new Error('Only the 48px model exists');SEQUEL_MODEL.size=48;}
+function refreshSequelModel(){}
+try{localStorage.removeItem('rockside2_model_size');}catch{}
 function sequelMuzzle(){const d=SEQUEL_MODEL,s=d.size/d.cell;return{x:P.x+P.w/2+P.face*(d.muzzleX-d.cx)*s,y:P.y+P.h+(d.muzzleY-d.feet)*s};}
 function drawSequelAt(fi,cx,feet,face,white,size=SEQUEL_MODEL.size){const d=SEQUEL_MODEL,sp=d.frames[fi];if(!sp)return;const s=size/d.cell,ox=face>=0?d.cx:d.cell-d.cx;g.drawImage(pick(sp,face,white),Math.round(cx-ox*s),Math.round(feet-d.feet*s),size,size);}
 // Four ordered walk poses; one cycle per 43.2 world pixels at normal speed.

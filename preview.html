@@ -67,8 +67,8 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 #mStatus .hp-track{width:min(100%,calc(130 * var(--mu)))}
 #mStatus .status-top>div:last-child{flex:1;min-width:0}
 #mMapContent{padding:16px;color:#d5e5ee;font-size:14px;line-height:1.7;touch-action:pan-y}
-#mMapContent h2{color:#fff1bd;font-size:20px;margin:0 0 12px}
-#mMapContent .map-scroll{overflow-x:auto;touch-action:pan-x pan-y}#mMapContent svg{display:block;width:100%;min-width:360px;height:auto;margin:18px 0}
+#mMapContent h2{color:#fff1bd;font-size:20px;margin:0 0 12px}@media (max-height:500px){#mMapContent{padding:8px 12px}#mMapContent h2{display:none}}
+#mMapContent .map-view{position:relative;height:300px;overflow:hidden;touch-action:none;background:#08111f;border:1px solid #3a5468;border-radius:8px;margin:10px 0;cursor:grab}#mMapContent .map-zoom{position:absolute;right:8px;bottom:8px;display:flex;gap:6px}#mMapContent .map-zoom button{min-width:48px;min-height:44px;font:700 16px system-ui;background:rgba(20,40,62,.92);color:#fff1bd;border:1px solid #91e5ef;border-radius:8px;padding:0 10px}#mMapContent svg{position:absolute;left:0;top:0;display:block;max-width:none;transform-origin:0 0;margin:0}
 
 #mMenuBar{gap:3px;padding:6px}#mMenuBar button{padding:6px 8px;font-size:clamp(12px,calc(8 * var(--mu)),17px)}
 #mAreaContent{padding:16px;font-size:14px;line-height:1.8;color:#d5e5ee}#mAreaContent h2{color:#fff1bd;font-size:20px}#mAreaContent #mAreaGo{width:100%;min-height:64px;background:#244f65;border-color:#91e5ef}#mAreaGo:disabled{opacity:.5}.warp-list{display:grid;gap:10px}.warp-list button{width:100%;min-height:48px;text-align:left;background:#302344;border-color:#a780d1}.warp-list button:disabled{opacity:.45}
@@ -77,7 +77,7 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 </style>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%2311162d'/%3E%3Cpath d='M8 6h5v20H8zm11 0h5v20h-5z' fill='%23ffd84a'/%3E%3C/svg%3E">
 <style>
-#modelPicker{position:fixed;z-index:12;display:flex;gap:5px;justify-content:center;align-items:center;font:14px system-ui;color:#b9cce7;left:0;width:100%;padding:6px;pointer-events:auto}#modelPicker button{font:inherit;border:1px solid #4f608a;border-radius:6px;color:#dceaff;background:#17203a;padding:7px 10px;touch-action:manipulation}#modelPicker button[aria-pressed="true"]{border-color:#9aeaff;background:#234b65;color:#fff}body.land #modelPicker{width:auto;left:50%;transform:translateX(-50%);top:4px!important}body.land #modelPicker button{padding:4px 8px;font-size:12px}#modelState{font-size:12px;max-width:85px}
+
 </style><style>
 #mAbility{position:fixed;z-index:15;border-radius:50%;border:2px solid #d3b66e;background:#312a48;color:#fff0c5;align-items:center;justify-content:center;font:bold 11px system-ui;touch-action:none;padding:0}#mVial{position:fixed;z-index:15;border-radius:50%;border:2px solid #c9a6ff;background:#2a1e48;color:#f0e4ff;align-items:center;justify-content:center;font:bold 11px system-ui;touch-action:none;padding:0}#mVial:disabled{opacity:.4}#mSlide:disabled{opacity:.35}#mSlide{position:fixed;z-index:15;border-radius:50%;border:3px solid #93dcf1;background:#203e58;color:#e7faff;display:none;align-items:center;justify-content:center;font:bold 12px system-ui;touch-action:none;box-shadow:0 5px #070c17}
 #mSwap{position:fixed;z-index:15;background:#382a54;color:#fff0be;border:1px solid #c2a1ee;border-radius:4px;font:bold 12px system-ui;touch-action:none;padding:0}#mSwap:disabled{opacity:.5}#mMap{position:fixed;z-index:15;background:#172d45;color:#caedf5;border:2px solid #668ca7;border-radius:8px;font:bold 13px system-ui;display:none;touch-action:none}
@@ -95,7 +95,6 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
   <div id="mute">SOUND ON</div>
   <div id="hint">ROCKSIDE II · 屋敷探索テスト</div>
 </div>
-<div id="modelPicker" aria-label="海音ちゃんのモデル比較"><button data-model="32" aria-pressed="false">前作</button><button data-model="40" aria-pressed="false">新40px</button><button data-model="48" aria-pressed="true">新48px</button><span id="modelState">読込中</span></div>
 <button id="mVial" aria-label="星の小瓶" style="display:none">小瓶</button><button id="mAbility" aria-label="固有行動" style="display:none">固有</button><button id="mSwap" aria-label="アスターテに交代" style="display:none">交代</button><button id="mSlide" aria-label="スライディング">SLIDE</button><button id="mMap" aria-label="探索メニュー">MENU</button>
 <section id="mMenu" role="dialog" aria-label="探索メニュー" aria-modal="true">
 <div id="mMenuBar"><button id="mStatusTab" aria-selected="true">ステータス</button><button id="mMapTab" aria-selected="false">マップ</button><button id="mAreaTab" aria-selected="false">ワープ</button><button id="mBattleLeave" style="display:none">手合わせをやめて拠点へ</button><button id="mMenuClose" aria-label="メニューを閉じる">戻る</button></div><div id="mMenuBody"><div id="mTalk" style="display:none"><header><canvas id="mTalkPortrait" width="96" height="96" aria-label="被り物姿のダイスロール"></canvas><h2 id="mTalkName">ダイスロール</h2></header><p id="mTalkText" aria-live="polite"></p><button id="mTalkNext">次へ</button><button id="mTalkDice" style="display:none">ダイスロールと練習する</button><button id="mTalkSeiten" style="display:none">一緒に遊ぶ</button><button id="mTalkBattle" style="display:none">本番の手合わせに挑む</button></div><div id="mStatus"></div><div id="mMapContent"></div><div id="mAreaContent"></div></div></section>
@@ -103,7 +102,7 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 <script>
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.57';
+const GAME_VERSION = '2.0.0-test.58';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.
@@ -2234,10 +2233,10 @@ function drawHiText(text, gx, gy, gsize, color, outline) {
 }
 // Sequel-only model layer. Original body physics remain unchanged for comparison.
 const SEQUEL_MODEL = {size:48, frames:[], walkFrames:[], loading:true, failure:null, cell:128, cx:64, feet:124, muzzleX:105, muzzleY:80};
-try {const saved=Number(localStorage.getItem('rockside2_model_size'));if([32,40,48].includes(saved))SEQUEL_MODEL.size=saved;}catch{}
-function setSequelModel(size){if(![32,40,48].includes(size))throw new Error('Unknown model size');SEQUEL_MODEL.size=size;try{localStorage.setItem('rockside2_model_size',String(size));}catch{}refreshSequelModel();}
-function refreshSequelModel(){document.querySelectorAll('[data-model]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.model)===SEQUEL_MODEL.size)));document.getElementById('modelState').textContent=SEQUEL_MODEL.failure?'素材読込失敗':SEQUEL_MODEL.loading?'読込中':'サイズ比較';}
-for(const b of document.querySelectorAll('[data-model]'))b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();setSequelModel(Number(b.dataset.model));});
+// test.58: the game is unified on the 48px model; the old 32/40/48 comparison picker was removed.
+function setSequelModel(size){if(size!==48)throw new Error('Only the 48px model exists');SEQUEL_MODEL.size=48;}
+function refreshSequelModel(){}
+try{localStorage.removeItem('rockside2_model_size');}catch{}
 function sequelMuzzle(){const d=SEQUEL_MODEL,s=d.size/d.cell;return{x:P.x+P.w/2+P.face*(d.muzzleX-d.cx)*s,y:P.y+P.h+(d.muzzleY-d.feet)*s};}
 function drawSequelAt(fi,cx,feet,face,white,size=SEQUEL_MODEL.size){const d=SEQUEL_MODEL,sp=d.frames[fi];if(!sp)return;const s=size/d.cell,ox=face>=0?d.cx:d.cell-d.cx;g.drawImage(pick(sp,face,white),Math.round(cx-ox*s),Math.round(feet-d.feet*s),size,size);}
 // Four ordered walk poses; one cycle per 43.2 world pixels at normal speed.
@@ -2745,7 +2744,6 @@ function doLayout() {
     gh = H; gw = Math.round(H * VW / VH); if (gw > W) { gw = W; gh = Math.round(W * VH / VW); }
     gx = Math.round((W - gw) / 2); gy = Math.round((H - gh) / 2);
   }
-  document.getElementById('modelPicker').style.top = (portrait ? Math.min(H - 78, gy + gh + 121) : 4) + 'px';
   layout.gameX = gx; layout.gameY = gy; layout.gameW = gw; layout.gameH = gh;
   screen.style.left = gx + 'px'; screen.style.top = gy + 'px'; screen.style.width = gw + 'px'; screen.style.height = gh + 'px';
   const pw = Math.round(gw * dpr), ph = Math.round(gh * dpr);
@@ -7949,7 +7947,7 @@ function updateOpening(){
  if(inp.jumpPressed&&o.ground){o.vy=-CONFIG.jumpVel;o.ground=false;sfx('jump');}
  if(!inp.jump&&o.vy<-CONFIG.jumpCutVel)o.vy=-CONFIG.jumpCutVel;
  const oldX=o.x,oldY=o.y;o.x=Math.max(16,Math.min(o.room?934:244,o.x+o.vx));o.vy=Math.min(CONFIG.maxFall,o.vy+CONFIG.gravity);o.y+=o.vy;o.ground=false;
- const floors=o.room?[[0,330,176],[374,960,176],[480,540,150],[640,700,132]]:[[0,256,176]];
+ const floors=o.room?[[0,336,176],[368,960,176],[480,544,144],[640,704,128]]:[[0,256,176]];
  for(const [left,right,top] of floors){if(o.x+5>left&&o.x-5<right&&o.vy>=0&&oldY<=top&&o.y>=top){o.y=top;o.vy=0;o.ground=true;}}
  if(o.ground&&Math.abs(o.x-oldX)>.1)o.walkDistance+=Math.abs(o.x-oldX);else o.walkDistance=0;
  if(o.y>260){o.x=280;o.y=176;o.vy=0;o.ground=true;openingHint('大丈夫。もう一度、跳んでみよう。');}
@@ -7966,16 +7964,27 @@ function updateOpening(){
  if(o.room&&o.x>915){o.done=true;setState('openingDone');}
 }
 function openingRect(x,y,w,h,color){g.fillStyle=color;g.fillRect(Math.round(x),y,w,h);}
+// test.58: the opening uses the same stage-art pipeline as the game (04j_stage_art.js): far layer, cached back wall
+// (windows / pilasters / trims / props) and front tiles, built from small synthetic rooms that match the opening's
+// collision: 目覚めの客室 (hub art, like MR.bedroom) and 客室の回廊 (mansion art, like MR.gallery). Old flat rects are only a fallback.
+const OPEN_ART_DY=32;// opening floor y176 = in-game floor y208 (row 13), like MR.bedroom
+const OPEN_ROOMS={
+ __open0:{like:'bedroom',w:256,cols:16,solid:(c,r)=>r<1||r>=13||c===0},
+ __open1:{like:'gallery',w:960,cols:60,solid:(c,r)=>r<1||r>=13&&!(c===21||c===22)||r===11&&c>=30&&c<34||r===10&&c>=40&&c<44}};
+function openingArtRoom(id){const d=OPEN_ROOMS[id],L=MR[d.like];const grid=[];for(let r=0;r<18;r++){let row='';for(let c=0;c<d.cols;c++)row+=d.solid(c,r)?'#':'.';grid.push(row);}
+ return{name:L.name,area:L.area,tone:L.tone,w:d.w,h:288,grid,doors:[],decor:[],scenes:[],cell:[0,0,1,1]};}
+function openingArtDraw(id,cx,layer){if(typeof artBuild!=='function'||typeof MR==='undefined')return false;const had=Object.prototype.hasOwnProperty.call(MR,id),saved=M.room;
+ try{if(!had)MR[id]=openingArtRoom(id);M.room=id;const r=MR[id],view={w:VW,h:VH,zoom:1};
+  if(layer==='back'){mrect(0,0,VW,VH,r.tone||'#141c35');const X=Math.round(cx),Y=OPEN_ART_DY;artDrawFar(r,X,Y,view);g.save();g.translate(-X,-Y);artDrawBack(r,X,Y,view);artDrawFront(r,X,Y,view);if(typeof artLighting==='function')artLighting(r,X,Y,view);g.restore();}
+  return true;}catch(err){return false;}finally{M.room=saved;if(!had)delete MR[id];}}
 function drawOpeningRoom(){
- const o=OPENING,c=o.cam;openingRect(0,0,VW,VH,'#141c35');
- for(let x=-Math.round(c)%32;x<VW;x+=32){openingRect(x,34,1,142,'#253351');openingRect(x,172,32,4,'#668090');}
- openingRect(0,0,VW,35,'#10172b');openingRect(0,176,VW,64,'#29384b');
- for(let x=-Math.round(c)%16;x<VW;x+=16){openingRect(x,178,15,14,'#44566b');openingRect(x,195,15,14,'#344658');}
+ const o=OPENING,c=o.cam;
+ if(!openingArtDraw(o.room?'__open1':'__open0',o.room?c:0,'back')){openingRect(0,0,VW,VH,'#141c35');
+  for(let x=-Math.round(c)%32;x<VW;x+=32){openingRect(x,34,1,142,'#253351');openingRect(x,172,32,4,'#668090');}
+  openingRect(0,0,VW,35,'#10172b');openingRect(0,176,VW,64,'#29384b');
+  for(let x=-Math.round(c)%16;x<VW;x+=16){openingRect(x,178,15,14,'#44566b');openingRect(x,195,15,14,'#344658');}
+  if(o.room){openingRect(336-c,176,32,64,'#090e20');for(const [x,y,w] of [[480,144,64],[640,128,64]]){openingRect(x-c,y,w,6,'#86a4b4');openingRect(x-c,y+6,w,10,'#3b526b');}}}
  if(!o.room){
-  // Quiet guest room: window, bedside lamp, bed behind the heroine.
-  openingRect(138,54,58,64,'#7186a3');openingRect(141,57,52,58,'#243b64');
-  openingRect(166,57,2,58,'#a1b5ca');openingRect(141,84,52,2,'#a1b5ca');
-  openingRect(151,65,4,4,'#d6f6ff');openingRect(179,94,2,2,'#d6f6ff');
   if(!drawMansionBed(23,176,120)){
   openingRect(24,126,114,14,'#56738a');openingRect(25,124,112,7,'#d0dce4');
   openingRect(23,108,5,58,'#725779');openingRect(136,134,5,32,'#725779');
@@ -7984,9 +7993,6 @@ function drawOpeningRoom(){
   openingRect(165,129,2,19,'#cfc7a6');openingRect(159,121,15,10,'#e6c777');
   if(!drawMansionDoor(232,176,80)){openingRect(220,100,28,76,'#090f20');openingRect(222,102,24,74,'#304965');openingRect(225,112,18,46,'#24394f');openingRect(238,143,3,3,'#f0d58b');}
  }else{
-  for(let x=90;x<960;x+=160){openingRect(x-c,64,23,47,'#385577');openingRect(x+3-c,68,17,38,'#193150');openingRect(x+7-c,73,3,3,'#8beaff');}
-  for(const [x,y,w] of [[480,150,60],[640,132,60]]){openingRect(x-c,y,w,6,'#86a4b4');openingRect(x-c,y+6,w,12,'#3b526b');}
-  openingRect(330-c,176,44,64,'#090e20');
   for(const target of o.targets)if(target.hp){openingRect(target.x-10-c,target.y-12,20,24,'#788aa3');openingRect(target.x-7-c,target.y-8,14,14,'#49a9c6');openingRect(target.x-3-c,target.y-4,6,6,'#e4fcff');}
   if(!drawMansionDoor(935-c,176,88)){openingRect(920-c,88,30,88,'#81a4b2');openingRect(923-c,91,24,85,'#163b51');openingRect(942-c,139,3,3,'#ffda77');}
  }
@@ -8497,16 +8503,39 @@ function mansionStatusHTML(){const memo=M.flags.seitenDefeated?'禁書庫の青�
 function mansionMapHTML(){const m=mansionMapScale(true),width=m.ox*2+(m.b.maxX-m.b.minX+1)*m.s,height=m.oy*2+(m.b.maxY-m.b.minY+1)*m.t;let paths='',rooms='';const links=new Set();
  for(const[id,r]of Object.entries(MR)){if(!M.visited.includes(id))continue;for(const d of mansionRoomDoors(r)){if(!MR[d.to])continue;const key=[id,d.to].sort().join(':')+d.x;if(links.has(key))continue;links.add(key);const a=mansionDoorCellPos(id,d.x,d.y-20,true),b=mansionDoorCellPos(d.to,d.at[0],d.at[1]-20,true);const locked=d.need&&!M.flags[d.need],near=Math.hypot(a[0]-b[0],a[1]-b[1])<m.s*.8;paths+=near?`<rect x="${(a[0]+b[0])/2-3}" y="${(a[1]+b[1])/2-3}" width="6" height="6" fill="${locked?'#685269':'#e7cf86'}"/>`:`<path d="M ${a[0]} ${a[1]} L ${b[0]} ${b[1]}" fill="none" stroke="${locked?'#685269':'#6b8b9b'}" stroke-width="2" stroke-dasharray="4 3"/>`;}}
  for(const[id,r]of Object.entries(MR)){const[x,y,w,h]=mansionMapPosition(id,true),seen=M.visited.includes(id);let grid='';for(let i=1;i<r.cell[2];i++)grid+=`<path d="M ${x+i*m.s} ${y} v ${h}" stroke="#1d3243" stroke-width="1"/>`;for(let i=1;i<r.cell[3];i++)grid+=`<path d="M ${x} ${y+i*m.t} h ${w}" stroke="#1d3243" stroke-width="1"/>`;
-  rooms+=`<rect x="${x+1}" y="${y+1}" width="${w-2}" height="${h-2}" fill="${seen?'#264c63':'#182337'}" stroke="${id===M.room?'#ffe89e':'#667b92'}" stroke-width="${id===M.room?3:1}"/>${seen?grid:''}<text x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" fill="${id===M.room?'#fff0bb':'#d0e5ed'}" font-size="${Math.max(5,Math.min(10,(w-4)/Math.max(1,(seen?MANSION_MAP_NAMES[id]||r.name:'？').length)))}">${seen?MANSION_MAP_NAMES[id]||r.name:'？'}</text>`;
+  rooms+=`<rect x="${x+1}" y="${y+1}" width="${w-2}" height="${h-2}" fill="${seen?'#264c63':'#182337'}" stroke="${id===M.room?'#ffe89e':'#667b92'}" stroke-width="${id===M.room?3:1}"/>${seen?grid:''}<text x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" fill="${id===M.room?'#fff0bb':'#d0e5ed'}" font-size="${Math.max(7,Math.min(11,(w+10)/Math.max(1,(seen?MANSION_MAP_NAMES[id]||r.name:'？').length)))}" font-weight="700" paint-order="stroke" stroke="#08111f" stroke-width="2.5">${seen?MANSION_MAP_NAMES[id]||r.name:'？'}</text>`;
   if(M.portals.includes(id)){const p=MANSION_PORTALS[id],q=mansionDoorCellPos(id,p.x,p.y-20,true);rooms+=`<path d="M ${q[0]} ${q[1]-5} l 5 5 -5 5 -5 -5 Z" fill="#c39afa"/>`;}
   if(seen&&r.cp){const q=mansionDoorCellPos(id,r.cp[0],r.cp[1]-20,true);rooms+=`<circle cx="${q[0]}" cy="${q[1]}" r="3" fill="#95f3ff"/>`;}}
  const me=mansionDoorCellPos(M.room,M.x,M.y-12,true);rooms+=`<circle cx="${me[0]}" cy="${me[1]}" r="4" fill="#ffe89e" stroke="#0b1528"/>`;
- return `<h2>月影の館・見取り図</h2><div>現在地：${mansionLocationName()}</div><div class="map-scroll"><svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="館の部屋と通路">${paths}${rooms}</svg></div><div>金の点：現在地 ／ 水色：記録 ／ 紫：ワープ ／ 点線：扉でつながる通路</div><div>訪問 ${M.visited.length} / ${Object.keys(MR).length} 部屋<br>記録地点：${MR[M.checkpoint.room].name}</div><p>${M.flags.starShortcut?'星灯りから書庫へ戻る近道が開いている。':M.visited.includes('archiveInner')?'書庫の先に探索区画が続いている。時計塔から上へ進もう。':M.flags.seal?'水脈の封印は解除済み。客室と書庫の近道が使える。':'攻略区画の地下水路は封印中。拠点の地下室とは別の場所だよ。'}</p>`;}
+ return `<h2>月影の館・見取り図</h2><div>現在地：${mansionLocationName()}</div><div class="map-view" id="mMapView"><svg id="mMapSvg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="館の部屋と通路">${paths}${rooms}</svg><div class="map-zoom"><button type="button" data-mz="in" aria-label="拡大">＋</button><button type="button" data-mz="out" aria-label="縮小">－</button><button type="button" data-mz="me">現在地</button><button type="button" data-mz="fit">全体</button></div></div><div>金の点：現在地 ／ 水色：記録 ／ 紫：ワープ ／ 点線：扉でつながる通路</div><div>訪問 ${M.visited.length} / ${Object.keys(MR).length} 部屋<br>記録地点：${MR[M.checkpoint.room].name}</div><p>${M.flags.starShortcut?'星灯りから書庫へ戻る近道が開いている。':M.visited.includes('archiveInner')?'書庫の先に探索区画が続いている。時計塔から上へ進もう。':M.flags.seal?'水脈の封印は解除済み。客室と書庫の近道が使える。':'攻略区画の地下水路は封印中。拠点の地下室とは別の場所だよ。'}</p>`;}
 
+// test.58: phone-readable map — the SVG sits in a pan/zoom viewport (drag, pinch, wheel, ＋/－/現在地/全体), opens zoomed in on the current room.
+const MAPV={z:1,x:0,y:0,open:false,ptr:new Map(),pinch:null};
+function mapViewEls(){const v=document.getElementById('mMapView'),svg=document.getElementById('mMapSvg');return v&&svg&&svg.getAttribute&&v.getBoundingClientRect?{v,svg,W:+svg.getAttribute('width'),H:+svg.getAttribute('height'),vw:v.clientWidth||300,vh:v.clientHeight||240}:null;}
+function mapViewFit(E){return Math.min(E.vw/E.W,E.vh/E.H);}
+function mapViewClamp(){const E=mapViewEls();if(!E)return;const f=mapViewFit(E);MAPV.z=Math.max(f*.9,Math.min(5,MAPV.z));const w=E.W*MAPV.z,h=E.H*MAPV.z,m=40;
+ MAPV.x=w<E.vw?(E.vw-w)/2:Math.min(m,Math.max(E.vw-w-m,MAPV.x));MAPV.y=h<E.vh?(E.vh-h)/2:Math.min(m,Math.max(E.vh-h-m,MAPV.y));}
+function mapViewApply(){const E=mapViewEls();if(!E)return;mapViewClamp();E.svg.style.transform=`translate(${MAPV.x}px,${MAPV.y}px) scale(${MAPV.z})`;}
+function mapViewSize(){const v=document.getElementById('mMapView');if(!v||!v.getBoundingClientRect)return;const menu=document.getElementById('mMenu'),mr=menu?.getBoundingClientRect(),vr=v.getBoundingClientRect();
+ const avail=mr&&mr.height?mr.bottom-vr.top-12:320;v.style.height=Math.max(170,Math.min(avail,Math.round(window.innerHeight*.8)))+'px';}
+function mapViewCenter(mode){const E=mapViewEls();if(!E)return;if(mode==='fit'){MAPV.z=mapViewFit(E);}else{const cell=Math.min(E.vw,E.vh)<520?62:46;MAPV.z=Math.max(mapViewFit(E),cell/28);}
+ if(mode!=='fit'){const me=mansionDoorCellPos(M.room,M.x,M.y-12,true);MAPV.x=E.vw/2-me[0]*MAPV.z;MAPV.y=E.vh/2-me[1]*MAPV.z;}mapViewApply();}
+function mapViewZoom(k,cx,cy){const E=mapViewEls();if(!E)return;cx??=E.vw/2;cy??=E.vh/2;const z0=MAPV.z,z=Math.max(mapViewFit(E)*.9,Math.min(5,z0*k));MAPV.x=cx-(cx-MAPV.x)*z/z0;MAPV.y=cy-(cy-MAPV.y)*z/z0;MAPV.z=z;mapViewApply();}
+function mapViewOpen(){mapViewSize();if(!MAPV.open){MAPV.open=true;mapViewCenter('me');}else mapViewApply();}
+{const host=document.getElementById('mMapContent');const local=e=>{const r=document.getElementById('mMapView').getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top];};
+ host.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-mz]');if(!b)return;e.preventDefault();e.stopPropagation();const m=b.dataset.mz;if(m==='in')mapViewZoom(1.4);else if(m==='out')mapViewZoom(1/1.4);else mapViewCenter(m);});
+ host.addEventListener('pointerdown',e=>{if(!e.target.closest||!e.target.closest('#mMapView')||e.target.closest('[data-mz]'))return;e.preventDefault();host.setPointerCapture?.(e.pointerId);MAPV.ptr.set(e.pointerId,local(e));MAPV.pinch=null;});
+ host.addEventListener('pointermove',e=>{if(!MAPV.ptr.has(e.pointerId))return;e.preventDefault();const p=local(e),o=MAPV.ptr.get(e.pointerId);
+  if(MAPV.ptr.size===1){MAPV.x+=p[0]-o[0];MAPV.y+=p[1]-o[1];MAPV.ptr.set(e.pointerId,p);mapViewApply();return;}
+  MAPV.ptr.set(e.pointerId,p);const [a,b]=[...MAPV.ptr.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]),c=[(a[0]+b[0])/2,(a[1]+b[1])/2];
+  if(MAPV.pinch){mapViewZoom(d/MAPV.pinch.d,c[0],c[1]);MAPV.x+=c[0]-MAPV.pinch.c[0];MAPV.y+=c[1]-MAPV.pinch.c[1];mapViewApply();}MAPV.pinch={d:Math.max(1,d),c};});
+ const up=e=>{MAPV.ptr.delete(e.pointerId);MAPV.pinch=null;};host.addEventListener('pointerup',up);host.addEventListener('pointercancel',up);
+ host.addEventListener('wheel',e=>{if(!e.target.closest||!e.target.closest('#mMapView'))return;e.preventDefault();const p=local(e);mapViewZoom(e.deltaY<0?1.15:1/1.15,p[0],p[1]);},{passive:false});
+ window.addEventListener('resize',()=>{if(MAPV.open)setTimeout(()=>{mapViewSize();mapViewCenter('me');},60);});}
 let mansionControlsActive=false;
 const mansionVialBtn=document.getElementById('mVial');mansionVialBtn.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(!M.map)mansionVialUse();});const mansionAbilityBtn=document.getElementById('mAbility');mansionAbilityBtn.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();mansionAbility();});
 const mansionSwapBtn=document.getElementById('mSwap');mansionSwapBtn.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();mansionSwap();});
-function mansionUI(){const active=state==='mansion'||state==='mansionClear',cat=M.actor==='seiten';mansionAbilityBtn.style.display=active&&!M.map?'flex':'none';mansionVialBtn.style.display=active&&!M.map&&mansionUpg('vial')&&mansionIsUmine()?'flex':'none';mansionVialBtn.textContent='小瓶 '+(M.vialHP||0);mansionVialBtn.disabled=!(M.vialHP>0&&M.hp<mansionMaxHP());mansionAbilityBtn.textContent=M.abilityCool?'待ち '+Math.ceil(M.abilityCool/60):cat?'歌声':mansionIsUmine()?(M.flags.seal?'水足場':'未習得'):'星弾';mansionAbilityBtn.setAttribute('aria-label',cat?'固有行動：歌声':mansionIsUmine()?'固有行動：水の足場':'固有行動：星弾');mansionSlideBtn.disabled=cat&&!!M.stepCool;mansionSlideBtn.textContent=cat?'STEP':mansionIsUmine()?'SLIDE':'GUARD';mansionSlideBtn.setAttribute('aria-label',cat?'バックステップ':mansionIsUmine()?'スライディング':'鎌でガード（長押し）');mansionSwapBtn.style.display=active&&mansionActors().length>1&&!M.map?'block':'none';mansionSwapBtn.disabled=!mansionCanSwap();const next=MANSION_ACTOR_NAMES[mansionNextActor()];mansionSwapBtn.setAttribute('aria-label',next+'に交代');mansionSwapBtn.textContent=next+'へ ↔';mansionSlideBtn.style.display=active?'flex':'none';mansionMapBtn.style.display=active?'block':'none';orbBtn.textContent=active?'調べる':'ORB';mansionTitle.style.display=state==='title'?'flex':'none';if(state==='title')document.getElementById('mContinue').style.display=mansionRead()?'block':'none';document.getElementById('modelPicker').style.display=active?'none':'flex';if(active!==mansionControlsActive){mansionControlsActive=active;doLayout();}const open=state==='mansion'&&M.map;const talking=open&&M.menuTab==='talk'&&!!M.talk;for(const b of [mansionStatusTab,mansionMapTab,mansionAreaTab])b.style.display=talking?'none':'';document.getElementById('mTalk').style.display=talking?'block':'none';document.getElementById('mTalkBattle').style.display=talking&&M.talk.offerFull&&M.room==='bedroom'?'block':'none';document.getElementById('mTalkDice').style.display=talking&&M.talk.offerDice&&M.room==='bedroom'?'block':'none';document.getElementById('mTalkSeiten').style.display=talking&&M.talk.offerSeiten&&M.room==='seitenArena'?'block':'none';document.getElementById('mBattleLeave').textContent=M.room==='seitenArena'?'戦闘をやめて禁書庫へ戻る':'手合わせをやめて拠点へ';document.getElementById('mBattleLeave').style.display=open&&(M.sparReturn||M.diceReturn||M.seitenState==='active'||M.seitenState==='ready')?'block':'none';if(talking){document.getElementById('mTalkName').textContent=M.talk.speaker||'ダイスロール';mansionTalkPortrait();document.getElementById('mTalkText').textContent=M.talk.lines[M.talk.index];document.getElementById('mTalkNext').textContent=M.talk.index===M.talk.lines.length-1?'話を終える':'次へ';}mansionMenu.style.display=open?'flex':'none';document.body.classList.toggle('mansion-menu-open',open);mansionMapContent.style.display=M.menuTab==='map'?'block':'none';mansionAreaContent.style.display=M.menuTab==='area'||M.menuTab==='upgrade'?'block':'none';if(open&&M.menuTab==='upgrade'){const html=mansionUpgradeHTML();if(mansionAreaContent.innerHTML!==html){mansionAreaContent.innerHTML=html;for(const u of MANSION_UPGRADES)document.getElementById('mUpg-'+u.id).addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionUpgradeBuy(u.id);});}}mansionAreaTab.setAttribute('aria-selected',String(M.menuTab==='area'));if(open&&M.menuTab==='area'){const html=mansionWarpHTML();if(mansionAreaContent.innerHTML!==html){mansionAreaContent.innerHTML=html;for(const id of Object.keys(MANSION_PORTALS))document.getElementById('mWarp-'+id).addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionWarpTo(id);});}}if(open&&M.menuTab==='map'){const map=mansionMapHTML();if(mansionMapContent.innerHTML!==map)mansionMapContent.innerHTML=map;}mansionStatus.style.display=M.menuTab==='status'?'block':'none';mansionStatusTab.setAttribute('aria-selected',String(M.menuTab==='status'));mansionMapTab.setAttribute('aria-selected',String(M.menuTab==='map'));if(open&&M.menuTab==='status'){const html=mansionStatusHTML();if(mansionStatus.innerHTML!==html){mansionStatus.innerHTML=html;if(M.room==='gallery')document.getElementById('mGalleryView').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionGalleryViewToggle();});{const ds=document.getElementById('mDarkStyle');if(ds)ds.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionDarkToggle();});}}} }
+function mansionUI(){const active=state==='mansion'||state==='mansionClear',cat=M.actor==='seiten';mansionAbilityBtn.style.display=active&&!M.map?'flex':'none';mansionVialBtn.style.display=active&&!M.map&&mansionUpg('vial')&&mansionIsUmine()?'flex':'none';mansionVialBtn.textContent='小瓶 '+(M.vialHP||0);mansionVialBtn.disabled=!(M.vialHP>0&&M.hp<mansionMaxHP());mansionAbilityBtn.textContent=M.abilityCool?'待ち '+Math.ceil(M.abilityCool/60):cat?'歌声':mansionIsUmine()?(M.flags.seal?'水足場':'未習得'):'星弾';mansionAbilityBtn.setAttribute('aria-label',cat?'固有行動：歌声':mansionIsUmine()?'固有行動：水の足場':'固有行動：星弾');mansionSlideBtn.disabled=cat&&!!M.stepCool;mansionSlideBtn.textContent=cat?'STEP':mansionIsUmine()?'SLIDE':'GUARD';mansionSlideBtn.setAttribute('aria-label',cat?'バックステップ':mansionIsUmine()?'スライディング':'鎌でガード（長押し）');mansionSwapBtn.style.display=active&&mansionActors().length>1&&!M.map?'block':'none';mansionSwapBtn.disabled=!mansionCanSwap();const next=MANSION_ACTOR_NAMES[mansionNextActor()];mansionSwapBtn.setAttribute('aria-label',next+'に交代');mansionSwapBtn.textContent=next+'へ ↔';mansionSlideBtn.style.display=active?'flex':'none';mansionMapBtn.style.display=active?'block':'none';orbBtn.textContent=active?'調べる':'ORB';mansionTitle.style.display=state==='title'?'flex':'none';if(state==='title')document.getElementById('mContinue').style.display=mansionRead()?'block':'none';if(active!==mansionControlsActive){mansionControlsActive=active;doLayout();}const open=state==='mansion'&&M.map;const talking=open&&M.menuTab==='talk'&&!!M.talk;for(const b of [mansionStatusTab,mansionMapTab,mansionAreaTab])b.style.display=talking?'none':'';document.getElementById('mTalk').style.display=talking?'block':'none';document.getElementById('mTalkBattle').style.display=talking&&M.talk.offerFull&&M.room==='bedroom'?'block':'none';document.getElementById('mTalkDice').style.display=talking&&M.talk.offerDice&&M.room==='bedroom'?'block':'none';document.getElementById('mTalkSeiten').style.display=talking&&M.talk.offerSeiten&&M.room==='seitenArena'?'block':'none';document.getElementById('mBattleLeave').textContent=M.room==='seitenArena'?'戦闘をやめて禁書庫へ戻る':'手合わせをやめて拠点へ';document.getElementById('mBattleLeave').style.display=open&&(M.sparReturn||M.diceReturn||M.seitenState==='active'||M.seitenState==='ready')?'block':'none';if(talking){document.getElementById('mTalkName').textContent=M.talk.speaker||'ダイスロール';mansionTalkPortrait();document.getElementById('mTalkText').textContent=M.talk.lines[M.talk.index];document.getElementById('mTalkNext').textContent=M.talk.index===M.talk.lines.length-1?'話を終える':'次へ';}mansionMenu.style.display=open?'flex':'none';document.body.classList.toggle('mansion-menu-open',open);mansionMapContent.style.display=M.menuTab==='map'?'block':'none';mansionAreaContent.style.display=M.menuTab==='area'||M.menuTab==='upgrade'?'block':'none';if(open&&M.menuTab==='upgrade'){const html=mansionUpgradeHTML();if(mansionAreaContent.innerHTML!==html){mansionAreaContent.innerHTML=html;for(const u of MANSION_UPGRADES)document.getElementById('mUpg-'+u.id).addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionUpgradeBuy(u.id);});}}mansionAreaTab.setAttribute('aria-selected',String(M.menuTab==='area'));if(open&&M.menuTab==='area'){const html=mansionWarpHTML();if(mansionAreaContent.innerHTML!==html){mansionAreaContent.innerHTML=html;for(const id of Object.keys(MANSION_PORTALS))document.getElementById('mWarp-'+id).addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionWarpTo(id);});}}if(!(open&&M.menuTab==='map'))MAPV.open=false;if(open&&M.menuTab==='map'){const map=mansionMapHTML();if(mansionMapContent.dataset.src!==map){mansionMapContent.innerHTML=map;mansionMapContent.dataset.src=map;}mapViewOpen();}mansionStatus.style.display=M.menuTab==='status'?'block':'none';mansionStatusTab.setAttribute('aria-selected',String(M.menuTab==='status'));mansionMapTab.setAttribute('aria-selected',String(M.menuTab==='map'));if(open&&M.menuTab==='status'){const html=mansionStatusHTML();if(mansionStatus.innerHTML!==html){mansionStatus.innerHTML=html;if(M.room==='gallery')document.getElementById('mGalleryView').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionGalleryViewToggle();});{const ds=document.getElementById('mDarkStyle');if(ds)ds.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionDarkToggle();});}}} }
 function mansionLayout(){const p=layout.portrait,top=layout.gameY+layout.gameH;place(mansionSlideBtn,p?layout.W/2-28:layout.W-70,p?top+77:layout.H*.42,56,56);place(mansionMapBtn,p?14:14,p?top+14:52,72,34);mansionTitle.style.top=(p?top+76:layout.gameY+layout.gameH*.64)+'px';mansionTitle.style.left=(layout.gameX+layout.gameW/2)+'px';const unit=Math.max(1,Math.min(2,layout.W/256));const margin=8;place(mansionMenu,margin,layout.gameY+8,layout.W-margin*2,Math.max(120,layout.H-layout.gameY-16));mansionMenu.style.setProperty?.('--mu',unit+'px');if(state==='mansion'||state==='mansionClear')mansionControlsLayout();}
 
 const mansionControlRects={};
@@ -10872,7 +10901,6 @@ if (document.modelContext?.registerTool) {
   const lifetime = new AbortController();
   const tools = [
     {name:'read_sequel_model',description:'Read the selected Umine model and sequel test state.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute:()=>({size:SEQUEL_MODEL.size,loaded:SEQUEL_MODEL.frames.length===8,state,health:P.hp})},
-    {name:'set_sequel_model',description:'Select the same model size as the visible comparison buttons.',inputSchema:{type:'object',properties:{size:{type:'integer',enum:[32,40,48]}},required:['size'],additionalProperties:false},annotations:{readOnlyHint:false},execute:input=>{if(!input||Object.keys(input).length!==1||!Number.isInteger(input.size))throw new Error('Expected a model size');setSequelModel(input.size);return {size:SEQUEL_MODEL.size,loaded:SEQUEL_MODEL.frames.length===8};}}
   ];
   for(const tool of tools){try{Promise.resolve(document.modelContext.registerTool(tool,{signal:lifetime.signal})).catch(()=>{});}catch{}}
   window.addEventListener('pagehide',()=>lifetime.abort(),{once:true});

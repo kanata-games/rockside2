@@ -67,8 +67,8 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 #mStatus .hp-track{width:min(100%,calc(130 * var(--mu)))}
 #mStatus .status-top>div:last-child{flex:1;min-width:0}
 #mMapContent{padding:16px;color:#d5e5ee;font-size:14px;line-height:1.7;touch-action:pan-y}
-#mMapContent h2{color:#fff1bd;font-size:20px;margin:0 0 12px}
-#mMapContent .map-scroll{overflow-x:auto;touch-action:pan-x pan-y}#mMapContent svg{display:block;width:100%;min-width:360px;height:auto;margin:18px 0}
+#mMapContent h2{color:#fff1bd;font-size:20px;margin:0 0 12px}@media (max-height:500px){#mMapContent{padding:8px 12px}#mMapContent h2{display:none}}
+#mMapContent .map-view{position:relative;height:300px;overflow:hidden;touch-action:none;background:#08111f;border:1px solid #3a5468;border-radius:8px;margin:10px 0;cursor:grab}#mMapContent .map-zoom{position:absolute;right:8px;bottom:8px;display:flex;gap:6px}#mMapContent .map-zoom button{min-width:48px;min-height:44px;font:700 16px system-ui;background:rgba(20,40,62,.92);color:#fff1bd;border:1px solid #91e5ef;border-radius:8px;padding:0 10px}#mMapContent svg{position:absolute;left:0;top:0;display:block;max-width:none;transform-origin:0 0;margin:0}
 
 #mMenuBar{gap:3px;padding:6px}#mMenuBar button{padding:6px 8px;font-size:clamp(12px,calc(8 * var(--mu)),17px)}
 #mAreaContent{padding:16px;font-size:14px;line-height:1.8;color:#d5e5ee}#mAreaContent h2{color:#fff1bd;font-size:20px}#mAreaContent #mAreaGo{width:100%;min-height:64px;background:#244f65;border-color:#91e5ef}#mAreaGo:disabled{opacity:.5}.warp-list{display:grid;gap:10px}.warp-list button{width:100%;min-height:48px;text-align:left;background:#302344;border-color:#a780d1}.warp-list button:disabled{opacity:.45}
@@ -77,7 +77,7 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 </style>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%2311162d'/%3E%3Cpath d='M8 6h5v20H8zm11 0h5v20h-5z' fill='%23ffd84a'/%3E%3C/svg%3E">
 <style>
-#modelPicker{position:fixed;z-index:12;display:flex;gap:5px;justify-content:center;align-items:center;font:14px system-ui;color:#b9cce7;left:0;width:100%;padding:6px;pointer-events:auto}#modelPicker button{font:inherit;border:1px solid #4f608a;border-radius:6px;color:#dceaff;background:#17203a;padding:7px 10px;touch-action:manipulation}#modelPicker button[aria-pressed="true"]{border-color:#9aeaff;background:#234b65;color:#fff}body.land #modelPicker{width:auto;left:50%;transform:translateX(-50%);top:4px!important}body.land #modelPicker button{padding:4px 8px;font-size:12px}#modelState{font-size:12px;max-width:85px}
+
 </style><style>
 #mAbility{position:fixed;z-index:15;border-radius:50%;border:2px solid #d3b66e;background:#312a48;color:#fff0c5;align-items:center;justify-content:center;font:bold 11px system-ui;touch-action:none;padding:0}#mVial{position:fixed;z-index:15;border-radius:50%;border:2px solid #c9a6ff;background:#2a1e48;color:#f0e4ff;align-items:center;justify-content:center;font:bold 11px system-ui;touch-action:none;padding:0}#mVial:disabled{opacity:.4}#mSlide:disabled{opacity:.35}#mSlide{position:fixed;z-index:15;border-radius:50%;border:3px solid #93dcf1;background:#203e58;color:#e7faff;display:none;align-items:center;justify-content:center;font:bold 12px system-ui;touch-action:none;box-shadow:0 5px #070c17}
 #mSwap{position:fixed;z-index:15;background:#382a54;color:#fff0be;border:1px solid #c2a1ee;border-radius:4px;font:bold 12px system-ui;touch-action:none;padding:0}#mSwap:disabled{opacity:.5}#mMap{position:fixed;z-index:15;background:#172d45;color:#caedf5;border:2px solid #668ca7;border-radius:8px;font:bold 13px system-ui;display:none;touch-action:none}
@@ -95,7 +95,6 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
   <div id="mute">SOUND ON</div>
   <div id="hint">ROCKSIDE II · 屋敷探索テスト</div>
 </div>
-<div id="modelPicker" aria-label="海音ちゃんのモデル比較"><button data-model="32" aria-pressed="false">前作</button><button data-model="40" aria-pressed="false">新40px</button><button data-model="48" aria-pressed="true">新48px</button><span id="modelState">読込中</span></div>
 <button id="mVial" aria-label="星の小瓶" style="display:none">小瓶</button><button id="mAbility" aria-label="固有行動" style="display:none">固有</button><button id="mSwap" aria-label="アスターテに交代" style="display:none">交代</button><button id="mSlide" aria-label="スライディング">SLIDE</button><button id="mMap" aria-label="探索メニュー">MENU</button>
 <section id="mMenu" role="dialog" aria-label="探索メニュー" aria-modal="true">
 <div id="mMenuBar"><button id="mStatusTab" aria-selected="true">ステータス</button><button id="mMapTab" aria-selected="false">マップ</button><button id="mAreaTab" aria-selected="false">ワープ</button><button id="mBattleLeave" style="display:none">手合わせをやめて拠点へ</button><button id="mMenuClose" aria-label="メニューを閉じる">戻る</button></div><div id="mMenuBody"><div id="mTalk" style="display:none"><header><canvas id="mTalkPortrait" width="96" height="96" aria-label="被り物姿のダイスロール"></canvas><h2 id="mTalkName">ダイスロール</h2></header><p id="mTalkText" aria-live="polite"></p><button id="mTalkNext">次へ</button><button id="mTalkDice" style="display:none">ダイスロールと練習する</button><button id="mTalkSeiten" style="display:none">一緒に遊ぶ</button><button id="mTalkBattle" style="display:none">本番の手合わせに挑む</button></div><div id="mStatus"></div><div id="mMapContent"></div><div id="mAreaContent"></div></div></section>
@@ -103,7 +102,7 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 <script>
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.57';
+const GAME_VERSION = '2.0.0-test.58';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.

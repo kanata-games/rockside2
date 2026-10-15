@@ -484,7 +484,6 @@ function doLayout() {
     gh = H; gw = Math.round(H * VW / VH); if (gw > W) { gw = W; gh = Math.round(W * VH / VW); }
     gx = Math.round((W - gw) / 2); gy = Math.round((H - gh) / 2);
   }
-  document.getElementById('modelPicker').style.top = (portrait ? Math.min(H - 78, gy + gh + 121) : 4) + 'px';
   layout.gameX = gx; layout.gameY = gy; layout.gameW = gw; layout.gameH = gh;
   screen.style.left = gx + 'px'; screen.style.top = gy + 'px'; screen.style.width = gw + 'px'; screen.style.height = gh + 'px';
   const pw = Math.round(gw * dpr), ph = Math.round(gh * dpr);
