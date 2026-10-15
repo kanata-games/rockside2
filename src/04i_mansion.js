@@ -162,11 +162,13 @@ const mansionGuardKeys=new Set();
 const mansionInput={slide:false,map:false,use:false,guardPointer:null};
 let mansionActionArt=null,mansionBackdrop=null;
 for(const [name,url] of [['actions','assets/umine-mansion-actions.png'],['background','assets/mansion-background.png']]){const image=new Image();image.onload=()=>{if(name==='actions')mansionActionArt=image;else mansionBackdrop=image;};image.src=url;}
-function mansionRead(){try{const s=JSON.parse(localStorage.getItem(MANSION_KEY));if(!s||s.version!==1||!MR[s.checkpoint?.room]||!Number.isFinite(s.checkpoint.x)||!Number.isFinite(s.checkpoint.y))return null;const r=MR[s.checkpoint.room];if(s.checkpoint.x<8||s.checkpoint.x>r.w-8||s.checkpoint.y<0||s.checkpoint.y>r.h)return null;return{flags:{seal:s.flags?.seal===true,boss:s.flags?.boss===true,complete:s.flags?.complete===true,astarteFull:s.flags?.astarteFull===true,...mansionRewardFlags(s),seitenLeftArchive:s.flags?.seitenLeftArchive===true,archiveLatch:s.flags?.archiveLatch===true,starShortcut:s.flags?.starShortcut===true,seitenDefeated:s.flags?.seitenDefeated===true},visited:Array.isArray(s.visited)?s.visited.filter(x=>MR[x]):['bedroom'],checkpoint:s.checkpoint.room==='garden'&&s.checkpoint.y===208?{...s.checkpoint,y:256}:s.checkpoint,portals:Array.isArray(s.portals)?[...new Set([...MANSION_WARP_START,...s.portals.filter(id=>MANSION_PORTALS[id])])]:[...MANSION_WARP_START]};}catch{return null;}}
+function mansionSpotOK(room,x,y){const r=MR[room];if(!r||!r.grid||y%16)return false;const c=Math.floor(x/16),row=y/16,G=(cc,rr)=>rr<0||rr>=r.grid.length||cc<0||cc>=r.grid[0].length?'#':r.grid[rr][cc];const solid=ch=>'#=gk'.includes(ch);const cols=[Math.floor((x-7)/16),Math.floor((x+6)/16)];return cols.some(cc=>solid(G(cc,row)))&&cols.every(cc=>!solid(G(cc,row-1))&&!solid(G(cc,row-2)));}
+function mansionSnapCheckpoint(cp){if(mansionSpotOK(cp.room,cp.x,cp.y))return cp;const r=MR[cp.room],p=r.cp||r.doors[0]?.at||[64,r.h-32];return{room:cp.room,x:p[0],y:p[1]};}
+function mansionRead(){try{const s=JSON.parse(localStorage.getItem(MANSION_KEY));if(!s||s.version!==1||!MR[s.checkpoint?.room]||!Number.isFinite(s.checkpoint.x)||!Number.isFinite(s.checkpoint.y))return null;const r=MR[s.checkpoint.room];if(s.checkpoint.x<8||s.checkpoint.x>r.w-8||s.checkpoint.y<0||s.checkpoint.y>r.h)return null;return{flags:{seal:s.flags?.seal===true,boss:s.flags?.boss===true,complete:s.flags?.complete===true,astarteFull:s.flags?.astarteFull===true,...mansionRewardFlags(s),seitenLeftArchive:s.flags?.seitenLeftArchive===true,archiveLatch:s.flags?.archiveLatch===true,starShortcut:s.flags?.starShortcut===true,seitenDefeated:s.flags?.seitenDefeated===true},visited:Array.isArray(s.visited)?s.visited.filter(x=>MR[x]):['bedroom'],checkpoint:mansionSnapCheckpoint(s.checkpoint.room==='garden'&&s.checkpoint.y===208?{...s.checkpoint,y:256}:s.checkpoint),portals:Array.isArray(s.portals)?[...new Set([...MANSION_WARP_START,...s.portals.filter(id=>MANSION_PORTALS[id])])]:[...MANSION_WARP_START]};}catch{return null;}}
 function mansionSave(){try{localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,rewardVersion:2,flags:M.flags,visited:M.visited,portals:M.portals,checkpoint:M.checkpoint}));M.saved=true;M.saveError=false;}catch{M.saveError=true;}}
 function mansionSay(text,time=220){M.message=text;M.messageT=time;}
 function mansionStart(resume=false){mansionGuardRelease();M.guardFlash=0;const saved=resume?mansionRead():null;M.actor='umine';M.swapCool=0;M.abilityCool=0;M.castT=0;Object.assign(M,{hp:16,hurt:0,dead:0,t:0,flags:saved?.flags||{seal:false,boss:false,complete:false,seitenLeftArchive:false,archiveLatch:false,starShortcut:false,seitenDefeated:false},visited:saved?.visited||['bedroom'],portals:saved?.portals||[...MANSION_WARP_START],checkpoint:saved?.checkpoint||{room:'bedroom',x:110,y:208},map:false,talk:null,menuTab:'status',saved:!!saved,saveError:false});M.hp=mansionMaxHP();mansionEnter(M.checkpoint.room,M.checkpoint.x,M.checkpoint.y);setState('mansion');mansionSay(resume?'また、ここから探してみよう。':'紫の扉はワープ。普通の扉からも回廊へ進めるよ。');mansionUI();}
-function mansionEnter(room,x,y){mansionGuardRelease();M.guardFlash=0;Object.assign(M,{room,x,y,waterPlatform:null,castT:0,sparState:'waiting',sparMode:'tutorial',sparReturn:null,diceReturn:null,diceState:'waiting',seitenState:M.flags.seitenDefeated?'done':'waiting',stepT:0,stepCool:0,clawQueued:false,walkDistance:0,vx:0,vy:0,h:MC.h,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,shots:[],enemyShots:[],fx:[],transition:16,near:null,prompt:''});mansionLiftEnter(room);mansionPropsEnter(room);M.enemies=MR[room].enemies.map((e,i)=>({kind:e[0],x:e[1],y:e[2],baseY:e[2],min:e[3],max:e[4],dir:i%2?-1:1,hp:e[0]==='fly'?2:3,t:0,flash:0}));if(room==='seitenArena'&&!M.flags.seitenDefeated)M.enemies.push(mansionNewSeiten());if(MR[room].boss&&!M.flags.boss)M.enemies.push(mansionNewAstarte());if(!M.visited.includes(room))M.visited.push(room);mansionCamera(true);mansionSave();}
+function mansionEnter(room,x,y){mansionGuardRelease();M.guardFlash=0;Object.assign(M,{room,x,y,waterPlatform:null,slideJump:false,castT:0,sparState:'waiting',sparMode:'tutorial',sparReturn:null,diceReturn:null,diceState:'waiting',seitenState:M.flags.seitenDefeated?'done':'waiting',stepT:0,stepCool:0,clawQueued:false,walkDistance:0,vx:0,vy:0,h:MC.h,ground:false,wall:0,wallGrace:0,coyote:0,buffer:0,kickLock:0,slideT:0,cool:0,poseT:0,shots:[],enemyShots:[],fx:[],transition:16,near:null,prompt:''});mansionLiftEnter(room);mansionPropsEnter(room);M.enemies=MR[room].enemies.map((e,i)=>({kind:e[0],x:e[1],y:e[2],baseY:e[2],min:e[3],max:e[4],dir:i%2?-1:1,hp:e[0]==='fly'?2:3,t:0,flash:0}));if(room==='seitenArena'&&!M.flags.seitenDefeated)M.enemies.push(mansionNewSeiten());if(MR[room].boss&&!M.flags.boss)M.enemies.push(mansionNewAstarte());if(!M.visited.includes(room))M.visited.push(room);mansionCamera(true);mansionSave();}
 function mansionSolids(){const r=MR[M.room];return [...r.floor,...r.blocks,...(M.waterPlatform?[M.waterPlatform.box]:[]),...(M.lift?[mansionLiftBox()]:[]),...(r.switchGate&&!M.flags[r.lever.flag]?[r.switchGate]:[]),[0,-16,r.w,16],[-16,0,16,r.h],[r.w,0,16,r.h],...(r.gate&&!M.flags.seal?[r.gate]:[]),...(M.room==='seitenArena'&&M.seitenState==='active'?[[0,0,40,256],[472,0,40,256]]:[]),...(M.room==='garden'&&M.sparState==='active'?[[208,0,12,288]]:[])];}
 function mansionOverlap(x,y,w,h,b){return x<b[0]+b[2]&&x+w>b[0]&&y<b[1]+b[3]&&y+h>b[1];}
 function mansionFits(x,y,h=MC.h){return !mansionSolids().some(b=>mansionOverlap(x-MC.w/2,y-h,MC.w,h,b));}
@@ -209,7 +211,8 @@ function updateMansion(){
  if(M.slideT){M.slideT--;M.vx=M.face*MC.slide;if(!M.slideT&&!mansionFits(M.x,M.y,MC.h))M.slideT=1;M.h=M.slideT?MC.slideH:MC.h;}
  else if(M.stepT){M.vx=-M.stepFace*3.2;}
  else if(M.kickLock>0)M.kickLock--;
- else {const target=dx*(M.actor==='seiten'?2.2:MC.run)*(mansionGuarding()?.3:M.actor==='astarte'&&M.poseT?.55:1);M.vx+=Math.max(-MC.acc,Math.min(MC.acc,target-M.vx));if(dx)M.face=dx;}
+ else {const target=dx*(M.slideJump?MC.slide:M.actor==='seiten'?2.2:MC.run)*(mansionGuarding()?.3:M.actor==='astarte'&&M.poseT?.55:1);M.vx+=Math.max(-MC.acc,Math.min(MC.acc,target-M.vx));if(dx)M.face=dx;}
+ if(M.buffer&&M.slideT&&M.ground&&mansionIsUmine()&&mansionFits(M.x,M.y,MC.h)){M.slideT=0;M.h=MC.h;M.slideJump=true;M.vx=M.face*MC.slide;M.vy=-MC.jump;M.buffer=M.coyote=0;M.ground=false;mansionBurst(M.x-M.face*8,M.y-3,'#9ae5ff',6);sfx('jump');}
  if(M.buffer&&!M.slideT){if(M.ground||M.coyote){M.vy=-(M.actor==='seiten'?6.2:MC.jump);M.buffer=M.coyote=0;M.ground=false;sfx('jump');}else if(mansionIsUmine()&&(M.wall||M.wallGrace)){const away=-(M.wall||M.lastWall||1);M.vx=away*MC.wallPush;M.face=away;M.vy=-MC.wallJump;M.kickLock=6;M.buffer=M.wallGrace=0;mansionBurst(M.x-away*9,M.y-8);sfx('jump');}}
  if(!inp.jump&&M.vy<-2&&M.kickLock===0)M.vy=-2;
  M.vy=Math.min(MC.fall,M.vy+MC.gravity);const solids=mansionSolids();
@@ -221,6 +224,7 @@ function updateMansion(){
  M.y+=M.vy;M.ground=false;
  for(const b of solids)if(mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,b)){if(M.vy>0){M.y=b[1];M.ground=true;M.coyote=6;}else if(M.vy<0)M.y=b[1]+b[3]+M.h;M.vy=0;}
  if(M.ground)M.wallGrace=0;
+ if(M.ground||M.wall||M.hurt)M.slideJump=false;
  if(M.ground&&!M.slideT&&!M.hurt&&Math.abs(M.x-walkStartX)>.1)M.walkDistance+=Math.abs(M.x-walkStartX);else M.walkDistance=0;
  if(M.y>MR[M.room].h+40){M.hp=Math.max(1,M.hp-3);const cp=M.checkpoint;mansionEnter(cp.room,cp.x,cp.y);M.hurt=90;mansionSay('水の灯りまで戻ってきた。');return;}
  if(M.actor==='astarte'&&M.poseT){
@@ -278,30 +282,7 @@ function mansionHubDecor(){
   for(const x of [280,309])mansionPropDraw('box',x,208,23);
  }
 }
-function mansionGalleryDecor(){
- // Tall moonlit windows and two distinct floor levels make the space readable.
- for(let x=80;x<1536;x+=192){
-  mrect(x-34,32,68,146,'#101d36');rectLine(x-36,30,72,150,'#778195');
-  mrect(x-30,36,60,138,'#263c59');mrect(x-26,40,24,130,'#42617b');mrect(x+3,40,24,130,'#3c5370');
-  mrect(x-26,116,53,2,'#98b4c4');mrect(x-1,38,3,136,'#a6acb0');
-  for(let i=0;i<7;i++)mrect(x-23+i*8,45+i*11,2,2,'#8fbed1');
-  mrect(x-43,28,7,153,'#4a435c');mrect(x+36,28,7,153,'#4a435c');mrect(x-39,178,79,4,'#b6a584');
- }
- mrect(0,242,1536,6,'#746075');mrect(0,248,1536,2,'#b39b82');
- for(let x=576;x<1536;x+=96){mrect(x,272,88,84,'#1c2941');rectLine(x+6,278,76,66,'#495975');mrect(x+10,282,68,2,'#7b7081');}
- for(const x of [176,784,1152]){mrect(x-1,0,2,43,'#b0986b');mrect(x-20,43,40,3,'#b99f72');for(const dx of [-18,0,18]){mrect(x+dx-2,37,4,6,'#dbcdb0');mansionDiamond(x+dx,34,3,'#ffe5a2');}}
- // Balcony rails sit behind sprites; repeated pillars are decorative, never colliders.
- for(const [x,y,w] of [[416,112,96],[552,128,112],[704,112,160],[920,160,112],[1072,208,112]]){
-  mrect(x,y-24,w,3,'#b8a689');for(let n=x+4;n<x+w;n+=16)mrect(n,y-21,2,21,'#63657b');
- }
- for(const x of [544,1168]){mrect(x,254,10,114,'#59637a');mrect(x-4,250,18,5,'#a59f97');}
- mansionPropDraw('shelf',888,368,44);mansionPropDraw('table',990,368,30);mansionPropDraw('chair',1030,368,32);
- mansionPropDraw('picture',400,84,30);mansionPropDraw('picture',1344,136,36);
- // Stair risers are scenery; collision uses the explicit platform list above.
- for(const [x,y] of [[624,256],[688,304],[1184,320],[1248,272],[1312,224]]){
-  mrect(x,y+10,64,368-y-10,'#202e46');for(let yy=y+14;yy<368;yy+=16)mrect(x+4,yy,56,1,'#3e4d64');
- }
-}
+
 // Archive elevator: ordinary transport, not a warp. Future stops can extend the room's stop list.
 function mansionLiftEnter(room){const l=MR[room].lift;M.lift=l?{y:l.stops[l.initialStop||0],target:l.stops[l.initialStop||0],direction:-1}:null;}
 function mansionLiftBox(){const l=MR[M.room].lift;return[l.x,M.lift.y,l.w,8];}
@@ -328,19 +309,7 @@ let mansionSeitenArt=null,mansionSeitenPortrait=null;
 const SEITEN_NPC_FRAMES=[{"name":"idle1","rect":[0,0,627,627],"anchor":[406,586],"scale":0.082},{"name":"idle2","rect":[627,0,627,627],"anchor":[363,585],"scale":0.082},{"name":"shy","rect":[0,627,627,627],"anchor":[415,559],"scale":0.082},{"name":"smile","rect":[627,627,627,627],"anchor":[379,560],"scale":0.082}];
 function drawMansionSeiten(x,y,t,face=1){if(mansionSeitenArt&&SEITEN_NPC_FRAMES.length){const fi=M.talk?.speaker==='青天'?2:Math.floor(t/45)%2,f=SEITEN_NPC_FRAMES[fi];g.save();g.translate(Math.round(x),Math.round(y));g.scale(face,1);g.drawImage(mansionSeitenArt,...f.rect,-f.anchor[0]*f.scale,-f.anchor[1]*f.scale,f.rect[2]*f.scale,f.rect[3]*f.scale);g.restore();return;}const f=sheetFrame('seiten','idle',Math.floor(t/30)%2);if(f)g.drawImage(pick(f,face,false),x-24,y-48,48,48);}
 function mansionSeitenTalk(){mansionTalkShow('青天',['……海音ちゃん。来てくれた。\nこっち……隣、空いてるよ。','本を読んでたんだけど……\nひとりだと、ちょっと寂しくて。\nもう少し、ここにいてくれない？','奥にあるのは、書庫の昇降機。\n足場に乗って「調べる」と、下の階へ行けるよ。\n離れた乗り場からも呼べるみたい。','下の扉は、書庫の奥へ繋がってる。\n……先へ行く前に、また会いに来て。\n待ってるから。']);}
-function mansionArchiveDecor(){
- // Repeated packed bookcases provide a coherent library identity, behind all collision geometry.
- for(const [begin,end,y] of [[40,152,208],[256,688,208],[824,960,208],[536,944,448]])for(let x=begin;x<end;x+=64){
-  mrect(x-25,y-112,50,110,'#221d2d');rectLine(x-27,y-114,54,114,'#a28b65');mrect(x-29,y-117,58,5,'#c1a37c');
-  for(let row=0;row<4;row++){const yy=y-104+row*25;for(let n=0;n<7;n++){const color=['#725269','#47677a','#88764e','#546858','#815057'][(n+row+Math.floor(x/64))%5];mrect(x-21+n*6,yy+(n%3),5,18-(n%3),color);mrect(x-20+n*6,yy+5,3,1,'#beac84');}mrect(x-23,yy+20,46,3,'#ab8c66');}
- }
- for(const x of [40,256,688,944]){mrect(x-1,16,2,20,'#aa8e62');mrect(x-12,36,24,4,'#b39a75');for(const dx of [-10,10])mansionDiamond(x+dx,32,3,'#ffe7a0');}
- mrect(16,198,690,5,'#856779');mrect(20,199,682,1,'#d5b494');mrect(516,439,436,6,'#856779');mrect(520,440,428,1,'#d5b494');
- mansionPropDraw('table',610,208,34);mansionPropDraw('books',610,174,9);mansionPropDraw('chair',918,208,38);
- for(const [x,y,w]of [[352,112,160],[560,160,64]]){mrect(x,y-20,w,2,'#b3a17e');for(let xx=x+4;xx<x+w;xx+=18)mrect(xx,y-18,2,18,'#71627a');}
- // Elevator housing stays visually separate from purple fast-travel doors.
- mrect(711,113,82,4,'#d0b88c');mansionDiamond(752,101,6,'#e0c797');
-}
+
 function mansionLeverUse(){const l=MR[M.room].lever;if(!l||Math.abs(M.x-l.x)>=24||Math.abs(M.y-l.y)>=24)return false;if(M.flags[l.flag]){mansionSay('錠は開いている。',90);return true;}M.flags[l.flag]=true;mansionSave();mansionBurst(l.x,l.y-22,'#ffe4a0',12);sfx('start');mansionSay(l.flag==='starShortcut'?'書庫への近道が開いた！ 上の扉から戻れるよ。':'封書の錠が開いた！ 奥の扉へ進もう。',160);return true;}
 function mansionVentPhase(v){return(M.t+v.offset)%180;}
 function mansionVentUpdate(){for(const v of MR[M.room].vents||[]){const phase=mansionVentPhase(v);if(phase>=120&&phase<156&&mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,[v.x-13,v.y-44,26,44]))mansionDamage(2,M.x<v.x?-1:1);}}
@@ -348,25 +317,43 @@ function mansionMechanismsDraw(){const r=MR[M.room],l=r.lever;if(l){const open=M
  if(r.switchGate&&!M.flags[l.flag]){const[x,y,w,h]=r.switchGate;mrect(x,y,w,h,'#2d2c45');for(let yy=y+8;yy<y+h;yy+=16){mrect(x+3,yy,w-6,3,'#b6a181');mansionDiamond(x+w/2,yy+6,3,'#e6b576');}}
  for(const v of r.vents||[]){const p=mansionVentPhase(v),active=p>=120&&p<156,warn=p>=84&&p<120;mrect(v.x-17,v.y-5,34,5,'#8cb8c0');for(let x=-12;x<=12;x+=6)mrect(v.x+x,v.y-4,3,3,'#19394c');if(warn){mrect(v.x-14,v.y-8,28,2,(M.t&8)?'#ffdd82':'#9ac9d6');mansionDiamond(v.x,v.y-18,4,'#ffe6a0');}if(active){mrect(v.x-13,v.y-44,26,40,'#1b5478');mrect(v.x-9,v.y-44,18,40,'#62d5ea');mrect(v.x-4,v.y-44,8,40,'#e6ffff');for(let i=0;i<5;i++)mrect(v.x-11+i*5,v.y-48+(M.t+i)%4,3,5,'#a9f6ff');}}
 }
-function mansionNewWingDecor(){const r=MR[M.room];if(!['archiveInner','clockTower','moonReservoir','starPassage','forbiddenArchive','seitenArena'].includes(M.room))return;
- if(M.room==='archiveInner'){for(let x=96;x<960;x+=160){mrect(x-26,82,52,110,'#251e33');rectLine(x-28,80,56,114,'#a58c73');for(let row=0;row<4;row++){for(let i=0;i<6;i++)mrect(x-22+i*8,90+row*24,6,18,['#5e677d','#78566e','#826e50'][(i+row)%3]);mrect(x-23,110+row*24,46,3,'#a58c73');}mansionPropDraw('picture',x,298,40);}mrect(0,360,960,6,'#7f6676');for(const[x,y,w]of r.blocks){mrect(x,y-22,w,2,'#b39c7b');for(let n=x;n<x+w;n+=16)mrect(n,y-20,2,20,'#796878');}}
- if(M.room==='clockTower'){for(const y of [82,306,530])for(const x of [128,480]){g.fillStyle='#252435';g.beginPath();for(let i=0;i<24;i++){const a=i*Math.PI/12,rad=i%2?47:55;const xx=x+Math.cos(a)*rad,yy=y+Math.sin(a)*rad;i?g.lineTo(xx,yy):g.moveTo(xx,yy);}g.closePath();g.fill();g.strokeStyle='#a28b68';g.lineWidth=3;g.beginPath();g.arc(x,y,39,0,7);g.stroke();g.beginPath();g.moveTo(x,y-31);g.lineTo(x,y);g.lineTo(x+24,y+12);g.stroke();mansionDiamond(x,y,5,'#d1ba85');}for(const x of [20,600])for(let y=20;y<620;y+=24){mrect(x,y,8,20,'#4e526b');mrect(x+1,y+3,6,2,'#91969f');}}
- if(M.room==='moonReservoir'){for(let x=48;x<1024;x+=128){mrect(x-15,48,30,320,'#375d6f');mrect(x-11,52,22,312,'#203d51');for(let y=64;y<360;y+=64)mrect(x-18,y,36,5,'#8bafb1');}mrect(0,348,1024,18,'#1f5063');for(let x=0;x<1024;x+=16)mrect(x,350+Math.sin((x+M.t)*.08)*2,10,1,'#6aaeba');}
- if(M.room==='starPassage'){for(let x=80;x<1152;x+=160){mrect(x-37,28,74,274,'#14223d');rectLine(x-39,26,78,278,'#7884a3');mrect(x-1,28,3,270,'#a4aab8');mrect(x-37,140,74,3,'#7786a5');for(let i=0;i<16;i++)mrect(x-28+(i*19)%56,40+(i*31)%252,1,1,i%3?'#8cbed9':'#ffe3a0');}for(const x of [104,608,1088]){mrect(x,288,7,80,'#626c88');mrect(x-6,280,19,8,'#a9aec4');}mrect(0,359,1152,6,'#6f6886');}
-}
+
+// ---- Tile renderer: collision tiles are drawn exactly where they collide, styled per area ----
+const MANSION_AREA_STYLE={hub:['#1d1a28','#3d3448','#c5a88a','#6e5a6a'],mansion:['#111d32','#39475e','#98bcc8','#55657b'],library:['#1c1424','#463650','#c9a77c','#76607a'],tower:['#18182a','#3e3f55','#c7ae78','#6b6b82'],water:['#0e2230','#24495a','#7fd3df','#3f7486'],star:['#121a33','#2d3d66','#b4c4f0','#4f5f8f'],garden:['#18202e','#3c4a5e','#a8c69a','#5d6d80'],play:['#200f22','#4a2b45','#e3c991','#7b4a63']};
+function mansionSolidAt(r,c,row){const ch=row<0||row>=r.grid.length||c<0||c>=r.grid[0].length?'#':r.grid[row][c];return ch==='#';}
+function mansionTilesDraw(r,cx,cy,view){const P=MANSION_AREA_STYLE[r.area]||MANSION_AREA_STYLE.mansion,c0=Math.max(0,Math.floor(cx/16)),c1=Math.min(r.grid[0].length-1,Math.floor((cx+view.w)/16)),r0=Math.max(0,Math.floor(cy/16)),r1=Math.min(r.grid.length-1,Math.floor((cy+view.h)/16));
+ for(let row=r0;row<=r1;row++){const line=r.grid[row];for(let c=c0;c<=c1;c++){const ch=line[c],x=c*16,y=row*16;
+  if(ch==='#'){const top=!mansionSolidAt(r,c,row-1),bottom=!mansionSolidAt(r,c,row+1),left=!mansionSolidAt(r,c-1,row),right=!mansionSolidAt(r,c+1,row),deep=!top&&!bottom&&!left&&!right&&mansionSolidAt(r,c,row-2);
+   mrect(x,y,16,16,P[0]);
+   if(deep){if(((c*7+row*3)%5)===0)mrect(x+4,y+6,7,1,P[3]);continue;}
+   const off=(row&1)?8:0;mrect(x+1,y+1,15,14,P[1]);mrect(x,y+8,16,1,P[0]);mrect(x+off,y+1,1,7,P[0]);mrect(x+(off?0:8),y+9,1,7,P[0]);
+   if(top){mrect(x,y,16,3,P[2]);mrect(x,y+3,16,1,P[3]);}
+   if(left)mrect(x,y,1,16,P[3]);if(right)mrect(x+15,y,1,16,P[0]);if(bottom)mrect(x,y+15,16,1,P[0]);}
+  else if(ch==='='){const L=line[c-1]!=='=',R=line[c+1]!=='=';mrect(x,y,16,8,P[0]);mrect(x,y+1,16,2,P[2]);mrect(x+1,y+3,14,4,P[1]);if(L){mrect(x+1,y+8,3,4,P[3]);mrect(x+1,y+12,1,2,P[3]);}if(R){mrect(x+12,y+8,3,4,P[3]);mrect(x+14,y+12,1,2,P[3]);}}
+ }}}
+// Background only: screen-aligned pilasters and string courses mark the 256x240 map cells.
+function mansionAreaBack(r,cx,cy,view){if(r.area==='garden'||r.area==='play')return;const P=MANSION_AREA_STYLE[r.area]||MANSION_AREA_STYLE.mansion;g.globalAlpha=.55;
+ for(let x=Math.floor(cx/128)*128;x<cx+view.w+128;x+=128){mrect(x-5,0,10,r.h,P[0]);mrect(x-3,0,1,r.h,P[3]);}
+ for(let y=240;y<r.h;y+=240){mrect(0,y-6,r.w,4,P[0]);}g.globalAlpha=1;}
+function mansionDecorDraw(r){for(const[k,x,y]of r.decor||[]){
+ if(k==='K'){mrect(x-25,y-112,50,110,'#221d2d');rectLine(x-27,y-114,54,114,'#a28b65');mrect(x-29,y-117,58,5,'#c1a37c');for(let row=0;row<4;row++){const yy=y-104+row*25;for(let n=0;n<7;n++){mrect(x-21+n*6,yy+(n%3),5,18-(n%3),['#725269','#47677a','#88764e','#546858','#815057'][(n+row+(x>>6))%5]);}mrect(x-23,yy+20,46,3,'#ab8c66');}}
+ else if(k==='O'){const t=y-16;mrect(x-30,t,60,128,'#101d36');rectLine(x-32,t-2,64,132,'#778195');mrect(x-26,t+4,24,120,'#42617b');mrect(x+2,t+4,24,120,'#3c5370');mrect(x-1,t+2,3,124,'#a6acb0');mrect(x-26,t+70,52,2,'#98b4c4');for(let i=0;i<6;i++)mrect(x-22+i*8,t+10+i*13,2,2,'#8fbed1');}
+ else if(k==='P')mansionPropDraw('picture',x,y,34);
+ else if(k==='C'){const yy=y-8;g.fillStyle='#252435';g.beginPath();for(let i=0;i<24;i++){const a=i*Math.PI/12,rad=i%2?40:47;const px=x+Math.cos(a)*rad,py=yy+Math.sin(a)*rad;i?g.lineTo(px,py):g.moveTo(px,py);}g.closePath();g.fill();g.strokeStyle='#a28b68';g.lineWidth=3;g.beginPath();g.arc(x,yy,33,0,7);g.stroke();g.beginPath();g.moveTo(x,yy-26);g.lineTo(x,yy);g.lineTo(x+20,yy+10);g.stroke();mansionDiamond(x,yy,5,'#d1ba85');}
+}}
 function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.round(M.camY),view=mansionView();g.save();g.scale(view.zoom,view.zoom);
  mrect(0,0,view.w,view.h,r.tone);
- if(mansionBackdrop){const bw=320,bh=240,off=-Math.round(cx*.18)%bw;g.globalAlpha=.64;for(let i=-1;i<2;i++)g.drawImage(mansionBackdrop,off+i*bw,-Math.round(cy*.15),bw,bh);g.globalAlpha=1;}
- mrect(0,0,view.w,view.h,'rgba(6,12,29,.26)');if(M.room==='cellar'||M.room==='hubCellar')mrect(0,0,view.w,view.h,'rgba(0,35,52,.34)');
+ if(mansionBackdrop){const bw=320,bh=240,off=-Math.round(cx*.18)%bw;g.globalAlpha=.42;for(let i=-1;i<2;i++)g.drawImage(mansionBackdrop,off+i*bw,-Math.round(cy*.15),bw,bh);g.globalAlpha=1;}
+ mrect(0,0,view.w,view.h,'rgba(6,12,29,.42)');if(M.room==='cellar'||M.room==='hubCellar')mrect(0,0,view.w,view.h,'rgba(0,35,52,.34)');
  if(M.room==='garden'){mrect(0,0,view.w,view.h,'#17233e');for(let i=0;i<50;i++)mrect((i*47+13)%256,(i*23)%165,1,1,i%2?'#8cadc0':'#ffe9a0');g.fillStyle='#d8d8c2';g.beginPath();g.arc(195-cx*.035,68-cy*.12,24,0,7);g.fill();for(let i=0;i<8;i++){const x=i*48-(cx*.18)%48;mrect(x,165-cy*.15,30,75,'#202b47');mrect(x+3,154-cy*.15,24,12,'#2d3c59');}}
 
  g.save();g.translate(-cx,-cy);
- mansionHubDecor();if(M.room==='gallery')mansionGalleryDecor();if(M.room==='archive')mansionArchiveDecor();mansionNewWingDecor();if(M.room==='forbiddenArchive'||M.room==='seitenArena')mansionForbiddenDecor();if(M.room==='diceArena')mansionDiceDecor();
+ mansionAreaBack(r,cx,cy,view);if(M.room==='seitenArena')mansionForbiddenDecor();mansionHubDecor();if(M.room==='diceArena')mansionDiceDecor();mansionDecorDraw(r);
  if(M.room==='garden'){mrect(0,230,640,26,'#35435b');for(let x=0;x<640;x+=40){mrect(x,227,32,4,'#97a2b7');mrect(x+4,236,24,18,'#26334e');}for(const x of [204,624]){mrect(x,97,12,159,'#64718c');mrect(x-4,91,20,8,'#aab5c6');}if(M.sparState==='active'){mrect(210,112,2,144,'#c9a5fc');const e=M.enemies.find(e=>e.kind==='boss');if(e?.rainX!=null){mrect(e.rainX-28,252,56,3,'#ffc34e');for(let y=125;y<244;y+=12)mrect(e.rainX-1,y,2,5,'#d673ff');}}}
 
- for(const b of [...r.floor,...r.blocks])mansionTile(...b);mansionLiftDraw();mansionMechanismsDraw();
+ mansionTilesDraw(r,cx,cy,view);mansionLiftDraw();mansionMechanismsDraw();
  if(r.extension)drawMansionDoor(r.extension[0],r.extension[1],64,!mansionDoorAvailable(r.extensionDoor));
- if(r.gate&&!M.flags.seal){const b=r.gate;mrect(...b,'#263556');for(let yy=38;yy<208;yy+=14){mrect(b[0]+5,yy,6,8,'#80e8ed');mrect(b[0],yy+2,16,2,'#b5e8d9');}}
+ if(r.gate&&!M.flags.seal){const b=r.gate;mrect(...b,'#263556');for(let yy=b[1]+6;yy<b[1]+b[3];yy+=14){mrect(b[0]+5,yy,6,8,'#80e8ed');mrect(b[0],yy+2,16,2,'#b5e8d9');}}
  for(const d of r.doors){const locked=d.need&&!M.flags[d.need];if(drawMansionDoor(d.x,d.y,64,locked))continue;mrect(d.x-12,d.y-53,24,53,'#101424');mrect(d.x-14,d.y-55,28,3,locked?'#746375':'#a1b9c9');mrect(d.x-14,d.y-53,3,53,'#7c899f');mrect(d.x+11,d.y-53,3,53,'#596a84');mrect(d.x-8,d.y-47,16,44,locked?'#44344d':'#294663');mrect(d.x+5,d.y-24,3,3,locked?'#c68d90':'#ffe5a0');if(!locked){mrect(d.x-5,d.y-41,10,1,'#6faebc');mrect(d.x-5,d.y-36,10,1,'#496f91');}}
  mansionPortalDraw(M.room);
  if(r.cp){const [x,y]=r.cp;mansionTile(x-12,y-6,24,6);mansionDiamond(x,y-27+Math.sin(M.t*.05)*2,11,'#305876');mansionDiamond(x,y-27+Math.sin(M.t*.05)*2,7,'#95f3ff');mrect(x-1,y-34,2,8,'#efffff');}
@@ -397,19 +384,22 @@ function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.roun
  // Notices are outlined text below the HUD; no foot-level black strip.
 }
 const MANSION_MAP_NAMES={bedroom:'拠点',hubCellar:'拠点地下',gallery:'回廊',hall:'大広間',archive:'書庫',cellar:'地下',garden:'中庭',diceArena:'遊戯室',archiveInner:'封書',clockTower:'時計塔',moonReservoir:'貯水室',starPassage:'星灯り',forbiddenArchive:'禁書庫',seitenArena:'歌声の間'};
-function mansionMapBounds(){const points=Object.values(MR).map(r=>r.map);return{minX:Math.min(...points.map(p=>p[0])),minY:Math.min(...points.map(p=>p[1])),maxX:Math.max(...points.map(p=>p[0])),maxY:Math.max(...points.map(p=>p[1]))};}
+function mansionMapBounds(){const c=Object.values(MR).map(r=>r.cell);return{minX:Math.min(...c.map(p=>p[0])),minY:Math.min(...c.map(p=>p[1])),maxX:Math.max(...c.map(p=>p[0]+p[2]-1)),maxY:Math.max(...c.map(p=>p[1]+p[3]-1))};}
 function mansionRoomDoors(r){return[...r.doors,...(r.extensionDoor&&MR[r.extensionDoor.to]?[r.extensionDoor]:[])];}
-function mansionMapPosition(id,html=false){const b=mansionMapBounds(),p=MR[id].map;return html?[12+(p[0]-b.minX)*72,18+(p[1]-b.minY)*66]:[24+(p[0]-b.minX)*Math.min(44,186/Math.max(1,b.maxX-b.minX)),82+(p[1]-b.minY)*26];}
+function mansionMapScale(html){const b=mansionMapBounds(),nx=b.maxX-b.minX+1,ny=b.maxY-b.minY+1;return html?{s:28,t:21,ox:10,oy:10,b}:{s:Math.floor(Math.min(224/nx,120/ny)),t:Math.floor(Math.min(224/nx,120/ny)*.75),ox:16+Math.floor((224-nx*Math.floor(Math.min(224/nx,120/ny)))/2),oy:66,b};}
+function mansionMapPosition(id,html=false){const m=mansionMapScale(html),c=MR[id].cell;return[m.ox+(c[0]-m.b.minX)*m.s,m.oy+(c[1]-m.b.minY)*m.t,c[2]*m.s,c[3]*m.t];}
+function mansionDoorCellPos(id,x,y,html=false){const m=mansionMapScale(html),c=MR[id].cell;return[m.ox+(c[0]-m.b.minX+x/256)*m.s,m.oy+(c[1]-m.b.minY+y/240)*m.t];}
 function mansionMapDraw(){mrect(10,40,236,157,'rgba(5,13,29,.97)');rectLine(10,40,236,157,'#86beca');
- for(const[id,r]of Object.entries(MR))for(const d of mansionRoomDoors(r)){if(!M.visited.includes(id)||!MR[d.to])continue;const a=mansionMapPosition(id),b=mansionMapPosition(d.to);g.strokeStyle=d.need&&!M.flags[d.need]?'#64536a':'#536f83';g.lineWidth=2;g.beginPath();g.moveTo(a[0]+18,a[1]+9);g.lineTo(b[0]+18,b[1]+9);g.stroke();}
- for(const[id,r]of Object.entries(MR)){const p=mansionMapPosition(id),seen=M.visited.includes(id);mrect(p[0],p[1],36,18,seen?'#335f76':'#18283f');rectLine(p[0],p[1],36,18,id===M.room?'#fff1aa':seen?'#92c9db':'#3e4b64');if(r.cp&&seen)mrect(p[0]+2,p[1]+2,2,2,'#95f3ff');if(M.portals.includes(id))mansionDiamond(p[0]+31,p[1]+4,2,'#c39afa');}
+ for(const[id,r]of Object.entries(MR))for(const d of mansionRoomDoors(r)){if(!M.visited.includes(id)||!MR[d.to])continue;const a=mansionDoorCellPos(id,d.x,d.y-20),b=mansionDoorCellPos(d.to,d.at[0],d.at[1]-20);if(Math.hypot(a[0]-b[0],a[1]-b[1])<4)continue;g.strokeStyle=d.need&&!M.flags[d.need]?'#64536a':'#536f83';g.lineWidth=1;g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke();}
+ for(const[id,r]of Object.entries(MR)){const p=mansionMapPosition(id),seen=M.visited.includes(id);mrect(p[0],p[1],p[2]-1,p[3]-1,seen?'#335f76':'#18283f');rectLine(p[0],p[1],p[2]-1,p[3]-1,id===M.room?'#fff1aa':seen?'#92c9db':'#3e4b64');if(r.cp&&seen){const q=mansionDoorCellPos(id,r.cp[0],r.cp[1]-20);mrect(q[0]-1,q[1]-1,2,2,'#95f3ff');}if(M.portals.includes(id)){const w=MANSION_PORTALS[id],q=mansionDoorCellPos(id,w.x,w.y-20);mansionDiamond(q[0],q[1],2,'#c39afa');}}
+ const me=mansionDoorCellPos(M.room,M.x,M.y-12);if((M.t>>4)&1)mrect(me[0]-1,me[1]-1,3,3,'#ffe89e');
 }
 
 function renderMansion(){mansionRoomDraw();if(M.map&&M.menuTab==='map')mansionMapDraw();if(state==='mansionClear'){mrect(14,63,228,102,'rgba(6,14,30,.96)');rectLine(14,63,228,102,'#b9d8d2');}blit();
  if(M.actor==='seiten'&&mansionSeitenPortrait){sctx.save();sctx.imageSmoothingEnabled=true;const scale=hiS();sctx.drawImage(mansionSeitenPortrait,275,230,655,655,5*scale,3*scale,21*scale,21*scale);sctx.restore();}else if(M.actor==='astarte'&&mansionAstarteFace){sctx.save();sctx.imageSmoothingEnabled=true;const scale=hiS();sctx.drawImage(mansionAstarteFace,5*scale,3*scale,21*scale,21*scale);sctx.restore();}else drawOpeningPortrait({face:0},5,3,21);
  drawHiText(mansionLocationName(),165,5,6.5,'#d9edf5','#0c1528');
  if(M.map&&M.menuTab!=='map')return;
- if(M.map){drawHiText('屋敷の見取り図',128,64,9,'#d9f3fb','#0b1528');drawHiText('金色：現在地　 水色：記録の灯り',128,183,6,'#a6c8d8','#0b1528');for(const[id,r]of Object.entries(MR))if(M.visited.includes(id)){const p=mansionMapPosition(id);drawHiText(MANSION_MAP_NAMES[id]||r.name,p[0]+18,p[1]+6,4.5,'#d5e5ee','#0b1528');}return;}
+ if(M.map){drawHiText('屋敷の見取り図',128,64,9,'#d9f3fb','#0b1528');drawHiText('金色：現在地　 水色：記録の灯り',128,183,6,'#a6c8d8','#0b1528');{const p=mansionMapPosition(M.room);drawHiText(MANSION_MAP_NAMES[M.room]||MR[M.room].name,128,172,6,'#fff1aa','#0b1528');}return;}
  if(state==='mansionClear'){drawHiText('屋敷の外へ',128,77,12,'#e3f8fb','#0b1528');drawHiText('カナタちゃん、みんな……どこにいるの？',128,102,6.5,'#d3e8f5','#0b1528');drawHiText('探索テスト区間 踏破！',128,123,8,'#ffe6a3','#0b1528');drawHiText('タップで探索を続ける / Escでタイトル',128,147,6,'#a9c9db','#0b1528');return;}
  const catBoss=M.enemies.find(e=>e.kind==='seitenBoss');if(M.seitenState==='active'&&catBoss){sctx.save();const k=hiS();sctx.fillStyle='#271d34';sctx.fillRect(128*k,38*k,112*k,5*k);sctx.fillStyle=catBoss.hp<=catBoss.maxHp/2?'#ff799f':'#ffb1ca';sctx.fillRect(129*k,39*k,110*k*catBoss.hp/catBoss.maxHp,3*k);sctx.restore();drawHiText('青天 ／ SEITEN',184,29,6,'#ffbfd1','#191126');}
  if(M.prompt)drawHiText(M.prompt,128,33,6.5,'#fff2bd','#0b1528');
@@ -448,7 +438,14 @@ document.getElementById('mTalkSeiten').addEventListener('click',e=>{e.preventDef
 document.getElementById('mTalkDice').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionDiceChallenge();});
 document.getElementById('mTalkNext').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionTalkNext();});
 function mansionStatusHTML(){const memo=M.flags.seitenDefeated?'禁書庫の青天ちゃんと仲直りした。歌声の間で、また会って遊べるよ。':M.visited.includes('forbiddenArchive')?'禁書庫の奥から青天ちゃんの歌が聞こえる。':M.flags.starShortcut?'星灯りの渡り廊下から書庫への近道が開いた。紫の扉で拠点にも戻れるよ。':M.visited.includes('starPassage')?'星灯りの上階に、書庫への近道を開ける錠がある。':M.visited.includes('moonReservoir')?'貯水室の水は光ってから噴き出す。足場の上で様子を見よう。':M.visited.includes('clockTower')?'時計塔の昇降機は３層を繋ぐ。上階から貯水室へ進もう。':M.flags.archiveLatch?'封書の錠が開いた。回廊の右奥から時計塔へ進める。':M.visited.includes('archiveInner')?'封書の回廊の上階に錠がある。段差を登って調べてみよう。':M.flags.complete?'門の先へ出られた！ みんなを探す旅は、まだ続く。':M.flags.boss?'アスターテさんとの手合わせを終えた。奥の門を調べてみよう。':M.flags.seal?'水脈の紋章で地下の封印が解けた。客室への近道も使えるよ。':'館の出口を探そう。大広間の上階に、何かあるかも。';return `<div class="status-top"><div class="portrait ${M.actor==='seiten'?'seiten':M.actor==='astarte'?'astarte':''}" role="img" aria-label="${MANSION_ACTOR_NAMES[M.actor]||'海音'}"></div><div><h2>${MANSION_ACTOR_NAMES[M.actor]||'海音'}</h2><div>${M.actor==='seiten'?'歌と、誰かの隣が好きな猫の女の子':M.actor==='astarte'?'月と星を見守る、優しいお姉さん':'水魔法が得意な、旅好きの魔女'}</div><strong>HP ${M.hp} / ${mansionMaxHP()}</strong><div class="hp-track"><div class="hp-fill" style="width:${M.hp/mansionMaxHP()*100}%"></div></div></div></div><div class="status-row"><strong>バディ</strong><br>${mansionActors().length>1?mansionActors().slice(1).map(id=>MANSION_ACTOR_NAMES[id]).join('・')+'と一緒に探索中。交代ボタン／Cキーで順に交代。HPはみんなで共通。':'今は海音ひとり。'}<br>操作中：${MANSION_ACTOR_NAMES[M.actor]||'海音'}</div><div class="status-row"><strong>謎の右腕</strong>　正体不明<br>水弾を放てる。どうして付いているのかな……？</div><div class="status-row"><strong>使える能力</strong><br>${M.actor==='seiten'?'爪の２段攻撃（各２ダメージ）／歌声／バックステップ。少し速く走り、高く跳べる。':mansionIsUmine()?'水弾 ／ 魔法の壁キック ／ 壁滑り ／ スライディング':'鎌２段攻撃（各２ダメージ）／星弾／鎌ガード（長押しで正面のダメージ・吹き飛ばし軽減）。魔法の壁キック・壁滑り・スライドは海音専用。'}</div><div class="status-row"><strong>海音の習得能力</strong><br>${M.flags.seal?'水の足場：固有行動ボタン／Rキーで４秒間の足場。再使用５秒。':'水の足場：未習得（水脈の紋章で解放）'}</div><div class="status-row"><strong>恒久強化</strong><br>${mansionPermanentHTML()}</div><div class="status-row note"><strong>探索メモ</strong><br>${memo}</div>${M.room==='gallery'?`<div class="status-row"><strong>回廊の見渡し方</strong><br><button id="mGalleryView">${M.galleryWide===false?'通常表示 → 広く見渡す':'広く見渡す → 通常表示'}</button></div>`:''}<div class="status-row">現在地：${mansionLocationName()}<br>記録地点：${MR[M.checkpoint.room].name} ・ 訪問 ${M.visited.length} / ${Object.keys(MR).length} 部屋</div>`;}
-function mansionMapHTML(){const bounds=mansionMapBounds(),width=84+(bounds.maxX-bounds.minX)*72,height=66+(bounds.maxY-bounds.minY)*66;let paths='',rooms='';const links=new Set();for(const[id,r]of Object.entries(MR)){if(!M.visited.includes(id))continue;const[x,y]=mansionMapPosition(id,true);for(const d of mansionRoomDoors(r)){if(!MR[d.to])continue;const key=[id,d.to].sort().join(':');if(links.has(key))continue;links.add(key);const[a,b]=mansionMapPosition(d.to,true);paths+=`<path d="M ${x+30} ${y+20} L ${a+30} ${b+20}" fill="none" stroke="${d.need&&!M.flags[d.need]?'#685269':'#6b8b9b'}" stroke-width="3"/>`;}}for(const[id,r]of Object.entries(MR)){const[x,y]=mansionMapPosition(id,true),seen=M.visited.includes(id);rooms+=`<rect x="${x}" y="${y}" width="60" height="40" rx="3" fill="${seen?'#264c63':'#182337'}" stroke="${id===M.room?'#ffe89e':'#667b92'}" stroke-width="${id===M.room?3:1}"/><text x="${x+30}" y="${y+25}" text-anchor="middle" fill="${id===M.room?'#fff0bb':'#d0e5ed'}" font-size="11">${seen?MANSION_MAP_NAMES[id]||r.name:'？'}</text>${M.portals.includes(id)?`<path d="M ${x+50} ${y+7} l 4 4 -4 4 -4 -4 Z" fill="#c39afa"/>`:''}${seen&&r.cp?`<circle cx="${x+7}" cy="${y+7}" r="3" fill="#95f3ff"/>`:''}`;}return `<h2>月影の館・見取り図</h2><div>現在地：${mansionLocationName()}</div><div class="map-scroll"><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="館の部屋と通路">${paths}${rooms}</svg></div><div>金の枠：現在地 ／ 水色：記録 ／ 紫：ワープ</div><div>訪問 ${M.visited.length} / ${Object.keys(MR).length} 部屋<br>記録地点：${MR[M.checkpoint.room].name}</div><p>${M.flags.starShortcut?'星灯りから書庫へ戻る近道が開いている。':M.visited.includes('archiveInner')?'書庫の先に探索区画が続いている。時計塔から上へ進もう。':M.flags.seal?'水脈の封印は解除済み。客室と書庫の近道が使える。':'攻略区画の地下水路は封印中。拠点の地下室とは別の場所だよ。'}</p>`;}
+function mansionMapHTML(){const m=mansionMapScale(true),width=m.ox*2+(m.b.maxX-m.b.minX+1)*m.s,height=m.oy*2+(m.b.maxY-m.b.minY+1)*m.t;let paths='',rooms='';const links=new Set();
+ for(const[id,r]of Object.entries(MR)){if(!M.visited.includes(id))continue;for(const d of mansionRoomDoors(r)){if(!MR[d.to])continue;const key=[id,d.to].sort().join(':')+d.x;if(links.has(key))continue;links.add(key);const a=mansionDoorCellPos(id,d.x,d.y-20,true),b=mansionDoorCellPos(d.to,d.at[0],d.at[1]-20,true);const locked=d.need&&!M.flags[d.need],near=Math.hypot(a[0]-b[0],a[1]-b[1])<m.s*.8;paths+=near?`<rect x="${(a[0]+b[0])/2-3}" y="${(a[1]+b[1])/2-3}" width="6" height="6" fill="${locked?'#685269':'#e7cf86'}"/>`:`<path d="M ${a[0]} ${a[1]} L ${b[0]} ${b[1]}" fill="none" stroke="${locked?'#685269':'#6b8b9b'}" stroke-width="2" stroke-dasharray="4 3"/>`;}}
+ for(const[id,r]of Object.entries(MR)){const[x,y,w,h]=mansionMapPosition(id,true),seen=M.visited.includes(id);let grid='';for(let i=1;i<r.cell[2];i++)grid+=`<path d="M ${x+i*m.s} ${y} v ${h}" stroke="#1d3243" stroke-width="1"/>`;for(let i=1;i<r.cell[3];i++)grid+=`<path d="M ${x} ${y+i*m.t} h ${w}" stroke="#1d3243" stroke-width="1"/>`;
+  rooms+=`<rect x="${x+1}" y="${y+1}" width="${w-2}" height="${h-2}" fill="${seen?'#264c63':'#182337'}" stroke="${id===M.room?'#ffe89e':'#667b92'}" stroke-width="${id===M.room?3:1}"/>${seen?grid:''}<text x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" fill="${id===M.room?'#fff0bb':'#d0e5ed'}" font-size="10">${seen?MANSION_MAP_NAMES[id]||r.name:'？'}</text>`;
+  if(M.portals.includes(id)){const p=MANSION_PORTALS[id],q=mansionDoorCellPos(id,p.x,p.y-20,true);rooms+=`<path d="M ${q[0]} ${q[1]-5} l 5 5 -5 5 -5 -5 Z" fill="#c39afa"/>`;}
+  if(seen&&r.cp){const q=mansionDoorCellPos(id,r.cp[0],r.cp[1]-20,true);rooms+=`<circle cx="${q[0]}" cy="${q[1]}" r="3" fill="#95f3ff"/>`;}}
+ const me=mansionDoorCellPos(M.room,M.x,M.y-12,true);rooms+=`<circle cx="${me[0]}" cy="${me[1]}" r="4" fill="#ffe89e" stroke="#0b1528"/>`;
+ return `<h2>月影の館・見取り図</h2><div>現在地：${mansionLocationName()}</div><div class="map-scroll"><svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="館の部屋と通路">${paths}${rooms}</svg></div><div>金の点：現在地 ／ 水色：記録 ／ 紫：ワープ ／ 点線：扉でつながる通路</div><div>訪問 ${M.visited.length} / ${Object.keys(MR).length} 部屋<br>記録地点：${MR[M.checkpoint.room].name}</div><p>${M.flags.starShortcut?'星灯りから書庫へ戻る近道が開いている。':M.visited.includes('archiveInner')?'書庫の先に探索区画が続いている。時計塔から上へ進もう。':M.flags.seal?'水脈の封印は解除済み。客室と書庫の近道が使える。':'攻略区画の地下水路は封印中。拠点の地下室とは別の場所だよ。'}</p>`;}
 
 let mansionControlsActive=false;
 const mansionAbilityBtn=document.getElementById('mAbility');mansionAbilityBtn.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();mansionAbility();});
@@ -550,7 +547,7 @@ function mansionSeitenBossDraw(e){for(const p of e.trail||[]){g.globalAlpha=(1-p
  if(e.mode==='clawWind'){for(let i=0;i<3;i++)mansionDiamond(e.x+e.dir*(23+i*6),e.y-25+i*6,2,'#fff1b5');}
  if(e.mode==='claw'&&e.modeT>=5&&e.modeT<=13){g.save();g.translate(e.x,e.y);g.scale(e.dir,1);const k=(e.modeT-5)/8;for(let i=0;i<3;i++){g.beginPath();g.moveTo(14,-36+i*6);g.quadraticCurveTo(35+10*k,-23+i*4,56,-12+i*5);g.strokeStyle='#27152d';g.lineWidth=5;g.stroke();g.strokeStyle='#ff609d';g.lineWidth=3;g.stroke();g.strokeStyle='#fff2c6';g.lineWidth=1;g.stroke();}g.restore();}
 }
-function mansionForbiddenDecor(){const r=MR[M.room],arena=M.room==='seitenArena';mrect(0,0,r.w,r.h,'#201b31');for(let x=64;x<r.w;x+=128){mrect(x-40,48,80,206,'#171525');rectLine(x-42,46,84,210,'#8d738b');mrect(x-44,41,88,6,'#b6987b');for(let row=0;row<6;row++){for(let i=0;i<10;i++){const xx=x-35+i*7,yy=57+row*31;mrect(xx,yy,5,23,['#69596f','#7c4657','#516373','#8e785a'][(i+row)%4]);mrect(xx+1,yy+5,3,1,'#c9b193');}mrect(x-36,82+row*31,72,3,'#a28970');}if(!arena){mrect(x-30,72,60,3,'#a68572');mrect(x-3,48,6,198,'#977887');mansionDiamond(x,148,6,'#f1c98b');}}
+function mansionForbiddenDecor(){const r=MR[M.room],arena=true;mrect(0,0,r.w,r.h,'#201b31');for(let x=64;x<r.w;x+=128){mrect(x-40,48,80,206,'#171525');rectLine(x-42,46,84,210,'#8d738b');mrect(x-44,41,88,6,'#b6987b');for(let row=0;row<6;row++){for(let i=0;i<10;i++){const xx=x-35+i*7,yy=57+row*31;mrect(xx,yy,5,23,['#69596f','#7c4657','#516373','#8e785a'][(i+row)%4]);mrect(xx+1,yy+5,3,1,'#c9b193');}mrect(x-36,82+row*31,72,3,'#a28970');}if(!arena){mrect(x-30,72,60,3,'#a68572');mrect(x-3,48,6,198,'#977887');mansionDiamond(x,148,6,'#f1c98b');}}
  if(arena){mrect(52,249,408,7,'#783852');mrect(56,250,400,2,'#d6ae85');for(const x of [28,484]){mrect(x,38,5,213,'#71576e');mrect(x-6,32,17,6,'#c5a18b');}if(M.seitenState==='active')for(const x of [36,472])for(let y=48;y<256;y+=18)mansionDiamond(x,y,5,'#e891b8');mansionPropDraw('picture',256,106,50);}else{mrect(0,358,r.w,6,'#7e6578');for(const x of [88,592,832]){mansionPropDraw('table',x,368,32);mansionPropDraw('books',x,336,10);}for(const[x,y,w]of r.blocks){mrect(x,y-18,w,2,'#a9957f');for(let xx=x+3;xx<x+w;xx+=16)mrect(xx,y-16,2,16,'#655c77');}}
 }
 

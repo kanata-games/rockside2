@@ -18,7 +18,7 @@ clearKeys();run('M.x=390;mansionUse()');assert(run('M.talk&&M.map'));run('mansio
 run('M.x=580;mansionUse()');assert.equal(run('M.room'),'hubCellar');assert.equal(run('M.enemies.length'),0);assert(run('mansionMapHTML().includes("拠点地下")'));
 run('M.x=110;M.hp=4;mansionUse()');assert.equal(run('M.hp'),16);assert.equal(run('M.checkpoint.room'),'hubCellar');run('mansionStart(true)');assert.equal(run('M.room'),'hubCellar');
 run('M.x=350;mansionUse()');assert(run('M.message.includes("鍵")'));assert.equal(run('M.room'),'hubCellar');
-run('M.x=24;mansionUse()');assert.equal(run('M.room'),'bedroom');assert.equal(run('M.x'),550);
+run('M.x=24;mansionUse()');assert.equal(run('M.room'),'bedroom');assert.equal(run('M.x'),run('MR.hubCellar.doors[0].at[0]'));
 run('M.x=231;mansionUse()');assert(run('M.map&&M.menuTab==="area"'));run('M.map=false');
 // Old saves with a 256px guest-room checkpoint remain valid after expansion.
 run('localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{},visited:["bedroom"],checkpoint:{room:"bedroom",x:110,y:208}}));mansionStart(true)');assert.equal(run('M.room'),'bedroom');assert.equal(run('M.x'),110);
@@ -32,7 +32,7 @@ run('M.x=450;mansionUse()');assert.equal(run('M.checkpoint.room'),'gallery');
 run('mansionEnter("archive",145,208);M.enemies=[];keys.right=true;');ticks(25);assert(run('M.x<=169.01'));assert(!run('mansionFits(200,208,MC.h)'));
 run('mansionInput.slide=true');ticks(30);assert(run('M.x>247'));assert.equal(run('M.h'),26);assert(run('mansionFits(M.x,M.y,M.h)'));
 // Slide cancellation under a ceiling must keep the reduced collider.
-clearKeys();run('mansionEnter("archive",195,208);M.enemies=[];M.h=MC.slideH;M.slideT=2;M.face=1;');ticks(3);assert.equal(run('M.h'),18);assert(run('M.slideT>0'));
+clearKeys();run('mansionEnter("archive",195,208);M.enemies=[];M.h=MC.slideH;M.slideT=2;M.face=1;');ticks(3);assert.equal(run('M.h'),run('MC.slideH'));assert(run('M.slideT>0'));
 // Wall contact slows descent and jumping kicks away with upward momentum.
 clearKeys();run('mansionEnter("hall",153,310);M.enemies=[];M.vy=4;keys.right=true;');ticks(1);assert.equal(run('M.wall'),1);assert(run('M.vy<=MC.wallFall'));
 run('keys.jump=true;inp.jumpPressed=true');ticks(1);assert(run('M.vx<0'));assert(run('M.vy<0'));assert(run('M.x<153'));
@@ -126,8 +126,8 @@ clearKeys();run('mansionEnter("bedroom",231,208);M.hp=7;mansionUse()');assert(ru
 assert.equal(run('mansionWarpTo("archive")'),false);assert.equal(run('M.room'),'bedroom');
 assert.equal(run('mansionWarpTo("bedroom")'),false);
 assert.equal(run('mansionWarpTo("cellar")'),false);
-run('M.map=false;M.flags.seal=true;mansionEnter("cellar",438,208);M.enemies=[]');ticks(1);assert(run('M.portals.includes("cellar")'));run('mansionUse()');assert.equal(run('mansionWarpTo("bedroom")'),true);assert.equal(run('M.hp'),7);assert.equal(run('JSON.stringify(M.checkpoint)'),cpBefore);
-run('M.transition=0;mansionUse()');assert.equal(run('mansionWarpTo("cellar")'),true);assert.equal(run('M.x'),438);assert(run('mansionFits(M.x,M.y)'));
+run('M.map=false;M.flags.seal=true;mansionEnter("cellar",440,208);M.enemies=[]');ticks(1);assert(run('M.portals.includes("cellar")'));run('mansionUse()');assert.equal(run('mansionWarpTo("bedroom")'),true);assert.equal(run('M.hp'),7);assert.equal(run('JSON.stringify(M.checkpoint)'),cpBefore);
+run('M.transition=0;mansionUse()');assert.equal(run('mansionWarpTo("cellar")'),true);assert.equal(run('M.x'),run('MANSION_PORTALS.cellar.x'));assert(run('mansionFits(M.x,M.y)'));
 run('M.map=false;M.flags.seal=false;mansionEnter("bedroom",231,208);mansionUse()');assert.equal(run('mansionWarpTo("cellar")'),false);assert.equal(run('M.room'),'bedroom');
 run('M.x=300;M.map=true;M.menuTab="area"');assert.equal(run('mansionWarpTo("cellar")'),false);assert(run('mansionWarpHTML().includes("disabled")'));
 assert.equal(Object.keys(run('MANSION_PORTALS')).length,3);
@@ -366,9 +366,9 @@ for(const actor of ['umine','astarte'])for(const direction of [1,-1]){
  for(let i=0;i<1800;i++){run('if(M.ground)inp.jumpPressed=true');ticks(1);if(run(direction===1?'M.x>1475':'M.x<40'))break;}
  assert(run(direction===1?'M.x>1475':'M.x<40'),actor+' corridor route '+direction+' stuck at '+run('JSON.stringify([M.x,M.y])'));
 }
-clearKeys();run('mansionEnter("gallery",1509,208);mansionUse()');assert.equal(run('M.room'),'hall');
-run('M.x=24;M.y=368;mansionUse()');assert.equal(run('M.room'),'gallery');assert.equal(run('M.x'),1480);
-run('M.x=1500;M.y=368;M.galleryWide=true;mansionCamera(true)');assert.equal(run('mansionView().w'),320);assert.equal(run('mansionView().h'),300);assert.equal(run('M.camX'),1216);assert.equal(run('M.camY'),100);
+clearKeys();run('mansionEnter("gallery",1509,368);mansionUse()');assert.equal(run('M.room'),'hall');
+run('M.x=24;M.y=368;mansionUse()');assert.equal(run('M.room'),'gallery');assert.equal(run('M.x'),run('MR.hall.doors[0].at[0]'));
+run('M.x=1500;M.y=368;M.galleryWide=true;mansionCamera(true)');assert.equal(run('mansionView().w'),320);assert.equal(run('mansionView().h'),300);assert.equal(run('M.camX'),1216);assert.equal(run('M.camY'),170.5);
 const saveBefore=storage.get('rockside2_mansion_v1');run('M.map=true;mansionGalleryViewToggle()');assert.equal(run('mansionView().zoom'),1);assert.equal(storage.get('rockside2_mansion_v1'),saveBefore);assert(run('mansionStatusHTML().includes("mGalleryView")'));
 run('mansionGalleryViewToggle()');assert.equal(run('mansionView().zoom'),.8);run('M.map=false;mansionEnter("hall",76,368)');assert.equal(run('mansionView().zoom'),1);
 // Existing gallery checkpoint survives the room's expansion.
@@ -437,7 +437,7 @@ run('M.hurt=0;M.hp=16;M.y=320;mansionVentUpdate()');assert.equal(run('M.hp'),16)
 run('M.map=false;mansionEnter("starPassage",1000,368);M.enemies=[];mansionUse()');assert(run('M.portals.includes("starPassage")'));assert(run('M.map&&M.menuTab==="area"'));run('mansionWarpTo("bedroom")');assert.equal(run('M.room'),'bedroom');run('M.x=231;mansionUse();mansionWarpTo("starPassage")');assert.equal(run('M.room'),'starPassage');
 run('M.x=1118;M.y=368;M.map=false;mansionUse()');assert.equal(run('M.room'),'forbiddenArchive');run('M.x=24;mansionUse()');assert.equal(run('M.room'),'starPassage');
 run('M.x=940;mansionUse();mansionStart(true)');assert.equal(run('M.room'),'starPassage');assert(run('M.flags.archiveLatch&&M.flags.starShortcut&&M.flags.seitenLeftArchive'));assert(run('M.portals.includes("starPassage")'));
-run('M.visited=Object.keys(MR);M.menuTab="map";M.map=true;render()');assert(run('mansionMapHTML().includes("時計塔")&&mansionMapHTML().includes("貯水室")'));assert.equal(run('mansionMapBounds().minY'),-1);for(const id of Object.keys(run('MR'))){const p=run(`mansionMapPosition('${id}')`);assert(p[0]>=10&&p[0]+36<=246&&p[1]>=40&&p[1]+18<=197);}
+run('M.visited=Object.keys(MR);M.menuTab="map";M.map=true;render()');assert(run('mansionMapHTML().includes("時計塔")&&mansionMapHTML().includes("貯水室")'));assert.equal(run('mansionMapBounds().minY'),-3);for(const id of Object.keys(run('MR'))){const p=run(`mansionMapPosition('${id}')`);assert(p[0]>=10&&p[0]+p[2]<=246&&p[1]>=40&&p[1]+p[3]<=197,id+' map cell outside the map panel');}
 console.log('PASS four stages: both-hero continuous route, gate switch, three-level elevator, readable geysers, permanent shortcut, departure event, single added warp, saved progress and expanded map.');
 
 // The warp-adjacent door leads through the new archive to a separate boss chamber; no extra warp.
@@ -496,7 +496,7 @@ for(const actor of ['umine','astarte']){
 }
 const catAtlas=JSON.parse(fs.readFileSync(require('path').resolve(__dirname,'../assets/seiten-sequel-combat.json'),'utf8'));assert.equal(JSON.stringify(run('SEITEN_COMBAT_FRAMES')),JSON.stringify(catAtlas.frames));assert.equal(catAtlas.frames.length,8);const combatImage=images.find(i=>i.src==='assets/seiten-sequel-combat.png');assert(combatImage);combatImage.onload();
 for(const f of catAtlas.frames){assert.deepEqual(f.rect.slice(2),[450,400]);assert.equal(f.scale,.125);assert(f.alphaBounds[0]>=0&&f.alphaBounds[2]<=450&&f.alphaBounds[1]>=0&&f.alphaBounds[3]<=400);assert(f.anchor[0]>0&&f.anchor[0]<450&&f.anchor[1]>0&&f.anchor[1]<400);}
-run('mansionEnter("seitenArena",100,256);mansionSeitenStart()');for(const face of [-1,1])for(let pose=0;pose<8;pose++){const before=run('JSON.stringify(M)');run(`mansionSeitenBossDraw({...M.enemies[0],dir:${face},pose:${pose}})`);assert.equal(run('JSON.stringify(M)'),before);}run('M.visited=Object.keys(MR);M.map=true;M.menuTab="map";render()');assert(run('mansionMapHTML().includes("禁書庫")'));for(const id of Object.keys(run('MR'))){const p=run(`mansionMapPosition('${id}')`);assert(p[0]+36<=246&&p[1]+18<=197);}
+run('mansionEnter("seitenArena",100,256);mansionSeitenStart()');for(const face of [-1,1])for(let pose=0;pose<8;pose++){const before=run('JSON.stringify(M)');run(`mansionSeitenBossDraw({...M.enemies[0],dir:${face},pose:${pose}})`);assert.equal(run('JSON.stringify(M)'),before);}run('M.visited=Object.keys(MR);M.map=true;M.menuTab="map";render()');assert(run('mansionMapHTML().includes("禁書庫")'));for(const id of Object.keys(run('MR'))){const p=run(`mansionMapPosition('${id}')`);assert(p[0]+p[2]<=246&&p[1]+p[3]<=197);}
 run('localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{boss:true,starShortcut:true},visited:["starPassage"],checkpoint:{room:"starPassage",x:940,y:368}}));mansionStart(true)');assert.equal(run('M.flags.seitenDefeated'),false);assert(run('M.flags.boss&&M.flags.starShortcut'));assert.equal(run('M.room'),'starPassage');
 console.log('PASS forbidden archive / Seiten: connected approach, checkpoint, intro cancel, active damage, hit cooldown, two / three locked pounces, timed low waves / high notes, guard, pause, safe retry / retreat, both-hero fair wins, persistent victory / friendly NPC, equal-scale eight-pose atlas, larger map and old saves.');
 // EX story is a continuation of the archive conversation; bosses no longer coach the player's dodges.
@@ -542,7 +542,7 @@ for(const [flags,hp,a,b] of [[{astarteFull:true,astarteReward:true},18,true,fals
 }
 clearKeys();run("mansionStart(false);M.flags.boss=true;M.flags.seitenDefeated=true;mansionEnter('bedroom',130,208);M.transition=0;M.swapCool=0");
 assert(run('mansionSwap()'));assert.equal(run('M.actor'),'astarte');run('M.swapCool=0');assert(run('mansionSwap()'));assert.equal(run('M.actor'),'seiten');assert(run('mansionStatusHTML().includes("青天")'));assert(!run('mansionIsUmine()'));
-run('M.swapCool=0;M.map=true');assert(!run('mansionSwap()'));run('M.map=false;mansionEnter("hall",230,368);M.enemies=[];M.transition=0;M.hurt=0');assert.equal(run('M.actor'),'seiten');ticks(25);
+run('M.swapCool=0;M.map=true');assert(!run('mansionSwap()'));run('M.map=false;mansionEnter("hall",280,368);M.enemies=[];M.transition=0;M.hurt=0');assert.equal(run('M.actor'),'seiten');ticks(25);
 // One hit per swing, two distinct swings; no Umine water shot while holding attack.
 run("M.face=1;M.enemies=[{kind:'walk',x:M.x+25,y:M.y,hp:10}];mansionSeitenClaw();mansionSeitenClawHit();mansionSeitenClawHit()");assert.equal(run('M.enemies[0].hp'),8);run('mansionSeitenClaw(2);mansionSeitenClawHit()');assert.equal(run('M.enemies[0].hp'),6);
 run('M.enemies=[];M.poseT=M.cool=0;keys.shoot=true');ticks(48);assert.equal(run('M.clawStage'),2);assert.equal(run('M.shots.length'),0);clearKeys();ticks(35);
