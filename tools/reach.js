@@ -16,7 +16,7 @@ const MR=MANSION_WORLD.MR,PORTALS=MANSION_WORLD.portals;
 const args=process.argv.slice(2),QUIET=args.includes('--quiet'),jsonOut=args.includes('--json')?args[args.indexOf('--json')+1]:null;
 const START={room:'bedroom',x:MR.bedroom.cp[0],y:MR.bedroom.cp[1]};
 const MOVES_ALL=['jump','wallkick','slide','slidejump'];
-const JUMP=[4,4,4,3],SJUMP=[8,8,6,6]; // max columns by rise 0..3 tiles
+const JUMP=[4,4,4,3],SJUMP=[8,8,6,6],DJUMP=JUMP.map(n=>n+3),DSJUMP=SJUMP.map(n=>n+4); // air dash (test.48, bought late): +3 columns after a jump, +4 after a slide jump (measured: about +50px) // max columns by rise 0..3 tiles
 // Vertical exits stitch rooms: a row above the top (or below the bottom) is looked up in the room across the gap
 // (any column of that neighbouring room, so Umine can step off the shaft onto its floor).
 function across(r,side,c){if(!(r.vexits||[]).some(v=>v.side===side))return null;const[cx,cy,cw,ch]=r.cell,wx=cx+Math.floor(c/16),wy=side==='up'?cy-1:cy+ch,to=MANSION_WORLD.cells[wx+','+wy];
@@ -41,6 +41,7 @@ function graph(flags,moves){const nodes=new Map(),edges=new Map(),add=(a,b)=>{if
    for(const d of[-1,1]){const n=c+d;if(free(n,row)&&free(n,row-1)){add(k,S(n,row+1)?K(n,row):fall(n,row)||k);} 
     if(has('jump')){arc(k,c,row,d,JUMP,3);for(let h=1;h<=3&&rectFree(c,c,row-h-1,row);h++)if(stand(c,row-h))add(k,K(c,row-h));}
     if(has('slidejump')&&free(c+d,row)&&free(c+d,row-1))arc(k,c,row,d,SJUMP,3);
+    if(has('airdash')){arc(k,c,row,d,DJUMP,3);if(free(c+d,row)&&free(c+d,row-1))arc(k,c,row,d,DSJUMP,3);}
     if(has('slide')){let x=c+d,open=0;while(x>=0&&x<W&&free(x,row)){if(!S(x,row+1)){const t=fall(x,row);if(t)add(k,t);break;}if(free(x,row-1)){add(k,K(x,row));if(++open>6)break;}else open=0;x+=d;}}
     if(has('wallkick')){// climb column c with a wall on side d; the kick pushes into column c-d (or bounces off a 1-wide shaft)
      if(S0(c+d,row-1)||S0(c+d,row-2)){const ceil=(x,y)=>free(x,y-1)&&!free(x,y-2);let y=row-1;while(y>-28&&free(c,y-1)&&(S0(c+d,y)||S0(c+d,y-1))&&!ceil(c-d,y)&&!ceil(c-2*d,y)){y--;}
@@ -81,7 +82,12 @@ function solve(moves){let flags={};const order=[];let reach,G;
  return{flags,order,reach,G};}
 const problems=[],notes=[];
 const full=solve(MOVES_ALL);
-for(const p of points()){const k=MR[p.room]._near(p.x,p.y);if(!k)problems.push(`${p.room}: ${p.kind} at (${p.x},${p.y}) has no standing room (needs solid below and 2 free tiles)`);else if(!full.reach.has(k))problems.push(`${p.room}: ${p.kind} at (${p.x},${p.y}) is unreachable`);}
+const dashOnly=p=>p.kind==='shard'&&MR[p.room].dashOnly;
+for(const p of points()){if(dashOnly(p))continue;const k=MR[p.room]._near(p.x,p.y);if(!k)problems.push(`${p.room}: ${p.kind} at (${p.x},${p.y}) has no standing room (needs solid below and 2 free tiles)`);else if(!full.reach.has(k))problems.push(`${p.room}: ${p.kind} at (${p.x},${p.y}) is unreachable`);}
+// Air dash (optional upgrade): dash-only shards must be reachable with it, and it must not change the unlock order (gates keep their intent).
+{const dash=solve([...MOVES_ALL,'airdash']);for(const p of points().filter(dashOnly)){const k=MR[p.room]._near(p.x,p.y);if(!k||!dash.reach.has(k))problems.push(`${p.room}: dash shard at (${p.x},${p.y}) is unreachable even with air dash`);else if(full.reach.has(k))problems.push(`${p.room}: dash shard at (${p.x},${p.y}) is reachable without air dash`);}
+ const fo=full.order.map(o=>o.split('@')[0]).join(),dorder=dash.order.map(o=>o.split('@')[0]).join();if(fo!==dorder)problems.push(`air dash changes the unlock order: ${fo} vs ${dorder}`);
+ if(!QUIET)console.log(`air dash: ${points().filter(dashOnly).length} dash-only shard(s) reachable, unlock order unchanged (${dorder||'none'})`);}
 // One-way traps: in every flag phase, each reachable node must get back to the start.
 {let flags={};const phases=[{}];for(const o of full.order){const f=o.split('@')[0];flags={...flags,[f]:true};phases.push({...flags});}
  for(const fl of phases){const G=graph(fl,MOVES_ALL),start=MR[START.room]._near(START.x,START.y),fw=bfs(G,start,true,fl);
@@ -92,6 +98,9 @@ for(const p of points()){const k=MR[p.room]._near(p.x,p.y);if(!k)problems.push(`
   for(const[room,n]of traps)problems.push(`${room}: ${n} reachable tile(s) cannot return to the start with flags {${Object.keys(fl).join(',')||'none'}} (one-way trap)`);}}
 // Which key points need which move? (proves the gates are real)
 const gates={};for(const m of['wallkick','slide','slidejump']){const s=solve(MOVES_ALL.filter(x=>x!==m));const lost=points().filter(p=>{const k=MR[p.room]._near(p.x,p.y);return k&&full.reach.has(k)&&!s.reach.has(k);});gates[m]=lost.map(p=>`${p.room}:${p.kind}`);}
+// does air dash stand in for a skill gate? (informational; slide/wallkick/slidejump are innate, so this is about intent, not soft-locks)
+const dashGates={};for(const m of['wallkick','slide','slidejump']){const s=solve([...MOVES_ALL.filter(x=>x!==m),'airdash']);dashGates[m]=points().filter(p=>!dashOnly(p)).filter(p=>{const k=MR[p.room]._near(p.x,p.y);return k&&full.reach.has(k)&&!s.reach.has(k);}).length;}
+if(!QUIET)console.log('with air dash, still gated: '+Object.entries(dashGates).map(([m,n])=>`${m} ${n}/${gates[m].length}`).join(', '));
 const byRoom={};for(const k of full.reach){const[r,c,row]=k.split('|');(byRoom[r]||(byRoom[r]=[])).push([+c,+row]);}
 const rooms=Object.keys(MR),standable=[...full.G.nodes.keys()],unreached=standable.filter(k=>!full.reach.has(k));
 const unRoom={};for(const k of unreached){const r=k.split('|')[0];unRoom[r]=(unRoom[r]||0)+1;}

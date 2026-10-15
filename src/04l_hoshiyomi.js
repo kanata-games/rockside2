@@ -57,6 +57,8 @@ const MANSION_UPGRADES=[ // extensible: {id,name,desc,cost:[per level]} ; effect
  {id:'hp',name:'最大HPアップ',desc:'最大HPが2増える',cost:[2,3,5,7]},
  {id:'shot',name:'水弾の威力アップ',desc:'ショットの威力が1上がる',cost:[3,6]},
  {id:'slide',name:'スライディング延長',desc:'スライディングが長く滑る',cost:[2,4]},
+ {id:'vial',name:'星の小瓶',desc:'満タン時の回復をためておき、小瓶ボタン（V）でHPに注ぐ。1本に8',cost:[4,7]},
+ {id:'dash',name:'空中ダッシュ',desc:'空中でスライド（↓+ジャンプ）すると横にダッシュ。着地か壁で回復',cost:[8]},
 ];
 function mansionUpg(id){return(M.upg&&M.upg[id])||0;}
 function mansionShardGain(n,quiet){M.shards=(M.shards||0)+n;mansionBurst(M.x,M.y-20,'#d7b8ff',10);sfx('heal');if(!quiet)mansionSay('星詠みの欠片を拾った！（所持 '+M.shards+'）',110);}

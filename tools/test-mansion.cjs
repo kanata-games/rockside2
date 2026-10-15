@@ -270,7 +270,7 @@ console.log('PASS guard: front chip/knockback, rear/vertical vulnerability, grou
 
 // MENU visibility must be scoped to the open menu, including new buddy controls.
 assert(!html.includes('#mMap{visibility:hidden'));
-assert(html.includes('body.mansion-menu-open #mMap,body.mansion-menu-open #mSwap,body.mansion-menu-open #mAbility{visibility:hidden;pointer-events:none}'));
+assert(html.includes('body.mansion-menu-open #mMap,body.mansion-menu-open #mSwap,body.mansion-menu-open #mAbility,body.mansion-menu-open #mVial{visibility:hidden;pointer-events:none}'));
 console.log('PASS menu CSS: hide only while open, keep MENU available in gameplay.');
 
 // Dice practice keeps the chosen hero, progression and recorded checkpoint intact.

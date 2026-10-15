@@ -28,3 +28,17 @@ function mansionDarkSwap(begin,saved){
  if(!saved)return;SEQUEL_MODEL.frames=saved.f;SEQUEL_MODEL.walkFrames=saved.w;if(saved.filter)g.restore();}
 let mansionDarkFace=null;if(typeof Image==='function'){const f=new Image();f.onload=()=>{mansionDarkFace=f;};f.src='assets/umine_dark_face.png';}
 function mansionUminePortrait(p,c){if(M.talk?.speaker!=='海音')return false;c.setAttribute('aria-label','海音');p.fillStyle='#1a1030';p.fillRect(0,0,96,96);if(mansionDarkFace){p.imageSmoothingEnabled=true;p.drawImage(mansionDarkFace,0,0,mansionDarkFace.width,mansionDarkFace.height,0,0,96,96);}else{p.fillStyle='#4a6ad8';p.fillRect(18,12,60,46);p.fillStyle='#f4dcd0';p.fillRect(28,28,40,34);}return true;}
+
+// =====================================================================
+//  test.48: 星詠みショップ追加 — 星の小瓶 (sub-tank) / 空中ダッシュ (air dash)
+// =====================================================================
+const MANSION_DASH={t:14,v:4.6}; // 14 frames of level flight at 4.6 px/f (~64px), once per airtime
+function mansionVialCap(){return 8*mansionUpg('vial');}
+// every heal goes through here: what does not fit in HP spills into the vials
+function mansionHeal(n){const max=mansionMaxHP(),room=max-M.hp,take=Math.min(room,n),spill=n-take;M.hp+=take;
+ if(spill>0&&mansionVialCap()){const before=M.vialHP||0;M.vialHP=Math.min(mansionVialCap(),before+spill);if(M.vialHP>before){mansionBurst(M.x,M.y-30,'#c9a6ff',4);if(typeof mansionSay==='function'&&M.vialHP===mansionVialCap()&&before<M.vialHP)mansionSay('星の小瓶がいっぱいになった！',90);}}
+ return take;}
+function mansionVialUse(){if(!mansionUpg('vial')||!(M.vialHP>0)||M.dead||!mansionIsUmine())return false;const need=mansionMaxHP()-M.hp;if(need<=0)return false;const n=Math.min(need,M.vialHP);M.vialHP-=n;M.hp+=n;mansionBurst(M.x,M.y-18,'#d7b8ff',14);sfx('heal');mansionSave();return true;}
+function mansionVialHUD(x,y){const lv=mansionUpg('vial');for(let i=0;i<lv;i++){const fill=Math.max(0,Math.min(8,(M.vialHP||0)-i*8)),X=x+i*9;mrect(X,y+2,7,11,'#1a1030');mrect(X+2,y,3,2,'#c9a6ff');mrect(X+1,y+3,5,9,'#3a2a5a');if(fill)mrect(X+1,y+3+9-Math.ceil(fill*9/8),5,Math.ceil(fill*9/8),'#c9a6ff');}}
+// ---- boss camera: when a boss fight is on, zoom out (smoothly) so Umine and the boss both fit, centred between them
+function mansionBossFocus(){const kinds={keikoBoss:mansionKeikoActive(),hoshiBoss:M.hoshiState==='active'};const e=M.enemies.find(e=>kinds[e.kind]);return e||null;}

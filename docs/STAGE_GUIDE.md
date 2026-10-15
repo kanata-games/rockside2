@@ -322,7 +322,7 @@ The current art uses the art maker's format, specified in `assets/enemies/README
   - `name`：ニセモノの名前 / the impostor's name
   - `real`：本物の名前 / the real friend's name
   - `fake`：友だちのふりをする最初のせりふ。話し手は「本物の名前＋？」 / the opening lines in disguise; the speaker shows as `real+'？'`
-  - `pre`：正体を明かして、攻撃のヒントを言う / the reveal plus attack hints
+  - `pre`：正体を明かすせりふ（性格・物語だけ。よけ方は言わない）/ the reveal (character and story only, no dodge hints)
   - `again`：負けたとき / after a loss
   - `vanish`：消えるとき / as it fades
   - `post`：本物のせりふ / the real friend's lines
@@ -355,3 +355,20 @@ The current art uses the art maker's format, specified in `assets/enemies/README
   - 関数：`mansionDarkOn()`、`mansionDarkSet()`、`mansionDarkToggle()`。ステータス画面のボタン `#mDarkStyle` から切り替える。
   - 絵の入れ替え：02c の読み込み関数に引数を足し、絵を渡す先を変えられるようにした。描くときだけ `SEQUEL_MODEL` の中身を入れ替える。
   - 弾：`shot.pierce` が付いた弾は、`shot.hits` に当たった敵を記録しておき、同じ敵には2回当たらない。盾で止められたときは弾が消える。
+
+## 14. ボスのせりふのルール / Boss dialogue rule (test.48)
+
+- **よけ方・攻撃のコツを話してよいのは、最初のボス アスターテ（チュートリアル）だけ。** / **Only the first boss, Astarte (the tutorial), may explain how to dodge.**
+- ほかのボス（ダーク星詠み、ニセモノ、影の四騎、これから増えるボス）と、解放された本物の仲間は、戦う前も後も **よけ方・攻撃のヒントを言わない**。せりふは性格・物語・協力の話だけにする。/ Every other boss (Dark Hoshiyomi, the impostors, the shades, future bosses) and the freed friends must **never** explain dodging or attack tips before or after a fight. Write in-character lines only: personality, story, cooperation.
+  - 例（だめ）：「高い矢はくぐって、低い矢は跳んで」/ Bad: "slide under the high arrows, jump the low ones"
+  - 例（よい）：「本物より上手に射てると思うのだけれど」/ Good: "I think I shoot better than the real one"
+- よけ方は、画面の予告（光る線・印・隙間・頭上の武器アイコン）だけで伝える。仲間のごほうびは欠片とせりふで、「コツ」は渡さない。/ Dodging is taught only by on-screen telegraphs (lines, marks, gaps, weapon icons). Friends reward with shards and talk, never "tips".
+
+## 15. 星の小瓶・空中ダッシュ・ボス戦カメラ / Vials, air dash, boss camera (test.48)
+
+- 強化は `MANSION_UPGRADES`（`src/04l_hoshiyomi.js`）。`vial`：費用 [4,7]、1本につき8ためられる。`dash`：費用 [8]。/ Upgrades: `vial` costs [4,7], 8 HP per vial; `dash` costs [8].
+- 回復は必ず `mansionHeal(n)` を通す。HPに入りきらない分が小瓶にたまる（`M.vialHP`、セーブされる）。使うのは `mansionVialUse()`（小瓶ボタン／Vキー）。/ All healing goes through `mansionHeal(n)`; overflow fills `M.vialHP` (saved). Use with `mansionVialUse()` (vial button / V key).
+- 空中ダッシュ：空中でスライド入力（SLIDE／↓+ジャンプ）。`MANSION_DASH={t:14,v:4.6}`、重力なしで横に進む。1回のジャンプに1度、着地か壁で回復。/ Air dash: slide input in midair; 14 level frames at 4.6px/f; once per airtime, reset on landing or wall.
+- reach.js は `airdash` の動きを持つ（ジャンプ+3列、スライドジャンプ+4列）。`dashOnly:true` の部屋の欠片はダッシュ必須として調べ、ダッシュなしで取れたらエラー。ダッシュがあっても解除の順番は変わらないことを確かめる。/ reach.js models `airdash`; shards in `dashOnly:true` rooms must need it; the unlock order must not change.
+  - 今のところダッシュ用の場所は `dashNook`（星屑の飛び石、kGate の扉8）。/ Current dash spot: `dashNook` via kGate door 8.
+- ボス戦カメラ：戦闘中（keiko／shade／ダーク星詠み）は、海音とボスの真ん中を映し、両方が入るまでズームアウトする（いちばん引いて部屋全体）。`mansionBossFocus()` と `M.bossZoom`。/ Boss camera: centres between Umine and the boss and zooms out until both fit (down to the whole room).
