@@ -542,7 +542,7 @@ for(const [flags,hp,a,b] of [[{astarteFull:true,astarteReward:true},18,true,fals
 }
 clearKeys();run("mansionStart(false);M.flags.boss=true;M.flags.seitenDefeated=true;mansionEnter('bedroom',130,208);M.transition=0;M.swapCool=0");
 assert(run('mansionSwap()'));assert.equal(run('M.actor'),'astarte');run('M.swapCool=0');assert(run('mansionSwap()'));assert.equal(run('M.actor'),'seiten');assert(run('mansionStatusHTML().includes("青天")'));assert(!run('mansionIsUmine()'));
-run('M.swapCool=0;M.map=true');assert(!run('mansionSwap()'));run('M.map=false;mansionEnter("hall",280,368);M.enemies=[];M.transition=0;M.hurt=0');assert.equal(run('M.actor'),'seiten');ticks(25);
+run('M.swapCool=0;M.map=true');assert(!run('mansionSwap()'));run('M.map=false;mansionEnter("hall",380,368);M.enemies=[];M.transition=0;M.hurt=0');assert.equal(run('M.actor'),'seiten');ticks(25);
 // One hit per swing, two distinct swings; no Umine water shot while holding attack.
 run("M.face=1;M.enemies=[{kind:'walk',x:M.x+25,y:M.y,hp:10}];mansionSeitenClaw();mansionSeitenClawHit();mansionSeitenClawHit()");assert.equal(run('M.enemies[0].hp'),8);run('mansionSeitenClaw(2);mansionSeitenClawHit()');assert.equal(run('M.enemies[0].hp'),6);
 run('M.enemies=[];M.poseT=M.cool=0;keys.shoot=true');ticks(48);assert.equal(run('M.clawStage'),2);assert.equal(run('M.shots.length'),0);clearKeys();ticks(35);
@@ -553,3 +553,29 @@ run('M.hurt=0;M.kickLock=0;M.poseT=M.castT=0;M.y=368;M.ground=true;M.face=1;M.st
 run('M.map=false;mansionDiceStart()');assert.equal(run('M.actor'),'seiten');assert.equal(run('M.stepT'),0);run('M.poseT=12;M.stepT=8;mansionDiceRetry()');assert.equal(run('M.stepT'),0);
 run('mansionTalkClose(true);M.map=false;mansionEnter("seitenArena",110,256);mansionSeitenStart()');assert.equal(run('M.actor'),'umine');assert(!run('mansionActors().includes("seiten")'));
 console.log('PASS buddy40: legacy reward migration / idempotent save, three-way swap and locks, shared status / room continuity, 2+2 claws, no water shot, delayed song / pause / interruption, backstep / pause / retry, no self-boss.');
+
+// Stage phase 1: the tile-room movement model matches the real physics (tools/reach.js relies on these numbers).
+{
+ const kickClimb=(room,x,y,side,topY)=>{clearKeys();run(`M.map=false;M.actor='umine';mansionEnter('${room}',${x},${y});M.enemies=[];M.hurt=0;M.transition=0;keys.${side>0?'right':'left'}=true;keys.jump=true;`);
+  for(let i=0;i<900;i++){if(run(`M.y<${topY}-2`)){run(`keys.${side>0?'right':'left'}=false;keys.${side>0?'left':'right'}=true;`);}else run('if(M.ground || (M.wall && M.kickLock===0))inp.jumpPressed=true');ticks(1);if(run(`M.ground&&M.y===${topY}`))break;}
+  return run('JSON.stringify([M.x,M.y,M.ground])');};
+ // Wall kick up one wall (east wall of the clock tower) through the 2-tile floor hole.
+ let p=JSON.parse(kickClimb('clockTower',616,576,1,352));assert(p[1]===352&&p[2]&&p[0]<592,'clock tower wall-kick shaft: '+p);
+ // Wall kick past a ledge using the 1-column gap, then hop onto the secret ledge.
+ p=JSON.parse(kickClimb('moonReservoir',1000,368,1,96));assert(p[1]===96&&p[2]&&p[0]<960,'reservoir wall-kick secret: '+p);
+ // Slide jump crosses the 6-tile gap in the star passage; a normal running jump does not.
+ clearKeys();run('M.map=false;mansionEnter("starPassage",840,224);M.enemies=[];M.hurt=0;M.transition=0;M.face=1;');ticks(2);run('keys.right=true;mansionInput.slide=true');ticks(1);assert(run('M.slideT>0'));
+ for(let i=0;i<40&&run('M.x<918');i++)ticks(1);run('keys.jump=true;inp.jumpPressed=true');ticks(1);assert(run('M.slideJump&&M.vy<0'),'slide jump starts');
+ for(let i=0;i<120&&!run('M.ground');i++){if(run('M.x>1024'))run('keys.right=false');ticks(1);}assert(run('M.ground&&M.y===224&&M.x>1024'),'slide jump lands on the far ledge: '+run('JSON.stringify([M.x,M.y])'));
+ clearKeys();run('mansionEnter("starPassage",918,224);M.enemies=[];M.hurt=0;M.transition=0;');ticks(2);run('keys.right=true;keys.jump=true;inp.jumpPressed=true');for(let i=0;i<160&&!(run('M.ground')&&i>3);i++)ticks(1);assert(run('M.y')>224,'a normal jump must not reach the slide-jump ledge');clearKeys();
+ // Slide tunnel: exactly one free row over the floor; standing is blocked, sliding passes.
+ run('mansionEnter("archive",145,208);M.enemies=[]');assert(!run('mansionFits(200,208,MC.h)')&&run('mansionFits(200,208,MC.slideH)'));
+ // Generated data: doors pair both ways, markers stand on ground, warps and props come from the tile grid.
+ for(const id of run('Object.keys(MR)'))for(const i of run(`Object.keys(MR.${id}.doors)`)){const d=`MR.${id}.doors[${i}]`;assert(run(`!!MR[${d}.to]&&mansionFitsIn(${d}.to,${d}.at[0],${d}.at[1])`),id+' door '+i+' arrives inside a wall');assert(run(`MR[${d}.to].doors.some(b=>b.to==='${id}')||MR[${d}.to].extensionDoor?.to==='${id}'`),id+' door '+i+' has no way back');}
+ // Old saves whose checkpoint no longer stands on the new grid snap to that room's save altar.
+ run('localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,flags:{seal:true},visited:["bedroom","gallery"],checkpoint:{room:"gallery",x:900,y:140}}));mansionStart(true)');assert.equal(run('M.room'),'gallery');assert.equal(run('M.x'),run('MR.gallery.cp[0]'));assert.equal(run('M.y'),run('MR.gallery.cp[1]'));
+ // Hall way back west: wall-kick the east wall up to the balcony, then cross the pillar tops (no one-way trap).
+ p=JSON.parse(kickClimb('hall',470,368,1,176));assert(p[1]===176&&p[2]&&p[0]<=440,'hall east wall to balcony: '+p);
+ clearKeys();run('keys.left=true;keys.jump=true');for(let i=0;i<900&&run('M.x>150');i++){run('if(M.ground||(M.wall&&M.kickLock===0))inp.jumpPressed=true');ticks(1);}clearKeys();assert(run('M.x<=150'),'hall east-to-west return: '+run('JSON.stringify([M.x,M.y])'));
+ console.log('PASS stage tiles: wall-kick shaft and ledge gap, slide jump reach vs normal jump, one-row slide tunnel, hall way back west, paired doors, stale checkpoint snapping.');
+}
