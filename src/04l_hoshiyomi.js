@@ -24,12 +24,13 @@ function hoshiFaceLoad(key,name){const img=new Image();img.onload=()=>{HOSHI_ART
 if(typeof fetch==='function'){hoshiArtLoad('dark','hoshiyomi_dark');hoshiArtLoad('normal','hoshiyomi');hoshiArtLoad('bullets','star_bullets');hoshiFaceLoad('darkFace','hoshiyomi_dark');hoshiFaceLoad('normalFace','hoshiyomi');}
 // pose -> frame. Sequel sheets: frame names (or arrays like "idle":[0,1]); grid sheets: animations{frames,fps|ms}.
 const HOSHI_POSE_ALIAS={move:['move','walk','run'],shootWindup:['shootWindup','windup','idle'],shootStar:['shootStar','shoot','attack','idle'],starRainCast:['starRainCast','cast','idle'],dash:['dash','run','move','walk'],hurt:['hurt','idle'],defeat:['defeat','down','hurt','idle'],idle:['idle'],peace:['peace','wink','idle']};
-function hoshiFrame(art,pose,t){const m=art.meta,names=HOSHI_POSE_ALIAS[pose]||[pose,'idle'];
- if(art.mode==='sequel'){const fr=m.frames||[];for(const n of names){let list=Array.isArray(m[n])?m[n]:m.animations?.[n]?.frames;if(!list){const i=fr.findIndex(f=>f.name===n||f.name?.startsWith(n));if(i>=0)list=[i];}if(list&&list.length){const ms=m.animations?.[n]?.ms||160;return fr[list[Math.floor(t*16.667/ms)%list.length]];}}return fr[0];}
- const an=m.animations||{};for(const n of names){const a=an[n];if(a){const ms=a.ms||(a.fps?1000/a.fps:(m.ms&&m.ms[n])||200),k=a.loop===false?Math.min(a.frames.length-1,Math.floor(t*16.667/ms)):Math.floor(t*16.667/ms)%a.frames.length;return a.frames[k];}}return 0;}
+function hoshiAnimPick(list,ms,t,loop){const L=Array.isArray(ms)?ms:list.map(()=>+ms||160),tot=L.reduce((a,b)=>a+b,0),now=t*16.667;let x=loop===false?Math.min(now,tot-1):now%tot;for(let k=0;k<list.length;k++){if(x<L[k])return list[k];x-=L[k];}return list[list.length-1];}
+function hoshiFrame(art,pose,t){const m=art.meta,names=HOSHI_POSE_ALIAS[pose]||[pose,'idle'],an=m.animations||{};
+ if(art.mode==='sequel'){const fr=m.frames||[];for(const n of names){const a=an[n];let list=a?.frames||(Array.isArray(m[n])?m[n]:null),ms=a?.ms||160;if(!list){const i=fr.findIndex(f=>f.name===n||f.name?.startsWith(n));if(i>=0)list=[i];}if(list&&list.length)return fr[hoshiAnimPick(list,ms,t,a?.loop)];}return fr[0];}
+ for(const n of names){const a=an[n];if(a)return hoshiAnimPick(a.frames,a.ms||(a.fps?1000/a.fps:(m.ms&&m.ms[n])||200),t,a.loop);}return 0;}
 // draws at feet (x,y); returns false when no art is loaded
 function hoshiDrawArt(key,x,y,pose,t,dir,alpha=1){const art=HOSHI_ART[key];if(!art)return false;const f=hoshiFrame(art,pose,t);g.save();g.globalAlpha=alpha;g.translate(Math.round(x),Math.round(y));if(dir<0)g.scale(-1,1);
- if(art.mode==='sequel'){if(!f){g.restore();return false;}const sc=f.scale||art.meta.displayScale||.105,[rx,ry,rw,rh]=f.rect,[ax,ay]=f.anchor||[rw/2,rh];g.imageSmoothingEnabled=true;g.drawImage(art.img,rx,ry,rw,rh,-(ax-rx)*sc,-(ay-ry)*sc,rw*sc,rh*sc);}
+ if(art.mode==='sequel'){if(!f){g.restore();return false;}const sc=f.scale||art.meta.scale||.105,[rx,ry,rw,rh]=f.rect;let[ax,ay]=f.anchor||[rw/2,rh];if(ax>=rw||ay>=rh){ax-=rx;ay-=ry;}g.imageSmoothingEnabled=true;g.drawImage(art.img,rx,ry,rw,rh,-ax*sc,-ay*sc,rw*sc,rh*sc);}
  else{const m=art.meta,fw=+m.frameWidth||48,fh=+m.frameHeight||48,cx=+m.cx||fw/2;g.drawImage(art.img,f*fw,0,fw,fh,-cx,-fh,fw,fh);}
  g.restore();return true;}
 // sequel anchors are absolute in the sheet; relative anchors (<= rect size) are also accepted
@@ -108,7 +109,7 @@ function mansionHoshiDraw(e){const pose=mansionHoshiPose(e);
  if(e.mode==='shoot'&&e.mt<36&&e.pattern){e.pattern.forEach((low,i)=>mansionDiamond(e.x+e.face*(22+i*9),HOSHI_FLOOR-(low?6:20),3,(M.t&4)?'#ffffff':low?'#ff8ad8':'#c99aff'));}
  drawHoshi('dark',e.x,e.y,pose,e.t,e.face,e.flash>0&&(e.flash&2)?.55:1);
  if(M.hoshiState==='active'){mrect(e.x-28,e.y-66,56,5,'#160e27');mrect(e.x-27,e.y-65,54*Math.max(0,e.hp)/e.maxHp,3,e.hp<=e.maxHp/2?'#ff6ab0':'#c99aff');}}
-function mansionHoshiWin(){M.hoshiState='done';M.flags.hoshiyomiDefeated=true;M.enemyShots=[];M.shots=[];M.enemies=M.enemies.filter(e=>e.kind!=='hoshiBoss');M.hp=mansionMaxHP();mansionShardGain(3,true);mansionSave();
+function mansionHoshiWin(){M.hoshiState='done';M.messageT=0;M.flags.hoshiyomiDefeated=true;M.enemyShots=[];M.shots=[];M.enemies=M.enemies.filter(e=>e.kind!=='hoshiBoss');M.hp=mansionMaxHP();mansionShardGain(3,true);mansionSave();
  mansionTalkShow('星詠み',['……っ、いったぁ……。あれ、うち……何してたんだっけ？','え、マジ？ うちが襲ったの？ ……ごめん、ほんとごめんじゃん……。','なんか黒いもやもやに、星の声ジャックされてたっぽい。……助けてくれてありがと、マジ感謝！','これお礼の欠片、3つあげる☆ 拠点の客室で待ってるね。欠片集めたら、うちが強くしたげるから！']);}
 function mansionHoshiDefeatCheck(){if(M.hoshiState!=='active')return;const e=M.enemies.find(e=>e.kind==='hoshiBoss');if(e&&e.hp<=0)mansionHoshiWin();}
 function mansionHoshiBulletUpdate(){if(M.room!=='obsDome')return;for(const b of M.enemyShots)if((b.kind==='hStarRain'&&b.y>HOSHI_FLOOR-4)){b.dead=true;mansionBurst(b.x,HOSHI_FLOOR-4,'#c99aff',3);}}
