@@ -103,7 +103,7 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 <script>
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.46';
+const GAME_VERSION = '2.0.0-test.47';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.
@@ -2247,17 +2247,17 @@ function drawSequelWalk(distance,cx,feet,face,white,size=SEQUEL_MODEL.size){
  if(!sp){drawSequelAt(2+(sequelWalkFrame(distance)%2),cx,feet,face,white,size);return;}
  const scale=size/d.cell;g.drawImage(pick(sp,face,white),Math.round(cx-d.cx*scale),Math.round(feet-d.feet*scale),size,size);
 }
-function loadSequelWalk(){const img=new Image();img.onload=()=>{
+function loadSequelWalk(src='assets/umine-walk.png',out=SEQUEL_MODEL){const img=new Image();img.onload=()=>{
  const feet=[612,614,590,588],frames=[];
  for(let i=0;i<4;i++){const c=mkCanvas(128,128),p=c.getContext('2d');p.imageSmoothingEnabled=false;
  p.drawImage(img,(i%2)*615,Math.floor(i/2)*639,615,639,64-330*.195,124-feet[i]*.195,615*.195,639*.195);frames.push(sheetSprite(c));}
- SEQUEL_MODEL.walkFrames=frames;
- };img.src='assets/umine-walk.png';}
+ out.walkFrames=frames;
+ };img.src=src;}
 function drawSequelPlayer(camX,white){const x=P.x+P.w/2-camX,y=P.y+P.h;
  if(P.hurt<=0&&P.onGround&&Math.abs(P.vx)>.1){drawSequelWalk(P.animT*1.8,x,y,P.face,white);return;}
  const fi=P.hurt>0?0:!P.onGround?(P.vy<0?4:5):P.shootT>0?6:(frame>>5)&1;drawSequelAt(fi,x,y,P.face,white);}
 function stripConnectedWhite(c){const p=c.getContext('2d'),data=p.getImageData(0,0,c.width,c.height),d=data.data,seen=new Uint8Array(c.width*c.height),q=new Int32Array(c.width*c.height);let head=0,tail=0;function push(x,y){const n=y*c.width+x;if(seen[n])return;seen[n]=1;const k=n*4;if(d[k]>225&&d[k+1]>225&&d[k+2]>225)q[tail++]=n;}for(let x=0;x<c.width;x++){push(x,0);push(x,c.height-1);}for(let y=0;y<c.height;y++){push(0,y);push(c.width-1,y);}while(head<tail){const n=q[head++],x=n%c.width,y=Math.floor(n/c.width);d[n*4+3]=0;if(x)push(x-1,y);if(x<c.width-1)push(x+1,y);if(y)push(x,y-1);if(y<c.height-1)push(x,y+1);}p.putImageData(data,0,0);}
-function loadSequelModel(){const img=new Image();img.onload=()=>{try{const anchors=[[210,410],[208,410],[219,410],[234,410],[200,328],[205,328],[206,344],[241,344]];const frames=[];for(let i=0;i<8;i++){const c=mkCanvas(384,i<4?416:352),p=c.getContext('2d');p.drawImage(img,(i%4)*384,i<4?0:416,384,c.height,0,0,384,c.height);stripConnectedWhite(c);const cell=mkCanvas(128,128),cg=cell.getContext('2d');cg.imageSmoothingEnabled=false;cg.drawImage(c,64-anchors[i][0]*.29,124-anchors[i][1]*.29,384*.29,c.height*.29);frames.push(sheetSprite(cell));}SEQUEL_MODEL.frames=frames;SEQUEL_MODEL.loading=false;refreshSequelModel();}catch(e){SEQUEL_MODEL.failure=e.message;SEQUEL_MODEL.loading=false;refreshSequelModel();}};img.onerror=()=>{SEQUEL_MODEL.failure='Image unavailable';SEQUEL_MODEL.loading=false;refreshSequelModel();};img.src='umine-sheet.jpeg';}
+function loadSequelModel(src='umine-sheet.jpeg',out=SEQUEL_MODEL){const img=new Image();img.onload=()=>{try{const anchors=[[210,410],[208,410],[219,410],[234,410],[200,328],[205,328],[206,344],[241,344]];const frames=[];for(let i=0;i<8;i++){const c=mkCanvas(384,i<4?416:352),p=c.getContext('2d');p.drawImage(img,(i%4)*384,i<4?0:416,384,c.height,0,0,384,c.height);stripConnectedWhite(c);const cell=mkCanvas(128,128),cg=cell.getContext('2d');cg.imageSmoothingEnabled=false;cg.drawImage(c,64-anchors[i][0]*.29,124-anchors[i][1]*.29,384*.29,c.height*.29);frames.push(sheetSprite(cell));}out.frames=frames;if(out!==SEQUEL_MODEL)return;SEQUEL_MODEL.loading=false;refreshSequelModel();}catch(e){SEQUEL_MODEL.failure=e.message;SEQUEL_MODEL.loading=false;refreshSequelModel();}};img.onerror=()=>{if(out!==SEQUEL_MODEL)return;SEQUEL_MODEL.failure='Image unavailable';SEQUEL_MODEL.loading=false;refreshSequelModel();};img.src=src;}
 refreshSequelModel();loadSequelModel();loadSequelWalk();
 
 // ---------------------------------------------------------------------
@@ -2833,7 +2833,7 @@ const ROOM_DEFS=[
   '################################',
   '################################'
  ]},
- {id:'gallery',name:'客室の回廊',area:'mansion',cx:3,cy:1,tone:'#303c5c',links:{1:'bedroom:1'},rows:[
+ {id:'gallery',name:'客室の回廊',area:'mansion',cx:3,cy:1,tone:'#303c5c',links:{7:'sTobi:7',1:'bedroom:1'},rows:[
   '################################################################################################',
   '#..............................................................................................#',
   '#..............................................................................................#',
@@ -2856,7 +2856,7 @@ const ROOM_DEFS=[
   '######################################.........................................................#',
   '#########################################.................................====.................#',
   '#########################################......................................................#',
-  '#########################################......x.....w......v......w..................c.......D#',
+  '#########################################...7..x.....w......v......w..................c.......D#',
   '################################################################################################',
   '################################################################################################',
   '################################################################################################',
@@ -3004,7 +3004,7 @@ const ROOM_DEFS=[
   '################################################',
   '################################################',
   '################################################']},
- {id:'moonReservoir',scenes:[['pipes',60,1,3,22]],foes:[['slime',54,1]],name:'月映しの貯水室',area:'water',cx:19,cy:-3,tone:'#254457',ventOffsets:[0,60,120],rows:[
+ {id:'moonReservoir',scenes:[['pipes',60,1,3,22]],foes:[['slime',54,1]],name:'月映しの貯水室',area:'water',cx:19,cy:-3,tone:'#254457',ventOffsets:[0,60,120],links:{7:'sLily:7'},rows:[
   '################################################################',
   '#..............................................................#',
   '#..............................................................#',
@@ -3027,7 +3027,7 @@ const ROOM_DEFS=[
   '#.................................x............................#',
   '#.............======........========........======.............#',
   '#..............................................................#',
-  '#D...v.....w.....u.............u........w......u........S..c..D#',
+  '#D...v.....w.....u.......7.....u........w......u........S..c..D#',
   '################################################################',
   '################################################################',
   '################################################################',
@@ -3066,7 +3066,7 @@ const ROOM_DEFS=[
   '################################################################################',
   '################################################################################',
   '################################################################################']},
- {id:'forbiddenArchive',foes:[['bats',45,1,{n:3}],['bookmimic',20,22],['bookmimic',48,22]],name:'禁書庫・封じられた閲覧室',area:'library',cx:28,cy:-3,tone:'#372e49',rows:[
+ {id:'forbiddenArchive',foes:[['bats',45,1,{n:3}],['bookmimic',20,22],['bookmimic',48,22]],name:'禁書庫・封じられた閲覧室',area:'library',cx:28,cy:-3,tone:'#372e49',links:{7:'sNeen:7'},rows:[
   '################################################################',
   '#..............................................................#',
   '#..............................................................#',
@@ -3089,7 +3089,7 @@ const ROOM_DEFS=[
   '#..........................................=====...............#',
   '#...........=====..............................................#',
   '#..............................................................#',
-  '#D..K..cw...K...............K.......K..w....x.......Kc...SK...D#',
+  '#D..K..cw...K...............K....7..K..w....x.......Kc...SK...D#',
   '################################################################',
   '################################################################',
   '################################################################',
@@ -3316,7 +3316,7 @@ const ROOM_DEFS=[
   '#D.1..S...W...D#',
   '################',
   '################']},
- {id:'obsDome',name:'天球儀のドーム',area:'observatory',cx:13,cy:-4,tone:'#191a3e',rows:[
+ {id:'obsDome',name:'天球儀のドーム',area:'observatory',cx:13,cy:-4,tone:'#191a3e',links:{7:'sStar:7'},rows:[
   '################################',
   '#..............................#',
   '#..............................#',
@@ -3330,7 +3330,7 @@ const ROOM_DEFS=[
   '#..............................#',
   '#..............................#',
   '#..............................#',
-  '#D.............................#',
+  '#D..............7..............#',
   '################################']},
  {id:'kGate',name:'稽古庭の崩れ門',area:'keiko',cx:13,cy:3,tone:'#26304a',links:{1:'garden:1'},foes:[['slime',12,13],['bats',36,3,{n:3}]],rows:[
   '################################################',
@@ -3474,6 +3474,70 @@ const ROOM_DEFS=[
   '#..............................#',
   '#..............................#',
   '#.1............................#',
+  '################################']},
+ {id:'sTobi',name:'黄昏翼の止まり木',area:'shade',cx:2,cy:6,tone:'#1a1226',links:{7:'gallery:7'},rows:[
+  '################################',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#.7............................#',
+  '################################']},
+ {id:'sNeen',name:'霧弓の書架裏',area:'shade',cx:5,cy:6,tone:'#1a1226',links:{7:'forbiddenArchive:7'},rows:[
+  '################################',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#.7............................#',
+  '################################']},
+ {id:'sLily',name:'夜想の水底劇場',area:'shade',cx:8,cy:6,tone:'#1a1226',links:{7:'moonReservoir:7'},rows:[
+  '################################',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#.7............................#',
+  '################################']},
+ {id:'sStar',name:'蝕の天蓋',area:'shade',cx:11,cy:6,tone:'#1a1226',links:{7:'obsDome:7'},rows:[
+  '################################',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#..............................#',
+  '#.7............................#',
   '################################']}
 ];
 
@@ -8111,7 +8175,7 @@ function mansionAstarteAI(e){if(M.sparState!=='active')return;const phase=e.t%36
  if(rage&&phase===330&&Number.isFinite(e.rainX)){for(const dx of [-24,-12,0,12,24])M.enemyShots.push({kind:'star',x:e.rainX+dx,y:105,vx:0,vy:2.7});e.rainX=null;}
  if((phase>195&&phase<=215)||(phase>250&&phase<=295)){if(mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,[e.x-13,e.y-34,26,34]))mansionDamage(2,M.x<e.x?-1:1);}
 }
-function mansionTalkPortrait(){const c=document.getElementById('mTalkPortrait'),p=c.getContext('2d');p.clearRect(0,0,96,96);if(mansionHoshiPortrait(p,c)||mansionKeikoPortrait(p,c))return;const asta=M.talk?.speaker==='アスターテ',seiten=M.talk?.speaker==='青天';c.setAttribute('aria-label',seiten?'青天':asta?'アスターテ':'被り物姿のダイスロール');p.imageSmoothingEnabled=true;if(seiten){if(mansionSeitenPortrait)p.drawImage(mansionSeitenPortrait,275,230,655,655,0,0,96,96);else{const f=sheetFrame('seiten','idle',0);if(f)p.drawImage(pick(f,1,false),0,0,96,96);}}else if(asta){if(mansionAstarteFace)p.drawImage(mansionAstarteFace,0,0,96,96);else{const f=sheetFrame('astarte','idle',0);if(f)p.drawImage(pick(f,1,false),0,0,96,96);}}else if(RORU_ART.image)p.drawImage(RORU_ART.image,305,0,380,440,0,0,96,96);}
+function mansionTalkPortrait(){const c=document.getElementById('mTalkPortrait'),p=c.getContext('2d');p.clearRect(0,0,96,96);if(mansionHoshiPortrait(p,c)||mansionKeikoPortrait(p,c)||mansionUminePortrait(p,c))return;const asta=M.talk?.speaker==='アスターテ',seiten=M.talk?.speaker==='青天';c.setAttribute('aria-label',seiten?'青天':asta?'アスターテ':'被り物姿のダイスロール');p.imageSmoothingEnabled=true;if(seiten){if(mansionSeitenPortrait)p.drawImage(mansionSeitenPortrait,275,230,655,655,0,0,96,96);else{const f=sheetFrame('seiten','idle',0);if(f)p.drawImage(pick(f,1,false),0,0,96,96);}}else if(asta){if(mansionAstarteFace)p.drawImage(mansionAstarteFace,0,0,96,96);else{const f=sheetFrame('astarte','idle',0);if(f)p.drawImage(pick(f,1,false),0,0,96,96);}}else if(RORU_ART.image)p.drawImage(RORU_ART.image,305,0,380,440,0,0,96,96);}
 
 let mansionAstarteFace=null;{const img=new Image();img.onload=()=>mansionAstarteFace=img;img.src='assets/astarte-sequel-face.png';}
 const mansionGuardKeys=new Set();
@@ -8121,7 +8185,7 @@ for(const [name,url] of [['actions','assets/umine-mansion-actions.png'],['backgr
 function mansionSpotOK(room,x,y){const r=MR[room];if(!r||!r.grid||y%16)return false;const c=Math.floor(x/16),row=y/16,G=(cc,rr)=>rr<0||rr>=r.grid.length||cc<0||cc>=r.grid[0].length?'#':r.grid[rr][cc];const solid=ch=>'#=gk'.includes(ch);const cols=[Math.floor((x-7)/16),Math.floor((x+6)/16)];return cols.some(cc=>solid(G(cc,row)))&&cols.every(cc=>!solid(G(cc,row-1))&&!solid(G(cc,row-2)));}
 function mansionFitsIn(room,x,y){return mansionSpotOK(room,x,y);}
 function mansionSnapCheckpoint(cp){if(mansionSpotOK(cp.room,cp.x,cp.y))return cp;const r=MR[cp.room],p=r.cp||r.doors[0]?.at||[64,r.h-32];return{room:cp.room,x:p[0],y:p[1]};}
-function mansionRead(){try{const s=JSON.parse(localStorage.getItem(MANSION_KEY));if(!s||s.version!==1||!MR[s.checkpoint?.room]||!Number.isFinite(s.checkpoint.x)||!Number.isFinite(s.checkpoint.y))return null;const r=MR[s.checkpoint.room];if(s.checkpoint.x<8||s.checkpoint.x>r.w-8||s.checkpoint.y<0||s.checkpoint.y>r.h)return null;return{flags:{seal:s.flags?.seal===true,boss:s.flags?.boss===true,complete:s.flags?.complete===true,astarteFull:s.flags?.astarteFull===true,...mansionRewardFlags(s),seitenLeftArchive:s.flags?.seitenLeftArchive===true,archiveLatch:s.flags?.archiveLatch===true,starShortcut:s.flags?.starShortcut===true,seitenDefeated:s.flags?.seitenDefeated===true,hoshiyomiDefeated:s.flags?.hoshiyomiDefeated===true,hoshiyomiHub:s.flags?.hoshiyomiHub===true,...Object.fromEntries(['keikoTobiume','keikoNeenia','keikoLily','keikoStar'].map(f=>[f,s.flags?.[f]===true]))},shards:Math.max(0,Math.min(999,s.shards|0)),shardsTaken:Array.isArray(s.shardsTaken)?s.shardsTaken.filter(x=>typeof x==='string'):[],upg:Object.fromEntries(MANSION_UPGRADES.map(u=>[u.id,Math.max(0,Math.min(u.cost.length,(s.upg?.[u.id])|0))])),visited:Array.isArray(s.visited)?s.visited.filter(x=>MR[x]):['bedroom'],checkpoint:mansionSnapCheckpoint(s.checkpoint.room==='garden'&&s.checkpoint.y===208?{...s.checkpoint,y:256}:s.checkpoint),portals:Array.isArray(s.portals)?[...new Set([...MANSION_WARP_START,...s.portals.filter(id=>MANSION_PORTALS[id])])]:[...MANSION_WARP_START]};}catch{return null;}}
+function mansionRead(){try{const s=JSON.parse(localStorage.getItem(MANSION_KEY));if(!s||s.version!==1||!MR[s.checkpoint?.room]||!Number.isFinite(s.checkpoint.x)||!Number.isFinite(s.checkpoint.y))return null;const r=MR[s.checkpoint.room];if(s.checkpoint.x<8||s.checkpoint.x>r.w-8||s.checkpoint.y<0||s.checkpoint.y>r.h)return null;return{flags:{seal:s.flags?.seal===true,boss:s.flags?.boss===true,complete:s.flags?.complete===true,astarteFull:s.flags?.astarteFull===true,...mansionRewardFlags(s),seitenLeftArchive:s.flags?.seitenLeftArchive===true,archiveLatch:s.flags?.archiveLatch===true,starShortcut:s.flags?.starShortcut===true,seitenDefeated:s.flags?.seitenDefeated===true,hoshiyomiDefeated:s.flags?.hoshiyomiDefeated===true,hoshiyomiHub:s.flags?.hoshiyomiHub===true,...Object.fromEntries(['keikoTobiume','keikoNeenia','keikoLily','keikoStar','shadeTobi','shadeNeen','shadeLily','shadeStar','darkStyleUnlocked','darkStyle'].map(f=>[f,s.flags?.[f]===true]))},shards:Math.max(0,Math.min(999,s.shards|0)),shardsTaken:Array.isArray(s.shardsTaken)?s.shardsTaken.filter(x=>typeof x==='string'):[],upg:Object.fromEntries(MANSION_UPGRADES.map(u=>[u.id,Math.max(0,Math.min(u.cost.length,(s.upg?.[u.id])|0))])),visited:Array.isArray(s.visited)?s.visited.filter(x=>MR[x]):['bedroom'],checkpoint:mansionSnapCheckpoint(s.checkpoint.room==='garden'&&s.checkpoint.y===208?{...s.checkpoint,y:256}:s.checkpoint),portals:Array.isArray(s.portals)?[...new Set([...MANSION_WARP_START,...s.portals.filter(id=>MANSION_PORTALS[id])])]:[...MANSION_WARP_START]};}catch{return null;}}
 function mansionSave(){try{localStorage.setItem(MANSION_KEY,JSON.stringify({version:1,rewardVersion:2,flags:M.flags,visited:M.visited,portals:M.portals,checkpoint:M.checkpoint,shards:M.shards||0,shardsTaken:M.shardsTaken||[],upg:M.upg||{}}));M.saved=true;M.saveError=false;}catch{M.saveError=true;}}
 function mansionSay(text,time=220){M.message=text;M.messageT=time;}
 function mansionStart(resume=false){mansionGuardRelease();M.guardFlash=0;const saved=resume?mansionRead():null;M.actor='umine';M.swapCool=0;M.abilityCool=0;M.castT=0;Object.assign(M,{hp:16,hurt:0,dead:0,t:0,flags:saved?.flags||{seal:false,boss:false,complete:false,seitenLeftArchive:false,archiveLatch:false,starShortcut:false,seitenDefeated:false,hoshiyomiDefeated:false},shards:saved?.shards||0,shardsTaken:saved?.shardsTaken||[],upg:saved?.upg||{},dropCount:0,hoshiTries:0,visited:saved?.visited||['bedroom'],portals:saved?.portals||[...MANSION_WARP_START],checkpoint:saved?.checkpoint||{room:'bedroom',x:110,y:208},map:false,talk:null,menuTab:'status',saved:!!saved,saveError:false});M.hp=mansionMaxHP();mansionEnter(M.checkpoint.room,M.checkpoint.x,M.checkpoint.y);setState('mansion');mansionSay(resume?'また、ここから探してみよう。':'紫の扉はワープ。普通の扉からも回廊へ進めるよ。');mansionUI();}
@@ -8130,7 +8194,7 @@ function mansionSolids(){const r=MR[M.room];return [...r.floor,...r.blocks,...(M
 function mansionOverlap(x,y,w,h,b){return x<b[0]+b[2]&&x+w>b[0]&&y<b[1]+b[3]&&y+h>b[1];}
 function mansionFits(x,y,h=MC.h){return !mansionSolids().some(b=>mansionOverlap(x-MC.w/2,y-h,MC.w,h,b));}
 function mansionBurst(x,y,color='#8beeff',n=9){for(let i=0;i<n;i++)M.fx.push({x,y,vx:Math.cos(i/n*6.28)*(1+i%3),vy:Math.sin(i/n*6.28)*(1+i%3),life:20+i%7,color});}
-function mansionDamage(n,dir=0){if(M.hurt||M.dead)return;const blocked=mansionGuarding()&&dir===-M.face;if(blocked){n=Math.max(1,Math.floor(n/2));M.guardFlash=10;mansionBurst(M.x+M.face*20,M.y-22,'#ffe6ab',8);}if(M.seitenState==='active'&&M.hp-n<=0){mansionSeitenRetry();return;}if(M.diceState==='active'&&M.hp-n<=0){mansionDiceRetry();return;}if(M.hoshiState==='active'&&M.hp-n<=0){mansionHoshiRetry();return;}if(mansionKeikoActive()&&M.hp-n<=0){mansionKeikoRetry();return;}if(M.room==='garden'&&M.sparState==='active'&&M.hp-n<=0){mansionSparRetry();return;}M.hp=Math.max(0,M.hp-n);if(!mansionIsUmine())M.poseT=M.castT=M.stepT=0;M.stepT=0;M.hurt=blocked?36:75;M.vx=dir*(blocked?.8:2.8);M.vy=blocked?0:-3;M.kickLock=blocked?4:10;M.slideT=0;mansionBurst(M.x,M.y-14,'#ff9abb');sfx(blocked?'guard':'hurt');if(!M.hp){M.dead=65;mansionSay('……もう一度、あの灯りのところから。',100);}}
+function mansionDamage(n,dir=0){if(M.hurt||M.dead)return;if(M.keiko&&M.keiko.state==='active'&&KEIKO_BOSSES[M.keiko.id]?.shade)n=Math.ceil(n*1.5);const blocked=mansionGuarding()&&dir===-M.face;if(blocked){n=Math.max(1,Math.floor(n/2));M.guardFlash=10;mansionBurst(M.x+M.face*20,M.y-22,'#ffe6ab',8);}if(M.seitenState==='active'&&M.hp-n<=0){mansionSeitenRetry();return;}if(M.diceState==='active'&&M.hp-n<=0){mansionDiceRetry();return;}if(M.hoshiState==='active'&&M.hp-n<=0){mansionHoshiRetry();return;}if(mansionKeikoActive()&&M.hp-n<=0){mansionKeikoRetry();return;}if(M.room==='garden'&&M.sparState==='active'&&M.hp-n<=0){mansionSparRetry();return;}M.hp=Math.max(0,M.hp-n);if(!mansionIsUmine())M.poseT=M.castT=M.stepT=0;M.stepT=0;M.hurt=blocked?36:75;M.vx=dir*(blocked?.8:2.8);M.vy=blocked?0:-3;M.kickLock=blocked?4:10;M.slideT=0;mansionBurst(M.x,M.y-14,'#ff9abb');sfx(blocked?'guard':'hurt');if(!M.hp){M.dead=65;mansionSay('……もう一度、あの灯りのところから。',100);}}
 // Door events run only after a valid destination is entered.
 function mansionDoorAvailable(d){return !!d&&!!MR[d.to]&&Array.isArray(d.at)&&d.at.length===2&&d.at.every(Number.isFinite)&&(!d.need||M.flags[d.need]);}
 function mansionEnterDoor(d){if(!mansionDoorAvailable(d))return false;mansionEnter(d.to,...d.at);if(d.onEnterFlag==='seitenLeftArchive'){M.flags.seitenLeftArchive=true;mansionSave();}return true;}
@@ -8191,9 +8255,9 @@ function updateMansion(){
  if(M.poseT===4&&M.scytheStage===1&&M.scytheQueued)mansionScythe(2);
  }
  if(inp.shoot&&M.cool===0&&M.actor==='astarte'&&!mansionGuarding()){mansionScythe();}
- if(inp.shoot&&M.cool===0&&mansionIsUmine()&&M.shots.length<3){M.shots.push({x:M.x+M.face*13,y:M.y-(M.slideT?7:17),vx:M.face*4.8,damage:1+mansionUpg('shot')});M.cool=10;M.poseT=14;sfx('shot');}
+ if(inp.shoot&&M.cool===0&&mansionIsUmine()&&M.shots.length<3){{const dk=mansionDarkOn();M.shots.push({x:M.x+M.face*13,y:M.y-(M.slideT?7:17),vx:M.face*(dk?5.4:4.8),damage:1+mansionUpg('shot'),pierce:dk});M.cool=dk?14:10;}M.poseT=14;sfx('shot');}
  if(M.actor==='seiten'){mansionSeitenPlayerUpdate();if(M.map)return;}
- for(const shot of M.shots){shot.x+=shot.vx;if(solids.some(b=>mansionOverlap(shot.x-2,shot.y-2,4,4,b))){shot.dead=true;mansionBurst(shot.x,shot.y,'#96eaff',3);}mansionPropsHit(shot);for(const e of M.enemies){if(!shot.dead&&e.hp>0&&(e.kind!=='boss'||M.sparState==='active')&&(e.kind!=='diceBoss'||M.diceState==='active')&&(e.kind!=='seitenBoss'||M.seitenState==='active')&&(e.kind!=='hoshiBoss'||M.hoshiState==='active')&&(e.kind!=='keikoBoss'||mansionKeikoActive())&&(MANSION_FOES[e.kind]?mansionFoeHit(e,shot.x-2,shot.y-2,4,4):(Math.abs(shot.x-e.x)<(e.kind==='boss'||e.kind==='diceBoss'||e.kind==='seitenBoss'||e.kind==='hoshiBoss'||e.kind==='keikoBoss'?19:12)&&shot.y>e.y-(e.kind==='boss'||e.kind==='diceBoss'||e.kind==='seitenBoss'||e.kind==='hoshiBoss'||e.kind==='keikoBoss'?42+(e.lift||0):24)&&shot.y<e.y+2))){shot.dead=true;if(mansionFoeBlock(e,shot.vx>0?-1:1)){sfx('hit');continue;}if((e.kind==='boss'||e.kind==='seitenBoss')&&e.guard>0){mansionBurst(shot.x,shot.y,'#baa5ed',2);continue;}e.hp-=shot.damage||1;e.flash=6;if(e.kind==='boss'||e.kind==='seitenBoss')e.guard=18;mansionBurst(shot.x,shot.y,'#b1f8ff',4);sfx('hit');if(e.kind==='seitenBoss'&&e.hp<=0){mansionSeitenWin();return;}if(e.kind==='diceBoss'&&e.hp<=0){mansionDiceWin();return;}if(e.kind==='hoshiBoss'){if(e.hp<=0){mansionHoshiWin();return;}continue;}if(e.kind==='keikoBoss'){if(e.hp<=0){mansionKeikoWin();return;}continue;}if(e.kind==='boss'&&e.hp<=(M.sparMode==='full'?0:e.maxHp/2)){mansionBurst(e.x,e.y-12,'#ffdca1',14);mansionSparWin();}else if(e.hp<=0){mansionBurst(e.x,e.y-12,'#ffdca1',14);mansionFoeDropShard(e);if(M.hp<mansionMaxHP())M.hp++;}}}}
+ for(const shot of M.shots){shot.x+=shot.vx;if(solids.some(b=>mansionOverlap(shot.x-2,shot.y-2,4,4,b))){shot.dead=true;mansionBurst(shot.x,shot.y,'#96eaff',3);}mansionPropsHit(shot);for(const e of M.enemies){if(!shot.dead&&e.hp>0&&(e.kind!=='boss'||M.sparState==='active')&&(e.kind!=='diceBoss'||M.diceState==='active')&&(e.kind!=='seitenBoss'||M.seitenState==='active')&&(e.kind!=='hoshiBoss'||M.hoshiState==='active')&&(e.kind!=='keikoBoss'||mansionKeikoActive())&&(MANSION_FOES[e.kind]?mansionFoeHit(e,shot.x-2,shot.y-2,4,4):(Math.abs(shot.x-e.x)<(e.kind==='boss'||e.kind==='diceBoss'||e.kind==='seitenBoss'||e.kind==='hoshiBoss'||e.kind==='keikoBoss'?19:12)&&shot.y>e.y-(e.kind==='boss'||e.kind==='diceBoss'||e.kind==='seitenBoss'||e.kind==='hoshiBoss'||e.kind==='keikoBoss'?42+(e.lift||0):24)&&shot.y<e.y+2))){if(shot.pierce){shot.hits=shot.hits||[];if(shot.hits.includes(e))continue;shot.hits.push(e);}else shot.dead=true;if(mansionFoeBlock(e,shot.vx>0?-1:1)){shot.dead=true;sfx('hit');continue;}if((e.kind==='boss'||e.kind==='seitenBoss')&&e.guard>0){mansionBurst(shot.x,shot.y,'#baa5ed',2);continue;}e.hp-=shot.damage||1;e.flash=6;if(e.kind==='boss'||e.kind==='seitenBoss')e.guard=18;mansionBurst(shot.x,shot.y,'#b1f8ff',4);sfx('hit');if(e.kind==='seitenBoss'&&e.hp<=0){mansionSeitenWin();return;}if(e.kind==='diceBoss'&&e.hp<=0){mansionDiceWin();return;}if(e.kind==='hoshiBoss'){if(e.hp<=0){mansionHoshiWin();return;}continue;}if(e.kind==='keikoBoss'){if(e.hp<=0){mansionKeikoWin();return;}continue;}if(e.kind==='boss'&&e.hp<=(M.sparMode==='full'?0:e.maxHp/2)){mansionBurst(e.x,e.y-12,'#ffdca1',14);mansionSparWin();}else if(e.hp<=0){mansionBurst(e.x,e.y-12,'#ffdca1',14);mansionFoeDropShard(e);if(M.hp<mansionMaxHP())M.hp++;}}}}
  M.shots=M.shots.filter(s=>!s.dead&&Math.abs(s.x-M.x)<300);
  if(M.map)return;
  mansionPickupsUpdate();mansionShardsUpdate();mansionHoshiTrigger();mansionKeikoTrigger();if(M.map)return;mansionHoshiBulletUpdate();mansionKeikoBulletUpdate();
@@ -8279,7 +8343,7 @@ function mansionMechanismsDraw(){const r=MR[M.room],l=r.lever;if(l){const open=M
 }
 
 // ---- Tile renderer: collision tiles are drawn exactly where they collide, styled per area ----
-const MANSION_AREA_STYLE={keiko:['#161c2c','#384260','#dfe6f4','#5c6a88'],observatory:['#140f2c','#3a2f66','#d7b8ff','#6a5aa0'],hub:['#1d1a28','#3d3448','#c5a88a','#6e5a6a'],mansion:['#111d32','#39475e','#98bcc8','#55657b'],library:['#1c1424','#463650','#c9a77c','#76607a'],tower:['#18182a','#3e3f55','#c7ae78','#6b6b82'],water:['#0e2230','#24495a','#7fd3df','#3f7486'],star:['#121a33','#2d3d66','#b4c4f0','#4f5f8f'],garden:['#18202e','#3c4a5e','#a8c69a','#5d6d80'],play:['#200f22','#4a2b45','#e3c991','#7b4a63']};
+const MANSION_AREA_STYLE={shade:['#120c1c','#33264a','#d0b8f0','#5a4878'],keiko:['#161c2c','#384260','#dfe6f4','#5c6a88'],observatory:['#140f2c','#3a2f66','#d7b8ff','#6a5aa0'],hub:['#1d1a28','#3d3448','#c5a88a','#6e5a6a'],mansion:['#111d32','#39475e','#98bcc8','#55657b'],library:['#1c1424','#463650','#c9a77c','#76607a'],tower:['#18182a','#3e3f55','#c7ae78','#6b6b82'],water:['#0e2230','#24495a','#7fd3df','#3f7486'],star:['#121a33','#2d3d66','#b4c4f0','#4f5f8f'],garden:['#18202e','#3c4a5e','#a8c69a','#5d6d80'],play:['#200f22','#4a2b45','#e3c991','#7b4a63']};
 function mansionSolidAt(r,c,row){const ch=row<0||row>=r.grid.length||c<0||c>=r.grid[0].length?'#':r.grid[row][c];return ch==='#';}
 function mansionTilesDraw(r,cx,cy,view){const P=MANSION_AREA_STYLE[r.area]||MANSION_AREA_STYLE.mansion,c0=Math.max(0,Math.floor(cx/16)),c1=Math.min(r.grid[0].length-1,Math.floor((cx+view.w)/16)),r0=Math.max(0,Math.floor(cy/16)),r1=Math.min(r.grid.length-1,Math.floor((cy+view.h)/16));
  for(let row=r0;row<=r1;row++){const line=r.grid[row];for(let c=c0;c<=c1;c++){const ch=line[c],x=c*16,y=row*16;
@@ -8319,17 +8383,17 @@ function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.roun
  if(r.cp){const [x,y]=r.cp;mansionTile(x-12,y-6,24,6);mansionDiamond(x,y-27+Math.sin(M.t*.05)*2,11,'#305876');mansionDiamond(x,y-27+Math.sin(M.t*.05)*2,7,'#95f3ff');mrect(x-1,y-34,2,8,'#efffff');}
  if(r.seal&&!M.flags.seal){const[x,y]=r.seal;g.strokeStyle='#dfc77d';g.lineWidth=2;g.beginPath();g.arc(x,y-8,13,0,7);g.stroke();mansionDiamond(x,y-8+Math.sin(M.t*.06)*2,9,'#97f4ff');}
  if(M.room==='bedroom'&&!drawMansionBed(34,208,90)){mrect(34,168,83,15,'#657f9f');mrect(36,165,79,6,'#d2dfe9');mrect(32,150,4,55,'#8b7281');mrect(115,174,4,31,'#8b7281');mrect(40,161,19,6,'#f4f1ee');mrect(65,168,47,13,'#8fa8ca');mrect(42,183,4,25,'#705b72');}
- mansionPropsDraw();mansionShardsDraw();mansionHatchDraw();mansionKeikoCageDraw();mansionHatchDraw();
+ mansionPropsDraw();mansionShardsDraw();mansionHatchDraw();mansionKeikoCageDraw();
  for(const n of HUB_NPCS)if(n.room===M.room&&(!n.enabled||n.enabled()))n.draw(n.x,n.y,M.t,M.x<n.x?-1:1);
  if(r.goal){const[x,y]=r.goal;mrect(x-17,y-75,34,75,'#0b142a');for(let z=-14;z<=14;z+=7)if(!M.flags.boss)mrect(x+z,y-72,3,72,'#c6b37c');mrect(x-19,y-77,38,4,'#f0dbaa');}
  for(const e of M.enemies){if(e.hp<=0){if(MANSION_FOES[e.kind])mansionFoeDeathDraw(e);continue;}if(MANSION_FOES[e.kind]){mansionFoeDraw(e);continue;}if(e.kind==='seitenBoss'){mansionSeitenBossDraw(e);continue;}if(e.kind==='diceBoss'){mansionDiceDraw(e);continue;}if(e.kind==='hoshiBoss'){mansionHoshiDraw(e);continue;}if(e.kind==='keikoBoss'){mansionKeikoDraw(e);continue;}if(e.kind==='boss'){const wind=M.sparState==='active'&&(e.pose===8||e.striking);g.globalAlpha=e.guard>0&&(e.guard&2)?0.6:1;drawMansionAstarte(e.x,e.y,M.t,e.dir,e.pose??-1);g.globalAlpha=1;if(M.sparState==='active'){mrect(e.x-26,e.y-64,52,4,'#182039');mrect(e.x-25,e.y-63,50*e.hp/e.maxHp,2,'#c7a2f6');if(e.striking){g.beginPath();g.arc(e.x+e.dir*24,e.y-20,30,e.dir>0?-1.3:1.8,e.dir>0?1.3:4.5);g.strokeStyle='#170b34';g.lineWidth=6;g.stroke();g.strokeStyle='#cf63ff';g.lineWidth=4;g.stroke();g.strokeStyle='#fff4ae';g.lineWidth=1;g.stroke();}else if(wind){mansionDiamond(e.x+e.dir*35,e.y-35,4,'#f4d6ff');}}continue;}const sz=24;g.drawImage(pick(e.kind==='fly'?SPR.flyer[(frame>>3)&1]:SPR.walker[(frame>>3)&1],e.dir,e.flash>0),Math.round(e.x-12),Math.round(e.y-24),sz,sz);}
  if(!M.dead||M.dead%8<4){if(!M.hurt||M.hurt%6<3){
  if(M.actor==='astarte'){g.save();if(M.slideT){g.translate(M.x,M.y);g.scale(1,.65);g.translate(-M.x,-M.y);}drawMansionAstartePlayer(M.x,M.y,M.t,M.poseT?M.scytheFace:M.face,(mansionGuarding()||M.guardFlash&&M.ground&&!M.poseT&&!M.castT)?16:M.castT?15:M.poseT?mansionScythePose():!M.ground?(M.vy<0?13:14):Math.abs(M.vx)>.1&&!M.hurt?4+Math.floor(M.walkDistance/8)%4:-1,ASTARTE_PLAYER_SIZE);g.restore();mansionScytheDraw();mansionGuardDraw();}else if(M.actor==='seiten'){mansionSeitenPlayerDraw();}else{
- const action=M.slideT?'slide':(!M.ground&&(M.wall||M.kickLock))?'wall':null;
- if(action&&mansionActionArt){const box=action==='slide'?[887,290,873,560]:[55,75,810,685],height=action==='slide'?24:42,width=box[2]/box[3]*height;const facing=action==='wall'?(M.wall?-M.wall:M.face):M.face;const flip=action==='wall'?facing===1:facing===-1;g.save();g.translate(Math.round(M.x),Math.round(M.y));if(flip)g.scale(-1,1);g.drawImage(mansionActionArt,...box,-width/2,-height,width,height);g.restore();}
+ const darkSw=mansionDarkSwap(true);const actArt=mansionDarkOn()&&mansionDarkActionArt||mansionActionArt;const action=M.slideT?'slide':(!M.ground&&(M.wall||M.kickLock))?'wall':null;
+ if(action&&actArt){const box=action==='slide'?[887,290,873,560]:[55,75,810,685],height=action==='slide'?24:42,width=box[2]/box[3]*height;const facing=action==='wall'?(M.wall?-M.wall:M.face):M.face;const flip=action==='wall'?facing===1:facing===-1;g.save();g.translate(Math.round(M.x),Math.round(M.y));if(flip)g.scale(-1,1);g.drawImage(actArt,...box,-width/2,-height,width,height);g.restore();}
  else if(M.ground&&Math.abs(M.vx)>.1&&!M.hurt)drawSequelWalk(M.walkDistance,M.x,M.y,M.face,false);
  else {const fi=M.poseT?6:!M.ground?(M.vy<0?4:5):(frame>>5)&1;drawSequelAt(fi,M.x,M.y,M.face,false,SEQUEL_MODEL.size);}
- }}}
+ mansionDarkSwap(false,darkSw);}}}
  if(mansionIsUmine()&&M.wall&&!M.ground){mansionDiamond(M.x+M.wall*8,M.y-5,4,'#99faff');}
 
  mansionWaterPlatformDraw();
@@ -8342,7 +8406,7 @@ function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.roun
  drawText(M.flags.seal?'SEAL':'----',VW-8,17,M.flags.seal?'y':'b',1,'r');if(M.shards||M.flags.hoshiyomiDefeated){mansionShardIcon(VW-44,32,.7);drawText(String(M.shards||0),VW-8,28,'w',1,'r');}
  // Notices are outlined text below the HUD; no foot-level black strip.
 }
-const MANSION_MAP_NAMES={bedroom:'拠点',hubCellar:'拠点地下',gallery:'回廊',hall:'大広間',archive:'書庫',cellar:'地下',garden:'中庭',diceArena:'遊戯室',archiveInner:'封書',clockTower:'時計塔',moonReservoir:'貯水室',starPassage:'星灯り',forbiddenArchive:'禁書庫',seitenArena:'歌声の間',hubLoft:'屋根裏',obsStair:'螺旋',obsShelves:'星図',obsLens:'望遠鏡',obsSave:'控室',obsDome:'ドーム',kGate:'崩れ門',kTobi:'梅香',kShaft:'井戸塔',kSave:'休み処',kNeen:'弓張り',kBridge:'渡り廊',kLily:'舞台',kDis:'星剣'};
+const MANSION_MAP_NAMES={bedroom:'拠点',hubCellar:'拠点地下',gallery:'回廊',hall:'大広間',archive:'書庫',cellar:'地下',garden:'中庭',diceArena:'遊戯室',archiveInner:'封書',clockTower:'時計塔',moonReservoir:'貯水室',starPassage:'星灯り',forbiddenArchive:'禁書庫',seitenArena:'歌声の間',hubLoft:'屋根裏',obsStair:'螺旋',obsShelves:'星図',obsLens:'望遠鏡',obsSave:'控室',obsDome:'ドーム',kGate:'崩れ門',kTobi:'梅香',kShaft:'井戸塔',kSave:'休み処',kNeen:'弓張り',kBridge:'渡り廊',kLily:'舞台',kDis:'封印室',sTobi:'黄昏翼',sNeen:'霧弓',sLily:'夜想',sStar:'蝕'};
 function mansionMapBounds(){const c=Object.values(MR).map(r=>r.cell);return{minX:Math.min(...c.map(p=>p[0])),minY:Math.min(...c.map(p=>p[1])),maxX:Math.max(...c.map(p=>p[0]+p[2]-1)),maxY:Math.max(...c.map(p=>p[1]+p[3]-1))};}
 function mansionRoomDoors(r){return[...r.doors,...(r.extensionDoor&&MR[r.extensionDoor.to]?[r.extensionDoor]:[])];}
 function mansionMapScale(html){const b=mansionMapBounds(),nx=b.maxX-b.minX+1,ny=b.maxY-b.minY+1;return html?{s:28,t:21,ox:10,oy:10,b}:{s:Math.floor(Math.min(224/nx,120/ny)),t:Math.floor(Math.min(224/nx,120/ny)*.75),ox:16+Math.floor((224-nx*Math.floor(Math.min(224/nx,120/ny)))/2),oy:66,b};}
@@ -8396,7 +8460,7 @@ document.getElementById('mBattleLeave').addEventListener('click',e=>{e.preventDe
 document.getElementById('mTalkSeiten').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionSeitenChallenge();});
 document.getElementById('mTalkDice').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionDiceChallenge();});
 document.getElementById('mTalkNext').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionTalkNext();});
-function mansionStatusHTML(){const memo=M.flags.seitenDefeated?'禁書庫の青天ちゃんと仲直りした。歌声の間で、また会って遊べるよ。':M.visited.includes('forbiddenArchive')?'禁書庫の奥から青天ちゃんの歌が聞こえる。':M.flags.starShortcut?'星灯りの渡り廊下から書庫への近道が開いた。紫の扉で拠点にも戻れるよ。':M.visited.includes('starPassage')?'星灯りの上階に、書庫への近道を開ける錠がある。':M.visited.includes('moonReservoir')?'貯水室の水は光ってから噴き出す。足場の上で様子を見よう。':M.visited.includes('clockTower')?'時計塔の昇降機は３層を繋ぐ。上階から貯水室へ進もう。':M.flags.archiveLatch?'封書の錠が開いた。回廊の右奥から時計塔へ進める。':M.visited.includes('archiveInner')?'封書の回廊の上階に錠がある。段差を登って調べてみよう。':M.flags.complete?'門の先へ出られた！ みんなを探す旅は、まだ続く。':M.flags.boss?'アスターテさんとの手合わせを終えた。奥の門を調べてみよう。':M.flags.seal?'水脈の紋章で地下の封印が解けた。客室への近道も使えるよ。':'館の出口を探そう。大広間の上階に、何かあるかも。';return `<div class="status-top"><div class="portrait ${M.actor==='seiten'?'seiten':M.actor==='astarte'?'astarte':''}" role="img" aria-label="${MANSION_ACTOR_NAMES[M.actor]||'海音'}"></div><div><h2>${MANSION_ACTOR_NAMES[M.actor]||'海音'}</h2><div>${M.actor==='seiten'?'歌と、誰かの隣が好きな猫の女の子':M.actor==='astarte'?'月と星を見守る、優しいお姉さん':'水魔法が得意な、旅好きの魔女'}</div><strong>HP ${M.hp} / ${mansionMaxHP()}</strong><div class="hp-track"><div class="hp-fill" style="width:${M.hp/mansionMaxHP()*100}%"></div></div></div></div><div class="status-row"><strong>バディ</strong><br>${mansionActors().length>1?mansionActors().slice(1).map(id=>MANSION_ACTOR_NAMES[id]).join('・')+'と一緒に探索中。交代ボタン／Cキーで順に交代。HPはみんなで共通。':'今は海音ひとり。'}<br>操作中：${MANSION_ACTOR_NAMES[M.actor]||'海音'}</div><div class="status-row"><strong>謎の右腕</strong>　正体不明<br>水弾を放てる。どうして付いているのかな……？</div><div class="status-row"><strong>使える能力</strong><br>${M.actor==='seiten'?'爪の２段攻撃（各２ダメージ）／歌声／バックステップ。少し速く走り、高く跳べる。':mansionIsUmine()?'水弾 ／ 魔法の壁キック ／ 壁滑り ／ スライディング':'鎌２段攻撃（各２ダメージ）／星弾／鎌ガード（長押しで正面のダメージ・吹き飛ばし軽減）。魔法の壁キック・壁滑り・スライドは海音専用。'}</div><div class="status-row"><strong>海音の習得能力</strong><br>${M.flags.seal?'水の足場：固有行動ボタン／Rキーで４秒間の足場。再使用５秒。':'水の足場：未習得（水脈の紋章で解放）'}</div><div class="status-row"><strong>恒久強化</strong><br>${mansionPermanentHTML()}</div><div class="status-row note"><strong>探索メモ</strong><br>${memo}</div>${M.room==='gallery'?`<div class="status-row"><strong>回廊の見渡し方</strong><br><button id="mGalleryView">${M.galleryWide===false?'通常表示 → 広く見渡す':'広く見渡す → 通常表示'}</button></div>`:''}<div class="status-row">現在地：${mansionLocationName()}<br>記録地点：${MR[M.checkpoint.room].name} ・ 訪問 ${M.visited.length} / ${Object.keys(MR).length} 部屋</div>`;}
+function mansionStatusHTML(){const memo=M.flags.seitenDefeated?'禁書庫の青天ちゃんと仲直りした。歌声の間で、また会って遊べるよ。':M.visited.includes('forbiddenArchive')?'禁書庫の奥から青天ちゃんの歌が聞こえる。':M.flags.starShortcut?'星灯りの渡り廊下から書庫への近道が開いた。紫の扉で拠点にも戻れるよ。':M.visited.includes('starPassage')?'星灯りの上階に、書庫への近道を開ける錠がある。':M.visited.includes('moonReservoir')?'貯水室の水は光ってから噴き出す。足場の上で様子を見よう。':M.visited.includes('clockTower')?'時計塔の昇降機は３層を繋ぐ。上階から貯水室へ進もう。':M.flags.archiveLatch?'封書の錠が開いた。回廊の右奥から時計塔へ進める。':M.visited.includes('archiveInner')?'封書の回廊の上階に錠がある。段差を登って調べてみよう。':M.flags.complete?'門の先へ出られた！ みんなを探す旅は、まだ続く。':M.flags.boss?'アスターテさんとの手合わせを終えた。奥の門を調べてみよう。':M.flags.seal?'水脈の紋章で地下の封印が解けた。客室への近道も使えるよ。':'館の出口を探そう。大広間の上階に、何かあるかも。';return `<div class="status-top"><div class="portrait ${M.actor==='seiten'?'seiten':M.actor==='astarte'?'astarte':''}" role="img" aria-label="${MANSION_ACTOR_NAMES[M.actor]||'海音'}"></div><div><h2>${MANSION_ACTOR_NAMES[M.actor]||'海音'}</h2><div>${M.actor==='seiten'?'歌と、誰かの隣が好きな猫の女の子':M.actor==='astarte'?'月と星を見守る、優しいお姉さん':'水魔法が得意な、旅好きの魔女'}</div><strong>HP ${M.hp} / ${mansionMaxHP()}</strong><div class="hp-track"><div class="hp-fill" style="width:${M.hp/mansionMaxHP()*100}%"></div></div></div></div><div class="status-row"><strong>バディ</strong><br>${mansionActors().length>1?mansionActors().slice(1).map(id=>MANSION_ACTOR_NAMES[id]).join('・')+'と一緒に探索中。交代ボタン／Cキーで順に交代。HPはみんなで共通。':'今は海音ひとり。'}<br>操作中：${MANSION_ACTOR_NAMES[M.actor]||'海音'}</div><div class="status-row"><strong>謎の右腕</strong>　正体不明<br>水弾を放てる。どうして付いているのかな……？</div><div class="status-row"><strong>使える能力</strong><br>${M.actor==='seiten'?'爪の２段攻撃（各２ダメージ）／歌声／バックステップ。少し速く走り、高く跳べる。':mansionIsUmine()?'水弾 ／ 魔法の壁キック ／ 壁滑り ／ スライディング':'鎌２段攻撃（各２ダメージ）／星弾／鎌ガード（長押しで正面のダメージ・吹き飛ばし軽減）。魔法の壁キック・壁滑り・スライドは海音専用。'}</div><div class="status-row"><strong>海音の習得能力</strong><br>${M.flags.seal?'水の足場：固有行動ボタン／Rキーで４秒間の足場。再使用５秒。':'水の足場：未習得（水脈の紋章で解放）'}</div><div class="status-row"><strong>恒久強化</strong><br>${mansionPermanentHTML()}</div><div class="status-row note"><strong>探索メモ</strong><br>${memo}</div>${M.room==='gallery'?`<div class="status-row"><strong>回廊の見渡し方</strong><br><button id="mGalleryView">${M.galleryWide===false?'通常表示 → 広く見渡す':'広く見渡す → 通常表示'}</button></div>`:''}${M.flags.darkStyleUnlocked?`<div class="status-row"><strong>スタイル</strong>（いつでもここで切り替え・記録される）<br><button id="mDarkStyle">${M.flags.darkStyle?'ダーク海音ちゃん → いつもの海音':'いつもの海音 → ダーク海音ちゃん'}</button><br><small>ダーク：影の弾が敵を貫通（同じ敵には1回）・弾速アップ／連射は少し遅い</small></div>`:''}<div class="status-row">現在地：${mansionLocationName()}<br>記録地点：${MR[M.checkpoint.room].name} ・ 訪問 ${M.visited.length} / ${Object.keys(MR).length} 部屋</div>`;}
 function mansionMapHTML(){const m=mansionMapScale(true),width=m.ox*2+(m.b.maxX-m.b.minX+1)*m.s,height=m.oy*2+(m.b.maxY-m.b.minY+1)*m.t;let paths='',rooms='';const links=new Set();
  for(const[id,r]of Object.entries(MR)){if(!M.visited.includes(id))continue;for(const d of mansionRoomDoors(r)){if(!MR[d.to])continue;const key=[id,d.to].sort().join(':')+d.x;if(links.has(key))continue;links.add(key);const a=mansionDoorCellPos(id,d.x,d.y-20,true),b=mansionDoorCellPos(d.to,d.at[0],d.at[1]-20,true);const locked=d.need&&!M.flags[d.need],near=Math.hypot(a[0]-b[0],a[1]-b[1])<m.s*.8;paths+=near?`<rect x="${(a[0]+b[0])/2-3}" y="${(a[1]+b[1])/2-3}" width="6" height="6" fill="${locked?'#685269':'#e7cf86'}"/>`:`<path d="M ${a[0]} ${a[1]} L ${b[0]} ${b[1]}" fill="none" stroke="${locked?'#685269':'#6b8b9b'}" stroke-width="2" stroke-dasharray="4 3"/>`;}}
  for(const[id,r]of Object.entries(MR)){const[x,y,w,h]=mansionMapPosition(id,true),seen=M.visited.includes(id);let grid='';for(let i=1;i<r.cell[2];i++)grid+=`<path d="M ${x+i*m.s} ${y} v ${h}" stroke="#1d3243" stroke-width="1"/>`;for(let i=1;i<r.cell[3];i++)grid+=`<path d="M ${x} ${y+i*m.t} h ${w}" stroke="#1d3243" stroke-width="1"/>`;
@@ -8409,7 +8473,7 @@ function mansionMapHTML(){const m=mansionMapScale(true),width=m.ox*2+(m.b.maxX-m
 let mansionControlsActive=false;
 const mansionAbilityBtn=document.getElementById('mAbility');mansionAbilityBtn.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();mansionAbility();});
 const mansionSwapBtn=document.getElementById('mSwap');mansionSwapBtn.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();mansionSwap();});
-function mansionUI(){const active=state==='mansion'||state==='mansionClear',cat=M.actor==='seiten';mansionAbilityBtn.style.display=active&&!M.map?'flex':'none';mansionAbilityBtn.textContent=M.abilityCool?'待ち '+Math.ceil(M.abilityCool/60):cat?'歌声':mansionIsUmine()?(M.flags.seal?'水足場':'未習得'):'星弾';mansionAbilityBtn.setAttribute('aria-label',cat?'固有行動：歌声':mansionIsUmine()?'固有行動：水の足場':'固有行動：星弾');mansionSlideBtn.disabled=cat&&!!M.stepCool;mansionSlideBtn.textContent=cat?'STEP':mansionIsUmine()?'SLIDE':'GUARD';mansionSlideBtn.setAttribute('aria-label',cat?'バックステップ':mansionIsUmine()?'スライディング':'鎌でガード（長押し）');mansionSwapBtn.style.display=active&&mansionActors().length>1&&!M.map?'block':'none';mansionSwapBtn.disabled=!mansionCanSwap();const next=MANSION_ACTOR_NAMES[mansionNextActor()];mansionSwapBtn.setAttribute('aria-label',next+'に交代');mansionSwapBtn.textContent=next+'へ ↔';mansionSlideBtn.style.display=active?'flex':'none';mansionMapBtn.style.display=active?'block':'none';orbBtn.textContent=active?'調べる':'ORB';mansionTitle.style.display=state==='title'?'flex':'none';if(state==='title')document.getElementById('mContinue').style.display=mansionRead()?'block':'none';document.getElementById('modelPicker').style.display=active?'none':'flex';if(active!==mansionControlsActive){mansionControlsActive=active;doLayout();}const open=state==='mansion'&&M.map;const talking=open&&M.menuTab==='talk'&&!!M.talk;for(const b of [mansionStatusTab,mansionMapTab,mansionAreaTab])b.style.display=talking?'none':'';document.getElementById('mTalk').style.display=talking?'block':'none';document.getElementById('mTalkBattle').style.display=talking&&M.talk.offerFull&&M.room==='bedroom'?'block':'none';document.getElementById('mTalkDice').style.display=talking&&M.talk.offerDice&&M.room==='bedroom'?'block':'none';document.getElementById('mTalkSeiten').style.display=talking&&M.talk.offerSeiten&&M.room==='seitenArena'?'block':'none';document.getElementById('mBattleLeave').textContent=M.room==='seitenArena'?'戦闘をやめて禁書庫へ戻る':'手合わせをやめて拠点へ';document.getElementById('mBattleLeave').style.display=open&&(M.sparReturn||M.diceReturn||M.seitenState==='active'||M.seitenState==='ready')?'block':'none';if(talking){document.getElementById('mTalkName').textContent=M.talk.speaker||'ダイスロール';mansionTalkPortrait();document.getElementById('mTalkText').textContent=M.talk.lines[M.talk.index];document.getElementById('mTalkNext').textContent=M.talk.index===M.talk.lines.length-1?'話を終える':'次へ';}mansionMenu.style.display=open?'flex':'none';document.body.classList.toggle('mansion-menu-open',open);mansionMapContent.style.display=M.menuTab==='map'?'block':'none';mansionAreaContent.style.display=M.menuTab==='area'||M.menuTab==='upgrade'?'block':'none';if(open&&M.menuTab==='upgrade'){const html=mansionUpgradeHTML();if(mansionAreaContent.innerHTML!==html){mansionAreaContent.innerHTML=html;for(const u of MANSION_UPGRADES)document.getElementById('mUpg-'+u.id).addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionUpgradeBuy(u.id);});}}mansionAreaTab.setAttribute('aria-selected',String(M.menuTab==='area'));if(open&&M.menuTab==='area'){const html=mansionWarpHTML();if(mansionAreaContent.innerHTML!==html){mansionAreaContent.innerHTML=html;for(const id of Object.keys(MANSION_PORTALS))document.getElementById('mWarp-'+id).addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionWarpTo(id);});}}if(open&&M.menuTab==='map'){const map=mansionMapHTML();if(mansionMapContent.innerHTML!==map)mansionMapContent.innerHTML=map;}mansionStatus.style.display=M.menuTab==='status'?'block':'none';mansionStatusTab.setAttribute('aria-selected',String(M.menuTab==='status'));mansionMapTab.setAttribute('aria-selected',String(M.menuTab==='map'));if(open&&M.menuTab==='status'){const html=mansionStatusHTML();if(mansionStatus.innerHTML!==html){mansionStatus.innerHTML=html;if(M.room==='gallery')document.getElementById('mGalleryView').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionGalleryViewToggle();});}} }
+function mansionUI(){const active=state==='mansion'||state==='mansionClear',cat=M.actor==='seiten';mansionAbilityBtn.style.display=active&&!M.map?'flex':'none';mansionAbilityBtn.textContent=M.abilityCool?'待ち '+Math.ceil(M.abilityCool/60):cat?'歌声':mansionIsUmine()?(M.flags.seal?'水足場':'未習得'):'星弾';mansionAbilityBtn.setAttribute('aria-label',cat?'固有行動：歌声':mansionIsUmine()?'固有行動：水の足場':'固有行動：星弾');mansionSlideBtn.disabled=cat&&!!M.stepCool;mansionSlideBtn.textContent=cat?'STEP':mansionIsUmine()?'SLIDE':'GUARD';mansionSlideBtn.setAttribute('aria-label',cat?'バックステップ':mansionIsUmine()?'スライディング':'鎌でガード（長押し）');mansionSwapBtn.style.display=active&&mansionActors().length>1&&!M.map?'block':'none';mansionSwapBtn.disabled=!mansionCanSwap();const next=MANSION_ACTOR_NAMES[mansionNextActor()];mansionSwapBtn.setAttribute('aria-label',next+'に交代');mansionSwapBtn.textContent=next+'へ ↔';mansionSlideBtn.style.display=active?'flex':'none';mansionMapBtn.style.display=active?'block':'none';orbBtn.textContent=active?'調べる':'ORB';mansionTitle.style.display=state==='title'?'flex':'none';if(state==='title')document.getElementById('mContinue').style.display=mansionRead()?'block':'none';document.getElementById('modelPicker').style.display=active?'none':'flex';if(active!==mansionControlsActive){mansionControlsActive=active;doLayout();}const open=state==='mansion'&&M.map;const talking=open&&M.menuTab==='talk'&&!!M.talk;for(const b of [mansionStatusTab,mansionMapTab,mansionAreaTab])b.style.display=talking?'none':'';document.getElementById('mTalk').style.display=talking?'block':'none';document.getElementById('mTalkBattle').style.display=talking&&M.talk.offerFull&&M.room==='bedroom'?'block':'none';document.getElementById('mTalkDice').style.display=talking&&M.talk.offerDice&&M.room==='bedroom'?'block':'none';document.getElementById('mTalkSeiten').style.display=talking&&M.talk.offerSeiten&&M.room==='seitenArena'?'block':'none';document.getElementById('mBattleLeave').textContent=M.room==='seitenArena'?'戦闘をやめて禁書庫へ戻る':'手合わせをやめて拠点へ';document.getElementById('mBattleLeave').style.display=open&&(M.sparReturn||M.diceReturn||M.seitenState==='active'||M.seitenState==='ready')?'block':'none';if(talking){document.getElementById('mTalkName').textContent=M.talk.speaker||'ダイスロール';mansionTalkPortrait();document.getElementById('mTalkText').textContent=M.talk.lines[M.talk.index];document.getElementById('mTalkNext').textContent=M.talk.index===M.talk.lines.length-1?'話を終える':'次へ';}mansionMenu.style.display=open?'flex':'none';document.body.classList.toggle('mansion-menu-open',open);mansionMapContent.style.display=M.menuTab==='map'?'block':'none';mansionAreaContent.style.display=M.menuTab==='area'||M.menuTab==='upgrade'?'block':'none';if(open&&M.menuTab==='upgrade'){const html=mansionUpgradeHTML();if(mansionAreaContent.innerHTML!==html){mansionAreaContent.innerHTML=html;for(const u of MANSION_UPGRADES)document.getElementById('mUpg-'+u.id).addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionUpgradeBuy(u.id);});}}mansionAreaTab.setAttribute('aria-selected',String(M.menuTab==='area'));if(open&&M.menuTab==='area'){const html=mansionWarpHTML();if(mansionAreaContent.innerHTML!==html){mansionAreaContent.innerHTML=html;for(const id of Object.keys(MANSION_PORTALS))document.getElementById('mWarp-'+id).addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionWarpTo(id);});}}if(open&&M.menuTab==='map'){const map=mansionMapHTML();if(mansionMapContent.innerHTML!==map)mansionMapContent.innerHTML=map;}mansionStatus.style.display=M.menuTab==='status'?'block':'none';mansionStatusTab.setAttribute('aria-selected',String(M.menuTab==='status'));mansionMapTab.setAttribute('aria-selected',String(M.menuTab==='map'));if(open&&M.menuTab==='status'){const html=mansionStatusHTML();if(mansionStatus.innerHTML!==html){mansionStatus.innerHTML=html;if(M.room==='gallery')document.getElementById('mGalleryView').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionGalleryViewToggle();});{const ds=document.getElementById('mDarkStyle');if(ds)ds.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();mansionDarkToggle();});}}} }
 function mansionLayout(){const p=layout.portrait,top=layout.gameY+layout.gameH;place(mansionSlideBtn,p?layout.W/2-28:layout.W-70,p?top+77:layout.H*.42,56,56);place(mansionMapBtn,p?14:14,p?top+14:52,72,34);mansionTitle.style.top=(p?top+76:layout.gameY+layout.gameH*.64)+'px';mansionTitle.style.left=(layout.gameX+layout.gameW/2)+'px';const unit=Math.max(1,Math.min(2,layout.W/256));const margin=8;place(mansionMenu,margin,layout.gameY+8,layout.W-margin*2,Math.max(120,layout.H-layout.gameY-16));mansionMenu.style.setProperty?.('--mu',unit+'px');if(state==='mansion'||state==='mansionClear')mansionControlsLayout();}
 
 const mansionControlRects={};
@@ -8537,6 +8601,7 @@ const ART={
  library:{wall:['#241a2c','#2e2236','#3a2c43','#18111e','#7a5a3e','#cfa271'],stone:['#8a6342','#d4a46e','#4e3424','#3e2f47','#4f3d5a','#2c2135','#1a1320','#120d17'],dark:.42,far:'stacks',win:'slit',glow:'#ffb969'},
  tower:{wall:['#1f1f30','#29293d','#34344b','#151522','#8a7348','#e2c27c'],stone:['#a88f5c','#f0d79a','#5d4c30','#3a3a52','#4a4a66','#26263a','#17172a','#10101d'],dark:.38,far:'gears',win:'round',glow:'#ffc978'},
  water:{wall:['#102633','#15303f','#1d3d4e','#0a1a24','#3f7c7a','#9fe6dc'],stone:['#4f9a86','#a8f0d4','#28584f','#24485a','#2f5a6e','#173342','#0d212c','#08161e'],dark:.46,far:'cavern',win:'arch',glow:'#8ff2ff'},
+ shade:{wall:['#140e1e','#1c1428','#2a1e3a','#0c0814','#6a4a8a','#d8c0f0'],stone:['#6a5a8a','#e0d4f4','#3a2e54','#261e3a','#30264a','#1a1430','#100c20','#08060f'],dark:.3,far:'cosmos',win:'round',glow:'#b070ff',open:true},
  keiko:{wall:['#1c2232','#252c40','#323b54','#141826','#8a94b0','#e6ecf8'],stone:['#8c96aa','#eef2f8','#4c556c','#30384c','#3c465c','#20263a','#151a2a','#0c1020'],dark:.22,far:'moonGarden',win:'arch',glow:'#e8f0ff',open:true},
  observatory:{wall:['#120f2a','#1a1638','#272250','#0b0920','#7a6ac8','#e6dcff'],stone:['#8a7ad0','#f2ecff','#4a3e8a','#2e2766','#3c3482','#1f1a4a','#141036','#0a0822'],dark:.26,far:'cosmos',win:'round',glow:'#d7b8ff',open:true},
  star:{wall:['#141a35','#1b2344','#252f57','#0e1228','#6c74b8','#d8dcff'],stone:['#7d87c9','#eef0ff','#414a86','#2c3563','#3a4579','#1e2447','#121733','#0b0f24'],dark:.3,far:'stars',win:'tall',glow:'#bfd0ff'},
@@ -9092,13 +9157,38 @@ const KEIKO_BOSSES={
   fake:['海音ちゃーん！ リリィだよっ♪ 会いたかったー！','ウミミ？ えーっと……今日はお休み！ かわりにリリリ……じゃなくて、リリィが歌うね♪'],pre:['あっ、言っちゃった。そう、あたしはリリリ！ リリィちゃんは楽屋の檻で待機中でーす♪','歌の波はジャンプ、音符はスライディング！ ライブについてこれたら返してあげる♪'],
   again:['ざんねーん、アンコールはリリリにおまかせ♪ もう一回いってみよー！'],vanish:['えー、負けちゃった！ リリリ、月の光の舞台にしか立てないの。','リリィちゃんは楽屋から出してあげるね。……またね、ばいばーい♪'],rematch:['あの子、月が出たらまた歌いに来るって。もう一回、腕試ししていく？♪'],
   post:['海音ちゃん！ 助けてくれてありがとうっ♪ 楽屋に閉じこめられて、ずっと出番待ちだったの！','リリィのそっくりさん、手ごわかったでしょ？ リズムがわかれば怖くないよ。次の相手にも、その調子で！','ウミミも拍手してる！ 欠片はファンサービス、3つどうぞっ♪ これからは一緒にステージだね！']},
- disaster:{room:'kDis',name:'ズターさん',real:'スターさん',hp:170,col:'#71d9ff',sub:'#d8f6ff',art:'disaster',normal:'star',flag:'keikoStar',
+ disaster:{morph:true,room:'kDis',name:'ズターさん',real:'スターさん',hp:170,col:'#71d9ff',sub:'#d8f6ff',art:'disaster',normal:'star',flag:'keikoStar',
   seq:['sword','spear','axe','scythe','bow'],rageSeq:['sword','scythe','spear','axe','bow','scythe'],
   sword:{n:1,rn:2,speed:3.0},spear:{speed:6},axe:{},scythe:{},bow:{n:2,rn:3,pat:'alt',speed:3.2,kind:'arrow'},
   pose:{sword:'sword',spear:'spear',axe:'axe',scythe:'scythe',bow:'bow',walk:'idle',idle:'idle'},
   fake:['よう、海音。オレだ、スターさんだぜ。','錬金剣？ ……ああ、あれな。オレ様の……いや、オレの剣は今日もピカピカだ。ククク……'],pre:['……チッ、口調がもたなかったか。オレ様は錬金のズターさん！ 本物は奥の檻だ。','武器が変わる前には紫に光り、頭の上に次の武器が出る。剣の波と斧の衝撃は跳べ、大鎌と弓はくぐれ。いくぞ！'],
   again:['フハハ、まだまだだな！ ……だが筋は悪くない。もう一本やるか？'],vanish:['ぐぬぬ……見事だ。オレ様は、月が錬金した写し身にすぎん。','本物は返してやる。……せいぜい、仲良くやるんだな！'],rematch:['あのズターとかいうやつ、月の光でまた湧くらしい。もう一戦、やってみるか？'],
   post:['よう、海音！ 助かったぜ。オレのニセモノ、片付けてくれたんだな。','武器が変わる瞬間を見る。前の旅で、オマエが一番うまかったところだ。腕試しなら、いつでも相手になるぜ。','欠片、持ってけ。これで背中は任せられるぜ。……みんなで、この館の謎を解こうな。']},
+ // ---- test.47: 影の四騎 (shades) — original dark bosses from the old dazed-dark sprites. No cage / no fake; harder, faster patterns.
+ vesper:{shade:true,room:'sTobi',name:'黄昏翼ヴェスパー',hp:220,col:'#c03a78',sub:'#ffb0d8',art:'shade_tobi',normal:'tobiume_dark',flag:'shadeTobi',wait:[46,30],
+  seq:['volley','swoop','shock','volley','swoop'],rageSeq:['swoop','volley','shock','swoop','volley','shock'],
+  volley:{n:3,rn:4,pat:'alt',speed:3.0,kind:'heart'},swoop:{speed:6.6},shock:{},
+  pose:{volley:'attack',swoop:'fly',shock:'kick',walk:'fly',idle:'idle'},
+  pre:['……黄昏の翼に、迷いこんだね。','わたしはヴェスパー。光を食べる、夕暮れの影。高い羽根はくぐって、衝撃は跳ぶ——できるものなら。'],
+  again:['まだ黄昏は終わらないよ。……もう一度、落ちておいで。'],post:['……夜が、来ちゃった。わたしの翼、きみに預けるよ。','影はあと三つ。全部をほどけば……きみの中の影も、目を覚ますかも。']},
+ lavis:{shade:true,room:'sNeen',name:'霧弓ラヴィス',hp:220,col:'#3a4a9a',sub:'#b8c8ff',art:'shade_neen',normal:'neenia_dark',flag:'shadeNeen',wait:[44,30],
+  seq:['volley','rain','snare','volley','rain'],rageSeq:['volley','snare','rain','volley','snare','rain'],
+  volley:{n:3,rn:4,pat:'mix',speed:3.6,kind:'arrow'},rain:{w:50,rw:44},snare:{n:3,rn:4},
+  pose:{volley:'attack',rain:'attack',snare:'attack',walk:'walk',idle:'idle'},
+  pre:['書架の裏は、霧の狩場。……わたしはラヴィス。','矢の高さを、霧の中で見分けられる？ 茨の印は、二度光るわ。'],
+  again:['霧はまだ晴れていない。……弓を引き直すわ。'],post:['……霧が、晴れていく。見事ね。','この矢羽を。影はあと少し。全部そろえば、あなたは影を纏える。']},
+ nocturne:{shade:true,room:'sLily',name:'夜想ノクターン',hp:220,col:'#a03ab0',sub:'#ffc8f4',art:'shade_lily',normal:'lily_dark',flag:'shadeLily',wait:[44,30],
+  seq:['wave','volley','rain','wave','volley'],rageSeq:['wave','rain','volley','wave','rain','volley'],
+  wave:{n:2,rn:2,speed:3.0},volley:{n:3,rn:4,pat:'high',speed:3.0,kind:'note'},rain:{w:50,rw:44},
+  pose:{wave:'attack',volley:'attack',rain:'attack',walk:'walk',idle:'idle'},
+  pre:['ようこそ、水底の劇場へ。わたしはノクターン——真夜中だけの歌姫。','波は跳んで、音符はくぐって。休符は、ないよ？'],
+  again:['カーテンコールには早いわ。……もう一曲。'],post:['……拍手、聞こえた。あなたの勝ち。','夜の旋律をあげる。影の衣は、すぐそこよ。']},
+ eclipse:{shade:true,morph:true,room:'sStar',name:'蝕王エクリプス',hp:260,col:'#5a3aa0',sub:'#d8c0ff',art:'shade_star',normal:'disaster_dark',flag:'shadeStar',wait:[42,28],
+  seq:['sword','spear','axe','scythe','bow','spear'],rageSeq:['sword','scythe','spear','axe','bow','scythe','spear'],
+  sword:{n:2,rn:3,speed:3.4},spear:{speed:7},axe:{},scythe:{},bow:{n:3,rn:4,pat:'alt',speed:3.6,kind:'arrow'},
+  pose:{sword:'sword',spear:'spear',axe:'axe',scythe:'scythe',bow:'bow',walk:'idle',idle:'idle'},
+  pre:['星を喰らう天蓋へよく来た。我は蝕王エクリプス。','五つの武器を、闇の速さで振るう。紫の光と頭上の印を見逃すな。'],
+  again:['光は蝕まれたままだ。……立て、もう一度。'],post:['……蝕が明ける、か。見事だ、小さき者。','我が闇を、汝の衣とせよ。']},
 };
 const KEIKO_CAGE_X=440;
 const KEIKO_BY_ROOM=Object.fromEntries(Object.entries(KEIKO_BOSSES).map(([id,b])=>[b.room,id]));
@@ -9109,14 +9199,14 @@ const KEIKO_GRID_META={neenia:{frameWidth:32,frameHeight:32,cx:11,animations:{id
 function keikoSheetLoad(key,sequel,gridName){if(typeof fetch!=='function')return;
  const grid=()=>{if(!gridName)return;fetch('assets/'+gridName+'.json').then(r=>{if(!r.ok)throw 0;return r.json();}).catch(()=>KEIKO_GRID_META[gridName]||{frameWidth:32,frameHeight:32,animations:{idle:{frames:[0],ms:400}}}).then(meta=>{const img=new Image();img.onload=()=>{if(HOSHI_ART[key]?.mode==='sequel')return;const fh=+meta.frameHeight||32;HOSHI_ART[key]={mode:'grid',img,meta:{...meta,drawScale:meta.drawScale||Math.max(1,Math.round(54/fh*2)/2)}};};img.src='assets/'+(meta.image||gridName+'.png');});};
  fetch('assets/'+sequel+'.json').then(r=>{if(!r.ok)throw 0;return r.json();}).then(meta=>{const img=new Image();img.onload=()=>{HOSHI_ART[key]={mode:'sequel',img,meta};};img.onerror=grid;img.src='assets/'+(meta.image||sequel+'.png');}).catch(grid);}
-function keikoArtLoad(id){const B=KEIKO_BOSSES[id];keikoSheetLoad('k_'+id,B.art+'-sequel',null);keikoSheetLoad('r_'+id,B.normal+'_real-sequel',B.normal);
+function keikoArtLoad(id){const B=KEIKO_BOSSES[id];if(B.shade){keikoSheetLoad('k_'+id,B.art+'-sequel',B.normal);if(typeof Image==='function'){const f=new Image();f.onload=()=>{HOSHI_ART['k_'+id+'Face']={mode:'face',img:f};};f.src='assets/'+B.normal+'_face.png';}return;}keikoSheetLoad('k_'+id,B.art+'-sequel',null);keikoSheetLoad('r_'+id,B.normal+'_real-sequel',B.normal);
  if(typeof Image!=='function')return;const f=new Image();f.onload=()=>{HOSHI_ART['r_'+id+'Face']={mode:'face',img:f};};f.onerror=()=>{const b=new Image();b.onload=()=>{if(!HOSHI_ART['r_'+id+'Face'])HOSHI_ART['r_'+id+'Face']={mode:'face',img:b};};b.src='assets/'+B.normal+'_face.png';};f.src='assets/'+B.normal+'_real-sequel-face.png';}
 for(const id of Object.keys(KEIKO_BOSSES))keikoArtLoad(id);
 const KEIKO_ALIAS={attack:['attackA','attack','shoot','idle'],kick:['attackB','kick','special_dive_kick','attack','fly','idle'],fly:['move','fly','walk','idle'],walk:['move','walk','fly','idle'],telegraph:['telegraph','transform','attack','idle'],
  sword:['attackA','sword','attack','idle'],spear:['attackB','spear','attack','idle'],axe:['attackB','axe','attack','idle'],scythe:['attackA','scythe','attack','idle'],bow:['attackA','bow','attack','idle'],transform:['telegraph','transform','attack','idle'],hurt:['hurt','idle']};
 function keikoDraw(id,e,pose,real){const key=(real?'r_':'k_')+id,save=HOSHI_POSE_ALIAS[pose];if(KEIKO_ALIAS[pose])HOSHI_POSE_ALIAS[pose]=KEIKO_ALIAS[pose];const ok=hoshiDrawArt(key,e.x,e.y-(e.lift||0),pose,e.t,e.face,e.flash>0&&(e.flash&2)?.55:1);if(save)HOSHI_POSE_ALIAS[pose]=save;else delete HOSHI_POSE_ALIAS[pose];if(ok)return;keikoPlaceholder(id,e.x,e.y-(e.lift||0),pose,e.t,e.face,!real);}
 function keikoPlaceholder(id,x,y,pose,t,dir,fake){const B=KEIKO_BOSSES[id],f=dir<0?-1:1,R=(a,b,w,h,c)=>mrect(f>0?x+a:x-a-w,y+b,w,h,c),bob=(t>>5)&1;
- const hair={tobiume:'#ff8cc0',neenia:'#e8ecf4',lily:'#ffe6a8',disaster:'#2a3a6a'}[id],dress={tobiume:'#c8406a',neenia:'#2a3a7a',lily:'#ff9ad8',disaster:'#1c2a4a'}[id];
+ const hair={tobiume:'#ff8cc0',neenia:'#e8ecf4',lily:'#ffe6a8',disaster:'#2a3a6a'}[id]||B.col,dress={tobiume:'#c8406a',neenia:'#2a3a7a',lily:'#ff9ad8',disaster:'#1c2a4a'}[id]||'#1a1028';
  R(-5,-8,4,8,'#2a2030');R(2,-8,4,8,'#2a2030');R(-6,-26,13,18,dress);R(-6,-12,13,3,B.sub);R(-4,-37+bob,9,10,'#f4dcd0');R(-6,-40+bob,13,5,hair);R(-6,-38+bob,3,12,hair);R(4,-38+bob,3,9,hair);R(2,-33+bob,2,1,'#3a2a48');
  if(id==='neenia'){R(8,-30,2,18,'#a07a4a');R(9,-29,1,16,'#e8e4c8');}if(id==='lily'){R(-3,-44+bob,7,3,'#ffe27a');}if(id==='tobiume'){R(-12,-28,6,10,'#ffd6ea');R(-14,-24,6,6,'#ffb0d0');}
  if(id==='disaster'&&pose!=='idle'){R(8,-30,16,3,'#71d9ff');R(8,-30,3,8,'#c8f4ff');}
@@ -9126,7 +9216,7 @@ function mansionKeikoNew(id){const B=KEIKO_BOSSES[id];return{kind:'keikoBoss',id
 function mansionKeikoEnter(room){M.keiko=null;const id=KEIKO_BY_ROOM[room];if(!id)return;const B=KEIKO_BOSSES[id];M.keiko={id,state:'waiting'};M.enemies.push(mansionKeikoNew(id));}
 function mansionKeikoBoss(){return M.enemies.find(e=>e.kind==='keikoBoss');}
 function mansionKeikoTrigger(){const k=M.keiko;if(!k||k.state!=='waiting'||M.map||M.x<64)return;const B=KEIKO_BOSSES[k.id];
- if(M.flags[B.flag]){k.state='idleDone';return;}k.state='ready';mansionTalkShow(B.real+'？',B.fake,()=>{mansionBurst(mansionKeikoBoss().x,KEIKO_FLOOR-24,'#c8b0ff',16);mansionTalkShow(B.name,B.pre,mansionKeikoStart);});}
+ if(M.flags[B.flag]){k.state='idleDone';return;}k.state='ready';if(B.shade){mansionTalkShow(B.name,B.pre,mansionKeikoStart);return;}mansionTalkShow(B.real+'？',B.fake,()=>{mansionBurst(mansionKeikoBoss().x,KEIKO_FLOOR-24,'#c8b0ff',16);mansionTalkShow(B.name,B.pre,mansionKeikoStart);});}
 function mansionKeikoStart(){const k=M.keiko;if(!k)return;k.state='active';const e=mansionKeikoBoss();Object.assign(e,mansionKeikoNew(k.id));e.x=M.x<256?400:112;e.mode='walk';M.enemyShots=[];M.map=false;}
 function mansionKeikoRematch(){const k=M.keiko;if(!k)return;M.flags[KEIKO_BOSSES[k.id].flag+'Rematch']=true;mansionKeikoStart();}
 function mansionKeikoActive(){return !!(M.keiko&&M.keiko.state==='active');}
@@ -9140,7 +9230,7 @@ function mansionKeikoAI(e){const k=M.keiko;if(!k||k.state!=='active'){e.mode='id
  for(const m of e.marks)m.t++;e.marks=e.marks.filter(m=>m.t<m.end);
  const m=e.mode;
  if(m==='walk'){e.face=Math.sign(dx)||e.face;const d=Math.abs(dx);if(d>180)e.x+=e.face*(rage?1.3:1);else if(d<140)e.x-=e.face*1.2;
-  if(t>(rage?40:64)){const seq=rage?B.rageSeq:B.seq;mansionKeikoMode(e,seq[e.cycle%seq.length]);e.cycle++;e.fromX=e.x;}}
+  if(t>((B.wait||[64,40])[rage?1:0])){const seq=rage?B.rageSeq:B.seq;mansionKeikoMode(e,seq[e.cycle%seq.length]);e.cycle++;e.fromX=e.x;}}
  else if(m==='volley'||m==='bow'||m==='sword'){const P=B[m],WIND=m==='volley'?36:44,GAP=rage?42:46,n=rage?P.rn:P.n;if(t<WIND)e.face=Math.sign(dx)||e.face;
   if(t===1)e.pattern=Array.from({length:n},(_,i)=>m==='sword'?true:P.pat==='high'?false:P.pat==='low'?true:P.pat==='alt'?(i%2===1):((artH(e.cycle,i)&1)===1));
   if(t>=WIND&&(t-WIND)%GAP===0&&(t-WIND)/GAP<n){const low=e.pattern[(t-WIND)/GAP];keikoShot(e,{low,speed:P.speed+(rage?.3:0),shape:m==='sword'?'wave':P.kind});}
@@ -9178,7 +9268,7 @@ function mansionKeikoAI(e){const k=M.keiko;if(!k||k.state!=='active'){e.mode='id
  if(mansionOverlap(M.x-MC.w/2,M.y-M.h,MC.w,M.h,box))mansionDamage(2,M.x<e.x?-1:1);}
 function mansionKeikoBulletUpdate(){if(!M.keiko)return;const e=mansionKeikoBoss();for(const b of M.enemyShots){if(b.kind==='kRain'&&b.y>KEIKO_FLOOR-4){b.dead=true;mansionBurst(b.x,KEIKO_FLOOR-4,b.col,3);}
  if(b.shape==='scythe'){b.age=(b.age||0)+1;if(b.boom&&(b.x<KEIKO_L-8||b.x>KEIKO_R+8)){b.vx=-b.vx;b.boom=0;b.back=true;}if(b.back&&e&&Math.abs(b.x-e.x)<10)b.dead=true;}}}
-function mansionKeikoPose(e){const B=KEIKO_BOSSES[e.id];if(e.flash>0)return'hurt';if(e.id==='disaster'&&KEIKO_MORPH_ICON[e.mode]&&e.mt<18)return'transform';const wind={volley:36,bow:44,sword:44,wave:40,scythe:44,snare:30,shock:40,axe:40,swoop:e.hp<=e.maxHp/2?30:40,spear:e.hp<=e.maxHp/2?30:40,rain:60}[e.mode];if(wind&&e.mt<wind)return'telegraph';if(e.mode==='rain')return'kick';return B.pose[e.mode]||'idle';}
+function mansionKeikoPose(e){const B=KEIKO_BOSSES[e.id];if(e.flash>0)return'hurt';if(B.morph&&KEIKO_MORPH_ICON[e.mode]&&e.mt<18)return'transform';const wind={volley:36,bow:44,sword:44,wave:40,scythe:44,snare:30,shock:40,axe:40,swoop:e.hp<=e.maxHp/2?30:40,spear:e.hp<=e.maxHp/2?30:40,rain:60}[e.mode];if(wind&&e.mt<wind)return'telegraph';if(e.mode==='rain')return'kick';return B.pose[e.mode]||'idle';}
 function mansionKeikoDraw(e){const B=KEIKO_BOSSES[e.id],rage=e.hp<=e.maxHp/2;if(!M.keiko||!['active','ready','waiting'].includes(M.keiko.state))return;
  if(e.mode==='rain'){for(const[a,b]of e.gaps||[]){g.globalAlpha=.28+.12*Math.sin(M.t*.2);mrect(a,20,b-a,KEIKO_FLOOR-20,'#9fe8ff');g.globalAlpha=1;mrect(a,KEIKO_FLOOR-3,b-a,3,'#c9fbff');mansionDiamond((a+b)/2,KEIKO_FLOOR-12,4,'#ffffff');}
   for(const[a,b]of e.nextGaps||[]){if((M.t>>3)&1){mrect(a,KEIKO_FLOOR-3,b-a,3,'#ffe27a');mansionDiamond((a+b)/2,KEIKO_FLOOR-14,4,'#ffe27a');}}}
@@ -9199,23 +9289,53 @@ function keikoBulletDraw(b){const c=b.col||'#fff';
  if(b.shape==='heart'){mansionDiamond(b.x,b.y,6,'#2a1030');mrect(b.x-4,b.y-3,3,3,c);mrect(b.x+1,b.y-3,3,3,c);mansionDiamond(b.x,b.y+1,3,c);return;}
  if(b.shape==='note'){mrect(b.x-3,b.y,5,4,c);mrect(b.x+1,b.y-7,2,8,c);mrect(b.x+1,b.y-7,4,2,c);return;}
  mansionDiamond(b.x,b.y,6,'#1a1030');mansionDiamond(b.x,b.y,4,c);mansionDiamond(b.x,b.y,2,'#fff6c8');}
-function mansionKeikoWin(){const k=M.keiko,B=KEIKO_BOSSES[k.id],first=!M.flags[B.flag];k.state='done';M.messageT=0;M.enemyShots=[];M.shots=[];const e=mansionKeikoBoss();if(e){mansionBurst(e.x,e.y-24,'#c8b0ff',20);e.hp=e.maxHp;e.mode='idle';e.marks=[];e.lift=0;}M.hp=mansionMaxHP();
+function mansionKeikoWin(){const k=M.keiko,B=KEIKO_BOSSES[k.id],first=!M.flags[B.flag];if(B.shade)return mansionShadeWin(k,B);k.state='done';M.messageT=0;M.enemyShots=[];M.shots=[];const e=mansionKeikoBoss();if(e){mansionBurst(e.x,e.y-24,'#c8b0ff',20);e.hp=e.maxHp;e.mode='idle';e.marks=[];e.lift=0;}M.hp=mansionMaxHP();
  const meet=()=>{const was=!M.flags[B.flag];M.flags[B.flag]=true;if(was)mansionShardGain(3,true);mansionSave();mansionBurst(256,KEIKO_FLOOR-24,B.col,18);sfx('heal');mansionTalkShow(B.real,was?B.post:['お疲れさま、海音！ いい腕試しだったよ。']);};
  mansionTalkShow(B.name,B.vanish,meet);M.talk.afterClose=meet;}
 function mansionKeikoRetry(){const k=M.keiko,B=KEIKO_BOSSES[k.id];k.state='ready';M.enemyShots=[];M.shots=[];M.hp=mansionMaxHP();M.hurt=60;M.poseT=M.castT=M.stepT=0;M.x=80;M.y=KEIKO_FLOOR;M.vx=M.vy=0;const e=mansionKeikoBoss();if(e)Object.assign(e,mansionKeikoNew(k.id));mansionTalkShow(B.name,B.again,mansionKeikoStart);}
-function mansionKeikoPortrait(p,c){const sp=M.talk?.speaker;let real=false,id=Object.keys(KEIKO_BOSSES).find(id=>KEIKO_BOSSES[id].name===sp||KEIKO_BOSSES[id].real+'？'===sp);if(!id){id=Object.keys(KEIKO_BOSSES).find(id=>KEIKO_BOSSES[id].real===sp);real=!!id;}if(!id)return false;c.setAttribute('aria-label',sp);const B=KEIKO_BOSSES[id],f=real&&HOSHI_ART['r_'+id+'Face'];
+function mansionKeikoPortrait(p,c){const sp=M.talk?.speaker;let real=false,id=Object.keys(KEIKO_BOSSES).find(id=>KEIKO_BOSSES[id].name===sp||KEIKO_BOSSES[id].real+'？'===sp);if(!id){id=Object.keys(KEIKO_BOSSES).find(id=>KEIKO_BOSSES[id].real===sp);real=!!id;}if(!id)return false;c.setAttribute('aria-label',sp);const B=KEIKO_BOSSES[id],f=real?HOSHI_ART['r_'+id+'Face']:B.shade&&HOSHI_ART['k_'+id+'Face'];
  if(f){p.imageSmoothingEnabled=f.img.width>64;p.drawImage(f.img,0,0,f.img.width,f.img.height,0,0,96,96);return true;}
  const a=HOSHI_ART[(real?'r_':'k_')+id];if(a&&a.mode==='sequel'){const fr=a.meta.frames[0],[rx,ry,rw]=fr.rect;p.imageSmoothingEnabled=true;p.drawImage(a.img,rx+rw*.3,ry+40,rw*.4,rw*.4,0,0,96,96);if(!real){p.fillStyle='rgba(120,90,200,.25)';p.fillRect(0,0,96,96);}return true;}
  p.fillStyle=real?'#1a1030':'#2a1a50';p.fillRect(0,0,96,96);p.fillStyle=B.col;p.fillRect(20,14,56,40);p.fillStyle='#f4dcd0';p.fillRect(28,26,40,36);p.fillStyle=B.sub;p.fillRect(16,66,64,30);if(!real){p.fillStyle='#fff';p.font='bold 28px sans-serif';p.fillText('?',60,40);}return true;}
 // after the fight, the partner stays in her/his arena: talk to rematch
 function mansionKeikoTalkNPC(){const k=M.keiko,B=KEIKO_BOSSES[k.id];mansionTalkShow(B.real,B.rematch,()=>{mansionTalkShow(B.name,['……呼んだ？ じゃあ、もう一回勝負！'],mansionKeikoStart);});}
-for(const [id,B] of Object.entries(KEIKO_BOSSES))HUB_NPCS.push({id:'keiko_'+id,room:B.room,x:KEIKO_CAGE_X,y:KEIKO_FLOOR,name:B.real,enabled:()=>!!M.flags[B.flag]&&M.keiko&&M.keiko.state!=='active'&&M.keiko.state!=='ready',draw:(x,y,t,dir)=>keikoDraw(id,{x,y,t,face:dir,flash:0,lift:0},'idle',true),talk:mansionKeikoTalkNPC});
+for(const [id,B] of Object.entries(KEIKO_BOSSES))if(!B.shade)HUB_NPCS.push({id:'keiko_'+id,room:B.room,x:KEIKO_CAGE_X,y:KEIKO_FLOOR,name:B.real,enabled:()=>!!M.flags[B.flag]&&M.keiko&&M.keiko.state!=='active'&&M.keiko.state!=='ready',draw:(x,y,t,dir)=>keikoDraw(id,{x,y,t,face:dir,flash:0,lift:0},'idle',true),talk:mansionKeikoTalkNPC});
 
 // the real friend's cage at the right end of each captive room (drawn behind actors)
-function mansionKeikoCageDraw(){const k=M.keiko;if(!k)return;const B=KEIKO_BOSSES[k.id],freed=!!M.flags[B.flag],x=KEIKO_CAGE_X,y=KEIKO_FLOOR;
+function mansionKeikoCageDraw(){const k=M.keiko;if(!k||KEIKO_BOSSES[k.id].shade)return;const B=KEIKO_BOSSES[k.id],freed=!!M.flags[B.flag],x=KEIKO_CAGE_X,y=KEIKO_FLOOR;
  if(!freed){g.globalAlpha=.85;keikoDraw(k.id,{x,y,t:M.t,face:-1,flash:0,lift:0},'idle',true);g.globalAlpha=1;
   mrect(x-30,y-70,60,4,'#8a8fa8');mrect(x-30,y-2,60,4,'#8a8fa8');for(let i=0;i<=6;i++)mrect(x-30+i*10,y-70,2,70,'#b8bdd0');g.globalAlpha=.18+.08*Math.sin(M.t*.1);mrect(x-30,y-70,60,70,'#b070ff');g.globalAlpha=1;}
  else{mrect(x-30,y-2,60,4,'#6a6f88');for(let i=0;i<=6;i+=6)mrect(x-30+i*10,y-24,2,24,'#8a8fa8');}}
+
+// =====================================================================
+//  影の四騎 (test.47): ヴェスパー / ラヴィス / ノクターン / エクリプス — original dark bosses
+//  built on the 04m keiko engine (shade:true → no fake/cage). Beating all four unlocks
+//  the ダーク海音ちゃん style: a saved toggle in the status panel.
+//  Dark twist: shadow shots pierce (each enemy hit once per shot) and fly faster,
+//  but the fire cooldown is longer (14f vs 10f). Visual: assets/umine_dark_style-sequel*.png
+//  (same layout as Umine's sheets) → fallback hue-shifted Umine.
+// =====================================================================
+const SHADE_IDS=Object.keys(KEIKO_BOSSES).filter(id=>KEIKO_BOSSES[id].shade);
+function mansionShadeCount(){return SHADE_IDS.filter(id=>M.flags[KEIKO_BOSSES[id].flag]).length;}
+function mansionShadeWin(k,B){k.state='done';M.messageT=0;M.enemyShots=[];M.shots=[];const e=mansionKeikoBoss();if(e){mansionBurst(e.x,e.y-24,B.col,24);e.marks=[];e.lift=0;}M.hp=mansionMaxHP();
+ const first=!M.flags[B.flag];M.flags[B.flag]=true;if(first)mansionShardGain(3,true);
+ const unlock=first&&mansionShadeCount()===SHADE_IDS.length&&!M.flags.darkStyleUnlocked;if(unlock)M.flags.darkStyleUnlocked=true;mansionSave();sfx('heal');
+ mansionTalkShow(B.name,first?B.post:['……また、影に還るだけ。'],unlock?()=>mansionTalkShow('海音',['……四つの影が、わたしの中に溶けていく……！','（スタイル「ダーク海音ちゃん」が解放された！ ステータス画面でいつでも切り替えられる）'],()=>{mansionDarkSet(true);}):null);}
+function mansionDarkOn(){return !!(M.flags&&M.flags.darkStyleUnlocked&&M.flags.darkStyle);}
+function mansionDarkSet(on){if(!M.flags.darkStyleUnlocked)return false;M.flags.darkStyle=!!on;mansionBurst(M.x,M.y-20,on?'#b070ff':'#7fd8ff',18);sfx('heal');mansionSave();if(typeof mansionSay==='function')mansionSay(on?'ダーク海音ちゃんに変身！ 影の弾は敵を貫くよ。':'いつもの海音に戻ったよ。');return true;}
+function mansionDarkToggle(){return mansionDarkSet(!mansionDarkOn());}
+// dark sheets: same cut layout as Umine's, loaded through the parametric 02c loaders
+const DARK_MODEL={frames:[],walkFrames:[]};let mansionDarkActionArt=null;
+if(typeof Image==='function'){loadSequelModel('assets/umine_dark_style-sequel.png',DARK_MODEL);loadSequelWalk('assets/umine_dark_style-sequel_walk.png',DARK_MODEL);const a=new Image();a.onload=()=>{mansionDarkActionArt=a;};a.src='assets/umine_dark_style-sequel_mansion_actions.png';}
+function mansionDarkSwap(begin,saved){
+ if(begin){if(!mansionDarkOn())return null;const sv={f:SEQUEL_MODEL.frames,w:SEQUEL_MODEL.walkFrames,filter:false};
+  g.save();g.globalAlpha=.22+.08*Math.sin(M.t*.15);g.fillStyle='#8a40ff';g.beginPath();g.ellipse(M.x,M.y-18,15,24,0,0,Math.PI*2);g.fill();g.restore();
+  if(DARK_MODEL.frames.length){SEQUEL_MODEL.frames=DARK_MODEL.frames;if(DARK_MODEL.walkFrames.length)SEQUEL_MODEL.walkFrames=DARK_MODEL.walkFrames;}
+  else if('filter' in g){g.save();g.filter='hue-rotate(230deg) saturate(1.4) brightness(.72)';sv.filter=true;}
+  return sv;}
+ if(!saved)return;SEQUEL_MODEL.frames=saved.f;SEQUEL_MODEL.walkFrames=saved.w;if(saved.filter)g.restore();}
+let mansionDarkFace=null;if(typeof Image==='function'){const f=new Image();f.onload=()=>{mansionDarkFace=f;};f.src='assets/umine_dark_face.png';}
+function mansionUminePortrait(p,c){if(M.talk?.speaker!=='海音')return false;c.setAttribute('aria-label','海音');p.fillStyle='#1a1030';p.fillRect(0,0,96,96);if(mansionDarkFace){p.imageSmoothingEnabled=true;p.drawImage(mansionDarkFace,0,0,mansionDarkFace.width,mansionDarkFace.height,0,0,96,96);}else{p.fillStyle='#4a6ad8';p.fillRect(18,12,60,46);p.fillStyle='#f4dcd0';p.fillRect(28,28,40,34);}return true;}
 
 // =====================================================================
 //  Rendering

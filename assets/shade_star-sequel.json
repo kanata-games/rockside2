@@ -1,0 +1,378 @@
+{
+ "image": "shade_star-sequel.png",
+ "frameWidth": 512,
+ "frameHeight": 512,
+ "scale": 0.1227,
+ "displayHeight": "立ち姿 頭頂〜足 440px（ネイティブ）× 0.1227 ≈ 54px",
+ "facing": "right",
+ "anchorNote": "anchor＝足元。全フレーム anchor.y=500、各フレームの下端を y≈500 にそろえてある（浮遊キャラ：ゲーム側で浮かせて表示）。座標はすべてネイティブのセル内座標（左向きは x → 511-x）",
+ "character": "魔王ディザスター（闇・影）※ファイル名は shade_star。黒い衣装と紫の闇のもや",
+ "source_character": "disaster",
+ "frames": [
+  {
+   "name": "idle0",
+   "rect": [
+    0,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    35,
+    63,
+    411,
+    500
+   ],
+   "hitbox": [
+    176,
+    63,
+    161,
+    437
+   ]
+  },
+  {
+   "name": "idle1",
+   "rect": [
+    512,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    24,
+    61,
+    414,
+    500
+   ],
+   "hitbox": [
+    176,
+    61,
+    161,
+    439
+   ]
+  },
+  {
+   "name": "move0",
+   "rect": [
+    1024,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    6,
+    88,
+    472,
+    500
+   ],
+   "hitbox": [
+    176,
+    110,
+    161,
+    390
+   ]
+  },
+  {
+   "name": "move1",
+   "rect": [
+    1536,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    6,
+    123,
+    461,
+    500
+   ],
+   "hitbox": [
+    176,
+    147,
+    161,
+    353
+   ]
+  },
+  {
+   "name": "telegraph",
+   "rect": [
+    2048,
+    0,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    15,
+    103,
+    494,
+    500
+   ],
+   "hitbox": [
+    176,
+    103,
+    161,
+    397
+   ]
+  },
+  {
+   "name": "attackA",
+   "rect": [
+    0,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    6,
+    110,
+    505,
+    500
+   ],
+   "hitbox": [
+    176,
+    110,
+    161,
+    390
+   ]
+  },
+  {
+   "name": "attackB",
+   "rect": [
+    512,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    6,
+    108,
+    505,
+    500
+   ],
+   "hitbox": [
+    176,
+    108,
+    161,
+    392
+   ]
+  },
+  {
+   "name": "hurt",
+   "rect": [
+    1024,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    6,
+    83,
+    505,
+    500
+   ],
+   "hitbox": [
+    176,
+    83,
+    161,
+    417
+   ]
+  },
+  {
+   "name": "defeat",
+   "rect": [
+    1536,
+    512,
+    512,
+    512
+   ],
+   "anchor": [
+    256,
+    500
+   ],
+   "scale": 0.1227,
+   "alphaBounds": [
+    6,
+    275,
+    505,
+    500
+   ],
+   "hitbox": [
+    176,
+    275,
+    161,
+    225
+   ]
+  }
+ ],
+ "animations": {
+  "idle": {
+   "frames": [
+    0,
+    1
+   ],
+   "ms": [
+    420,
+    420
+   ],
+   "loop": true
+  },
+  "move": {
+   "frames": [
+    2,
+    3
+   ],
+   "ms": [
+    200,
+    200
+   ],
+   "loop": true
+  },
+  "telegraph": {
+   "frames": [
+    4
+   ],
+   "ms": [
+    450
+   ],
+   "loop": false
+  },
+  "attackA": {
+   "frames": [
+    5
+   ],
+   "ms": [
+    300
+   ],
+   "loop": false,
+   "active": [
+    5
+   ],
+   "note": "剣で斬撃（紫の軌跡）"
+  },
+  "attackB": {
+   "frames": [
+    6
+   ],
+   "ms": [
+    400
+   ],
+   "loop": false,
+   "active": [
+    6
+   ],
+   "note": "大砲で宝珠弾"
+  },
+  "hurt": {
+   "frames": [
+    7
+   ],
+   "ms": [
+    320
+   ],
+   "loop": false
+  },
+  "defeat": {
+   "frames": [
+    8
+   ],
+   "ms": [
+    1200
+   ],
+   "loop": false
+  }
+ },
+ "spawn": {
+  "cannonOrb": {
+   "frame": 6,
+   "x": 474,
+   "y": 252,
+   "note": "attackB 砲口（紫の光）の中心"
+  }
+ },
+ "hitboxes": {
+  "body": "各フレームの hitbox [x,y,w,h]（ネイティブ。アンカー±80px の胴体帯。もや・エフェクトは含まない）",
+  "attackA": {
+   "frame": 5,
+   "rect": [
+    297,
+    119,
+    209,
+    371
+   ],
+   "note": "斬撃の当たり判定"
+  }
+ },
+ "warped_frames": [
+  {
+   "frame": 2,
+   "name": "move0",
+   "note": "体の左右±250px を超えるもや/エフェクト部分だけを横方向に縮めた（体は等倍）"
+  },
+  {
+   "frame": 3,
+   "name": "move1",
+   "note": "体の左右±250px を超えるもや/エフェクト部分だけを横方向に縮めた（体は等倍）"
+  },
+  {
+   "frame": 5,
+   "name": "attackA",
+   "note": "体の左右±250px を超えるもや/エフェクト部分だけを横方向に縮めた（体は等倍）"
+  },
+  {
+   "frame": 6,
+   "name": "attackB",
+   "note": "体の左右±250px を超えるもや/エフェクト部分だけを横方向に縮めた（体は等倍）"
+  },
+  {
+   "frame": 7,
+   "name": "hurt",
+   "note": "体の左右±250px を超えるもや/エフェクト部分だけを横方向に縮めた（体は等倍）"
+  },
+  {
+   "frame": 8,
+   "name": "defeat",
+   "note": "体の左右±250px を超えるもや/エフェクト部分だけを横方向に縮めた（体は等倍）"
+  }
+ ],
+ "source": "work/shade/raw/shade_star-sequel.jpg（旧 work/wander/raw_dark_old）→ work/shade/build_shade.py, bb_shade.py, json_shade.py"
+}

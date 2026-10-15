@@ -11,7 +11,25 @@ ROCKSIDE II / 2.0.0-test.46（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 - 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs` `node tools/test-hoshiyomi.cjs` and `node tools/test-keiko.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
-## 現在の公開版（2026-10-15 / test.46）
+## 現在の公開版（2026-10-15 / test.47）
+
+- **影の四騎（新ボス4体）**：昔の「ぼんやり闇バージョン」の絵から生まれた、まったく別のオリジナルボス。どれも寄り道の隠し部屋にいる。
+  - 黄昏翼ヴェスパー（黄昏翼の止まり木）：入口は回廊の下の床にある扉7
+  - 霧弓ラヴィス（霧弓の書架裏）：入口は禁書庫の下の床にある扉7
+  - 夜想ノクターン（夜想の水底劇場）：入口は月光の貯水室の扉7
+  - 蝕王エクリプス（蝕の天蓋）：入口は天文ドームの扉7
+- **手ごわさ**：HPは220〜260。弾の数も攻撃の速さも、ニセモノたちより上。くらうダメージは1.5倍。
+  - 強化なしだと戦いがおよそ3倍長くなり、3ダメージを6回くらうと倒れる。
+  - HP・弾・スライディングを強化していれば、十分に勝てる。
+  - 予告のルールは今までと同じ。高い攻撃はスライディングでくぐり、低い攻撃はジャンプで越える。降ってくる攻撃は、先に安全な隙間が光る。
+- **ごほうび**：1体倒すごとに欠片3つ。4体とも倒すと、スタイル「**ダーク海音ちゃん**」が解放され、すぐに変身する。
+  - ステータス画面のボタンで、いつでも元に戻したり、また変身したりできる。どちらのスタイルかはセーブされる。
+  - ダークの特徴：影の弾が敵を貫通する（同じ敵に当たるのは1回だけ）。弾も速くなる。そのかわり連射は少し遅い（10→14フレーム）。
+  - 絵は `umine_dark_style-sequel*.png` を使う。絵が届いていないときは、海音の色を変えて代わりにする。どちらのスタイルでも紫のオーラが出る。
+- テスト `tools/test-shade.cjs`：ボットが強化ありで4体それぞれに一度も負けずに勝つ。強化なしだと戦いが長く、一撃も重いことを確かめる。ダークスタイルの解放・切り替え・セーブと、弾の貫通も確かめる。
+- 直したこと：抜け穴の描画が1フレームに2回呼ばれていたのを1回にした。
+
+## 前の公開版（2026-10-15 / test.46）
 
 - test.45 の4人の hi-res の絵が本物に似ていなかったので、別人のニセモノ（月が映した写し身）にした。ニセモノとはふつうのボス戦になる。/ The four hi-res sprites from test.45 didn't look like the real characters, so they are now different, original impostors (phantoms cast by the moon). Fighting them is a real boss fight.
   - ハネウメ（跳梅）：飛梅のニセモノ / impostor of 飛梅

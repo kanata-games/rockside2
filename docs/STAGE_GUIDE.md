@@ -334,3 +334,24 @@ The current art uses the art maker's format, specified in `assets/enemies/README
   - 本物：`<normal>_real-sequel` → 前作の `<normal>.png` を拡大 → 仮の絵 / real friend: `<normal>_real-sequel`, then the first game's `<normal>.png` scaled up, then placeholder
   - 顔：`<normal>_real-sequel-face.png` → `<normal>_face.png` / faces: `<normal>_real-sequel-face.png`, then `<normal>_face.png`
 - 本物の絵のコード名は tobiume, neenia, lily, star。/ The real friends' asset names are tobiume, neenia, lily and star.
+
+## 13. 影の四騎とダーク海音ちゃん / Shade bosses and the dark style (test.47)
+
+- **ボスの書き方**：`src/04m_keiko.js` の `KEIKO_BOSSES` に `shade:true` を付けて書く。
+  - 項目：`vesper` / `lavis` / `nocturne` / `eclipse`
+  - フラグ：`shadeTobi` / `shadeNeen` / `shadeLily` / `shadeStar`
+  - shade のボスは、ニセモノのあいさつも檻も解放される仲間もない。`pre` のセリフのあとすぐ戦いになり、勝つと `post` のセリフ（`mansionShadeWin`、`src/04n_shade.js`）。
+- **難しさの調整**：
+  - `wait:[通常,怒り]` で、攻撃の合間の待ち時間を変えられる（決まった値は 64/40）。
+  - `rn` を4にすると弾が増える。
+  - shade と戦っている間は、くらうダメージが1.5倍になる。
+  - 弾どうしの間かくと予告の時間は変えないこと。そこを変えると、よけられない攻撃になる。
+- **絵**：`assets/shade_*-sequel` を使う。届いていないときは昔の `*_dark` のマス目シートを使う。顔の絵は `*_dark_face.png`。
+- **部屋**：`sTobi` / `sNeen` / `sLily` / `sStar`。どれも area `shade`、32×15、マップの cy=6 の段にある。
+  - どれも親の部屋とは数字の扉7でつながっている（親の部屋：gallery / forbiddenArchive / moonReservoir / obsDome）。行き止まりの寄り道部屋。
+  - 部屋をまた作り直すときは `/tmp/r2/author47.py` を使う。
+- **ダークスタイル**：
+  - フラグ：`darkStyleUnlocked` と `darkStyle`（どちらも `mansionRead` のホワイトリストに入っている）。
+  - 関数：`mansionDarkOn()`、`mansionDarkSet()`、`mansionDarkToggle()`。ステータス画面のボタン `#mDarkStyle` から切り替える。
+  - 絵の入れ替え：02c の読み込み関数に引数を足し、絵を渡す先を変えられるようにした。描くときだけ `SEQUEL_MODEL` の中身を入れ替える。
+  - 弾：`shot.pierce` が付いた弾は、`shot.hits` に当たった敵を記録しておき、同じ敵には2回当たらない。盾で止められたときは弾が消える。

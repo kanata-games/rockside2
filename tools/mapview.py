@@ -24,7 +24,7 @@ if '--no-reach' not in args:
     tmp = tempfile.mktemp(suffix='.json')
     r = subprocess.run(['node', os.path.join(ROOT, 'tools', 'reach.js'), '--quiet', '--json', tmp], capture_output=True, text=True)
     if os.path.exists(tmp): reach = json.load(open(tmp)); os.remove(tmp)
-AIR = {'keiko': (52, 74, 92), 'observatory': (70, 52, 120), 'hub': (74, 62, 86), 'mansion': (52, 70, 104), 'library': (78, 58, 88), 'tower': (66, 66, 88), 'water': (40, 82, 100),
+AIR = {'shade': (60, 40, 82), 'keiko': (52, 74, 92), 'observatory': (70, 52, 120), 'hub': (74, 62, 86), 'mansion': (52, 70, 104), 'library': (78, 58, 88), 'tower': (66, 66, 88), 'water': (40, 82, 100),
        'star': (44, 58, 104), 'garden': (46, 70, 70), 'play': (88, 46, 74)}
 MARK = {'S': (120, 240, 255), 'W': (200, 150, 255), 'D': (255, 220, 120), 's': (255, 230, 140), 'L': (255, 200, 120), 'B': (255, 90, 90),
         'G': (255, 255, 255), 'X': (220, 180, 120), 'N': (255, 160, 210), 'w': (255, 120, 80), 'f': (255, 120, 80), 'u': (120, 255, 255),

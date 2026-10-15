@@ -12,6 +12,7 @@ const ART={
  library:{wall:['#241a2c','#2e2236','#3a2c43','#18111e','#7a5a3e','#cfa271'],stone:['#8a6342','#d4a46e','#4e3424','#3e2f47','#4f3d5a','#2c2135','#1a1320','#120d17'],dark:.42,far:'stacks',win:'slit',glow:'#ffb969'},
  tower:{wall:['#1f1f30','#29293d','#34344b','#151522','#8a7348','#e2c27c'],stone:['#a88f5c','#f0d79a','#5d4c30','#3a3a52','#4a4a66','#26263a','#17172a','#10101d'],dark:.38,far:'gears',win:'round',glow:'#ffc978'},
  water:{wall:['#102633','#15303f','#1d3d4e','#0a1a24','#3f7c7a','#9fe6dc'],stone:['#4f9a86','#a8f0d4','#28584f','#24485a','#2f5a6e','#173342','#0d212c','#08161e'],dark:.46,far:'cavern',win:'arch',glow:'#8ff2ff'},
+ shade:{wall:['#140e1e','#1c1428','#2a1e3a','#0c0814','#6a4a8a','#d8c0f0'],stone:['#6a5a8a','#e0d4f4','#3a2e54','#261e3a','#30264a','#1a1430','#100c20','#08060f'],dark:.3,far:'cosmos',win:'round',glow:'#b070ff',open:true},
  keiko:{wall:['#1c2232','#252c40','#323b54','#141826','#8a94b0','#e6ecf8'],stone:['#8c96aa','#eef2f8','#4c556c','#30384c','#3c465c','#20263a','#151a2a','#0c1020'],dark:.22,far:'moonGarden',win:'arch',glow:'#e8f0ff',open:true},
  observatory:{wall:['#120f2a','#1a1638','#272250','#0b0920','#7a6ac8','#e6dcff'],stone:['#8a7ad0','#f2ecff','#4a3e8a','#2e2766','#3c3482','#1f1a4a','#141036','#0a0822'],dark:.26,far:'cosmos',win:'round',glow:'#d7b8ff',open:true},
  star:{wall:['#141a35','#1b2344','#252f57','#0e1228','#6c74b8','#d8dcff'],stone:['#7d87c9','#eef0ff','#414a86','#2c3563','#3a4579','#1e2447','#121733','#0b0f24'],dark:.3,far:'stars',win:'tall',glow:'#bfd0ff'},

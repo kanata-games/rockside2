@@ -1,0 +1,83 @@
+{
+ "image": "umine_dark_style-sequel.png",
+ "note": "闇落ち風の海音（色変換のみ）。各シートは元シートとキャンバスサイズ・コマ配置・シルエット（アルファ）・足元位置が完全に同じ。元シートには JSON がないため、レイアウトは src/02c_sequel.js の定数を写したもの",
+ "sheets": [
+  {
+   "image": "umine_dark_style-sequel.png",
+   "source": "umine-sheet.jpeg",
+   "size": [
+    1536,
+    768
+   ],
+   "mode": "RGB（背景は元と同じ白のまま。ゲームの stripConnectedWhite でそのまま抜ける）",
+   "usedBy": "loadSequelModel（SEQUEL_MODEL.frames）",
+   "layout": "8コマ：上段 384×416 ×4、下段 384×352 ×4（y=416から）。縮小率 .29 で 128 のセルへ",
+   "anchors": [
+    [
+     210,
+     410
+    ],
+    [
+     208,
+     410
+    ],
+    [
+     219,
+     410
+    ],
+    [
+     234,
+     410
+    ],
+    [
+     200,
+     328
+    ],
+    [
+     205,
+     328
+    ],
+    [
+     206,
+     344
+    ],
+    [
+     241,
+     344
+    ]
+   ]
+  },
+  {
+   "image": "umine_dark_style-sequel_walk.png",
+   "source": "assets/umine-walk.png",
+   "size": [
+    1230,
+    1278
+   ],
+   "mode": "RGBA（アルファは元と完全一致）",
+   "usedBy": "loadSequelWalk（SEQUEL_MODEL.walkFrames）",
+   "layout": "2×2、1コマ 615×639、縮小率 .195、足元 y=[612,614,590,588]、cx=330"
+  },
+  {
+   "image": "umine_dark_style-sequel_mansion_actions.png",
+   "source": "assets/umine-mansion-actions.png",
+   "size": [
+    1774,
+    887
+   ],
+   "mode": "RGBA（アルファは元と完全一致）",
+   "usedBy": "src/04i_mansion.js の mansionActionArt",
+   "layout": "元シートと同一（切り出し座標は 04i_mansion.js 側の定数をそのまま使えます）"
+  }
+ ],
+ "model": {
+  "size": 48,
+  "cell": 128,
+  "cx": 64,
+  "feet": 124,
+  "muzzleX": 105,
+  "muzzleY": 80
+ },
+ "colorTransform": "青・藍の髪と服→紫がかった黒（陰影は保持）、白→灰ラベンダー、肌→少し青白く、目→赤（肌に囲まれた紫青の画素を自動検出）、金などその他→やや暗く、輪郭2pxに紫のリム",
+ "source": "work/shade/umine_dark.py"
+}
