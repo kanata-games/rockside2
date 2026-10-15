@@ -43,3 +43,9 @@ console.log('PASS boss move sets (test.49): impostors mimic their dark originals
  let maxT=0,boxOk=true;for(let i=0;i<80&&run('!!KJ.cut');i++){const b=run('(()=>{const b=juiceCutBox(KJ.cut);return [b.y0,b.y0+b.h,b.x0,b.w]})()');if(b[0]<0||b[1]>48||b[2]<256/3)boxOk=false;run('mansionJuiceStop()');maxT=i;}
  assert(boxOk,'cut-in stays in the top-right corner, top 20% of the screen');assert(maxT<=48,'cut-in lasts under ~0.8s: '+maxT+' frames');
  console.log('PASS cut-in (test.52): top-right slanted strip (y '+run('CUT_Y')+'–'+run('CUT_Y+CUT_H')+' of 240), '+run('CUT_LEN')+' frames, no freeze.');}
+// ===== test.53: cut-in title font (Dela Gothic One subset, OFL) =====
+{const fsz=fs.statSync(require('path').resolve(__dirname,'../assets/fonts/DelaGothicOne-cutin.woff2')).size;assert(fsz<60000,'font subset stays small: '+fsz);
+ assert(/SIL OPEN FONT LICENSE/i.test(fs.readFileSync(require('path').resolve(__dirname,'../assets/fonts/DelaGothicOne-OFL.txt'),'utf8')),'OFL license shipped');
+ assert(html.includes("assets/fonts/DelaGothicOne-cutin.woff2"),'FontFace loads the subset');
+ run('KJ.cut=null;juiceCut("テスト","#ff7fae","青天")');for(let i=0;i<6;i++){run('mansionJuiceCutHi()');run('mansionJuiceStop()');}run('KJ.cut=null');
+ console.log('PASS cut-in font (test.53): Dela Gothic One subset '+fsz+' bytes + OFL text; falls back to sans-serif until loaded.');}

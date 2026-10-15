@@ -299,6 +299,16 @@ Object.assign(KEIKO_MOVES,{
 Object.assign(KEIKO_MOVE_POSE,{hsConstel:t=>t<56?'telegraph':'attack',hsComet:(t,e)=>e.lift>2&&!e.diveLine?'kick':'telegraph',hsOrbit:t=>t<50?'telegraph':'attack',hsNova:t=>t<70?'telegraph':'attack'});
 const HOSHI_POSE_MAP={telegraph:'shootWindup',attack:'shootStar',kick:'dash',fly:'move',walk:'move',idle:'idle'};
 
+// test.53: cut-in title font — Dela Gothic One (SIL OFL 1.1), self-hosted subset assets/fonts/DelaGothicOne-cutin.woff2 (tools/font-subset.py)
+let CUT_FONT_OK=false;
+if(typeof FontFace==='function'&&typeof document!=='undefined'&&document.fonts){try{const f=new FontFace('DelaCut',"url(assets/fonts/DelaGothicOne-cutin.woff2) format('woff2')");f.load().then(ff=>{document.fonts.add(ff);CUT_FONT_OK=true;}).catch(()=>{});}catch(e){}}
+// skewed, punchy title: scale-punch on entry, thick ink outline, boss-colour stroke, offset colour shadow, white fill
+function cutTitle(g,c,x,y,maxW){const pun=c.t<CUT_IN?1.35-.35*c.t/CUT_IN:c.t<CUT_IN+3?1-.04*(CUT_IN+3-c.t):1;
+ g.save();g.translate(x,y);g.transform(1,0,-.22,1,0,0);g.scale(pun,pun);g.textAlign='left';g.textBaseline='middle';g.lineJoin='round';
+ g.font=(CUT_FONT_OK?"11px 'DelaCut',":'bold 10px ')+'sans-serif';const mw=g.measureText(c.name).width||1,sx=Math.min(1,maxW/mw);g.scale(sx,1);
+ g.fillStyle=c.col;g.fillText(c.name,2,2);
+ g.strokeStyle='#05020a';g.lineWidth=3.2;g.strokeText(c.name,0,0);g.strokeStyle=c.col;g.lineWidth=1.3;g.strokeText(c.name,0,0);
+ g.fillStyle='#ffffff';g.fillText(c.name,0,0);g.globalAlpha=.35;g.fillStyle=c.col;g.fillRect(0,1,mw,1.2);g.restore();}
 // cut-in is drawn on the hi-res overlay after everything else (crisp text, above HUD bars)
 function mansionJuiceCutHi(){const c=KJ.cut;if(!c||typeof sctx==='undefined')return;const g=sctx;g.save();const kk=hiS();g.setTransform(kk,0,0,kk,0,0);{const B=juiceCutBox(c),sk=10,{x0,y0,w,h}=B;
   const poly=(dx,dy,ww,hh)=>{g.beginPath();g.moveTo(dx+sk,dy);g.lineTo(dx+ww+sk,dy);g.lineTo(dx+ww,dy+hh);g.lineTo(dx,dy+hh);g.closePath();};
@@ -308,6 +318,6 @@ function mansionJuiceCutHi(){const c=KJ.cut;if(!c||typeof sctx==='undefined')ret
   g.fillStyle=c.col;g.beginPath();g.moveTo(x0+pw+sk,y0);g.lineTo(x0+pw+sk+3,y0);g.lineTo(x0+pw+3,y0+h);g.lineTo(x0+pw,y0+h);g.fill();
   if(c.t<CUT_IN+3){g.globalAlpha=1-(c.t/(CUT_IN+3));g.fillStyle='#ffffff';poly(x0,y0,w,h);g.fill();g.globalAlpha=1;}
   for(let i=0;i<3;i++){g.globalAlpha=.35;g.fillStyle=c.col;g.fillRect(x0+pw+14+((c.t*6+i*37)%(w-pw-14)),y0+4+i*9,12,1);}g.globalAlpha=1;
-  const tx=x0+pw+10;g.textAlign='left';g.textBaseline='middle';g.font='bold 10px sans-serif';g.fillStyle='#000';g.fillText(c.name,tx+1,y0+12+1,w-pw-12);g.fillStyle='#ffffff';g.fillText(c.name,tx,y0+12,w-pw-12);
-  if(c.sub){g.font='8px sans-serif';g.fillStyle=c.col;g.fillText(c.sub,tx+2,y0+h-7);}g.textBaseline='alphabetic';}g.restore();}
+  const tx=x0+pw+9;cutTitle(g,c,tx,y0+10,w-pw-14);
+  if(c.sub){g.font=(CUT_FONT_OK?"7px 'DelaCut',":'bold 8px ')+'sans-serif';g.textAlign='left';g.fillStyle='#000';g.fillText(c.sub,tx+5,y0+h-4);g.fillStyle=c.col;g.fillText(c.sub,tx+4,y0+h-5);}g.textBaseline='alphabetic';}g.restore();}
 {const base=renderMansion;renderMansion=function(){base();mansionJuiceCutHi();};}

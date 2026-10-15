@@ -11,6 +11,10 @@ ROCKSIDE II / 2.0.0-test.46（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 - 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs` `node tools/test-hoshiyomi.cjs` and `node tools/test-keiko.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
+### 2.0.0-test.53
+- カットインの技名を Dela Gothic One で表示（斜体風の傾き、黒の太い縁取り＋ボス色の線、ボス色のずらし影、入りの瞬間に拡大→縮小の「カッ！」）。ボス名も同じフォント。フォントを読み込めない間は従来の sans-serif で表示。
+- フォントは技名・ボス名に使う文字とカタカナ・ASCIIだけに絞ったサブセット（assets/fonts/DelaGothicOne-cutin.woff2、約22KB）。作り直しは `tools/font-subset.py`。
+
 ### 2.0.0-test.52
 - 必殺技のカットインを作り直し：画面中央の大きな帯（約40%を約1.6秒覆っていた）をやめ、右上の小さな斜めの帯（画面上部 y18〜48、上20%以内）に変更。顔（目元）の切り抜き＋技名＋ボス名。4フレームで「カッ！」と入り、約0.73秒で横へ抜ける。長い停止なし（ヒットストップ2フレームのみ）、全画面フラッシュなし。高解像度のオーバーレイに描くので文字がくっきり見える。全ボスの必殺技に適用。
 
@@ -585,3 +589,6 @@ Use case: stylized-concept. Asset type: one separate transparent game pixel-art 
 規格は`assets/hoshiyomi-idle-walk.json`。元シート1536×1024、512×512等分セル３列２段。描画時の共通倍率0.075で身体約36ゲームpx、個別足元アンカー。64×64は想定描画枠で、正確な64pxラスタ画像への書き出しは未実施。待機は通常/ウインク、歩行は踏み出し/膝上げを交互に表示。細かな足運びとゲーム内の印象は今後調整する。
 
 素材確認ページ：`hoshiyomi-model.html`。アスターテのプレイヤー立ち姿と同じ画素で並べ、待機/歩き・コマ送り・左右を確認。星詠みをゲーム内NPCへ配置する処理、台詞、星読み能力、戦闘は未追加。ゲームはtest.32、セーブと進行は変更しない。GitHub公開版へは未反映。
+
+## Credits
+- Font: **Dela Gothic One** — Copyright 2020 The Dela Gothic Project Authors (https://github.com/syakuzen/DelaGothic). Licensed under the SIL Open Font License 1.1 (`assets/fonts/DelaGothicOne-OFL.txt`). Shipped as a subset (cut-in move/boss names only).

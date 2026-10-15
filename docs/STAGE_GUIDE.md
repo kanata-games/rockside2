@@ -417,3 +417,6 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 ## 19. 必殺技カットイン (test.52)
 - `juiceCut(技名,色,ボス名)`。右上の斜めの帯、y 18〜48（画面上20%以内）、44フレーム（入り4／抜け8）。停止は最大2フレーム。床や予告を絶対に隠さないこと。
 - 顔の切り抜きの中心は `CUT_FACE[id]`（512x288 の cutin 画像の目元の座標）。新しい cutin 画像を追加したらここに座標を足す。
+
+## 20. カットインのフォント (test.53)
+- Dela Gothic One（SIL OFL 1.1）のサブセット `assets/fonts/DelaGothicOne-cutin.woff2`。新しい必殺技名を足したら `tools/font-subset.py <DelaGothicOne-Regular.ttf>` で作り直す（juiceCut の文字列を自動で集める）。ライセンス文 `assets/fonts/DelaGothicOne-OFL.txt` を必ず一緒に置く。
