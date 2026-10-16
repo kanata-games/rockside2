@@ -439,3 +439,8 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 - 予告 `WC_TELE`=44f、危険帯は壁から `WC_STRIP`=30px。波は床から34pxの隙間を残す。
 - 張り付き時間 `M.wc.cling` が36を超えると発動（間隔170f）、通常は `WC_SLOW`=600fごと。
 - 壁キックを無効にしないこと。「壁から離れれば安全」を必ず守る（test-wall.cjs）。
+
+## 26. タイトル画面 (test.59)
+- `src/04s_title.js`。`assets/title/title_bg.png` があれば全画面の `#titleCv` に title.json（landscape／portrait、0〜1の正規化座標）どおり描く。無ければ256×240キャンバスに代替タイトル。
+- 縦長（高さ>幅×1.05）は portrait 設定と title_bg_portrait.png。横長はロゴを海音ちゃんの帽子と重ならないよう x≥0.6 に寄せる。
+- HARD／ERASE はゲームキャンバス上のタップ位置に重ねて描く。ロゴ用フォントの文字は tools/font-subset.py に追加してから再生成。

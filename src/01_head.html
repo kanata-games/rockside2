@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0d0f1a">
 <meta name="robots" content="noindex, nofollow">
-<title>ROCKSIDE II – 海音ちゃんの冒険２・屋敷探索テスト</title>
+<title>海音ちゃんの冒険2 – ROCKSIDE II</title>
 <style>
 html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#0d0f1a;
   touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
@@ -74,6 +74,7 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 #mAreaContent{padding:16px;font-size:14px;line-height:1.8;color:#d5e5ee}#mAreaContent h2{color:#fff1bd;font-size:20px}#mAreaContent #mAreaGo{width:100%;min-height:64px;background:#244f65;border-color:#91e5ef}#mAreaGo:disabled{opacity:.5}.warp-list{display:grid;gap:10px}.warp-list button{width:100%;min-height:48px;text-align:left;background:#302344;border-color:#a780d1}.warp-list button:disabled{opacity:.45}
 #mTalk{padding:20px;font-size:clamp(16px,calc(9 * var(--mu)),20px);line-height:1.85;color:#edf3fa}
 #mTalk header{display:flex;align-items:center;gap:16px;margin-bottom:20px}#mTalkPortrait{width:96px;height:96px;background:#182338;border:1px solid #baa16c;image-rendering:pixelated}#mTalk h2{color:#f4c795;margin:0;font-size:22px}#mTalkText{white-space:pre-line}#mTalkSeiten,#mTalkDice,#mTalkBattle{width:100%;margin-top:12px;background:#493161!important;min-height:48px}#mMenuBar{flex-wrap:wrap}#mBattleLeave{min-height:48px}#mTalkNext{display:block;width:100%;margin-top:26px;background:#244f65!important}
+body.title-art #screen,body.title-art #hint{visibility:hidden}body.title-art #bL,body.title-art #bR,body.title-art #bS,body.title-art #bJ,body.title-art #bM,body.title-art #bSupport{visibility:hidden;pointer-events:none}body.title-art #mTitle button{background:rgba(26,22,64,.86);border-color:#c8b4ff;font-size:16px;padding:11px 20px;box-shadow:0 2px 10px rgba(0,0,0,.45)}
 </style>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%2311162d'/%3E%3Cpath d='M8 6h5v20H8zm11 0h5v20h-5z' fill='%23ffd84a'/%3E%3C/svg%3E">
 <style>
@@ -102,7 +103,7 @@ body.mansion-menu-open #pad,body.mansion-menu-open #mSlide,body.mansion-menu-ope
 <script>
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.58';
+const GAME_VERSION = '2.0.0-test.59';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.

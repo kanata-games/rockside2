@@ -598,34 +598,16 @@ function drawHitboxes(camX) {
 function dim(a) { g.fillStyle = 'rgba(8,6,20,' + a + ')'; g.fillRect(0, 0, VW, VH); }
 
 function renderTitle() {
-  drawBackground(titleScroll);
+  titleDraw(); // test.59: 「海音ちゃんの冒険2」 title art (04s_title.js)
   const HM = TITLE_HARD;
   g.fillStyle = hardMode ? '#4b1423' : 'rgba(12,8,30,0.82)'; g.fillRect(HM.x, HM.y, HM.w, HM.h);
   rectLine(HM.x, HM.y, HM.w, HM.h, hardMode ? '#ff667d' : '#4a5680');
   drawText(hardMode ? 'HARD ON' : 'HARD OFF', HM.x + HM.w / 2, HM.y + 4, hardMode ? 'r' : 'b', 1, 'c');
-  g.drawImage(levelCv, 0, 208, VW, 32, 0, 208, VW, 32);
-  g.fillStyle = 'rgba(12,8,30,0.78)'; g.fillRect(0, 18, VW, 56);
-  g.fillStyle = '#ffd84a'; g.fillRect(0, 18, VW, 1); g.fillRect(0, 73, VW, 1);
-  drawText('ROCKSIDE II', VW / 2 + 2, 29, 'k', 3, 'c');
-  drawText('ROCKSIDE II', VW / 2, 26, 'y', 3, 'c');
-  drawText('MOONLIT MANSION / ACTION TEST', VW / 2, 52, 'c', 1, 'c');
-  drawText('VER ' + GAME_VERSION, VW / 2, 62, 'b', 1, 'c');
   if (isCleared('final')) { // game cleared: small star mark
     const sx = VW - 38, sy = 58; g.fillStyle = '#120e24'; g.fillRect(sx - 1, sy - 1, 34, 11); g.fillStyle = (frame >> 4) & 1 ? '#ffd84a' : '#fff4b0';
     g.fillRect(sx + 3, sy + 1, 3, 7); g.fillRect(sx + 1, sy + 3, 7, 3); g.fillRect(sx + 2, sy + 2, 5, 5); drawText('CLEAR', sx + 10, sy + 2, 'y', 1);
   }
-  // hero name: 海音 UMINE
-  g.drawImage(kanjiCv, 78, 82);
-  drawTextShadow('UMINE', 118, 85, 'c', 2);
-  if (((frame >> 4) & 3) !== 3) drawTextShadow('TAP TO START', VW / 2, 118, 'w', 2, 'c');
-  drawText('OR PRESS ENTER', VW / 2, 134, 'b', 1, 'c');
-  // Umine + a Trundlebot, with a water bullet flying between them
-  if (SEQUEL_MODEL.size !== 32 && SEQUEL_MODEL.frames.length) drawSequelAt(6, 46, 208, 1, false, 64); else if (SHEETS.kanon) g.drawImage(SHEETS.kanon[8].r, 14, 144, 64, 64); else g.drawImage(SPR.hero.stand[1].r, 18, 148, HERO_W * 2, HERO_H * 2);
-  const px = 72 + ((frame * 2) % 120);
-  g.drawImage(SPR.shot.r, px, 178, 16, 12);
-  g.drawImage(SPR.walker[(frame >> 3) & 1].l, 200, 164, 32, 44);
-  drawText('MOVE: ARROWS/A D   JUMP: Z/SPACE', VW / 2, 218, 'w', 1, 'c');
-  drawText('SHOT: X/J    SOUND: M', VW / 2, 228, 'w', 1, 'c');
+  drawText('MOVE: ARROWS/A D  JUMP: Z/SPACE  SHOT: X/J', VW / 2, 222, 'w', 1, 'c');
   if (clearedCount() > 0) { // erase saved progress (tap twice / Delete key twice)
     const R = TITLE_RESET, armed = resetArmT > 0;
     g.fillStyle = armed ? '#6a1830' : 'rgba(12,8,30,0.8)'; g.fillRect(R.x, R.y, R.w, R.h);
@@ -779,10 +761,11 @@ function renderAreaIntro() {
 
 function render() {
   g.setTransform(1, 0, 0, 1, 0, 0);
+  if (state !== titlePageState) { titlePageState = state; titlePageBg(); if (state !== 'title') titleOverlayDraw(); }
   mansionUI();
   if(state === 'mansion' || state === 'mansionClear'){renderMansion();return;}
   if (state === 'opening' || state === 'openingPlay' || state === 'openingDone') { renderOpening(); return; }
-  if (state === 'title') { renderTitle(); blit(); drawHiText('〜 知らない天井と、ふしぎな右手 〜', VW / 2, 102, 8, '#ffd6ec', '#120e24'); return; }
+  if (state === 'title') { renderTitle(); blit(); titleDrawHi(); titleOverlayDraw(); return; }
   if (state === 'select' || (state === 'areaIntro' && stateT < 24)) { renderSelect(); return; }
   if (state === 'areaIntro') { renderAreaIntro(); return; }
   if (state === 'theEnd') { renderTheEnd(); return; }

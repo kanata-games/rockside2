@@ -1,0 +1,116 @@
+{
+ "gameScreen": "内部解像度 256×240（src/01_head.html の canvas）。表示はウィンドウ全体に拡大（03_world.js で innerWidth/innerHeight）。背景はカバー表示（はみ出しは切る）を想定",
+ "files": {
+  "title_bg.png": [
+   2048,
+   1152
+  ],
+  "title_bg_portrait.png": [
+   1080,
+   1920
+  ],
+  "title_umine.png": [
+   525,
+   672
+  ],
+  "title_logo.png": [
+   1179,
+   418
+  ],
+  "title_umine_old.png": [
+   657,
+   705
+  ]
+ },
+ "layoutNote": "座標は画面に対する正規化値（0〜1）。anchor は画像のどこをその位置に合わせるか（0〜1）。heightRatio＝画面の高さに対する表示の高さ（幅は画像の比率で決める）。順番：背景→ロゴ→海音→PRESS START",
+ "landscape": {
+  "bg": {
+   "file": "title_bg.png",
+   "fit": "cover"
+  },
+  "logo": {
+   "file": "title_logo.png",
+   "pos": [
+    0.5,
+    0.04
+   ],
+   "anchor": [
+    0.5,
+    0.0
+   ],
+   "widthRatio": 0.52,
+   "note": "上部中央。月と重ならないよう少し右でも可（pos x 0.56）"
+  },
+  "umine": {
+   "file": "title_umine.png",
+   "pos": [
+    0.22,
+    1.0
+   ],
+   "anchor": [
+    0.5,
+    1.0
+   ],
+   "heightRatio": 0.72,
+   "note": "左下に大きく。足元を画面下端に合わせる（少しはみ出してもよい）"
+  },
+  "pressStart": {
+   "pos": [
+    0.68,
+    0.86
+   ],
+   "anchor": [
+    0.5,
+    0.5
+   ],
+   "fontHeightRatio": 0.05,
+   "note": "右下の小道あたり。白文字＋紫の縁取り、ゆっくり点滅"
+  }
+ },
+ "portrait": {
+  "bg": {
+   "file": "title_bg_portrait.png",
+   "fit": "cover"
+  },
+  "logo": {
+   "file": "title_logo.png",
+   "pos": [
+    0.5,
+    0.06
+   ],
+   "anchor": [
+    0.5,
+    0.0
+   ],
+   "widthRatio": 0.9,
+   "note": "上部いっぱい"
+  },
+  "umine": {
+   "file": "title_umine.png",
+   "pos": [
+    0.5,
+    0.9
+   ],
+   "anchor": [
+    0.5,
+    1.0
+   ],
+   "heightRatio": 0.48,
+   "note": "下中央に大きく。PRESS START のために下端より少し上"
+  },
+  "pressStart": {
+   "pos": [
+    0.5,
+    0.95
+   ],
+   "anchor": [
+    0.5,
+    0.5
+   ],
+   "fontHeightRatio": 0.03,
+   "note": "最下部中央"
+  }
+ },
+ "source": "work/title/raw/*.jpg → work/title/build.py",
+ "umineNote": "title_umine.png は公式設定画の画風に合わせたドット絵調（2026-10-16差し替え、縁は二値アルファでくっきり）。旧版は title_umine_old.png"
+}
