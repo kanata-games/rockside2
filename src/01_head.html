@@ -85,6 +85,8 @@ body.title-art #screen,body.title-art #hint{visibility:hidden}body.title-art #bL
 #mTitle{position:fixed;z-index:14;display:none;gap:10px;transform:translateX(-50%);white-space:nowrap}#mTitle button{background:#1a3047;color:#e9f8ff;border:1px solid #83b9ca;border-radius:6px;padding:9px 16px;font:bold 14px system-ui;touch-action:manipulation}
 </style></head>
 <body>
+<div id="boot" style="position:fixed;inset:0;z-index:99;background:#070a1c;display:flex;align-items:center;justify-content:center;transition:opacity .45s"><canvas id="bootCv" width="160" height="90" style="image-rendering:pixelated;image-rendering:crisp-edges;width:min(96vw,170vh);height:auto"></canvas></div>
+
 <canvas id="screen" width="256" height="240"></canvas>
 <div id="pad">
   <div class="btn dpad" id="bL"><svg viewBox="0 0 24 24"><path d="M16 3 L5 12 L16 21 Z" fill="currentColor"/></svg></div>
@@ -101,9 +103,28 @@ body.title-art #screen,body.title-art #hint{visibility:hidden}body.title-art #bL
 <div id="mMenuBar"><button id="mStatusTab" aria-selected="true">ステータス</button><button id="mMapTab" aria-selected="false">マップ</button><button id="mAreaTab" aria-selected="false">ワープ</button><button id="mBattleLeave" style="display:none">手合わせをやめて拠点へ</button><button id="mMenuClose" aria-label="メニューを閉じる">戻る</button></div><div id="mMenuBody"><div id="mTalk" style="display:none"><header><canvas id="mTalkPortrait" width="96" height="96" aria-label="被り物姿のダイスロール"></canvas><h2 id="mTalkName">ダイスロール</h2></header><p id="mTalkText" aria-live="polite"></p><button id="mTalkNext">次へ</button><button id="mTalkDice" style="display:none">ダイスロールと練習する</button><button id="mTalkSeiten" style="display:none">一緒に遊ぶ</button><button id="mTalkBattle" style="display:none">本番の手合わせに挑む</button></div><div id="mStatus"></div><div id="mMapContent"></div><div id="mAreaContent"></div></div></section>
 <div id="mTitle"><button id="mContinue">つづきから</button><button id="mNew">はじめから</button></div>
 <script>
+// test.60: tiny pixel loading screen — drawn before any big image; counts every new Image() and fades out when all settle.
+(function(){try{const cv=document.getElementById('bootCv'),c=cv&&cv.getContext&&cv.getContext('2d'),box=document.getElementById('boot');if(!c||!c.fillRect||typeof window.Image!=='function'||typeof requestAnimationFrame!=='function'){if(box&&box.remove)box.remove();return;}let total=0,done=0,quiet=0,t=0,gone=false;const t0=Date.now();
+ const NI=window.Image;function TI(w,h){const im=new NI(w,h);total++;let fin=false;const f=()=>{if(!fin){fin=true;done++;}};im.addEventListener('load',f);im.addEventListener('error',f);return im;}TI.prototype=NI.prototype;window.Image=TI;
+ const F={N:'101111111111101',O:'111101101101111',W:'101101111111101',L:'100100100100111',A:'010101111101101',D:'110101101101110',I:'111010010010111',G:'111100101101111','.':'000000000000010'};
+ const txt=(s,x,y,col)=>{c.fillStyle=col;for(const ch of s){const g=F[ch];if(g)for(let i=0;i<15;i++)if(g[i]==='1')c.fillRect(x+i%3,y+(i/3|0),1,1);x+=4;}};
+ // 12x14 Umine: hat (purple), hair (blue), face, dress; 2 run frames
+ const U=['....pp......','...pppp.....','..pppppp....','.pppppppp...','..bbbbbb....','.bbffffbb...','.bbfefefb...','.bbffffbb...','.bbwwwwbb...','..wwddww....','...dddd.....','...dddd.....'],LEG=[['..k....k....','.k......k...'],['...k..k.....','...k..k.....']],P={p:'#5a3aa8',b:'#5aa8ff',f:'#ffe0d0',e:'#2a2a6a',w:'#ffffff',d:'#3a4aa8',k:'#2a2240'};
+ function draw(){t++;const p=total?done/total:0,el=(Date.now()-t0)/1000;c.fillStyle='#070a1c';c.fillRect(0,0,160,90);
+  for(let i=0;i<24;i++){const x=(i*53+7)%160,y=(i*29+3)%56;c.fillStyle=((t>>3)+i)%9?'#3a4680':'#fff1c0';c.fillRect(x,y,1,1);}
+  c.fillStyle='#f6efd2';c.fillRect(128,10,8,8);c.fillRect(127,11,10,6);c.fillRect(129,9,6,10);
+  const dots='...'.slice(0,1+((t>>4)%3));txt('NOW LOADING'+dots,52,30,'#ffffff');
+  c.fillStyle='#2a3458';c.fillRect(30,58,100,6);c.fillStyle='#0a0c1e';c.fillRect(31,59,98,4);const pw=Math.round(98*Math.min(1,p));c.fillStyle='#5aa8ff';c.fillRect(31,59,pw,4);c.fillStyle='#bfe2ff';c.fillRect(31,59,pw,1);
+  const ux=31+Math.max(0,pw-10),fr=(t>>3)&1,bob=fr;for(let y=0;y<12;y++)for(let x=0;x<12;x++){const k=U[y][x];if(k!=='.'){c.fillStyle=P[k];c.fillRect(ux+x,43+y+bob,1,1);}}
+  for(let y=0;y<2;y++)for(let x=0;x<12;x++)if(LEG[fr][y][x]==='k'){c.fillStyle=P.k;c.fillRect(ux+x,55+y,1,1);}
+  if(total&&done>=total)quiet++;else quiet=0;
+  if(!gone&&((quiet>20&&el>.5&&window.__titleArtSettled!==false)||el>15)){gone=true;box.style.opacity='0';setTimeout(()=>box.remove(),500);return;}
+  requestAnimationFrame(draw);}
+ requestAnimationFrame(draw);window.__bootProgress=()=>({total,done});}catch(e){const b=document.getElementById&&document.getElementById('boot');if(b&&b.remove)b.remove();}})();
+
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.59';
+const GAME_VERSION = '2.0.0-test.60';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.

@@ -2,24 +2,36 @@
  "gameScreen": "内部解像度 256×240（src/01_head.html の canvas）。表示はウィンドウ全体に拡大（03_world.js で innerWidth/innerHeight）。背景はカバー表示（はみ出しは切る）を想定",
  "files": {
   "title_bg.png": [
-   2048,
-   1152
+   512,
+   288
   ],
   "title_bg_portrait.png": [
-   1080,
-   1920
+   270,
+   480
   ],
   "title_umine.png": [
    525,
    672
   ],
   "title_logo.png": [
-   1179,
-   418
+   302,
+   109
   ],
   "title_umine_old.png": [
    657,
    705
+  ],
+  "title_bg_painted.png": [
+   2048,
+   1152
+  ],
+  "title_bg_portrait_painted.png": [
+   1080,
+   1920
+  ],
+  "title_logo_painted.png": [
+   1179,
+   418
   ]
  },
  "layoutNote": "座標は画面に対する正規化値（0〜1）。anchor は画像のどこをその位置に合わせるか（0〜1）。heightRatio＝画面の高さに対する表示の高さ（幅は画像の比率で決める）。順番：背景→ロゴ→海音→PRESS START",
@@ -38,7 +50,7 @@
     0.5,
     0.0
    ],
-   "widthRatio": 0.52,
+   "widthRatio": 0.59,
    "note": "上部中央。月と重ならないよう少し右でも可（pos x 0.56）"
   },
   "umine": {
@@ -111,6 +123,18 @@
    "note": "最下部中央"
   }
  },
- "source": "work/title/raw/*.jpg → work/title/build.py",
- "umineNote": "title_umine.png は公式設定画の画風に合わせたドット絵調（2026-10-16差し替え、縁は二値アルファでくっきり）。旧版は title_umine_old.png"
+ "source": "work/title/raw/*.jpg → work/title/build.py；ドット化は work/title/pixelize.py（raw/bg_land_pixel.jpg, raw/logo_pixel.jpg）",
+ "umineNote": "title_umine.png は公式設定画の画風に合わせたドット絵調（2026-10-16差し替え、縁は二値アルファでくっきり）。旧版は title_umine_old.png",
+ "pixelArt": {
+  "note": "背景とロゴはドット絵（2026-10-16）。描画時は imageSmoothingEnabled=false、なるべく整数倍で拡大すること",
+  "grid": {
+   "title_bg.png": "512×288 を4倍",
+   "title_bg_portrait.png": "270×480 を4倍",
+   "title_logo.png": "302×109（紺の1px縁取り込み）を4倍"
+  },
+  "palette": "背景40色・ロゴ32色、ディザなし",
+  "umineBlock": "title_umine.png の1ドットは約3px。横画面の配置（高さ72%）で背景のドット（4px相当）とほぼ同じ大きさ",
+  "oldFiles": "*_painted.png に旧版を保存",
+  "stored": "test.60: 背景・ロゴは等倍（512×288／270×480／302×109）で保存し、ゲーム側で最近傍・整数倍に拡大。title_umine.png は約3px/ドット（格子が揃っていないため原寸のまま、最近傍で拡大）"
+ }
 }

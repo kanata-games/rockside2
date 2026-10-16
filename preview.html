@@ -85,6 +85,8 @@ body.title-art #screen,body.title-art #hint{visibility:hidden}body.title-art #bL
 #mTitle{position:fixed;z-index:14;display:none;gap:10px;transform:translateX(-50%);white-space:nowrap}#mTitle button{background:#1a3047;color:#e9f8ff;border:1px solid #83b9ca;border-radius:6px;padding:9px 16px;font:bold 14px system-ui;touch-action:manipulation}
 </style></head>
 <body>
+<div id="boot" style="position:fixed;inset:0;z-index:99;background:#070a1c;display:flex;align-items:center;justify-content:center;transition:opacity .45s"><canvas id="bootCv" width="160" height="90" style="image-rendering:pixelated;image-rendering:crisp-edges;width:min(96vw,170vh);height:auto"></canvas></div>
+
 <canvas id="screen" width="256" height="240"></canvas>
 <div id="pad">
   <div class="btn dpad" id="bL"><svg viewBox="0 0 24 24"><path d="M16 3 L5 12 L16 21 Z" fill="currentColor"/></svg></div>
@@ -101,9 +103,28 @@ body.title-art #screen,body.title-art #hint{visibility:hidden}body.title-art #bL
 <div id="mMenuBar"><button id="mStatusTab" aria-selected="true">ステータス</button><button id="mMapTab" aria-selected="false">マップ</button><button id="mAreaTab" aria-selected="false">ワープ</button><button id="mBattleLeave" style="display:none">手合わせをやめて拠点へ</button><button id="mMenuClose" aria-label="メニューを閉じる">戻る</button></div><div id="mMenuBody"><div id="mTalk" style="display:none"><header><canvas id="mTalkPortrait" width="96" height="96" aria-label="被り物姿のダイスロール"></canvas><h2 id="mTalkName">ダイスロール</h2></header><p id="mTalkText" aria-live="polite"></p><button id="mTalkNext">次へ</button><button id="mTalkDice" style="display:none">ダイスロールと練習する</button><button id="mTalkSeiten" style="display:none">一緒に遊ぶ</button><button id="mTalkBattle" style="display:none">本番の手合わせに挑む</button></div><div id="mStatus"></div><div id="mMapContent"></div><div id="mAreaContent"></div></div></section>
 <div id="mTitle"><button id="mContinue">つづきから</button><button id="mNew">はじめから</button></div>
 <script>
+// test.60: tiny pixel loading screen — drawn before any big image; counts every new Image() and fades out when all settle.
+(function(){try{const cv=document.getElementById('bootCv'),c=cv&&cv.getContext&&cv.getContext('2d'),box=document.getElementById('boot');if(!c||!c.fillRect||typeof window.Image!=='function'||typeof requestAnimationFrame!=='function'){if(box&&box.remove)box.remove();return;}let total=0,done=0,quiet=0,t=0,gone=false;const t0=Date.now();
+ const NI=window.Image;function TI(w,h){const im=new NI(w,h);total++;let fin=false;const f=()=>{if(!fin){fin=true;done++;}};im.addEventListener('load',f);im.addEventListener('error',f);return im;}TI.prototype=NI.prototype;window.Image=TI;
+ const F={N:'101111111111101',O:'111101101101111',W:'101101111111101',L:'100100100100111',A:'010101111101101',D:'110101101101110',I:'111010010010111',G:'111100101101111','.':'000000000000010'};
+ const txt=(s,x,y,col)=>{c.fillStyle=col;for(const ch of s){const g=F[ch];if(g)for(let i=0;i<15;i++)if(g[i]==='1')c.fillRect(x+i%3,y+(i/3|0),1,1);x+=4;}};
+ // 12x14 Umine: hat (purple), hair (blue), face, dress; 2 run frames
+ const U=['....pp......','...pppp.....','..pppppp....','.pppppppp...','..bbbbbb....','.bbffffbb...','.bbfefefb...','.bbffffbb...','.bbwwwwbb...','..wwddww....','...dddd.....','...dddd.....'],LEG=[['..k....k....','.k......k...'],['...k..k.....','...k..k.....']],P={p:'#5a3aa8',b:'#5aa8ff',f:'#ffe0d0',e:'#2a2a6a',w:'#ffffff',d:'#3a4aa8',k:'#2a2240'};
+ function draw(){t++;const p=total?done/total:0,el=(Date.now()-t0)/1000;c.fillStyle='#070a1c';c.fillRect(0,0,160,90);
+  for(let i=0;i<24;i++){const x=(i*53+7)%160,y=(i*29+3)%56;c.fillStyle=((t>>3)+i)%9?'#3a4680':'#fff1c0';c.fillRect(x,y,1,1);}
+  c.fillStyle='#f6efd2';c.fillRect(128,10,8,8);c.fillRect(127,11,10,6);c.fillRect(129,9,6,10);
+  const dots='...'.slice(0,1+((t>>4)%3));txt('NOW LOADING'+dots,52,30,'#ffffff');
+  c.fillStyle='#2a3458';c.fillRect(30,58,100,6);c.fillStyle='#0a0c1e';c.fillRect(31,59,98,4);const pw=Math.round(98*Math.min(1,p));c.fillStyle='#5aa8ff';c.fillRect(31,59,pw,4);c.fillStyle='#bfe2ff';c.fillRect(31,59,pw,1);
+  const ux=31+Math.max(0,pw-10),fr=(t>>3)&1,bob=fr;for(let y=0;y<12;y++)for(let x=0;x<12;x++){const k=U[y][x];if(k!=='.'){c.fillStyle=P[k];c.fillRect(ux+x,43+y+bob,1,1);}}
+  for(let y=0;y<2;y++)for(let x=0;x<12;x++)if(LEG[fr][y][x]==='k'){c.fillStyle=P.k;c.fillRect(ux+x,55+y,1,1);}
+  if(total&&done>=total)quiet++;else quiet=0;
+  if(!gone&&((quiet>20&&el>.5&&window.__titleArtSettled!==false)||el>15)){gone=true;box.style.opacity='0';setTimeout(()=>box.remove(),500);return;}
+  requestAnimationFrame(draw);}
+ requestAnimationFrame(draw);window.__bootProgress=()=>({total,done});}catch(e){const b=document.getElementById&&document.getElementById('boot');if(b&&b.remove)b.remove();}})();
+
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.59';
+const GAME_VERSION = '2.0.0-test.60';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.
@@ -10008,8 +10029,8 @@ function wcDraw(){if(!M.wc||!M.wc.haz.length)return;const ox=M.camX||0,oy=M.camY
 let titlePageState=null;
 const TITLE_TEXT='海音ちゃんの冒険2';
 const TITLE_ART={bg:null,bgPortrait:null,umine:null,logo:null,cfg:{},tried:false};
-function titleArtLoad(){if(TITLE_ART.tried||typeof Image!=='function')return;TITLE_ART.tried=true;
- const img=(k,f)=>{const im=new Image();im.onload=()=>{TITLE_ART[k]=im;titlePageBg();};im.onerror=()=>{};im.src='assets/title/'+f;};
+function titleArtLoad(){if(TITLE_ART.tried||typeof Image!=='function')return;TITLE_ART.tried=true;let left=4;if(typeof window!=='undefined')window.__titleArtSettled=false;const settle=()=>{if(--left<=0&&typeof window!=='undefined')window.__titleArtSettled=true;};
+ const img=(k,f)=>{const im=new Image();im.onload=()=>{TITLE_ART[k]=im;titlePageBg();settle();};im.onerror=settle;im.src='assets/title/'+f;};
  img('bg','title_bg.png');img('bgPortrait','title_bg_portrait.png');img('umine','title_umine.png');img('logo','title_logo.png');
  try{if(typeof fetch==='function')fetch('assets/title/title.json').then(r=>r.ok?r.json():null).then(j=>{if(j)TITLE_ART.cfg=j;}).catch(()=>{});}catch(e){}}
 function titleArtUsed(){return{bg:!!TITLE_ART.bg,bgPortrait:!!TITLE_ART.bgPortrait,umine:!!TITLE_ART.umine,logo:!!TITLE_ART.logo};}
@@ -10080,20 +10101,22 @@ function titleCfgSet(port){const c=TITLE_ART.cfg||{},d=port?{logo:{pos:[.5,.06],
 function titleOverlayDraw(){const on=titleArtOn();if(typeof document!=='undefined'&&document.body?.classList)document.body.classList.toggle('title-art',on);
  if(!titleCvEnsure())return;titleCv.style.display=on?'block':'none';if(!on)return;
  const dpr=Math.min(3,window.devicePixelRatio||1),W=window.innerWidth,H=window.innerHeight,cw=Math.round(W*dpr),ch=Math.round(H*dpr);if(titleCv.width!==cw||titleCv.height!==ch){titleCv.width=cw;titleCv.height=ch;}
- const c=titleCtx,t=frame,port=H>W*1.05,L=titleCfgSet(port);c.setTransform(dpr,0,0,dpr,0,0);c.imageSmoothingEnabled=true;
+ const c=titleCtx,t=frame,port=H>W*1.05,L=titleCfgSet(port);c.setTransform(dpr,0,0,dpr,0,0);c.imageSmoothingEnabled=false;
  // background: cover + slow parallax sway
- const bg=port&&TITLE_ART.bgPortrait?TITLE_ART.bgPortrait:TITLE_ART.bg,sway=Math.sin(t/300)*W*.006,s=Math.max(W*1.02/bg.width,H*1.02/bg.height),bw=bg.width*s,bh=bg.height*s;
- c.drawImage(bg,(W-bw)/2+sway,(H-bh)/2+Math.sin(t/410)*H*.003,bw,bh);
+ // test.60: pixel art — nearest-neighbour, integer scale in device pixels (cover: ceil, so no seams), pixel-snapped sway
+ const bg=port&&TITLE_ART.bgPortrait?TITLE_ART.bgPortrait:TITLE_ART.bg;c.setTransform(1,0,0,1,0,0);c.imageSmoothingEnabled=false;
+ {const k=Math.max(1,Math.ceil(Math.max(cw/bg.width,ch/bg.height))),bw=bg.width*k,bh=bg.height*k,sw=Math.round(Math.sin(t/300)*Math.min(k*2,(bw-cw)/2));c.drawImage(bg,Math.round((cw-bw)/2)+sw,Math.round((ch-bh)/2),bw,bh);}
+ c.setTransform(dpr,0,0,dpr,0,0);c.imageSmoothingEnabled=false;
  for(let i=0;i<34;i++){const tw=(t+i*37)%160;if(tw>=14)continue;const a=1-Math.abs(tw-7)/7,x=artH(i,61)%1000/1000*W,y=artH(i,62)%1000/1000*H*(port?.38:.5),r=(1.2+a*1.6)*(W>700?1.2:1);
   c.globalAlpha=a;c.fillStyle='#fff6d6';c.fillRect(x-r*2,y-.5,r*4,1);c.fillRect(x-.5,y-r*2,1,r*4);c.beginPath();c.arc(x,y,r*.6,0,7);c.fill();}c.globalAlpha=1;
  // logo
  const lg=L.logo;let logoBottom=H*.2;
- if(TITLE_ART.logo){const im=TITLE_ART.logo,w=Math.min(W*lg.widthRatio,H*(port?.3:.42)*im.width/im.height),h=w*im.height/im.width,x=W*lg.pos[0]-w*lg.anchor[0],y=H*lg.pos[1]-h*lg.anchor[1]+Math.sin(t/60)*1.5;c.drawImage(im,x,y,w,h);logoBottom=y+h;}
+ if(TITLE_ART.logo){const im=TITLE_ART.logo,want=Math.min(W*lg.widthRatio,H*(port?.3:.42)*im.width/im.height)*dpr,k=Math.max(1,Math.floor(want/im.width)+(want/im.width%1>.8?1:0)),w=im.width*k/dpr,h=im.height*k/dpr,x=Math.round((W*lg.pos[0]-w*lg.anchor[0])*dpr)/dpr,y=Math.round((H*lg.pos[1]-h*lg.anchor[1]+Math.round(Math.sin(t/60)*1.5))*dpr)/dpr;c.drawImage(im,x,y,w,h);logoBottom=y+h;}
  else{const px=Math.min(W*lg.widthRatio/8,H*.11);c.font=`${Math.round(px)}px ${CUT_FONT_OK?'"DelaCut",':''}${JP_FONT}`;c.textAlign='center';c.textBaseline='top';c.lineJoin='round';c.lineWidth=px*.22;c.strokeStyle='#160c34';c.strokeText(TITLE_TEXT,W*lg.pos[0],H*lg.pos[1]);c.fillStyle='#eaf4ff';c.fillText(TITLE_TEXT,W*lg.pos[0],H*lg.pos[1]);logoBottom=H*lg.pos[1]+px*1.2;}
  const txt=(s,x,y,px,col,stroke,al='center')=>{c.font=`700 ${Math.round(px)}px ${JP_FONT}`;c.textAlign=al;c.textBaseline='middle';c.lineJoin='round';c.lineWidth=Math.max(3,px*.3);c.strokeStyle=stroke;c.strokeText(s,x,y);c.fillStyle=col;c.fillText(s,x,y);};
  txt('〜 知らない天井と、ふしぎな右手 〜',W*lg.pos[0],logoBottom+Math.max(12,H*.022),Math.max(12,Math.min(22,H*.026)),'#ffe0f0','#2a0f3a');
  // Umine: idle bob + soft shadow
- const um=L.umine;if(TITLE_ART.umine){const im=TITLE_ART.umine,h=H*um.heightRatio,w=h*im.width/im.height,bob=Math.sin(t/26)*h*.008,x=W*um.pos[0]-w*um.anchor[0],y=H*um.pos[1]-h*um.anchor[1];
+ const um=L.umine;if(TITLE_ART.umine){const im=TITLE_ART.umine,h=H*um.heightRatio,w=h*im.width/im.height,bob=Math.round(Math.sin(t/26)*2),x=W*um.pos[0]-w*um.anchor[0],y=H*um.pos[1]-h*um.anchor[1];
   c.fillStyle='rgba(0,0,0,.28)';c.beginPath();c.ellipse(x+w/2,y+h-h*.015,w*.28,h*.025,0,0,7);c.fill();c.drawImage(im,x,y+bob,w,h);}
  // press start (slow blink)
  const ps=L.pressStart,fp=Math.max(14,H*ps.fontHeightRatio);c.globalAlpha=.78+.22*Math.sin(t/22);txt('TAP TO START',W*ps.pos[0],H*ps.pos[1],fp,'#ffffff','#5a2a9a');c.globalAlpha=1;

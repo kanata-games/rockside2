@@ -444,3 +444,7 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 - `src/04s_title.js`。`assets/title/title_bg.png` があれば全画面の `#titleCv` に title.json（landscape／portrait、0〜1の正規化座標）どおり描く。無ければ256×240キャンバスに代替タイトル。
 - 縦長（高さ>幅×1.05）は portrait 設定と title_bg_portrait.png。横長はロゴを海音ちゃんの帽子と重ならないよう x≥0.6 に寄せる。
 - HARD／ERASE はゲームキャンバス上のタップ位置に重ねて描く。ロゴ用フォントの文字は tools/font-subset.py に追加してから再生成。
+
+## 27. 読み込み画面とドット絵タイトル (test.60)
+- 読み込み画面はメインscriptの先頭（01_head.html）。`new Image()` を数えて全部終わり＋タイトル素材の成否が確定したらフェード（最長15秒）。画像は使わない。
+- ドット絵素材は等倍で置き、コード側で `imageSmoothingEnabled=false`・整数倍。4倍拡大済みPNGをそのまま入れない。

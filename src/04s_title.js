@@ -9,8 +9,8 @@
 let titlePageState=null;
 const TITLE_TEXT='海音ちゃんの冒険2';
 const TITLE_ART={bg:null,bgPortrait:null,umine:null,logo:null,cfg:{},tried:false};
-function titleArtLoad(){if(TITLE_ART.tried||typeof Image!=='function')return;TITLE_ART.tried=true;
- const img=(k,f)=>{const im=new Image();im.onload=()=>{TITLE_ART[k]=im;titlePageBg();};im.onerror=()=>{};im.src='assets/title/'+f;};
+function titleArtLoad(){if(TITLE_ART.tried||typeof Image!=='function')return;TITLE_ART.tried=true;let left=4;if(typeof window!=='undefined')window.__titleArtSettled=false;const settle=()=>{if(--left<=0&&typeof window!=='undefined')window.__titleArtSettled=true;};
+ const img=(k,f)=>{const im=new Image();im.onload=()=>{TITLE_ART[k]=im;titlePageBg();settle();};im.onerror=settle;im.src='assets/title/'+f;};
  img('bg','title_bg.png');img('bgPortrait','title_bg_portrait.png');img('umine','title_umine.png');img('logo','title_logo.png');
  try{if(typeof fetch==='function')fetch('assets/title/title.json').then(r=>r.ok?r.json():null).then(j=>{if(j)TITLE_ART.cfg=j;}).catch(()=>{});}catch(e){}}
 function titleArtUsed(){return{bg:!!TITLE_ART.bg,bgPortrait:!!TITLE_ART.bgPortrait,umine:!!TITLE_ART.umine,logo:!!TITLE_ART.logo};}
@@ -81,20 +81,22 @@ function titleCfgSet(port){const c=TITLE_ART.cfg||{},d=port?{logo:{pos:[.5,.06],
 function titleOverlayDraw(){const on=titleArtOn();if(typeof document!=='undefined'&&document.body?.classList)document.body.classList.toggle('title-art',on);
  if(!titleCvEnsure())return;titleCv.style.display=on?'block':'none';if(!on)return;
  const dpr=Math.min(3,window.devicePixelRatio||1),W=window.innerWidth,H=window.innerHeight,cw=Math.round(W*dpr),ch=Math.round(H*dpr);if(titleCv.width!==cw||titleCv.height!==ch){titleCv.width=cw;titleCv.height=ch;}
- const c=titleCtx,t=frame,port=H>W*1.05,L=titleCfgSet(port);c.setTransform(dpr,0,0,dpr,0,0);c.imageSmoothingEnabled=true;
+ const c=titleCtx,t=frame,port=H>W*1.05,L=titleCfgSet(port);c.setTransform(dpr,0,0,dpr,0,0);c.imageSmoothingEnabled=false;
  // background: cover + slow parallax sway
- const bg=port&&TITLE_ART.bgPortrait?TITLE_ART.bgPortrait:TITLE_ART.bg,sway=Math.sin(t/300)*W*.006,s=Math.max(W*1.02/bg.width,H*1.02/bg.height),bw=bg.width*s,bh=bg.height*s;
- c.drawImage(bg,(W-bw)/2+sway,(H-bh)/2+Math.sin(t/410)*H*.003,bw,bh);
+ // test.60: pixel art — nearest-neighbour, integer scale in device pixels (cover: ceil, so no seams), pixel-snapped sway
+ const bg=port&&TITLE_ART.bgPortrait?TITLE_ART.bgPortrait:TITLE_ART.bg;c.setTransform(1,0,0,1,0,0);c.imageSmoothingEnabled=false;
+ {const k=Math.max(1,Math.ceil(Math.max(cw/bg.width,ch/bg.height))),bw=bg.width*k,bh=bg.height*k,sw=Math.round(Math.sin(t/300)*Math.min(k*2,(bw-cw)/2));c.drawImage(bg,Math.round((cw-bw)/2)+sw,Math.round((ch-bh)/2),bw,bh);}
+ c.setTransform(dpr,0,0,dpr,0,0);c.imageSmoothingEnabled=false;
  for(let i=0;i<34;i++){const tw=(t+i*37)%160;if(tw>=14)continue;const a=1-Math.abs(tw-7)/7,x=artH(i,61)%1000/1000*W,y=artH(i,62)%1000/1000*H*(port?.38:.5),r=(1.2+a*1.6)*(W>700?1.2:1);
   c.globalAlpha=a;c.fillStyle='#fff6d6';c.fillRect(x-r*2,y-.5,r*4,1);c.fillRect(x-.5,y-r*2,1,r*4);c.beginPath();c.arc(x,y,r*.6,0,7);c.fill();}c.globalAlpha=1;
  // logo
  const lg=L.logo;let logoBottom=H*.2;
- if(TITLE_ART.logo){const im=TITLE_ART.logo,w=Math.min(W*lg.widthRatio,H*(port?.3:.42)*im.width/im.height),h=w*im.height/im.width,x=W*lg.pos[0]-w*lg.anchor[0],y=H*lg.pos[1]-h*lg.anchor[1]+Math.sin(t/60)*1.5;c.drawImage(im,x,y,w,h);logoBottom=y+h;}
+ if(TITLE_ART.logo){const im=TITLE_ART.logo,want=Math.min(W*lg.widthRatio,H*(port?.3:.42)*im.width/im.height)*dpr,k=Math.max(1,Math.floor(want/im.width)+(want/im.width%1>.8?1:0)),w=im.width*k/dpr,h=im.height*k/dpr,x=Math.round((W*lg.pos[0]-w*lg.anchor[0])*dpr)/dpr,y=Math.round((H*lg.pos[1]-h*lg.anchor[1]+Math.round(Math.sin(t/60)*1.5))*dpr)/dpr;c.drawImage(im,x,y,w,h);logoBottom=y+h;}
  else{const px=Math.min(W*lg.widthRatio/8,H*.11);c.font=`${Math.round(px)}px ${CUT_FONT_OK?'"DelaCut",':''}${JP_FONT}`;c.textAlign='center';c.textBaseline='top';c.lineJoin='round';c.lineWidth=px*.22;c.strokeStyle='#160c34';c.strokeText(TITLE_TEXT,W*lg.pos[0],H*lg.pos[1]);c.fillStyle='#eaf4ff';c.fillText(TITLE_TEXT,W*lg.pos[0],H*lg.pos[1]);logoBottom=H*lg.pos[1]+px*1.2;}
  const txt=(s,x,y,px,col,stroke,al='center')=>{c.font=`700 ${Math.round(px)}px ${JP_FONT}`;c.textAlign=al;c.textBaseline='middle';c.lineJoin='round';c.lineWidth=Math.max(3,px*.3);c.strokeStyle=stroke;c.strokeText(s,x,y);c.fillStyle=col;c.fillText(s,x,y);};
  txt('〜 知らない天井と、ふしぎな右手 〜',W*lg.pos[0],logoBottom+Math.max(12,H*.022),Math.max(12,Math.min(22,H*.026)),'#ffe0f0','#2a0f3a');
  // Umine: idle bob + soft shadow
- const um=L.umine;if(TITLE_ART.umine){const im=TITLE_ART.umine,h=H*um.heightRatio,w=h*im.width/im.height,bob=Math.sin(t/26)*h*.008,x=W*um.pos[0]-w*um.anchor[0],y=H*um.pos[1]-h*um.anchor[1];
+ const um=L.umine;if(TITLE_ART.umine){const im=TITLE_ART.umine,h=H*um.heightRatio,w=h*im.width/im.height,bob=Math.round(Math.sin(t/26)*2),x=W*um.pos[0]-w*um.anchor[0],y=H*um.pos[1]-h*um.anchor[1];
   c.fillStyle='rgba(0,0,0,.28)';c.beginPath();c.ellipse(x+w/2,y+h-h*.015,w*.28,h*.025,0,0,7);c.fill();c.drawImage(im,x,y+bob,w,h);}
  // press start (slow blink)
  const ps=L.pressStart,fp=Math.max(14,H*ps.fontHeightRatio);c.globalAlpha=.78+.22*Math.sin(t/22);txt('TAP TO START',W*ps.pos[0],H*ps.pos[1],fp,'#ffffff','#5a2a9a');c.globalAlpha=1;
