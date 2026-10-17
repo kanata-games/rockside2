@@ -448,3 +448,8 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 ## 27. 読み込み画面とドット絵タイトル (test.60)
 - 読み込み画面はメインscriptの先頭（01_head.html）。`new Image()` を数えて全部終わり＋タイトル素材の成否が確定したらフェード（最長15秒）。画像は使わない。
 - ドット絵素材は等倍で置き、コード側で `imageSmoothingEnabled=false`・整数倍。4倍拡大済みPNGをそのまま入れない。
+
+## 28. 起動の2段階読み込みとドット絵海音 (test.61)
+- 01_head.html の起動コードが `new Image()` の src を保留（assets/title/・assets/fonts/ だけ即読み）。`window.__bootArmed` 以降にタイトルから別状態へ移ると `__boot.release()` → NOW LOADING。読み込み中は `window.__bootLoading` でゲームループ停止（最長90秒）。
+- タイトル素材が全部失敗した場合も旧タイトルは出さず、全画面キャンバスに夜空グラデ＋文字ロゴ。
+- ドット絵海音は `src/04t_uminepx.js`（`upxMansionPick` が状態→アニメ）。足元 y=60・中心 x=32 を M.x/M.y に合わせて等倍描画。壁の絵は「壁が右」なので M.wall===1 で反転なし。

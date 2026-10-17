@@ -19,7 +19,7 @@ function loadSequelWalk(src='assets/umine-walk.png',out=SEQUEL_MODEL){const img=
  p.drawImage(img,(i%2)*615,Math.floor(i/2)*639,615,639,64-330*.195,124-feet[i]*.195,615*.195,639*.195);frames.push(sheetSprite(c));}
  out.walkFrames=frames;
  };img.src=src;}
-function drawSequelPlayer(camX,white){const x=P.x+P.w/2-camX,y=P.y+P.h;
+function drawSequelPlayer(camX,white){const x=P.x+P.w/2-camX,y=P.y+P.h;if(typeof upxClassicDraw==='function'&&upxClassicDraw(x,y,white))return;
  if(P.hurt<=0&&P.onGround&&Math.abs(P.vx)>.1){drawSequelWalk(P.animT*1.8,x,y,P.face,white);return;}
  const fi=P.hurt>0?0:!P.onGround?(P.vy<0?4:5):P.shootT>0?6:(frame>>5)&1;drawSequelAt(fi,x,y,P.face,white);}
 function stripConnectedWhite(c){const p=c.getContext('2d'),data=p.getImageData(0,0,c.width,c.height),d=data.data,seen=new Uint8Array(c.width*c.height),q=new Int32Array(c.width*c.height);let head=0,tail=0;function push(x,y){const n=y*c.width+x;if(seen[n])return;seen[n]=1;const k=n*4;if(d[k]>225&&d[k+1]>225&&d[k+2]>225)q[tail++]=n;}for(let x=0;x<c.width;x++){push(x,0);push(x,c.height-1);}for(let y=0;y<c.height;y++){push(0,y);push(c.width-1,y);}while(head<tail){const n=q[head++],x=n%c.width,y=Math.floor(n/c.width);d[n*4+3]=0;if(x)push(x-1,y);if(x<c.width-1)push(x+1,y);if(y)push(x,y-1);if(y<c.height-1)push(x,y+1);}p.putImageData(data,0,0);}

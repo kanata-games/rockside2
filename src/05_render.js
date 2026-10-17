@@ -861,12 +861,13 @@ function loop(now) {
   let dt = now - lastT; lastT = now;
   if (dt > 250) dt = 250; if (dt < 0) dt = 0;
   acc += dt; let n = 0;
+  if (typeof window !== 'undefined' && window.__bootLoading) acc = 0; // test.61: frozen behind NOW LOADING
   while (acc >= STEP && n < 5) { update(); acc -= STEP; n++; }
   if (n >= 5) acc = 0;
   render();
 }
 loadSheets();
-resetStage(false); setState('title');
+resetStage(false); setState('title'); if (typeof window !== 'undefined') window.__bootArmed = true; // test.61: from here on, leaving the title releases the held game assets
 if (DEBUG.area) { const a = AREAS.find(x => x.no === DEBUG.area && x.map); if (a) startGame(a); } // ?area=N: straight into the stage
 if (DEBUG.ending) startEnding(); // ?ending=1: straight to the ending party + credits
 requestAnimationFrame(loop);

@@ -240,7 +240,8 @@ function loadArea(area) {
 
 let state = 'title', stateT = 0, frame = 0, hitStop = 0, shakeT = 0, shakeMag = 0;
 let checkpoint = false, doorClosed = false, doorAnim = 0, introPhase = 0, titleScroll = 0;
-function setState(s) { state = s; stateT = 0; if (typeof helpBtn !== 'undefined') refreshSupportButton(); }
+function setState(s) { if (state === 'title' && s !== 'title' && typeof window !== 'undefined' && window.__boot && window.__bootArmed) window.__boot.release(); // test.61: game assets load after start
+  state = s; stateT = 0; if (typeof helpBtn !== 'undefined') refreshSupportButton(); }
 
 // ---------------------------------------------------------------------
 //  Tile collision

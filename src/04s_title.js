@@ -9,7 +9,7 @@
 let titlePageState=null;
 const TITLE_TEXT='海音ちゃんの冒険2';
 const TITLE_ART={bg:null,bgPortrait:null,umine:null,logo:null,cfg:{},tried:false};
-function titleArtLoad(){if(TITLE_ART.tried||typeof Image!=='function')return;TITLE_ART.tried=true;let left=4;if(typeof window!=='undefined')window.__titleArtSettled=false;const settle=()=>{if(--left<=0&&typeof window!=='undefined')window.__titleArtSettled=true;};
+function titleArtLoad(){if(TITLE_ART.tried||typeof Image!=='function')return;TITLE_ART.tried=true;let left=4;if(typeof window!=='undefined')window.__titleArtSettled=false;const settle=()=>{if(--left<=0){if(!TITLE_ART.bg)TITLE_ART.failed=true;if(typeof window!=='undefined')window.__titleArtSettled=true;}};
  const img=(k,f)=>{const im=new Image();im.onload=()=>{TITLE_ART[k]=im;titlePageBg();settle();};im.onerror=settle;im.src='assets/title/'+f;};
  img('bg','title_bg.png');img('bgPortrait','title_bg_portrait.png');img('umine','title_umine.png');img('logo','title_logo.png');
  try{if(typeof fetch==='function')fetch('assets/title/title.json').then(r=>r.ok?r.json():null).then(j=>{if(j)TITLE_ART.cfg=j;}).catch(()=>{});}catch(e){}}
@@ -73,7 +73,7 @@ function titleDrawHi(){const s=hiS(),t=frame,L=TITLE_ART.cfg.logo||{},lx=(L.x??1
 // separate landscape / portrait sets). Drawn on a viewport-sized canvas behind the DOM buttons; the 256x240 game canvas
 // is hidden on the title, and the HARD / ERASE chips are redrawn here at their tap positions.
 let titleCv=null,titleCtx=null;
-function titleArtOn(){return state==='title'&&!!TITLE_ART.bg;}
+function titleArtOn(){return state==='title'&&(!!TITLE_ART.bg||TITLE_ART.failed===true);}// test.61: never the old in-canvas title
 function titleCvEnsure(){if(titleCv||typeof document==='undefined'||!document.createElement||!document.body||typeof document.body.appendChild!=='function')return titleCv;const c=document.createElement('canvas');if(!c.getContext)return null;
  c.id='titleCv';Object.assign(c.style,{position:'fixed',left:'0',top:'0',width:'100%',height:'100%',zIndex:'1',pointerEvents:'none',display:'none'});document.body.appendChild(c);titleCv=c;titleCtx=c.getContext('2d');return c;}
 function titleCfgSet(port){const c=TITLE_ART.cfg||{},d=port?{logo:{pos:[.5,.06],anchor:[.5,0],widthRatio:.9},umine:{pos:[.5,.9],anchor:[.5,1],heightRatio:.48},pressStart:{pos:[.5,.95],fontHeightRatio:.03}}:{logo:{pos:[.5,.04],anchor:[.5,0],widthRatio:.52},umine:{pos:[.24,1],anchor:[.5,1],heightRatio:.8},pressStart:{pos:[.68,.86],fontHeightRatio:.05}};
@@ -85,7 +85,7 @@ function titleOverlayDraw(){const on=titleArtOn();if(typeof document!=='undefine
  // background: cover + slow parallax sway
  // test.60: pixel art — nearest-neighbour, integer scale in device pixels (cover: ceil, so no seams), pixel-snapped sway
  const bg=port&&TITLE_ART.bgPortrait?TITLE_ART.bgPortrait:TITLE_ART.bg;c.setTransform(1,0,0,1,0,0);c.imageSmoothingEnabled=false;
- {const k=Math.max(1,Math.ceil(Math.max(cw/bg.width,ch/bg.height))),bw=bg.width*k,bh=bg.height*k,sw=Math.round(Math.sin(t/300)*Math.min(k*2,(bw-cw)/2));c.drawImage(bg,Math.round((cw-bw)/2)+sw,Math.round((ch-bh)/2),bw,bh);}
+ if(!bg){const gr=c.createLinearGradient(0,0,0,ch);gr.addColorStop(0,'#070a20');gr.addColorStop(.6,'#1b2150');gr.addColorStop(1,'#3a3466');c.fillStyle=gr;c.fillRect(0,0,cw,ch);}else {const k=Math.max(1,Math.ceil(Math.max(cw/bg.width,ch/bg.height))),bw=bg.width*k,bh=bg.height*k,sw=Math.round(Math.sin(t/300)*Math.min(k*2,(bw-cw)/2));c.drawImage(bg,Math.round((cw-bw)/2)+sw,Math.round((ch-bh)/2),bw,bh);}
  c.setTransform(dpr,0,0,dpr,0,0);c.imageSmoothingEnabled=false;
  for(let i=0;i<34;i++){const tw=(t+i*37)%160;if(tw>=14)continue;const a=1-Math.abs(tw-7)/7,x=artH(i,61)%1000/1000*W,y=artH(i,62)%1000/1000*H*(port?.38:.5),r=(1.2+a*1.6)*(W>700?1.2:1);
   c.globalAlpha=a;c.fillStyle='#fff6d6';c.fillRect(x-r*2,y-.5,r*4,1);c.fillRect(x-.5,y-r*2,1,r*4);c.beginPath();c.arc(x,y,r*.6,0,7);c.fill();}c.globalAlpha=1;
@@ -106,3 +106,5 @@ function titleOverlayDraw(){const on=titleArtOn();if(typeof document!=='undefine
  chip(TITLE_HARD,hardMode?'HARD ON':'HARD OFF',hardMode);if(clearedCount()>0)chip(TITLE_RESET,resetArmT>0?'TAP AGAIN':'ERASE DATA',resetArmT>0);
  // menu buttons: between logo and Umine (portrait) / under the press-start line (landscape)
  const mt=document.getElementById('mTitle');if(mt&&mt.style){mt.style.left=(port?W/2:W*ps.pos[0])+'px';mt.style.top=(port?Math.round(Math.min(H*.42-50,logoBottom+H*.06)):Math.round(H*ps.pos[1]-fp*2.6-40))+'px';}}
+
+titleArtLoad(); // test.61: start the title art immediately (it is on the boot allow-list; everything else waits for start)

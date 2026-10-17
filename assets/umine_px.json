@@ -1,0 +1,125 @@
+{
+ "cell": [
+  64,
+  64
+ ],
+ "feet": [
+  32,
+  60
+ ],
+ "anims": {
+  "idle": {
+   "row": 0,
+   "frames": 4,
+   "fps": 6
+  },
+  "run": {
+   "row": 1,
+   "frames": 6,
+   "fps": 12
+  },
+  "jump": {
+   "row": 2,
+   "frames": 2,
+   "fps": 8,
+   "loop": false
+  },
+  "fall": {
+   "row": 3,
+   "frames": 2,
+   "fps": 8,
+   "landFrame": 2,
+   "note": "frames 0-1 loop (same pose, hair/cape flutter); frame 2 = landing"
+  },
+  "shoot": {
+   "row": 4,
+   "frames": 3,
+   "fps": 12,
+   "muzzle": [
+    [
+     56,
+     34
+    ],
+    [
+     56,
+     33
+    ],
+    [
+     57,
+     33
+    ]
+   ],
+   "muzzleNote": "per-frame cell-local [x,y] at the cannon tip"
+  },
+  "slide": {
+   "row": 5,
+   "frames": 2,
+   "fps": 10,
+   "note": "low feet-first pose, <=14px tall"
+  },
+  "wall": {
+   "row": 6,
+   "frames": 2,
+   "fps": 6,
+   "startFrame": 0
+  },
+  "wallkick": {
+   "row": 6,
+   "frames": 2,
+   "fps": 10,
+   "startFrame": 2
+  },
+  "hurt": {
+   "row": 7,
+   "frames": 2,
+   "fps": 8
+  },
+  "airshoot": {
+   "row": 8,
+   "frames": 2,
+   "fps": 12,
+   "muzzle": [
+    [
+     54,
+     35
+    ],
+    [
+     53,
+     35
+    ]
+   ],
+   "muzzleNote": "per-frame cell-local [x,y] at the cannon tip"
+  },
+  "runshoot": {
+   "row": 9,
+   "frames": 2,
+   "fps": 12,
+   "muzzle": [
+    [
+     55,
+     37
+    ],
+    [
+     56,
+     37
+    ]
+   ],
+   "muzzleNote": "per-frame cell-local [x,y] at the cannon tip"
+  },
+  "blink": {
+   "row": 10,
+   "frames": 1,
+   "fps": 1,
+   "note": "overlay/swap for idle frame 0 for ~3 ticks every few seconds"
+  }
+ },
+ "notes": {
+  "feet": "sole bottom pixel row is y=59 (ground line at y=60); body centre x=32",
+  "render": "1:1, imageSmoothingEnabled=false",
+  "outline": "1px navy (24,26,72)",
+  "wall": "row 6: frames 0-1 wall cling (wall on her right), frames 2-3 wallkick",
+  "palette": "hand-built hue-family palette (hair/hat/lavender/white/skin/gold/cyan/dark/eye) + navy outline",
+  "slide": "squashed to <=14px tall",
+  "eyes": "eyes hand-placed per frame (work/umine_px/eyes.json); hurt/blink closed"
+ }
+}

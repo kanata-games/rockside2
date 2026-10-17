@@ -12,3 +12,9 @@ assert(/const TITLE_TEXT='海音ちゃんの冒険2'/.test(html)&&/assets\/title
 assert(/GAME_VERSION\.toUpperCase\(\)/.test(html)&&!/drawText\('VER ' \+ GAME_VERSION,/.test(html),'version line uses glyphs the pixel font has');
 const j=JSON.parse(fs.readFileSync(require('path').join(__dirname,'..','assets','title','title.json'),'utf8'));assert(j.landscape&&j.portrait,'title.json has landscape + portrait layouts');
 console.log('PASS ui: title 海音ちゃんの冒険2 with art + fallback, readable version line.');
+// test.61: two-phase boot + pixel Umine
+assert(/early=\/assets\\\/title\\\/\|assets\\\/fonts\\\//.test(html)&&/B\.release=function/.test(html)&&/window\.__bootArmed = true/.test(html)&&/window\.__bootLoading\) acc = 0/.test(html),'boot holds game images until start, then NOW LOADING freezes the loop');
+assert(/function titleArtOn\(\)\{return state==='title'&&\(!!TITLE_ART\.bg\|\|TITLE_ART\.failed===true\)/.test(html),'old in-canvas title never shown');
+const um=JSON.parse(fs.readFileSync(require('path').join(__dirname,'..','assets','umine_px.json'),'utf8'));for(const a of ['idle','run','jump','fall','shoot','slide','wall','wallkick','hurt','airshoot','runshoot','blink'])assert(um.anims[a],'umine_px anim '+a);
+assert(/upxMansionDraw\(\)\)\{\}else\{const darkSw/.test(html)&&/mansionDarkOn\(\)\)\)return false/.test(html),'pixel Umine with old-sheet + dark fallback');
+console.log('PASS ui: title-first boot, NOW LOADING after start, pixel Umine mapped with fallbacks.');

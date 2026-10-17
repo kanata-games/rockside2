@@ -103,28 +103,45 @@ body.title-art #screen,body.title-art #hint{visibility:hidden}body.title-art #bL
 <div id="mMenuBar"><button id="mStatusTab" aria-selected="true">ステータス</button><button id="mMapTab" aria-selected="false">マップ</button><button id="mAreaTab" aria-selected="false">ワープ</button><button id="mBattleLeave" style="display:none">手合わせをやめて拠点へ</button><button id="mMenuClose" aria-label="メニューを閉じる">戻る</button></div><div id="mMenuBody"><div id="mTalk" style="display:none"><header><canvas id="mTalkPortrait" width="96" height="96" aria-label="被り物姿のダイスロール"></canvas><h2 id="mTalkName">ダイスロール</h2></header><p id="mTalkText" aria-live="polite"></p><button id="mTalkNext">次へ</button><button id="mTalkDice" style="display:none">ダイスロールと練習する</button><button id="mTalkSeiten" style="display:none">一緒に遊ぶ</button><button id="mTalkBattle" style="display:none">本番の手合わせに挑む</button></div><div id="mStatus"></div><div id="mMapContent"></div><div id="mAreaContent"></div></div></section>
 <div id="mTitle"><button id="mContinue">つづきから</button><button id="mNew">はじめから</button></div>
 <script>
-// test.60: tiny pixel loading screen — drawn before any big image; counts every new Image() and fades out when all settle.
-(function(){try{const cv=document.getElementById('bootCv'),c=cv&&cv.getContext&&cv.getContext('2d'),box=document.getElementById('boot');if(!c||!c.fillRect||typeof window.Image!=='function'||typeof requestAnimationFrame!=='function'){if(box&&box.remove)box.remove();return;}let total=0,done=0,quiet=0,t=0,gone=false;const t0=Date.now();
- const NI=window.Image;function TI(w,h){const im=new NI(w,h);total++;let fin=false;const f=()=>{if(!fin){fin=true;done++;}};im.addEventListener('load',f);im.addEventListener('error',f);return im;}TI.prototype=NI.prototype;window.Image=TI;
+// test.61: two-phase boot. Phase "pre": only the title art (+font) loads; every other new Image() has its src held back,
+// so the new title appears at once (a tiny dark pre-load, never the old in-canvas title). Phase "game": started by
+// __boot.release() when the player leaves the title — the held images load behind the pixel NOW LOADING screen,
+// the game loop is frozen (window.__bootLoading) until they settle, then it fades into the game.
+(function(){try{const cv=document.getElementById('bootCv'),c=cv&&cv.getContext&&cv.getContext('2d'),box=document.getElementById('boot');
+ const B=window.__boot={mode:'pre',released:false,total:0,done:0,release(){},progress(){return{total:B.total,done:B.done,mode:B.mode};}};
+ const NI=window.Image,desc=typeof HTMLImageElement!=='undefined'&&Object.getOwnPropertyDescriptor(HTMLImageElement.prototype,'src');
+ if(!c||!c.fillRect||typeof NI!=='function'||typeof requestAnimationFrame!=='function'||!desc||!desc.set){if(box&&box.remove)box.remove();return;}
+ const early=/assets\/title\/|assets\/fonts\//,held=[];
+ function TI(w,h){const im=new NI(w,h);let fin=false,counted=false;const f=()=>{if(!fin){fin=true;if(counted)B.done++;}};im.addEventListener('load',f);im.addEventListener('error',f);
+  Object.defineProperty(im,'src',{configurable:true,get(){return desc.get.call(im);},set(v){v=String(v);if(!early.test(v)&&!B.released){held.push([im,v]);return;}if(!early.test(v)&&!counted){counted=true;B.total++;}desc.set.call(im,v);}});return im;}
+ TI.prototype=NI.prototype;window.Image=TI;
  const F={N:'101111111111101',O:'111101101101111',W:'101101111111101',L:'100100100100111',A:'010101111101101',D:'110101101101110',I:'111010010010111',G:'111100101101111','.':'000000000000010'};
  const txt=(s,x,y,col)=>{c.fillStyle=col;for(const ch of s){const g=F[ch];if(g)for(let i=0;i<15;i++)if(g[i]==='1')c.fillRect(x+i%3,y+(i/3|0),1,1);x+=4;}};
- // 12x14 Umine: hat (purple), hair (blue), face, dress; 2 run frames
  const U=['....pp......','...pppp.....','..pppppp....','.pppppppp...','..bbbbbb....','.bbffffbb...','.bbfefefb...','.bbffffbb...','.bbwwwwbb...','..wwddww....','...dddd.....','...dddd.....'],LEG=[['..k....k....','.k......k...'],['...k..k.....','...k..k.....']],P={p:'#5a3aa8',b:'#5aa8ff',f:'#ffe0d0',e:'#2a2a6a',w:'#ffffff',d:'#3a4aa8',k:'#2a2240'};
- function draw(){t++;const p=total?done/total:0,el=(Date.now()-t0)/1000;c.fillStyle='#070a1c';c.fillRect(0,0,160,90);
+ let t=0,t0=Date.now(),quiet=0,running=false;
+ function show(){box.style.transition='none';box.style.opacity='1';box.style.display='flex';void box.offsetWidth;box.style.transition='opacity .45s';}
+ function hide(after){box.style.opacity='0';setTimeout(()=>{box.style.display='none';after&&after();},460);}
+ function draw(){t++;const el=(Date.now()-t0)/1000;c.fillStyle='#070a1c';c.fillRect(0,0,160,90);
   for(let i=0;i<24;i++){const x=(i*53+7)%160,y=(i*29+3)%56;c.fillStyle=((t>>3)+i)%9?'#3a4680':'#fff1c0';c.fillRect(x,y,1,1);}
   c.fillStyle='#f6efd2';c.fillRect(128,10,8,8);c.fillRect(127,11,10,6);c.fillRect(129,9,6,10);
-  const dots='...'.slice(0,1+((t>>4)%3));txt('NOW LOADING'+dots,52,30,'#ffffff');
-  c.fillStyle='#2a3458';c.fillRect(30,58,100,6);c.fillStyle='#0a0c1e';c.fillRect(31,59,98,4);const pw=Math.round(98*Math.min(1,p));c.fillStyle='#5aa8ff';c.fillRect(31,59,pw,4);c.fillStyle='#bfe2ff';c.fillRect(31,59,pw,1);
-  const ux=31+Math.max(0,pw-10),fr=(t>>3)&1,bob=fr;for(let y=0;y<12;y++)for(let x=0;x<12;x++){const k=U[y][x];if(k!=='.'){c.fillStyle=P[k];c.fillRect(ux+x,43+y+bob,1,1);}}
-  for(let y=0;y<2;y++)for(let x=0;x<12;x++)if(LEG[fr][y][x]==='k'){c.fillStyle=P.k;c.fillRect(ux+x,55+y,1,1);}
-  if(total&&done>=total)quiet++;else quiet=0;
-  if(!gone&&((quiet>20&&el>.5&&window.__titleArtSettled!==false)||el>15)){gone=true;box.style.opacity='0';setTimeout(()=>box.remove(),500);return;}
+  if(B.mode==='pre'){// tiny pre-load: just the moon, stars and three pulsing dots (title art is ~0.7MB)
+   for(let k=0;k<3;k++){c.fillStyle=((t>>4)%3)===k?'#ffffff':'#3a4680';c.fillRect(74+k*5,44,2,2);}
+   if(window.__titleArtSettled===true||el>30){running=false;hide();return;}}
+  else{const p=B.total?B.done/B.total:0;txt('NOW LOADING'+'...'.slice(0,1+((t>>4)%3)),52,30,'#ffffff');
+   c.fillStyle='#2a3458';c.fillRect(30,58,100,6);c.fillStyle='#0a0c1e';c.fillRect(31,59,98,4);const pw=Math.round(98*Math.min(1,p));c.fillStyle='#5aa8ff';c.fillRect(31,59,pw,4);c.fillStyle='#bfe2ff';c.fillRect(31,59,pw,1);
+   const ux=31+Math.max(0,pw-10),fr=(t>>3)&1;for(let y=0;y<12;y++)for(let x=0;x<12;x++){const k=U[y][x];if(k!=='.'){c.fillStyle=P[k];c.fillRect(ux+x,43+y+fr,1,1);}}
+   for(let y=0;y<2;y++)for(let x=0;x<12;x++)if(LEG[fr][y][x]==='k'){c.fillStyle=P.k;c.fillRect(ux+x,55+y,1,1);}
+   if(B.done>=B.total)quiet++;else quiet=0;
+   if((quiet>30&&el>.6)||el>90){running=false;B.mode='done';hide();window.__bootLoading=false;return;}}
   requestAnimationFrame(draw);}
- requestAnimationFrame(draw);window.__bootProgress=()=>({total,done});}catch(e){const b=document.getElementById&&document.getElementById('boot');if(b&&b.remove)b.remove();}})();
+ B.release=function(){if(B.released)return;B.released=true;B.mode='game';window.__bootLoading=true;t0=Date.now();quiet=0;show();
+  for(const[im,v]of held.splice(0))im.src=v;// released: the setter counts and loads it
+  if(!running){running=true;requestAnimationFrame(draw);}};
+ running=true;requestAnimationFrame(draw);}catch(e){const b=document.getElementById&&document.getElementById('boot');if(b&&b.remove)b.remove();window.__bootLoading=false;}})();
 
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.60';
+const GAME_VERSION = '2.0.0-test.61';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.
@@ -2274,7 +2291,7 @@ function loadSequelWalk(src='assets/umine-walk.png',out=SEQUEL_MODEL){const img=
  p.drawImage(img,(i%2)*615,Math.floor(i/2)*639,615,639,64-330*.195,124-feet[i]*.195,615*.195,639*.195);frames.push(sheetSprite(c));}
  out.walkFrames=frames;
  };img.src=src;}
-function drawSequelPlayer(camX,white){const x=P.x+P.w/2-camX,y=P.y+P.h;
+function drawSequelPlayer(camX,white){const x=P.x+P.w/2-camX,y=P.y+P.h;if(typeof upxClassicDraw==='function'&&upxClassicDraw(x,y,white))return;
  if(P.hurt<=0&&P.onGround&&Math.abs(P.vx)>.1){drawSequelWalk(P.animT*1.8,x,y,P.face,white);return;}
  const fi=P.hurt>0?0:!P.onGround?(P.vy<0?4:5):P.shootT>0?6:(frame>>5)&1;drawSequelAt(fi,x,y,P.face,white);}
 function stripConnectedWhite(c){const p=c.getContext('2d'),data=p.getImageData(0,0,c.width,c.height),d=data.data,seen=new Uint8Array(c.width*c.height),q=new Int32Array(c.width*c.height);let head=0,tail=0;function push(x,y){const n=y*c.width+x;if(seen[n])return;seen[n]=1;const k=n*4;if(d[k]>225&&d[k+1]>225&&d[k+2]>225)q[tail++]=n;}for(let x=0;x<c.width;x++){push(x,0);push(x,c.height-1);}for(let y=0;y<c.height;y++){push(0,y);push(c.width-1,y);}while(head<tail){const n=q[head++],x=n%c.width,y=Math.floor(n/c.width);d[n*4+3]=0;if(x)push(x-1,y);if(x<c.width-1)push(x+1,y);if(y)push(x,y-1);if(y<c.height-1)push(x,y+1);}p.putImageData(data,0,0);}
@@ -3890,7 +3907,8 @@ function loadArea(area) {
 
 let state = 'title', stateT = 0, frame = 0, hitStop = 0, shakeT = 0, shakeMag = 0;
 let checkpoint = false, doorClosed = false, doorAnim = 0, introPhase = 0, titleScroll = 0;
-function setState(s) { state = s; stateT = 0; if (typeof helpBtn !== 'undefined') refreshSupportButton(); }
+function setState(s) { if (state === 'title' && s !== 'title' && typeof window !== 'undefined' && window.__boot && window.__bootArmed) window.__boot.release(); // test.61: game assets load after start
+  state = s; stateT = 0; if (typeof helpBtn !== 'undefined') refreshSupportButton(); }
 
 // ---------------------------------------------------------------------
 //  Tile collision
@@ -8450,11 +8468,11 @@ function mansionRoomDraw(){const r=MR[M.room],cx=Math.round(M.camX),cy=Math.roun
  for(const e of M.enemies){if(e.hp<=0){if(MANSION_FOES[e.kind])mansionFoeDeathDraw(e);continue;}if(MANSION_FOES[e.kind]){mansionFoeDraw(e);continue;}if(e.kind==='seitenBoss'){mansionSeitenBossDraw(e);continue;}if(e.kind==='diceBoss'){mansionDiceDraw(e);continue;}if(e.kind==='hoshiBoss'){mansionHoshiDraw(e);continue;}if(e.kind==='keikoBoss'){mansionKeikoDraw(e);continue;}if(e.kind==='boss'){if(e.id&&M.sparState==='active')mansionKeikoMovesDraw(e);const wind=M.sparState==='active'&&(e.pose===8||e.striking);g.globalAlpha=e.guard>0&&(e.guard&2)?0.6:1;drawMansionAstarte(e.x,e.y,M.t,e.dir,e.pose??-1);g.globalAlpha=1;if(M.sparState==='active'){mrect(e.x-26,e.y-64,52,4,'#182039');mrect(e.x-25,e.y-63,50*e.hp/e.maxHp,2,'#c7a2f6');if(e.striking){g.beginPath();g.arc(e.x+e.dir*24,e.y-20,30,e.dir>0?-1.3:1.8,e.dir>0?1.3:4.5);g.strokeStyle='#170b34';g.lineWidth=6;g.stroke();g.strokeStyle='#cf63ff';g.lineWidth=4;g.stroke();g.strokeStyle='#fff4ae';g.lineWidth=1;g.stroke();}else if(wind){mansionDiamond(e.x+e.dir*35,e.y-35,4,'#f4d6ff');}}continue;}const sz=24;g.drawImage(pick(e.kind==='fly'?SPR.flyer[(frame>>3)&1]:SPR.walker[(frame>>3)&1],e.dir,e.flash>0),Math.round(e.x-12),Math.round(e.y-24),sz,sz);}
  if(!M.dead||M.dead%8<4){if(!M.hurt||M.hurt%6<3){
  if(M.actor==='astarte'){g.save();if(M.slideT){g.translate(M.x,M.y);g.scale(1,.65);g.translate(-M.x,-M.y);}drawMansionAstartePlayer(M.x,M.y,M.t,M.poseT?M.scytheFace:M.face,(mansionGuarding()||M.guardFlash&&M.ground&&!M.poseT&&!M.castT)?16:M.castT?15:M.poseT?mansionScythePose():!M.ground?(M.vy<0?13:14):Math.abs(M.vx)>.1&&!M.hurt?4+Math.floor(M.walkDistance/8)%4:-1,ASTARTE_PLAYER_SIZE);g.restore();mansionScytheDraw();mansionGuardDraw();}else if(M.actor==='seiten'){mansionSeitenPlayerDraw();}else{
- const darkSw=mansionDarkSwap(true);const actArt=mansionDarkOn()&&mansionDarkActionArt||mansionActionArt;const action=M.slideT?'slide':(!M.ground&&(M.wall||M.kickLock))?'wall':null;
+ if(typeof upxMansionDraw==='function'&&upxMansionDraw()){}else{const darkSw=mansionDarkSwap(true);const actArt=mansionDarkOn()&&mansionDarkActionArt||mansionActionArt;const action=M.slideT?'slide':(!M.ground&&(M.wall||M.kickLock))?'wall':null;
  if(action&&actArt){const box=action==='slide'?[887,290,873,560]:[55,75,810,685],height=action==='slide'?24:42,width=box[2]/box[3]*height;const facing=action==='wall'?(M.wall?-M.wall:M.face):M.face;const flip=action==='wall'?facing===1:facing===-1;g.save();g.translate(Math.round(M.x),Math.round(M.y));if(flip)g.scale(-1,1);g.drawImage(actArt,...box,-width/2,-height,width,height);g.restore();}
  else if(M.ground&&Math.abs(M.vx)>.1&&!M.hurt)drawSequelWalk(M.walkDistance,M.x,M.y,M.face,false);
  else {const fi=M.poseT?6:!M.ground?(M.vy<0?4:5):(frame>>5)&1;drawSequelAt(fi,M.x,M.y,M.face,false,SEQUEL_MODEL.size);}
- mansionDarkSwap(false,darkSw);}}}
+ mansionDarkSwap(false,darkSw);}}}}
  if(mansionIsUmine()&&M.wall&&!M.ground){mansionDiamond(M.x+M.wall*8,M.y-5,4,'#99faff');}
 
  mansionWaterPlatformDraw();
@@ -10029,7 +10047,7 @@ function wcDraw(){if(!M.wc||!M.wc.haz.length)return;const ox=M.camX||0,oy=M.camY
 let titlePageState=null;
 const TITLE_TEXT='海音ちゃんの冒険2';
 const TITLE_ART={bg:null,bgPortrait:null,umine:null,logo:null,cfg:{},tried:false};
-function titleArtLoad(){if(TITLE_ART.tried||typeof Image!=='function')return;TITLE_ART.tried=true;let left=4;if(typeof window!=='undefined')window.__titleArtSettled=false;const settle=()=>{if(--left<=0&&typeof window!=='undefined')window.__titleArtSettled=true;};
+function titleArtLoad(){if(TITLE_ART.tried||typeof Image!=='function')return;TITLE_ART.tried=true;let left=4;if(typeof window!=='undefined')window.__titleArtSettled=false;const settle=()=>{if(--left<=0){if(!TITLE_ART.bg)TITLE_ART.failed=true;if(typeof window!=='undefined')window.__titleArtSettled=true;}};
  const img=(k,f)=>{const im=new Image();im.onload=()=>{TITLE_ART[k]=im;titlePageBg();settle();};im.onerror=settle;im.src='assets/title/'+f;};
  img('bg','title_bg.png');img('bgPortrait','title_bg_portrait.png');img('umine','title_umine.png');img('logo','title_logo.png');
  try{if(typeof fetch==='function')fetch('assets/title/title.json').then(r=>r.ok?r.json():null).then(j=>{if(j)TITLE_ART.cfg=j;}).catch(()=>{});}catch(e){}}
@@ -10093,7 +10111,7 @@ function titleDrawHi(){const s=hiS(),t=frame,L=TITLE_ART.cfg.logo||{},lx=(L.x??1
 // separate landscape / portrait sets). Drawn on a viewport-sized canvas behind the DOM buttons; the 256x240 game canvas
 // is hidden on the title, and the HARD / ERASE chips are redrawn here at their tap positions.
 let titleCv=null,titleCtx=null;
-function titleArtOn(){return state==='title'&&!!TITLE_ART.bg;}
+function titleArtOn(){return state==='title'&&(!!TITLE_ART.bg||TITLE_ART.failed===true);}// test.61: never the old in-canvas title
 function titleCvEnsure(){if(titleCv||typeof document==='undefined'||!document.createElement||!document.body||typeof document.body.appendChild!=='function')return titleCv;const c=document.createElement('canvas');if(!c.getContext)return null;
  c.id='titleCv';Object.assign(c.style,{position:'fixed',left:'0',top:'0',width:'100%',height:'100%',zIndex:'1',pointerEvents:'none',display:'none'});document.body.appendChild(c);titleCv=c;titleCtx=c.getContext('2d');return c;}
 function titleCfgSet(port){const c=TITLE_ART.cfg||{},d=port?{logo:{pos:[.5,.06],anchor:[.5,0],widthRatio:.9},umine:{pos:[.5,.9],anchor:[.5,1],heightRatio:.48},pressStart:{pos:[.5,.95],fontHeightRatio:.03}}:{logo:{pos:[.5,.04],anchor:[.5,0],widthRatio:.52},umine:{pos:[.24,1],anchor:[.5,1],heightRatio:.8},pressStart:{pos:[.68,.86],fontHeightRatio:.05}};
@@ -10105,7 +10123,7 @@ function titleOverlayDraw(){const on=titleArtOn();if(typeof document!=='undefine
  // background: cover + slow parallax sway
  // test.60: pixel art — nearest-neighbour, integer scale in device pixels (cover: ceil, so no seams), pixel-snapped sway
  const bg=port&&TITLE_ART.bgPortrait?TITLE_ART.bgPortrait:TITLE_ART.bg;c.setTransform(1,0,0,1,0,0);c.imageSmoothingEnabled=false;
- {const k=Math.max(1,Math.ceil(Math.max(cw/bg.width,ch/bg.height))),bw=bg.width*k,bh=bg.height*k,sw=Math.round(Math.sin(t/300)*Math.min(k*2,(bw-cw)/2));c.drawImage(bg,Math.round((cw-bw)/2)+sw,Math.round((ch-bh)/2),bw,bh);}
+ if(!bg){const gr=c.createLinearGradient(0,0,0,ch);gr.addColorStop(0,'#070a20');gr.addColorStop(.6,'#1b2150');gr.addColorStop(1,'#3a3466');c.fillStyle=gr;c.fillRect(0,0,cw,ch);}else {const k=Math.max(1,Math.ceil(Math.max(cw/bg.width,ch/bg.height))),bw=bg.width*k,bh=bg.height*k,sw=Math.round(Math.sin(t/300)*Math.min(k*2,(bw-cw)/2));c.drawImage(bg,Math.round((cw-bw)/2)+sw,Math.round((ch-bh)/2),bw,bh);}
  c.setTransform(dpr,0,0,dpr,0,0);c.imageSmoothingEnabled=false;
  for(let i=0;i<34;i++){const tw=(t+i*37)%160;if(tw>=14)continue;const a=1-Math.abs(tw-7)/7,x=artH(i,61)%1000/1000*W,y=artH(i,62)%1000/1000*H*(port?.38:.5),r=(1.2+a*1.6)*(W>700?1.2:1);
   c.globalAlpha=a;c.fillStyle='#fff6d6';c.fillRect(x-r*2,y-.5,r*4,1);c.fillRect(x-.5,y-r*2,1,r*4);c.beginPath();c.arc(x,y,r*.6,0,7);c.fill();}c.globalAlpha=1;
@@ -10126,6 +10144,50 @@ function titleOverlayDraw(){const on=titleArtOn();if(typeof document!=='undefine
  chip(TITLE_HARD,hardMode?'HARD ON':'HARD OFF',hardMode);if(clearedCount()>0)chip(TITLE_RESET,resetArmT>0?'TAP AGAIN':'ERASE DATA',resetArmT>0);
  // menu buttons: between logo and Umine (portrait) / under the press-start line (landscape)
  const mt=document.getElementById('mTitle');if(mt&&mt.style){mt.style.left=(port?W/2:W*ps.pos[0])+'px';mt.style.top=(port?Math.round(Math.min(H*.42-50,logoBottom+H*.06)):Math.round(H*ps.pos[1]-fp*2.6-40))+'px';}}
+
+titleArtLoad(); // test.61: start the title art immediately (it is on the boot allow-list; everything else waits for start)
+// =====================================================================
+//  test.61: pixel-art in-game Umine (素材づくり担当): assets/umine_px.png + umine_px.json — 64x64 cells, drawn 1:1,
+//  nearest, mirrored for left; soles at y=59 (ground line y=60), body centre x=32. Hitbox stays MC 14x26.
+//  Old painted sheets (umine-sheet.jpeg / umine-walk.png / umine-mansion-actions.png) remain the fallback, and the
+//  dark style keeps the old dark sheets until a dark pixel version is approved.
+// =====================================================================
+const UPX={img:null,meta:null,flip:null};
+(function(){if(typeof Image!=='function')return;const im=new Image();im.onload=()=>{UPX.img=im;upxBuildFlip();};im.src='assets/umine_px.png';
+ if(typeof fetch==='function')fetch('assets/umine_px.json').then(r=>r.ok?r.json():null).then(j=>{if(j&&j.anims)UPX.meta=j;}).catch(()=>{});})();
+function upxBuildFlip(){if(typeof mkCanvas!=='function')return;const im=UPX.img,c=mkCanvas(im.width,im.height),p=c.getContext('2d');if(!p||!p.scale)return;
+ // mirror each 64px cell in place so frame coordinates stay the same
+ p.imageSmoothingEnabled=false;const cw=64,cols=Math.floor(im.width/cw);for(let i=0;i<cols;i++){p.save();p.translate((i+1)*cw,0);p.scale(-1,1);p.drawImage(im,i*cw,0,cw,im.height,0,0,cw,im.height);p.restore();}UPX.flip=c;}
+function upxReady(){return !!(UPX.img&&UPX.meta);}
+// draw anim frame with the soles on 'feet' and the body centre on x; face<0 mirrors
+function upxDraw(anim,fi,x,feet,face){const A=UPX.meta.anims[anim];if(!A)return false;const [cw,ch]=UPX.meta.cell||[64,64],[fx,fy]=UPX.meta.feet||[32,60];
+ const col=(A.startFrame||0)+fi,src=face<0&&UPX.flip?UPX.flip:UPX.img,sx=col*cw,dx=Math.round(x)-(face<0?cw-fx:fx),dy=Math.round(feet)-fy;
+ g.drawImage(src,sx,A.row*ch,cw,ch,dx,dy,cw,ch);return true;}
+function upxLoop(anim,t){const A=UPX.meta.anims[anim];return Math.floor(t*A.fps/60)%A.frames;}
+// mansion player → animation state (also tracked: landing, hurt start, wall-kick start, blink)
+function upxMansionPick(){const S=M._upx||(M._upx={land:0,hurtT:99,prevHurt:0,kickT:99,prevKick:0,wasAir:false,blink:0});
+ if(M.hurt>S.prevHurt+10)S.hurtT=0;else S.hurtT++;S.prevHurt=M.hurt;
+ if(M.kickLock>=5&&S.prevKick<5)S.kickT=0;else S.kickT++;S.prevKick=M.kickLock;
+ if(M.ground&&S.wasAir)S.land=6;else if(S.land>0)S.land--;S.wasAir=!M.ground;
+ const moving=M.ground&&Math.abs(M.vx)>.1,t=M.t;
+ if(S.hurtT<18)return['hurt',Math.min(1,S.hurtT>>3),1];
+ if(M.slideT)return['slide',upxLoop('slide',t),1];
+ if(!M.ground&&S.kickT<12)return['wallkick',Math.min(1,S.kickT/6|0),M.lastWall===-1?-1:1,true];
+ if(!M.ground&&M.wall)return['wall',upxLoop('wall',t),M.wall===-1?-1:1,true];
+ if(!M.ground)return M.poseT?['airshoot',upxLoop('airshoot',t),1]:M.vy<0?['jump',M.vy<-2.5?0:1,1]:['fall',upxLoop('fall',t),1];
+ if(S.land>0&&!M.poseT)return['fall',2,1,false,true];
+ if(moving)return M.poseT?['runshoot',upxLoop('runshoot',t),1]:['run',Math.floor(M.walkDistance/7)%6,1];
+ if(M.poseT)return['shoot',upxLoop('shoot',t),1];
+ const blink=(t%200)<4;return blink?['blink',0,1]:['idle',upxLoop('idle',t),1];}
+// returns true when the pixel sprite was drawn (caller falls back to the old sheets otherwise)
+function upxMansionDraw(){if(!upxReady()||(typeof mansionDarkOn==='function'&&mansionDarkOn()))return false;const [anim,fi,dirMode,wallSide,landing]=upxMansionPick();
+ // wall art has the wall on her RIGHT: unflipped when the wall is on the right
+ const face=wallSide?(dirMode===1?1:-1):M.face;if(landing){const A=UPX.meta.anims.fall;return upxDraw('fall',A.landFrame??2,M.x,M.y,face);}
+ return upxDraw(anim,fi,M.x,M.y,face);}
+// classic stages (first-game engine)
+function upxClassicDraw(x,y,white){if(!upxReady()||white)return false;const moving=P.onGround&&Math.abs(P.vx)>.1,t=frame;
+ const pick=P.hurt>0?['hurt',(t>>3)&1]:!P.onGround?(P.shootT>0?['airshoot',upxLoop('airshoot',t)]:P.vy<0?['jump',0]:['fall',upxLoop('fall',t)]):moving?(P.shootT>0?['runshoot',upxLoop('runshoot',t)]:['run',Math.floor(P.animT*1.8/7)%6]):P.shootT>0?['shoot',upxLoop('shoot',t)]:['idle',upxLoop('idle',t)];
+ return upxDraw(pick[0],pick[1],x,y,P.face);}
 
 // =====================================================================
 //  Rendering
@@ -10989,12 +11051,13 @@ function loop(now) {
   let dt = now - lastT; lastT = now;
   if (dt > 250) dt = 250; if (dt < 0) dt = 0;
   acc += dt; let n = 0;
+  if (typeof window !== 'undefined' && window.__bootLoading) acc = 0; // test.61: frozen behind NOW LOADING
   while (acc >= STEP && n < 5) { update(); acc -= STEP; n++; }
   if (n >= 5) acc = 0;
   render();
 }
 loadSheets();
-resetStage(false); setState('title');
+resetStage(false); setState('title'); if (typeof window !== 'undefined') window.__bootArmed = true; // test.61: from here on, leaving the title releases the held game assets
 if (DEBUG.area) { const a = AREAS.find(x => x.no === DEBUG.area && x.map); if (a) startGame(a); } // ?area=N: straight into the stage
 if (DEBUG.ending) startEnding(); // ?ending=1: straight to the ending party + credits
 requestAnimationFrame(loop);
