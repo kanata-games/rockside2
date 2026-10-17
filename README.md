@@ -11,6 +11,16 @@ ROCKSIDE II / 2.0.0-test.46（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 - 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs` `node tools/test-hoshiyomi.cjs` and `node tools/test-keiko.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
+### 2.0.0-test.62
+- ゲーム内の海音ちゃんを以前の絵（test.60と同じスプライト）に戻した。ドット絵版は `src/04t_uminepx.js` の `UMINE_PX` フラグ（既定 OFF）で切替。OFF のときは `assets/umine_px.png` を読み込まない。素材ファイル（銃口 y=43 修正版）はリポジトリに保持。
+- test.61 のタイトル先行表示 → 開始後に NOW LOADING の流れはそのまま。
+
+### 2.0.0-test.58〜61（まとめ）
+- test.58：スマホで読める地図（パン・ズーム・自動センタリング）、スプライトサイズは48pxのみ、オープニングをステージ絵の背景で描画。
+- test.59：タイトルを「海音ちゃんの冒険2」に。
+- test.60：ドット絵タイトル（等倍・整数拡大・ニアレストネイバー）、画像の可逆圧縮、読み込み画面。
+- test.61：タイトル素材とフォントだけ先に読み込み、開始後に NOW LOADING。ゲーム内ドット絵海音（test.62でOFF）。
+
 ### 2.0.0-test.57
 - 壁キック・壁張り付きはそのまま。代わりに全ボスが「壁を狙う技」を1つずつ持つ（ロックマンX風）。予告（約0.7秒、壁際が点滅＋技名）→ 壁から離れれば必ず避けられる。
   - 昇り（壁を下から上へ走る斬撃）：ハネウメ／ヴェスパー／エクリプス／青天

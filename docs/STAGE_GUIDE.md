@@ -453,3 +453,7 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 - 01_head.html の起動コードが `new Image()` の src を保留（assets/title/・assets/fonts/ だけ即読み）。`window.__bootArmed` 以降にタイトルから別状態へ移ると `__boot.release()` → NOW LOADING。読み込み中は `window.__bootLoading` でゲームループ停止（最長90秒）。
 - タイトル素材が全部失敗した場合も旧タイトルは出さず、全画面キャンバスに夜空グラデ＋文字ロゴ。
 - ドット絵海音は `src/04t_uminepx.js`（`upxMansionPick` が状態→アニメ）。足元 y=60・中心 x=32 を M.x/M.y に合わせて等倍描画。壁の絵は「壁が右」なので M.wall===1 で反転なし。
+
+## 29. ドット絵海音をOFF (test.62)
+- `src/04t_uminepx.js` の `const UMINE_PX=false;` が唯一のスイッチ。false のとき umine_px.png/json を読み込まず、`upxMansionDraw`/`upxClassicDraw` は false を返して従来スプライト（test.60と同じ）で描画。
+- 試すときは `UMINE_PX=true` にしてビルド。素材 `assets/umine_px.*`（銃口 y=43）はそのまま残す。`tools/test-ui.cjs` が既定 OFF を確認する。
