@@ -4,13 +4,15 @@
 //  Old painted sheets (umine-sheet.jpeg / umine-walk.png / umine-mansion-actions.png) remain the fallback, and the
 //  dark style keeps the old dark sheets until a dark pixel version is approved.
 // =====================================================================
+// test.62: the user prefers the previous sprites — pixel Umine is OFF by default (set UMINE_PX=true to try it again).
+const UMINE_PX=false;
 const UPX={img:null,meta:null,flip:null};
-(function(){if(typeof Image!=='function')return;const im=new Image();im.onload=()=>{UPX.img=im;upxBuildFlip();};im.src='assets/umine_px.png';
+(function(){if(!UMINE_PX||typeof Image!=='function')return;const im=new Image();im.onload=()=>{UPX.img=im;upxBuildFlip();};im.src='assets/umine_px.png';
  if(typeof fetch==='function')fetch('assets/umine_px.json').then(r=>r.ok?r.json():null).then(j=>{if(j&&j.anims)UPX.meta=j;}).catch(()=>{});})();
 function upxBuildFlip(){if(typeof mkCanvas!=='function')return;const im=UPX.img,c=mkCanvas(im.width,im.height),p=c.getContext('2d');if(!p||!p.scale)return;
  // mirror each 64px cell in place so frame coordinates stay the same
  p.imageSmoothingEnabled=false;const cw=64,cols=Math.floor(im.width/cw);for(let i=0;i<cols;i++){p.save();p.translate((i+1)*cw,0);p.scale(-1,1);p.drawImage(im,i*cw,0,cw,im.height,0,0,cw,im.height);p.restore();}UPX.flip=c;}
-function upxReady(){return !!(UPX.img&&UPX.meta);}
+function upxReady(){return UMINE_PX&&!!(UPX.img&&UPX.meta);}
 // draw anim frame with the soles on 'feet' and the body centre on x; face<0 mirrors
 function upxDraw(anim,fi,x,feet,face){const A=UPX.meta.anims[anim];if(!A)return false;const [cw,ch]=UPX.meta.cell||[64,64],[fx,fy]=UPX.meta.feet||[32,60];
  const col=(A.startFrame||0)+fi,src=face<0&&UPX.flip?UPX.flip:UPX.img,sx=col*cw,dx=Math.round(x)-(face<0?cw-fx:fx),dy=Math.round(feet)-fy;

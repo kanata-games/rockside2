@@ -38,15 +38,15 @@
    "muzzle": [
     [
      56,
-     34
+     43
     ],
     [
      56,
-     33
+     43
     ],
     [
      57,
-     33
+     43
     ]
    ],
    "muzzleNote": "per-frame cell-local [x,y] at the cannon tip"
@@ -81,11 +81,11 @@
    "muzzle": [
     [
      54,
-     35
+     43
     ],
     [
      53,
-     35
+     43
     ]
    ],
    "muzzleNote": "per-frame cell-local [x,y] at the cannon tip"
@@ -97,11 +97,11 @@
    "muzzle": [
     [
      55,
-     37
+     43
     ],
     [
      56,
-     37
+     43
     ]
    ],
    "muzzleNote": "per-frame cell-local [x,y] at the cannon tip"

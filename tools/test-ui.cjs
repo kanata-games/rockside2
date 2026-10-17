@@ -17,4 +17,5 @@ assert(/early=\/assets\\\/title\\\/\|assets\\\/fonts\\\//.test(html)&&/B\.releas
 assert(/function titleArtOn\(\)\{return state==='title'&&\(!!TITLE_ART\.bg\|\|TITLE_ART\.failed===true\)/.test(html),'old in-canvas title never shown');
 const um=JSON.parse(fs.readFileSync(require('path').join(__dirname,'..','assets','umine_px.json'),'utf8'));for(const a of ['idle','run','jump','fall','shoot','slide','wall','wallkick','hurt','airshoot','runshoot','blink'])assert(um.anims[a],'umine_px anim '+a);
 assert(/upxMansionDraw\(\)\)\{\}else\{const darkSw/.test(html)&&/mansionDarkOn\(\)\)\)return false/.test(html),'pixel Umine with old-sheet + dark fallback');
-console.log('PASS ui: title-first boot, NOW LOADING after start, pixel Umine mapped with fallbacks.');
+assert(/const UMINE_PX=false;/.test(html)&&/if\(!UMINE_PX\|\|typeof Image/.test(html),'test.62: pixel Umine off by default and not loaded');
+console.log('PASS ui: title-first boot, NOW LOADING after start, pixel Umine behind UMINE_PX (off).');
