@@ -457,3 +457,7 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 ## 29. ドット絵海音をOFF (test.62)
 - `src/04t_uminepx.js` の `const UMINE_PX=false;` が唯一のスイッチ。false のとき umine_px.png/json を読み込まず、`upxMansionDraw`/`upxClassicDraw` は false を返して従来スプライト（test.60と同じ）で描画。
 - 試すときは `UMINE_PX=true` にしてビルド。素材 `assets/umine_px.*`（銃口 y=43）はそのまま残す。`tools/test-ui.cjs` が既定 OFF を確認する。
+
+## 30. ボス戦の敗北 (test.63)
+- 全ボスの `*Retry()` は `mansionBossDefeat()`（04i_mansion.js）を呼ぶだけ。行き先は ①招待戦の `diceReturn`/`sparReturn` ②`mansionEnterDoor` が記録する `M.lastDoor`（入った扉の前）③ボス部屋の最初の扉の先。`mansionEnter` で状態を作り直し、HP全回復・`M.hurt=90`・部屋の中央向き。
+- 新しいボス部屋を作るときは、外へ出る普通の扉を必ず1つ置くこと。`tools/test-defeat.cjs` を通す。

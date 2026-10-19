@@ -61,5 +61,5 @@ function bossBot(){return run(`(()=>{const e=M.enemies.find(e=>e.kind==='hoshiBo
  run('mansionEnter("bedroom",520,208)');assert.equal(run('mansionNearbyNPC().id'),'hoshiyomi');
  console.log('PASS boss bot: ダーク星詠み telegraphs star shots / star rain gaps / dash, bot dodges and wins, then she joins the hub.');}
 // --- retry after a loss
-{run('M.flags.hoshiyomiDefeated=false;mansionEnter("obsDome",40,224);M.transition=0;M.hoshiState="active";M.talk=null;M.map=false;M.hurt=0;M.hp=1;mansionDamage(2,1)');assert(run('M.talk&&M.talk.speaker==="ダーク星詠み"'));assert.equal(run('M.hp'),run('mansionMaxHP()'));run('mansionTalkNext();mansionTalkNext()');assert.equal(run('M.hoshiState'),'active');assert.equal(run('M.enemies.find(e=>e.kind==="hoshiBoss").hp'),130);
- console.log('PASS boss retry: losing restores HP, she taunts, and the fight restarts from full.');}
+{run('M.flags.hoshiyomiDefeated=false;mansionEnter("obsDome",40,224);M.transition=0;M.hoshiState="active";M.talk=null;M.map=false;M.hurt=0;M.hp=1;mansionDamage(2,1)');assert(!run('M.talk'));assert.equal(run('M.hp'),run('mansionMaxHP()'));assert.notEqual(run('M.room'),'obsDome');assert.notEqual(run('M.hoshiState'),'active');
+ console.log('PASS boss defeat: losing restores HP and puts Umine outside the dome; no fight restarts.');}

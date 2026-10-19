@@ -11,9 +11,9 @@ function fight(id,upg){const B=run(`KEIKO_BOSSES.${id}`);
  assert(run(`M.talk&&M.talk.speaker===${JSON.stringify(B.name)}`),id+' shade introduces itself '+run('JSON.stringify([M.room,M.x,M.y,M.keiko,M.transition,M.map,state,M.messageT])'));for(let i=0;i<6&&run('!!M.talk');i++)run('mansionTalkNext()');
  assert(run('mansionKeikoActive()'),id+' fight starts '+run('JSON.stringify([M.keiko,M.talk&&M.talk.speaker,M.dead,M.hp])'));
  const seen=new Set();let hurt=0,last=run('M.hp'),losses=0,frames=0;
- while(frames<16000&&(run('M.keiko.state')==='active'||run('!!M.talk')&&run('M.keiko.state')!=='done')){if(run('!!M.talk')){losses++;if(losses>3)break;run('mansionTalkNext()');last=run('M.hp');continue;}
+ while(frames<16000&&(['active','lost'].includes(run('M.keiko?M.keiko.state:"lost"'))||run('!!M.talk')&&run('M.keiko?M.keiko.state:"lost"')!=='done')){if(!run('M.keiko')){losses++;if(losses>3)break;run(`mansionEnter("${B.room}",40,224);M.transition=0;mansionKeikoStart();M.talk=null`);last=run('M.hp');continue;}if(run('!!M.talk')){if(losses>3)break;run('mansionTalkNext()');last=run('M.hp');continue;}
   seen.add(bot());ticks(1);frames++;const hp=run('M.hp');if(hp<last){hurt+=last-hp;if(process.env.DBG&&id==="eclipse")console.log("hit",run("(()=>{const e=M.enemies.find(e=>e.kind===\"keikoBoss\");return e.mode+\" \"+e.mt+\" ex\"+Math.round(e.x)+\" x\"+Math.round(M.x)+\" y\"+Math.round(M.y)})()"));}last=hp;}
- run('releaseAll()');return{B,seen,hurt,losses,frames,won:run('M.keiko.state')==='done'};}
+ run('releaseAll()');return{B,seen,hurt,losses,frames,won:run('M.keiko?M.keiko.state:"lost"')==='done'};}
 const res={};
 for(const id of ['vesper','lavis','nocturne','eclipse']){
  const r=fight(id,{hp:4,shot:2,slide:2});
@@ -28,7 +28,7 @@ for(const id of ['vesper','lavis','nocturne','eclipse']){
 // harder than the impostors: same bot without upgrades takes far more damage
 const up={};{const r=fight('eclipse',{hp:4,shot:2,slide:2});up.f=r.frames;}
 {const r=fight('eclipse',{});console.log(`  eclipse w/o upgrades: ${r.frames} frames (vs ${up.f}), damage ${r.hurt}, losses ${r.losses}`);assert(r.frames>up.f*2.4,'without shot upgrades the fight lasts far longer');
- run('M.upg={};M.keiko.state="active";M.hurt=0;M.hp=mansionMaxHP();mansionDamage(2,1)');const lost=run('mansionMaxHP()-M.hp');assert(lost>=3,'shade hits are heavy');console.log(`  one shade hit = ${lost} of ${run('mansionMaxHP()')} HP without upgrades`);
+ run('M.upg={};mansionEnter("sStar",40,224);M.transition=0;mansionKeikoStart();M.talk=null;M.hurt=0;M.hp=mansionMaxHP();mansionDamage(2,1)');const lost=run('mansionMaxHP()-M.hp');assert(lost>=3,'shade hits are heavy');console.log(`  one shade hit = ${lost} of ${run('mansionMaxHP()')} HP without upgrades`);
  run('M.keiko.state="done";M.talk=null;M.flags.shadeStar=true;M.enemyShots=[]');}
 console.log('PASS shade bosses: 黄昏翼ヴェスパー / 霧弓ラヴィス / 夜想ノクターン / 蝕王エクリプス — upgraded bot wins each with no loss (damage '+JSON.stringify(res)+'); every attack used; 3 shards each; tougher without upgrades.');
 // dark style

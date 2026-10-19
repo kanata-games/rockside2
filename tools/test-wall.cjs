@@ -12,9 +12,9 @@ function fight(id,upg){const B=run(`KEIKO_BOSSES.${id}`);
  assert(run(`M.talk&&M.talk.speaker===${JSON.stringify(B.name)}`),id+' shade introduces itself '+run('JSON.stringify([M.room,M.x,M.y,M.keiko,M.transition,M.map,state,M.messageT])'));for(let i=0;i<6&&run('!!M.talk');i++)run('mansionTalkNext()');
  assert(run('mansionKeikoActive()'),id+' fight starts '+run('JSON.stringify([M.keiko,M.talk&&M.talk.speaker,M.dead,M.hp])'));
  const seen=new Set();let hurt=0,last=run('M.hp'),losses=0,frames=0;
- while(frames<16000&&(run('M.keiko.state')==='active'||run('!!M.talk')&&run('M.keiko.state')!=='done')){if(run('!!M.talk')){losses++;if(losses>3)break;run('mansionTalkNext()');last=run('M.hp');continue;}
+ while(frames<16000&&(['active','lost'].includes(run('M.keiko?M.keiko.state:"lost"'))||run('!!M.talk')&&run('M.keiko?M.keiko.state:"lost"')!=='done')){if(!run('M.keiko')){losses++;if(losses>3)break;run(`mansionEnter("${B.room}",40,224);M.transition=0;mansionKeikoStart();M.talk=null`);last=run('M.hp');continue;}if(run('!!M.talk')){if(losses>3)break;run('mansionTalkNext()');last=run('M.hp');continue;}
   seen.add(CUR());ticks(1);frames++;const hp=run('M.hp');if(hp<last){hurt+=last-hp;if(process.env.DBG&&id==="eclipse")console.log("hit",run("(()=>{const e=M.enemies.find(e=>e.kind===\"keikoBoss\");return e.mode+\" \"+e.mt+\" ex\"+Math.round(e.x)+\" x\"+Math.round(M.x)+\" y\"+Math.round(M.y)})()"));}last=hp;}
- run('releaseAll()');return{B,seen,hurt,losses,frames,won:run('M.keiko.state')==='done'};}
+ run('releaseAll()');return{B,seen,hurt,losses,frames,won:run('M.keiko?M.keiko.state:"lost"')==='done'};}
 let CUR=bot;
 const CLING=`(()=>{const e=M.enemies.find(e=>e.kind==='keikoBoss');releaseAll();const side=M.x<(KEIKO_L+KEIKO_R)/2?-1:1;if(side<0)keys.left=true;else keys.right=true;
  if(M.ground||M.wall&&M.t%40===0){keys.jump=true;inp.jumpPressed=true;}else if(M.vy<0)keys.jump=true;M.face=-side;keys.shoot=(M.t&1)===0;return 'cling';})()`;

@@ -11,6 +11,10 @@ ROCKSIDE II / 2.0.0-test.46（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 - 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs` `node tools/test-hoshiyomi.cjs` and `node tools/test-keiko.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
+### 2.0.0-test.63
+- ボス戦で負けたときの「再戦の連鎖」（例：霧弓ラヴィス「霧はまだ晴れていない。……弓を引き直すわ。」→即再戦）を修正。全ボス（影・ニセモノ・星詠み・青天・ダイスロール・アスターテ）共通で、負けると戦闘状態を全部リセットし（壁・カメラ固定解除、セリフなし）、HP全回復＋短い無敵で、入ってきた扉の前（招待戦は元の部屋）に戻る。部屋の内側を向き、もう一度入るまで戦いは始まらない。
+- 新テスト `tools/test-defeat.cjs`：影（ラヴィス）・ニセモノ（リリリ）・ダーク星詠みで「負ける→外で復帰→戦闘なし→自動で始まらない→入り直すと再開」を確認。
+
 ### 2.0.0-test.62
 - ゲーム内の海音ちゃんを以前の絵（test.60と同じスプライト）に戻した。ドット絵版は `src/04t_uminepx.js` の `UMINE_PX` フラグ（既定 OFF）で切替。OFF のときは `assets/umine_px.png` を読み込まない。素材ファイル（銃口 y=43 修正版）はリポジトリに保持。
 - test.61 のタイトル先行表示 → 開始後に NOW LOADING の流れはそのまま。

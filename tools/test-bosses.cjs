@@ -9,7 +9,7 @@ const only=process.env.BOSS?process.env.BOSS.split(','):null;const res={};
 for(const id of only||['tobiume','neenia','lily','disaster','vesper','lavis','nocturne','eclipse']){const B=run(`KEIKO_BOSSES.${id}`);
  run(`M.talk=null;M.map=false;M.keiko=null;M.upg={hp:4,shot:2,slide:2};M.flags.${B.flag}=false;mansionEnter("${B.room}",60,224);M.transition=0;M.hp=mansionMaxHP();`);ticks(2);run(`M.talk=null;M.map=false;mansionKeikoStart();`);
  const seen=new Set(),poses=new Set();let hurt=0,last=run('M.hp'),losses=0,frames=0,maxStop=0,shake=0,cut=null;
- while(frames<20000&&run('M.keiko.state')==='active'){if(run('!!M.talk')){losses++;run('while(M.talk)mansionTalkNext();M.map=false;if(M.keiko.state!=="active")0;');last=run('M.hp');if(losses>3)break;continue;}
+ while(frames<20000&&run('M.keiko?M.keiko.state:"lost"')==='active'){if(run('!!M.talk')){losses++;run('while(M.talk)mansionTalkNext();M.map=false;if(M.keiko.state!=="active")0;');last=run('M.hp');if(losses>3)break;continue;}
   seen.add(run(BOT));ticks(1);frames++;const hp=run('M.hp');if(hp<last)hurt+=last-hp;last=hp;
   const j=run('[KJ.shakeT,KJ.cut&&KJ.cut.name,(()=>{const e=mansionKeikoBoss();return e?mansionKeikoPose(e):""})()]');if(j[0])shake++;if(j[1])cut=j[1];poses.add(j[2]);}
  run('releaseAll();while(M.talk)mansionTalkNext();M.map=false');

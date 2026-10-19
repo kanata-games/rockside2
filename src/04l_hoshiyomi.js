@@ -126,9 +126,7 @@ function drawHoshiNPC(x,y,t,dir){drawHoshi('normal',x,y,((t/150|0)%4===3)?'peace
 function mansionHoshiTalk(){const first=!M.flags.hoshiyomiHub;M.flags.hoshiyomiHub=true;
  mansionTalkShow('星詠み',first?['やっほー☆ 来てくれたじゃん！ さっきはマジごめんね。','星詠みの欠片、館の敵とか書庫の奥に落ちてるっぽい。','持ってきてくれたら、うちが星の力で強くしたげる！ 任せて☆']:['欠片持ってきた？ 見せて見せて☆'],mansionUpgradeOpen);}
 HUB_NPCS.push({id:'hoshiyomi',room:'bedroom',x:520,y:208,name:'星詠み',enabled:()=>!!M.flags.hoshiyomiDefeated,draw:drawHoshiNPC,talk:mansionHoshiTalk});
-function mansionHoshiRetry(){M.hoshiState='ready';M.enemyShots=[];M.shots=[];M.hp=mansionMaxHP();M.hurt=60;M.poseT=M.castT=M.stepT=0;M.x=110;M.y=HOSHI_FLOOR;M.vx=M.vy=0;M.hoshiTries=(M.hoshiTries||0)+1;
- const e=M.enemies.find(e=>e.kind==='hoshiBoss');if(e)Object.assign(e,mansionNewHoshi());
- mansionTalkShow('ダーク星詠み',['キャハッ☆ もう終わり？ 弱すぎじゃん。','……でも、なんか胸がざわつく。……もっかい来なよ。'],mansionHoshiStart);}
+function mansionHoshiRetry(){mansionBossDefeat();}
 // trapdoor hatches over downward vertical exits in walk paths (bedroom → hubCellar).
 // Solid only from above while closed; 調べる on top opens it for a moment.
 const MANSION_HATCHES={bedroom:[320,208,48,8]};
