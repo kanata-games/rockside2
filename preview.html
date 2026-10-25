@@ -141,7 +141,7 @@ body.title-art #screen,body.title-art #hint{visibility:hidden}body.title-art #bL
 
 'use strict';
 // Version label (title screen + footer). Bump on every release; see README.
-const GAME_VERSION = '2.0.0-test.63';
+const GAME_VERSION = '2.0.0-test.64';
 // =====================================================================
 //  ROCKSIDE  -  original run-and-gun prototype
 //  All gameplay tuning lives in CONFIG. Units: pixels and frames @60Hz.
@@ -9408,7 +9408,8 @@ function mansionKeikoWin(){const k=M.keiko,B=KEIKO_BOSSES[k.id],first=!M.flags[B
  const meet=()=>{const was=!M.flags[B.flag];M.flags[B.flag]=true;if(was)mansionShardGain(3,true);mansionSave();mansionBurst(256,KEIKO_FLOOR-24,B.col,18);sfx('heal');mansionTalkShow(B.real,was?B.post:['お疲れさま、海音！ いい腕試しだったよ。']);};
  mansionTalkShow(B.name,B.vanish,meet);M.talk.afterClose=meet;}
 function mansionKeikoRetry(){mansionBossDefeat();}
-function mansionKeikoPortrait(p,c){const sp=M.talk?.speaker;let real=false,id=Object.keys(KEIKO_BOSSES).find(id=>KEIKO_BOSSES[id].name===sp||KEIKO_BOSSES[id].real+'？'===sp);if(!id){id=Object.keys(KEIKO_BOSSES).find(id=>KEIKO_BOSSES[id].real===sp);real=!!id;}if(!id)return false;c.setAttribute('aria-label',sp);const B=KEIKO_BOSSES[id],f=real?HOSHI_ART['r_'+id+'Face']:B.shade&&HOSHI_ART['k_'+id+'Face'];
+// test.64: only the room-placed impostors/shades — the move-engine entries (アスターテ/ダイスロール/青天/星詠み, added in test.50–51) keep their own portraits.
+function mansionKeikoPortrait(p,c){const sp=M.talk?.speaker,ids=Object.keys(KEIKO_BOSSES).filter(id=>KEIKO_BOSSES[id].room);let real=false,id=ids.find(id=>KEIKO_BOSSES[id].name===sp||(KEIKO_BOSSES[id].real&&KEIKO_BOSSES[id].real+'？'===sp));if(!id){id=ids.find(id=>KEIKO_BOSSES[id].real&&KEIKO_BOSSES[id].real===sp);real=!!id;}if(!id)return false;c.setAttribute('aria-label',sp);const B=KEIKO_BOSSES[id],f=real?HOSHI_ART['r_'+id+'Face']:B.shade&&HOSHI_ART['k_'+id+'Face'];
  if(f){p.imageSmoothingEnabled=f.img.width>64;p.drawImage(f.img,0,0,f.img.width,f.img.height,0,0,96,96);return true;}
  const a=HOSHI_ART[(real?'r_':'k_')+id];if(a&&a.mode==='sequel'){const fr=a.meta.frames[0],[rx,ry,rw]=fr.rect;p.imageSmoothingEnabled=true;p.drawImage(a.img,rx+rw*.3,ry+40,rw*.4,rw*.4,0,0,96,96);if(!real){p.fillStyle='rgba(120,90,200,.25)';p.fillRect(0,0,96,96);}return true;}
  p.fillStyle=real?'#1a1030':'#2a1a50';p.fillRect(0,0,96,96);p.fillStyle=B.col;p.fillRect(20,14,56,40);p.fillStyle='#f4dcd0';p.fillRect(28,26,40,36);p.fillStyle=B.sub;p.fillRect(16,66,64,30);if(!real){p.fillStyle='#fff';p.font='bold 28px sans-serif';p.fillText('?',60,40);}return true;}

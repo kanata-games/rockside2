@@ -461,3 +461,7 @@ The current art uses the art maker's format, specified in `assets/enemies/README
 ## 30. ボス戦の敗北 (test.63)
 - 全ボスの `*Retry()` は `mansionBossDefeat()`（04i_mansion.js）を呼ぶだけ。行き先は ①招待戦の `diceReturn`/`sparReturn` ②`mansionEnterDoor` が記録する `M.lastDoor`（入った扉の前）③ボス部屋の最初の扉の先。`mansionEnter` で状態を作り直し、HP全回復・`M.hurt=90`・部屋の中央向き。
 - 新しいボス部屋を作るときは、外へ出る普通の扉を必ず1つ置くこと。`tools/test-defeat.cjs` を通す。
+
+## 31. 会話アイコン (test.64)
+- 会話の顔は `mansionTalkPortrait`（04i）→ 星詠み → ニセモノ／影（`mansionKeikoPortrait`、`room` を持つ KEIKO_BOSSES だけ）→ 海音 → 青天／アスターテ／ダイスロール。素顔のダイスロールは 04q の上書き。
+- 技エンジン用に KEIKO_BOSSES へ項目を足すときは `room` を付けないこと（付けると会話の顔がニセモノ扱いになる）。

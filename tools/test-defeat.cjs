@@ -21,3 +21,7 @@ defeat('boss ダーク星詠み','obsDome','M.flags.hoshiyomiDefeated=false;mans
 // walking back in restarts the fight normally
 {const v=viaDoor('kLily');run(`mansionEnterDoor(${JSON.stringify(v.d)});M.transition=0;`);run('keys.right=true');ticks(60);run('releaseAll()');assert(run('!!M.talk')||run('mansionKeikoActive()'),'walking back in starts the fight again');}
 console.log('PASS boss defeat: shade / impostor / boss -> respawn outside the boss room, full HP, i-frames, facing away, no auto re-fight; walking back in restarts.');
+// test.64: sequel characters keep their own talk portraits (not the generic impostor "?" box)
+for(const sp of ['アスターテ','ダイスロール','青天']){run(`mansionTalkShow(${JSON.stringify(sp)},['…'])`);const p={getImageData:0};run('var __k=0;');assert.equal(run(`(()=>{const c=document.getElementById('mTalkPortrait');return mansionKeikoPortrait(c.getContext('2d'),c);})()`),false,sp+' is not drawn by the impostor/shade portrait');run('mansionTalkClose(true)');}
+for(const sp of ['霧弓ラヴィス','リリリ','リリィ','リリィ？']){run(`mansionTalkShow(${JSON.stringify(sp)},['…'])`);assert.equal(run(`(()=>{const c=document.getElementById('mTalkPortrait');return mansionKeikoPortrait(c.getContext('2d'),c);})()`),true,sp+' still uses the keiko portrait');run('mansionTalkClose(true)');}
+console.log('PASS talk portraits: アスターテ / ダイスロール / 青天 use their own faces; shades & impostors keep theirs.');

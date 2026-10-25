@@ -11,6 +11,10 @@ ROCKSIDE II / 2.0.0-test.46（GitHub公開版）。前作 ROCKSIDE v0.12.0 か�
 - 確認 / Check: `node tools/reach.js`, then `python3 tools/mapview.py` (writes `docs/world_map.png`), then `node tools/test-mansion.cjs` `node tools/test-hoshiyomi.cjs` and `node tools/test-keiko.cjs`.
 - ビルドは必ず / Always build with `python3 tools/build.py --out preview.html`. Without `--out` it overwrites the `index.html` redirect.
 
+### 2.0.0-test.64
+- 会話アイコンを修正：アスターテ・ダイスロール（被り物）・青天の会話で、本来の顔アイコン（astarte-sequel-face.png／被り物のダイスロール絵／青天の絵）ではなく、ニセモノ用の仮アイコン（「？」付きの四角）が出ていた。原因は test.50〜51 で技エンジン用に `KEIKO_BOSSES` へ同じ名前の項目を足したため、会話の顔選びがそれらを「ニセモノ／影」と誤認していたこと。顔選びを部屋に配置されたニセモノ・影だけに限定。素顔のダイスロール・星詠み・影・ニセモノ・海音は従来どおり。
+- `tools/test-defeat.cjs` に会話アイコンのテストを追加。
+
 ### 2.0.0-test.63
 - ボス戦で負けたときの「再戦の連鎖」（例：霧弓ラヴィス「霧はまだ晴れていない。……弓を引き直すわ。」→即再戦）を修正。全ボス（影・ニセモノ・星詠み・青天・ダイスロール・アスターテ）共通で、負けると戦闘状態を全部リセットし（壁・カメラ固定解除、セリフなし）、HP全回復＋短い無敵で、入ってきた扉の前（招待戦は元の部屋）に戻る。部屋の内側を向き、もう一度入るまで戦いは始まらない。
 - 新テスト `tools/test-defeat.cjs`：影（ラヴィス）・ニセモノ（リリリ）・ダーク星詠みで「負ける→外で復帰→戦闘なし→自動で始まらない→入り直すと再開」を確認。
